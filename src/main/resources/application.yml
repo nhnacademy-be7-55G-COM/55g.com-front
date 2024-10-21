@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: 55g.com-front
+
+  mvc:
+    static-path-pattern: /static/**
