@@ -4,7 +4,7 @@ ABSOLUTE_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 profile=$1
 image_name="55g-front-server"
 
-container_name_prefix="55g-front"
+#container_name_prefix="55g-front"
 container_name="55g-front-live"
 spring_env="live"
 server_port=(8080 8081)
@@ -17,7 +17,7 @@ fi
 
 cd $ABSOLUTE_PATH
 
-docker_ps=$(docker ps --all --filter "name=${container_name_prefix}" | awk '{ print $1 }')
+docker_ps=$(docker ps --all --filter "name=${container_name}" | awk '{ print $1 }')
 
 i=0
 for line in $docker_ps; do
