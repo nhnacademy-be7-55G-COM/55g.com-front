@@ -17,7 +17,7 @@ fi
 
 cd $ABSOLUTE_PATH
 
-docker_ps=$(docker ps --filter "name=${container_name_prefix}" | awk '{ print $1 }')
+docker_ps=$(docker ps --all --filter "name=${container_name_prefix}" | awk '{ print $1 }')
 
 i=0
 for line in $docker_ps; do
@@ -26,6 +26,7 @@ for line in $docker_ps; do
 done
 
 for ((i=1; i<${#ps_arr[@]}; i++)); do
+    echo "Removing container ${ps_arr[i]}..."
     docker stop ${ps_arr[i]}
     docker rm ${ps_arr[i]}
 done
@@ -33,5 +34,5 @@ done
 docker build -t $image_name .
 
 for ((i=0; i<${#server_port[@]}; i++)); do
-    docker run -d --name $container_name-$i --env SPRING_PROFILE=$spring_env $image_name -p ${server_port[i]}:${server_port[i]}
+    docker run -d --name $container_name-$i --env SPRING_PROFILE=$spring_env -p ${server_port[i]}:${server_port[i]} $image_name
 done

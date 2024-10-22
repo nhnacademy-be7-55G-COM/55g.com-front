@@ -1,6 +1,6 @@
 FROM eclipse-temurin:21
 
-ENV SPRING_PROFILE "default"
+ENV SPRING_PROFILE="default"
 
 RUN mkdir /opt/app
 COPY target/front.jar /opt/app
