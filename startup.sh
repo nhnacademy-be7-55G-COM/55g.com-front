@@ -31,10 +31,10 @@ for ((i=1; i<${#ps_arr[@]}; i++)); do
     docker rm ${ps_arr[i]}
 done
 
-docker build -t $image_name .
+docker build -t $image_name-$spring_env .
 
 for ((i=0; i<${#server_port[@]}; i++)); do
-    docker run -d --name $container_name-$i --env SPRING_PROFILE=$spring_env --env SERVER_PORT=${server_port[i]} -p ${server_port[i]}:${server_port[i]} $image_name
+    docker run -d --name $container_name-$i --env SPRING_PROFILE=$spring_env --env SERVER_PORT=${server_port[i]} -p ${server_port[i]}:${server_port[i]} $image_name-$spring_env
 done
 
 docker image prune --force
