@@ -80,3 +80,8 @@ jobs:
         port: ${{ secrets.SSH_PORT }}
         script_stop: true
         script: "~/app/front/dev/startup.sh --dev"
+    - name: Build and analyze
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=55g.com-front -Dsonar.projectName='55g.com-front'
