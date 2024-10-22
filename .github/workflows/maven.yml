@@ -37,7 +37,7 @@ jobs:
 
     - name: upload file master
       uses: appleboy/scp-action@master
-      if: github.ref == 'refs/HEAD/master'
+      if: github.ref == 'refs/heads/master'
       with:
         host: ${{ secrets.SSH_IP }}
         username: ${{ secrets.SSH_ID }}
@@ -49,7 +49,7 @@ jobs:
 
     - name: upload file develop
       uses: appleboy/scp-action@master
-      if: github.ref == 'refs/HEAD/develop'
+      if: github.ref == 'refs/heads/develop'
       with:
         host: ${{ secrets.SSH_IP }}
         username: ${{ secrets.SSH_ID }}
@@ -61,7 +61,7 @@ jobs:
 
     - name: execute shell script master
       uses: appleboy/ssh-action@master
-      if: github.ref == 'refs/HEAD/master'
+      if: github.ref == 'refs/heads/master'
       with:
         host: ${{ secrets.SSH_IP }}
         username: ${{ secrets.SSH_ID }}
@@ -72,7 +72,7 @@ jobs:
 
     - name: execute shell script develop
       uses: appleboy/ssh-action@master
-      if: github.ref == 'refs/HEAD/develop'
+      if: github.ref == 'refs/heads/develop'
       with:
         host: ${{ secrets.SSH_IP }}
         username: ${{ secrets.SSH_ID }}
