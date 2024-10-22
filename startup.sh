@@ -25,7 +25,7 @@ for line in $docker_ps; do
   i=$((i+1))
 done
 
-for ((i=0; i<${#ps_arr[@]}; i++)); do
+for ((i=1; i<${#ps_arr[@]}; i++)); do
     docker stop ${ps_arr[i]}
     docker rm ${ps_arr[i]}
 done
