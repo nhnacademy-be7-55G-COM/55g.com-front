@@ -21,12 +21,12 @@ cd $ABSOLUTE_PATH
 
 docker_ps=$(docker ps --all --filter "name=${container_name}" | awk '{ print $1 }')
 
-docker_network_live_ps=$(docker network ps | grep '55g-live')
+docker_network_live_ps=$(docker network ls | grep '55g-live')
 if [ -z "$docker_network_live_ps" ]; then
   docker network create 55g-live
 fi
 
-docker_network_dev_ps=$(docker network ps | grep '55g-dev')
+docker_network_dev_ps=$(docker network ls | grep '55g-dev')
 if [ -z "$docker_network_dev_ps" ]; then
   docker network create 55g-dev
 fi
