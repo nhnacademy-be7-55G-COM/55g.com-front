@@ -8,16 +8,28 @@ image_name="55g-front-server"
 container_name="55g-front-live"
 spring_env="live"
 server_port=(8080 8081)
+network_bridge="55g-live"
 
 if [ "$profile" == "--dev" ]; then
 	container_name="55g-front-dev"
 	spring_env="dev"
 	server_port=(8090)
+	network_bridge="55g-dev"
 fi
 
 cd $ABSOLUTE_PATH
 
 docker_ps=$(docker ps --all --filter "name=${container_name}" | awk '{ print $1 }')
+
+docker_network_live_ps=$(docker network ps | grep '55g-live')
+if [ -z "$docker_network_live_ps" ]; then
+  docker network create 55g-live
+fi
+
+docker_network_dev_ps=$(docker network ps | grep '55g-dev')
+if [ -z "$docker_network_dev_ps" ]; then
+  docker network create 55g-dev
+fi
 
 i=0
 for line in $docker_ps; do
@@ -34,7 +46,7 @@ done
 docker build -t $image_name-$spring_env .
 
 for ((i=0; i<${#server_port[@]}; i++)); do
-    docker run -d --name $container_name-$i --env SPRING_PROFILE=$spring_env --env SERVER_PORT=${server_port[i]} -p ${server_port[i]}:${server_port[i]} $image_name-$spring_env
+    docker run -d --name $container_name-$i --network $network_bridge --env SPRING_PROFILE=$spring_env --env SERVER_PORT=${server_port[i]} -p ${server_port[i]}:${server_port[i]} $image_name-$spring_env
 done
 
 docker image prune --force
