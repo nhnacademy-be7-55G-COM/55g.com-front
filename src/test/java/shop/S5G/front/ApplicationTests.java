@@ -1,4 +1,4 @@
-package shop.S5g.front;
+package shop.S5G.front;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

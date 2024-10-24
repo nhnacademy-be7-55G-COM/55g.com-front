@@ -24,6 +24,7 @@ logging:
       file-name-pattern: front-live-%i.%d{yyyy-MM-dd_HH:mm}.log
       max-file-size: 100KB
   level:
+    root: info
     shop.S5G.shop: info
 55g:
   log:
@@ -43,6 +44,7 @@ logging:
       file-name-pattern: front-dev-%i.%d{yyyy-MM-dd_HH:mm}.log
       max-file-size: 100KB
   level:
+    root: debug
     shop.S5G.shop: trace
 
 55g:
