@@ -8,6 +8,9 @@ spring:
 55g:
   log:
     path: .
+logging:
+  file:
+    name: ${55g.log.path}/front.log
 ---
 # on profile 'live'
 spring:
@@ -16,10 +19,12 @@ spring:
       on-profile: live
 
 logging:
+  file:
+    name: ${55g.log.path}/front-live.log
   logback:
     rollingpolicy:
       max-history: 100
-      file-name-pattern: front-live-%i.%d{yyyy-MM-dd_HH:mm}.log
+      file-name-pattern: ${55g.log.path}/front-live-%d{yyyy-MM-dd_HH:mm}.%i.log
       max-file-size: 100KB
   level:
     root: info
@@ -34,10 +39,12 @@ spring:
     activate:
       on-profile: dev
 logging:
+  file:
+    name: ${55g.log.path}/front-dev.log
   logback:
     rollingpolicy:
       max-history: 100
-      file-name-pattern: front-dev-%i.%d{yyyy-MM-dd_HH:mm}.log
+      file-name-pattern: ${55g.log.path}/front-dev-%d{yyyy-MM-dd}.%i.log
       max-file-size: 100KB
   level:
     root: debug
@@ -52,7 +59,3 @@ spring:
   config:
     activate:
       on-profile: docker
-
-logging:
-  file:
-    path: ${55g.log.path}
