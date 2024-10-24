@@ -6,13 +6,13 @@ image_name="55g-front-server"
 
 #container_name_prefix="55g-front"
 container_name="55g-front-live"
-spring_env="live"
+spring_env="live,docker"
 server_port=(8080 8081)
 network_bridge="55g-live"
 
 if [ "$profile" == "--dev" ]; then
 	container_name="55g-front-dev"
-	spring_env="dev"
+	spring_env="dev,docker"
 	server_port=(8090)
 	network_bridge="55g-dev"
 fi
