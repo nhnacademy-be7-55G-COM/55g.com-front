@@ -7,4 +7,4 @@ RUN ln -snf /usr/share/zoneinfo/Asia/Seoul /etc/localtime
 
 RUN mkdir /opt/app
 COPY target/front.jar /opt/app
-CMD ["java", "-Dspring.profiles.active=${SPRING_PROFILE}", "-Dserver.port=${SERVER_PORT}","-jar", "/opt/app/front.jar"]
+CMD ["java", "-Dspring.profiles.active=${SPRING_PROFILE}", "-Dserver.port=${SERVER_PORT}","-jar", "-Duser.timezone=Asia/Seoul", "/opt/app/front.jar"]

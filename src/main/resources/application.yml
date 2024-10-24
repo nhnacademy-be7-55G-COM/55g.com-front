@@ -16,8 +16,6 @@ spring:
       on-profile: live
 
 logging:
-  file:
-    name: front-live.log
   logback:
     rollingpolicy:
       max-history: 100
@@ -36,8 +34,6 @@ spring:
     activate:
       on-profile: dev
 logging:
-  file:
-    name: front-dev.log
   logback:
     rollingpolicy:
       max-history: 100
