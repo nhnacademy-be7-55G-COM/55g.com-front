@@ -4,3 +4,57 @@ spring:
 
   mvc:
     static-path-pattern: /static/**
+
+55g:
+  log:
+    path: .
+---
+# on profile 'live'
+spring:
+  config:
+    activate:
+      on-profile: live
+
+logging:
+  file:
+    name: front-live.log
+  logback:
+    rollingpolicy:
+      max-history: 100
+      file-name-pattern: front-live-%i.%d{yyyy-MM-dd_HH:mm}.log
+      max-file-size: 100KB
+  level:
+    shop.S5G.shop: info
+55g:
+  log:
+    path: /logs/live/front
+---
+# on profile 'dev'
+spring:
+  config:
+    activate:
+      on-profile: dev
+logging:
+  file:
+    name: front-dev.log
+  logback:
+    rollingpolicy:
+      max-history: 100
+      file-name-pattern: front-dev-%i.%d{yyyy-MM-dd_HH:mm}.log
+      max-file-size: 100KB
+  level:
+    shop.S5G.shop: trace
+
+55g:
+  log:
+    path: /logs/dev/front
+---
+# on profile 'docker'
+spring:
+  config:
+    activate:
+      on-profile: docker
+
+logging:
+  file:
+    path: ${55g.log.path}

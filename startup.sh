@@ -46,7 +46,13 @@ done
 docker build -t $image_name-$spring_env .
 
 for ((i=0; i<${#server_port[@]}; i++)); do
-    docker run -d --name $container_name-$i --network $network_bridge --env SPRING_PROFILE=$spring_env --env SERVER_PORT=${server_port[i]} -p ${server_port[i]}:${server_port[i]} $image_name-$spring_env
+    docker run -d --name $container_name-$i \
+     --network $network_bridge \
+     --env SPRING_PROFILE=$spring_env \
+     --env SERVER_PORT=${server_port[i]} \
+     -p ${server_port[i]}:${server_port[i]} \
+     -v /logs:/logs \
+     $image_name-$spring_env
 done
 
 docker image prune --force
