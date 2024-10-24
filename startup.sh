@@ -9,12 +9,14 @@ container_name="55g-front-live"
 spring_env="live,docker"
 server_port=(8080 8081)
 network_bridge="55g-live"
+container_prefix="live"
 
 if [ "$profile" == "--dev" ]; then
 	container_name="55g-front-dev"
 	spring_env="dev,docker"
 	server_port=(8090)
 	network_bridge="55g-dev"
+	container_prefix="dev"
 fi
 
 cd $ABSOLUTE_PATH
@@ -43,7 +45,7 @@ for ((i=1; i<${#ps_arr[@]}; i++)); do
     docker rm ${ps_arr[i]}
 done
 
-docker build -t $image_name-$spring_env .
+docker build -t $image_name-$container_prefix .
 
 for ((i=0; i<${#server_port[@]}; i++)); do
     docker run -d --name $container_name-$i \
@@ -52,7 +54,7 @@ for ((i=0; i<${#server_port[@]}; i++)); do
      --env SERVER_PORT=${server_port[i]} \
      -p ${server_port[i]}:${server_port[i]} \
      -v /logs:/logs \
-     $image_name-$spring_env
+     $image_name-$container_prefix
 done
 
 docker image prune --force
