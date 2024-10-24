@@ -54,6 +54,7 @@ for ((i=0; i<${#server_port[@]}; i++)); do
      --env SERVER_PORT=${server_port[i]} \
      -p ${server_port[i]}:${server_port[i]} \
      -v /logs:/logs \
+     -v /var/55g/static:/static \
      $image_name-$container_prefix
 done
 
