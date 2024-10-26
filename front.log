@@ -213,3 +213,161 @@
 2024-10-26T14:11:01.704+09:00  INFO 7000 --- [55g.com-front] [http-nio-8080-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
 2024-10-26T14:11:01.704+09:00  INFO 7000 --- [55g.com-front] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
 2024-10-26T14:11:01.705+09:00  INFO 7000 --- [55g.com-front] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2024-10-26T18:39:55.948+09:00  INFO 9972 --- [55g.com-front] [main] shop.S5G.front.Application               : Starting Application using Java 22.0.1 with PID 9972 (C:\NHNacademy\book\55G.COM-front\target\classes started by cbs10 in C:\NHNacademy\book\55G.COM-front)
+2024-10-26T18:39:55.948+09:00  INFO 9972 --- [55g.com-front] [main] shop.S5G.front.Application               : No active profile set, falling back to 1 default profile: "default"
+2024-10-26T18:39:56.681+09:00  INFO 9972 --- [55g.com-front] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=dd1209c8-4e0c-37fe-988e-a21bdd9c86c4
+2024-10-26T18:39:56.926+09:00  INFO 9972 --- [55g.com-front] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-10-26T18:39:56.950+09:00  INFO 9972 --- [55g.com-front] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-10-26T18:39:56.950+09:00  INFO 9972 --- [55g.com-front] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.30]
+2024-10-26T18:39:56.987+09:00  INFO 9972 --- [55g.com-front] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-10-26T18:39:56.987+09:00  INFO 9972 --- [55g.com-front] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 990 ms
+2024-10-26T18:39:57.082+09:00  INFO 9972 --- [55g.com-front] [main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2024-10-26T18:39:57.401+09:00  INFO 9972 --- [55g.com-front] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2024-10-26T18:39:57.421+09:00  INFO 9972 --- [55g.com-front] [main] shop.S5G.front.Application               : Started Application in 1.967 seconds (process running for 2.5)
+2024-10-26T18:40:01.937+09:00  INFO 9972 --- [55g.com-front] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-10-26T18:40:01.937+09:00  INFO 9972 --- [55g.com-front] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2024-10-26T18:40:01.943+09:00  INFO 9972 --- [55g.com-front] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2024-10-26T18:40:02.151+09:00  WARN 9972 --- [55g.com-front] [http-nio-8080-exec-2] o.s.web.servlet.PageNotFound             : No mapping for GET /style.css
+2024-10-26T18:40:02.159+09:00  WARN 9972 --- [55g.com-front] [http-nio-8080-exec-2] o.s.web.servlet.PageNotFound             : No endpoint GET /style.css.
+2024-10-26T18:40:41.009+09:00  INFO 17096 --- [55g.com-front] [main] shop.S5G.front.Application               : Starting Application using Java 22.0.1 with PID 17096 (C:\NHNacademy\book\55G.COM-front\target\classes started by cbs10 in C:\NHNacademy\book\55G.COM-front)
+2024-10-26T18:40:41.009+09:00  INFO 17096 --- [55g.com-front] [main] shop.S5G.front.Application               : No active profile set, falling back to 1 default profile: "default"
+2024-10-26T18:40:41.658+09:00  INFO 17096 --- [55g.com-front] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=dd1209c8-4e0c-37fe-988e-a21bdd9c86c4
+2024-10-26T18:40:41.891+09:00  INFO 17096 --- [55g.com-front] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-10-26T18:40:41.907+09:00  INFO 17096 --- [55g.com-front] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-10-26T18:40:41.913+09:00  INFO 17096 --- [55g.com-front] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.30]
+2024-10-26T18:40:41.958+09:00  INFO 17096 --- [55g.com-front] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-10-26T18:40:41.958+09:00  INFO 17096 --- [55g.com-front] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 892 ms
+2024-10-26T18:40:42.050+09:00  INFO 17096 --- [55g.com-front] [main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2024-10-26T18:40:42.358+09:00  INFO 17096 --- [55g.com-front] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2024-10-26T18:40:42.358+09:00  INFO 17096 --- [55g.com-front] [main] shop.S5G.front.Application               : Started Application in 1.807 seconds (process running for 2.377)
+2024-10-26T18:40:42.440+09:00  INFO 17096 --- [55g.com-front] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-10-26T18:40:42.440+09:00  INFO 17096 --- [55g.com-front] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2024-10-26T18:40:42.440+09:00  INFO 17096 --- [55g.com-front] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2024-10-26T18:41:35.645+09:00  INFO 11008 --- [55g.com-front] [main] shop.S5G.front.Application               : Starting Application using Java 22.0.1 with PID 11008 (C:\NHNacademy\book\55G.COM-front\target\classes started by cbs10 in C:\NHNacademy\book\55G.COM-front)
+2024-10-26T18:41:35.661+09:00  INFO 11008 --- [55g.com-front] [main] shop.S5G.front.Application               : No active profile set, falling back to 1 default profile: "default"
+2024-10-26T18:41:36.449+09:00  INFO 11008 --- [55g.com-front] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=dd1209c8-4e0c-37fe-988e-a21bdd9c86c4
+2024-10-26T18:41:36.765+09:00  INFO 11008 --- [55g.com-front] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-10-26T18:41:36.796+09:00  INFO 11008 --- [55g.com-front] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-10-26T18:41:36.796+09:00  INFO 11008 --- [55g.com-front] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.30]
+2024-10-26T18:41:36.863+09:00  INFO 11008 --- [55g.com-front] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-10-26T18:41:36.863+09:00  INFO 11008 --- [55g.com-front] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1145 ms
+2024-10-26T18:41:36.937+09:00  INFO 11008 --- [55g.com-front] [main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2024-10-26T18:41:37.255+09:00  INFO 11008 --- [55g.com-front] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2024-10-26T18:41:37.268+09:00  INFO 11008 --- [55g.com-front] [main] shop.S5G.front.Application               : Started Application in 2.062 seconds (process running for 2.574)
+2024-10-26T18:41:37.484+09:00  INFO 11008 --- [55g.com-front] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-10-26T18:41:37.484+09:00  INFO 11008 --- [55g.com-front] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2024-10-26T18:41:37.484+09:00  INFO 11008 --- [55g.com-front] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2024-10-26T18:43:52.916+09:00  INFO 4292 --- [55g.com-front] [main] shop.S5G.front.Application               : Starting Application using Java 22.0.1 with PID 4292 (C:\NHNacademy\book\55G.COM-front\target\classes started by cbs10 in C:\NHNacademy\book\55G.COM-front)
+2024-10-26T18:43:52.916+09:00  INFO 4292 --- [55g.com-front] [main] shop.S5G.front.Application               : No active profile set, falling back to 1 default profile: "default"
+2024-10-26T18:43:53.483+09:00  INFO 4292 --- [55g.com-front] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=dd1209c8-4e0c-37fe-988e-a21bdd9c86c4
+2024-10-26T18:43:53.720+09:00  INFO 4292 --- [55g.com-front] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-10-26T18:43:53.731+09:00  INFO 4292 --- [55g.com-front] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-10-26T18:43:53.731+09:00  INFO 4292 --- [55g.com-front] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.30]
+2024-10-26T18:43:53.775+09:00  INFO 4292 --- [55g.com-front] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-10-26T18:43:53.780+09:00  INFO 4292 --- [55g.com-front] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 825 ms
+2024-10-26T18:43:53.879+09:00  INFO 4292 --- [55g.com-front] [main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2024-10-26T18:43:54.183+09:00  INFO 4292 --- [55g.com-front] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2024-10-26T18:43:54.192+09:00  INFO 4292 --- [55g.com-front] [main] shop.S5G.front.Application               : Started Application in 1.728 seconds (process running for 2.285)
+2024-10-26T18:43:55.307+09:00  INFO 4292 --- [55g.com-front] [http-nio-8080-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-10-26T18:43:55.307+09:00  INFO 4292 --- [55g.com-front] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2024-10-26T18:43:55.307+09:00  INFO 4292 --- [55g.com-front] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2024-10-26T18:46:07.491+09:00  INFO 24176 --- [55g.com-front] [main] shop.S5G.front.Application               : Starting Application using Java 22.0.1 with PID 24176 (C:\NHNacademy\book\55G.COM-front\target\classes started by cbs10 in C:\NHNacademy\book\55G.COM-front)
+2024-10-26T18:46:07.491+09:00  INFO 24176 --- [55g.com-front] [main] shop.S5G.front.Application               : No active profile set, falling back to 1 default profile: "default"
+2024-10-26T18:46:08.140+09:00  INFO 24176 --- [55g.com-front] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=dd1209c8-4e0c-37fe-988e-a21bdd9c86c4
+2024-10-26T18:46:08.358+09:00  INFO 24176 --- [55g.com-front] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-10-26T18:46:08.378+09:00  INFO 24176 --- [55g.com-front] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-10-26T18:46:08.378+09:00  INFO 24176 --- [55g.com-front] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.30]
+2024-10-26T18:46:08.424+09:00  INFO 24176 --- [55g.com-front] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-10-26T18:46:08.424+09:00  INFO 24176 --- [55g.com-front] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 893 ms
+2024-10-26T18:46:08.525+09:00  INFO 24176 --- [55g.com-front] [main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2024-10-26T18:46:08.833+09:00  INFO 24176 --- [55g.com-front] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2024-10-26T18:46:08.848+09:00  INFO 24176 --- [55g.com-front] [main] shop.S5G.front.Application               : Started Application in 1.794 seconds (process running for 2.335)
+2024-10-26T18:46:08.873+09:00  INFO 24176 --- [55g.com-front] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-10-26T18:46:08.873+09:00  INFO 24176 --- [55g.com-front] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2024-10-26T18:46:08.873+09:00  INFO 24176 --- [55g.com-front] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2024-10-26T18:47:11.569+09:00  INFO 9904 --- [55g.com-front] [main] shop.S5G.front.Application               : Starting Application using Java 22.0.1 with PID 9904 (C:\NHNacademy\book\55G.COM-front\target\classes started by cbs10 in C:\NHNacademy\book\55G.COM-front)
+2024-10-26T18:47:11.569+09:00  INFO 9904 --- [55g.com-front] [main] shop.S5G.front.Application               : No active profile set, falling back to 1 default profile: "default"
+2024-10-26T18:47:12.195+09:00  INFO 9904 --- [55g.com-front] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=dd1209c8-4e0c-37fe-988e-a21bdd9c86c4
+2024-10-26T18:47:12.465+09:00  INFO 9904 --- [55g.com-front] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-10-26T18:47:12.472+09:00  INFO 9904 --- [55g.com-front] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-10-26T18:47:12.472+09:00  INFO 9904 --- [55g.com-front] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.30]
+2024-10-26T18:47:12.526+09:00  INFO 9904 --- [55g.com-front] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-10-26T18:47:12.526+09:00  INFO 9904 --- [55g.com-front] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 912 ms
+2024-10-26T18:47:12.609+09:00  INFO 9904 --- [55g.com-front] [main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2024-10-26T18:47:12.926+09:00  INFO 9904 --- [55g.com-front] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2024-10-26T18:47:12.939+09:00  INFO 9904 --- [55g.com-front] [main] shop.S5G.front.Application               : Started Application in 1.777 seconds (process running for 2.243)
+2024-10-26T18:47:13.921+09:00  INFO 9904 --- [55g.com-front] [http-nio-8080-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-10-26T18:47:13.921+09:00  INFO 9904 --- [55g.com-front] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2024-10-26T18:47:13.921+09:00  INFO 9904 --- [55g.com-front] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2024-10-26T18:48:16.001+09:00  INFO 13836 --- [55g.com-front] [main] shop.S5G.front.Application               : Starting Application using Java 22.0.1 with PID 13836 (C:\NHNacademy\book\55G.COM-front\target\classes started by cbs10 in C:\NHNacademy\book\55G.COM-front)
+2024-10-26T18:48:16.001+09:00  INFO 13836 --- [55g.com-front] [main] shop.S5G.front.Application               : No active profile set, falling back to 1 default profile: "default"
+2024-10-26T18:48:16.652+09:00  INFO 13836 --- [55g.com-front] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=dd1209c8-4e0c-37fe-988e-a21bdd9c86c4
+2024-10-26T18:48:16.884+09:00  INFO 13836 --- [55g.com-front] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-10-26T18:48:16.900+09:00  INFO 13836 --- [55g.com-front] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-10-26T18:48:16.901+09:00  INFO 13836 --- [55g.com-front] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.30]
+2024-10-26T18:48:16.933+09:00  INFO 13836 --- [55g.com-front] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-10-26T18:48:16.933+09:00  INFO 13836 --- [55g.com-front] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 866 ms
+2024-10-26T18:48:17.041+09:00  INFO 13836 --- [55g.com-front] [main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2024-10-26T18:48:17.351+09:00  INFO 13836 --- [55g.com-front] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2024-10-26T18:48:17.351+09:00  INFO 13836 --- [55g.com-front] [main] shop.S5G.front.Application               : Started Application in 1.795 seconds (process running for 2.364)
+2024-10-26T18:48:17.540+09:00  INFO 13836 --- [55g.com-front] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-10-26T18:48:17.540+09:00  INFO 13836 --- [55g.com-front] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2024-10-26T18:48:17.540+09:00  INFO 13836 --- [55g.com-front] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2024-10-26T18:48:42.210+09:00  INFO 18484 --- [55g.com-front] [main] shop.S5G.front.Application               : Starting Application using Java 22.0.1 with PID 18484 (C:\NHNacademy\book\55G.COM-front\target\classes started by cbs10 in C:\NHNacademy\book\55G.COM-front)
+2024-10-26T18:48:42.210+09:00  INFO 18484 --- [55g.com-front] [main] shop.S5G.front.Application               : No active profile set, falling back to 1 default profile: "default"
+2024-10-26T18:48:42.781+09:00  INFO 18484 --- [55g.com-front] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=dd1209c8-4e0c-37fe-988e-a21bdd9c86c4
+2024-10-26T18:48:42.992+09:00  INFO 18484 --- [55g.com-front] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-10-26T18:48:43.006+09:00  INFO 18484 --- [55g.com-front] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-10-26T18:48:43.006+09:00  INFO 18484 --- [55g.com-front] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.30]
+2024-10-26T18:48:43.048+09:00  INFO 18484 --- [55g.com-front] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-10-26T18:48:43.051+09:00  INFO 18484 --- [55g.com-front] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 797 ms
+2024-10-26T18:48:43.145+09:00  INFO 18484 --- [55g.com-front] [main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2024-10-26T18:48:43.427+09:00  INFO 18484 --- [55g.com-front] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2024-10-26T18:48:43.437+09:00  INFO 18484 --- [55g.com-front] [main] shop.S5G.front.Application               : Started Application in 1.665 seconds (process running for 2.208)
+2024-10-26T18:48:43.532+09:00  INFO 18484 --- [55g.com-front] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-10-26T18:48:43.532+09:00  INFO 18484 --- [55g.com-front] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2024-10-26T18:48:43.532+09:00  INFO 18484 --- [55g.com-front] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2024-10-26T18:49:01.383+09:00  INFO 18588 --- [55g.com-front] [main] shop.S5G.front.Application               : Starting Application using Java 22.0.1 with PID 18588 (C:\NHNacademy\book\55G.COM-front\target\classes started by cbs10 in C:\NHNacademy\book\55G.COM-front)
+2024-10-26T18:49:01.383+09:00  INFO 18588 --- [55g.com-front] [main] shop.S5G.front.Application               : No active profile set, falling back to 1 default profile: "default"
+2024-10-26T18:49:02.015+09:00  INFO 18588 --- [55g.com-front] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=dd1209c8-4e0c-37fe-988e-a21bdd9c86c4
+2024-10-26T18:49:02.232+09:00  INFO 18588 --- [55g.com-front] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-10-26T18:49:02.248+09:00  INFO 18588 --- [55g.com-front] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-10-26T18:49:02.248+09:00  INFO 18588 --- [55g.com-front] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.30]
+2024-10-26T18:49:02.289+09:00  INFO 18588 --- [55g.com-front] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-10-26T18:49:02.297+09:00  INFO 18588 --- [55g.com-front] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 868 ms
+2024-10-26T18:49:02.381+09:00  INFO 18588 --- [55g.com-front] [main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2024-10-26T18:49:02.682+09:00  INFO 18588 --- [55g.com-front] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2024-10-26T18:49:02.692+09:00  INFO 18588 --- [55g.com-front] [main] shop.S5G.front.Application               : Started Application in 1.742 seconds (process running for 2.274)
+2024-10-26T18:49:02.914+09:00  INFO 18588 --- [55g.com-front] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-10-26T18:49:02.914+09:00  INFO 18588 --- [55g.com-front] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2024-10-26T18:49:02.914+09:00  INFO 18588 --- [55g.com-front] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2024-10-26T18:49:05.554+09:00  WARN 18588 --- [55g.com-front] [http-nio-8080-exec-2] o.s.web.servlet.PageNotFound             : No mapping for GET /signup
+2024-10-26T18:49:05.557+09:00  WARN 18588 --- [55g.com-front] [http-nio-8080-exec-2] o.s.web.servlet.PageNotFound             : No endpoint GET /signup.
+2024-10-26T18:49:24.793+09:00  INFO 10872 --- [55g.com-front] [main] shop.S5G.front.Application               : Starting Application using Java 22.0.1 with PID 10872 (C:\NHNacademy\book\55G.COM-front\target\classes started by cbs10 in C:\NHNacademy\book\55G.COM-front)
+2024-10-26T18:49:24.793+09:00  INFO 10872 --- [55g.com-front] [main] shop.S5G.front.Application               : No active profile set, falling back to 1 default profile: "default"
+2024-10-26T18:49:25.389+09:00  INFO 10872 --- [55g.com-front] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=dd1209c8-4e0c-37fe-988e-a21bdd9c86c4
+2024-10-26T18:49:25.605+09:00  INFO 10872 --- [55g.com-front] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-10-26T18:49:25.621+09:00  INFO 10872 --- [55g.com-front] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-10-26T18:49:25.621+09:00  INFO 10872 --- [55g.com-front] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.30]
+2024-10-26T18:49:25.668+09:00  INFO 10872 --- [55g.com-front] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-10-26T18:49:25.668+09:00  INFO 10872 --- [55g.com-front] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 823 ms
+2024-10-26T18:49:25.746+09:00  INFO 10872 --- [55g.com-front] [main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2024-10-26T18:49:26.044+09:00  INFO 10872 --- [55g.com-front] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2024-10-26T18:49:26.060+09:00  INFO 10872 --- [55g.com-front] [main] shop.S5G.front.Application               : Started Application in 1.713 seconds (process running for 2.285)
+2024-10-26T18:49:27.931+09:00  INFO 10872 --- [55g.com-front] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-10-26T18:49:27.931+09:00  INFO 10872 --- [55g.com-front] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2024-10-26T18:49:27.931+09:00  INFO 10872 --- [55g.com-front] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2024-10-26T18:51:09.267+09:00  INFO 20200 --- [55g.com-front] [main] shop.S5G.front.Application               : Starting Application using Java 22.0.1 with PID 20200 (C:\NHNacademy\book\55G.COM-front\target\classes started by cbs10 in C:\NHNacademy\book\55G.COM-front)
+2024-10-26T18:51:09.267+09:00  INFO 20200 --- [55g.com-front] [main] shop.S5G.front.Application               : No active profile set, falling back to 1 default profile: "default"
+2024-10-26T18:51:09.838+09:00  INFO 20200 --- [55g.com-front] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=dd1209c8-4e0c-37fe-988e-a21bdd9c86c4
+2024-10-26T18:51:10.029+09:00  INFO 20200 --- [55g.com-front] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-10-26T18:51:10.044+09:00  INFO 20200 --- [55g.com-front] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-10-26T18:51:10.044+09:00  INFO 20200 --- [55g.com-front] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.30]
+2024-10-26T18:51:10.097+09:00  INFO 20200 --- [55g.com-front] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-10-26T18:51:10.097+09:00  INFO 20200 --- [55g.com-front] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 779 ms
+2024-10-26T18:51:10.197+09:00  INFO 20200 --- [55g.com-front] [main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2024-10-26T18:51:10.531+09:00  INFO 20200 --- [55g.com-front] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2024-10-26T18:51:10.531+09:00  INFO 20200 --- [55g.com-front] [main] shop.S5G.front.Application               : Started Application in 1.663 seconds (process running for 2.186)
+2024-10-26T18:51:14.441+09:00  INFO 20200 --- [55g.com-front] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-10-26T18:51:14.441+09:00  INFO 20200 --- [55g.com-front] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2024-10-26T18:51:14.441+09:00  INFO 20200 --- [55g.com-front] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms

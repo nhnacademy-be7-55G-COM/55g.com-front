@@ -72,10 +72,10 @@
 
     if (password !== confirmPassword || password === "" || confirmPassword === "") {
       passwordError.style.display = "block";
-      submitBtn.disabled = true;  // 버튼 비활성화
+      submitBtn.disabled = true;
     } else {
       passwordError.style.display = "none";
-      submitBtn.disabled = false; // 버튼 활성화
+      submitBtn.disabled = false;
     }
   }
 
@@ -83,10 +83,8 @@
     const phoneInput = document.getElementById("phone");
     const phoneError = document.getElementById("phoneError");
 
-    // 숫자만 남기고 제거
     let phoneValue = phoneInput.value.replace(/[^0-9]/g, '');
 
-    // 010으로 시작하는지 확인하고 형식에 맞게 변환
     if (phoneValue.startsWith("010")) {
       if (phoneValue.length <= 3) {
         phoneInput.value = phoneValue;
@@ -97,11 +95,11 @@
             7, 11)}`;
       }
     } else {
-      phoneError.style.display = "block";  // 010으로 시작하지 않는 경우 오류 메시지 표시
+      phoneError.style.display = "block";
       return;
     }
 
-    phoneError.style.display = (phoneValue.length === 11) ? "none" : "block";  // 11자리가 되면 오류 메시지 숨김
+    phoneError.style.display = (phoneValue.length === 11) ? "none" : "block";
   }
 
   const today = new Date().toISOString().split("T")[0];
