@@ -30,6 +30,7 @@ eureka:
       prefer-ip-address: true
       lease-renewal-interval-in-seconds: 30
       lease-expiration-duration-in-seconds: 90
+    enabled: false
 
 ---
 # on profile 'live'
@@ -37,7 +38,6 @@ spring:
   config:
     activate:
       on-profile: live
-
 55g:
   log:
     path: /logs/live/front
@@ -48,12 +48,19 @@ logging:
   logback:
     rollingpolicy:
       max-history: 100
-      file-name-pattern: ${55g.log.path}/front-live-%d{yyyy-MM-dd_HH:mm}.%i.log
+      file-name-pattern: ${55g.log.path}/front-live-%d{yyyy-MM-dd}.%i.log
       max-file-size: 100KB
   level:
     root: info
     shop.S5G.shop: info
 
+eureka-server:
+  postfix: live
+  port: 8761
+
+eureka:
+  client:
+    enabled: true
 ---
 # on profile 'dev'
 spring:
@@ -80,6 +87,13 @@ logging:
     root: debug
     shop.S5G.shop: trace
 
+eureka-server:
+  postfix: dev
+  port: 8762
+
+eureka:
+  client:
+    enabled: true
 ---
 # on profile 'docker'
 spring:
