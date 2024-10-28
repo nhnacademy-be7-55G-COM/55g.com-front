@@ -41,17 +41,17 @@
       <input type="email" class="form-control" id="email" name="email" required>
     </div>
     <div class="mb-3">
-      <label for="phone" class="form-label" style="color: var(--dark-color); font-weight: 600;">핸드폰
+      <label for="phoneNumber" class="form-label" style="color: var(--dark-color); font-weight: 600;">핸드폰
         번호</label>
-      <input type="tel" class="form-control" id="phone" name="phone" placeholder="010-0000-0000"
+      <input type="tel" class="form-control" id="phoneNumber" name="phoneNumber" placeholder="010-0000-0000"
              required oninput="formatPhoneNumber()">
       <div id="phoneError" style="color: red; font-size: 0.9rem; display: none;">핸드폰 번호는
         '010-0000-0000' 형식으로 입력해야 합니다.
       </div>
     </div>
     <div class="mb-3">
-      <label for="birthdate" class="form-label" style="color: var(--dark-color); font-weight: 600;">생일</label>
-      <input type="date" class="form-control" id="birthdate" name="birthdate" required min="1900-01-01" max="2024-12-31">
+      <label for="birthDate" class="form-label" style="color: var(--dark-color); font-weight: 600;">생일</label>
+      <input type="date" class="form-control" id="birthDate" name="birthDate" required min="1900-01-01" max="2024-12-31">
     </div>
     <button type="submit" id="submitBtn" class="btn btn-primary w-100"
             style="--bs-btn-bg: var(--accent-color); --bs-btn-hover-bg: var(--dark-color);"
@@ -80,7 +80,7 @@
   }
 
   function formatPhoneNumber() {
-    const phoneInput = document.getElementById("phone");
+    const phoneInput = document.getElementById("phoneNumber");
     const phoneError = document.getElementById("phoneError");
 
     let phoneValue = phoneInput.value.replace(/[^0-9]/g, '');
@@ -103,7 +103,7 @@
   }
 
   const today = new Date().toISOString().split("T")[0];
-  document.getElementById("birthdate").setAttribute("max", today);
+  document.getElementById("birthDate").setAttribute("max", today);
 
 </script>
 </body>
