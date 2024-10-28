@@ -1,22 +1,46 @@
 spring:
   application:
-    name: 55g.com-front
+    name: front
 
   mvc:
     static-path-pattern: /static/**
 
-55g:
-  log:
-    path: .
-logging:
-  file:
-    name: ${55g.log.path}/front.log
+server:
+  port: 8080
+
+eureka-server:
+  host: localhost
+  port: 8761
+  postfix: default
+
+eureka:
+  user:
+    name: admin
+    password: 1234
+
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://${eureka.user.name}:${eureka.user.password}@${eureka-server.host}:${eureka-server.port}/eureka
+
+    registry-fetch-interval-seconds: 30
+
+    instance:
+      prefer-ip-address: true
+      lease-renewal-interval-in-seconds: 30
+      lease-expiration-duration-in-seconds: 90
+
 ---
 # on profile 'live'
 spring:
   config:
     activate:
       on-profile: live
+
+55g:
+  log:
+    path: /logs/live/front
 
 logging:
   file:
@@ -29,15 +53,21 @@ logging:
   level:
     root: info
     shop.S5G.shop: info
-55g:
-  log:
-    path: /logs/live/front
+
 ---
 # on profile 'dev'
 spring:
   config:
     activate:
       on-profile: dev
+
+server:
+  port: 8580
+
+55g:
+  log:
+    path: /logs/dev/front
+
 logging:
   file:
     name: ${55g.log.path}/front-dev.log
@@ -50,12 +80,17 @@ logging:
     root: debug
     shop.S5G.shop: trace
 
-55g:
-  log:
-    path: /logs/dev/front
 ---
 # on profile 'docker'
 spring:
   config:
     activate:
       on-profile: docker
+
+eureka-server:
+  host: 55g-eureka
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${eureka.user.name}:${eureka.user.password}@${eureka-server.host}-${eureka-server.postfix}:${eureka-server.port}/eureka
