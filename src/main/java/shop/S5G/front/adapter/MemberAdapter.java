@@ -8,7 +8,7 @@ import shop.S5G.front.dto.MemberRegistrationRequestDto;
 import shop.S5G.front.dto.MessageDto;
 
 //TODO 추후 유레카 등록 필요
-@FeignClient(name = "shop-service", url = "http://localhost:8820")
+@FeignClient(value = "shop-service")
 public interface MemberAdapter {
 
     @PostMapping("/api/shop/member")
