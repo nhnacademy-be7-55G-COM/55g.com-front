@@ -1,74 +1,16 @@
 spring:
+  profiles:
+    active: live
+
   application:
     name: front
 
   mvc:
     static-path-pattern: /static/**
 
-server:
-  port: 8080
-
-gateway:
-  url: http://localhost:8000
-
----
-# on profile 'live'
-spring:
   config:
-    activate:
-      on-profile: live
+    import: configserver:http://admin:55g.com7@localhost:9000
 
-gateway:
-  url: 55g-gateway-live:8000
-
-55g:
-  log:
-    path: /logs/live/front
-
-logging:
-  file:
-    name: ${55g.log.path}/front-live.log
-  logback:
-    rollingpolicy:
-      max-history: 100
-      file-name-pattern: ${55g.log.path}/front-live-%d{yyyy-MM-dd}.%i.log
-      max-file-size: 100KB
-  level:
-    root: info
-    shop.S5G.shop: info
-
----
-# on profile 'dev'
-spring:
-  config:
-    activate:
-      on-profile: dev
-
-server:
-  port: 8580
-
-gateway:
-  url: 55g-gateway-dev:8050
-
-55g:
-  log:
-    path: /logs/dev/front
-
-logging:
-  file:
-    name: ${55g.log.path}/front-dev.log
-  logback:
-    rollingpolicy:
-      max-history: 100
-      file-name-pattern: ${55g.log.path}/front-dev-%d{yyyy-MM-dd}.%i.log
-      max-file-size: 100KB
-  level:
-    root: debug
-    shop.S5G.shop: trace
-
----
-# on profile 'docker'
-spring:
-  config:
-    activate:
-      on-profile: docker
+  cloud:
+    config:
+      label: main
