@@ -54,10 +54,6 @@ logging:
     root: info
     shop.S5G.shop: info
 
-eureka-server:
-  postfix: live
-  port: 8761
-
 eureka:
   client:
     enabled: true
@@ -87,10 +83,6 @@ logging:
     root: debug
     shop.S5G.shop: trace
 
-eureka-server:
-  postfix: dev
-  port: 8762
-
 eureka:
   client:
     enabled: true
@@ -100,9 +92,6 @@ spring:
   config:
     activate:
       on-profile: docker
-
-eureka-server:
-  host: 55g-eureka
 
 eureka:
   client:
