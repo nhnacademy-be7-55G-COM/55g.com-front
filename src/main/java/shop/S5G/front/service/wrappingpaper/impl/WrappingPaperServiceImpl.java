@@ -8,12 +8,12 @@ import org.springframework.stereotype.Service;
 import shop.S5G.front.adapter.WrappingPaperAdapter;
 import shop.S5G.front.dto.wrappingpaper.WrappingPaperRequestDto;
 import shop.S5G.front.dto.wrappingpaper.WrappingPaperResponseDto;
+import shop.S5G.front.service.wrappingpaper.WrappingPaperService;
 
 @RequiredArgsConstructor
 @Service
 @Slf4j
-public class WrappingPaperServiceImpl implements
-    shop.S5G.front.service.wrappingpaper.WrappingPaperService {
+public class WrappingPaperServiceImpl implements WrappingPaperService {
     private final WrappingPaperAdapter wrappingPaperAdapter;
 
     @Override

@@ -20,9 +20,10 @@ public class PurchaseController {
     public ModelAndView getPurchaseView(/* User Auth */) {
         ModelAndView mv = new ModelAndView("create-order");
         log.trace("Getting shopping cart...");
-        // 장바구니 가져오는 로직.
+        // TODO: 장바구니 가져오는 로직.
         // 포장지 가져오는 로직.
         CompletableFuture<List<WrappingPaperResponseDto>> wrapsFuture = wrappingPaperService.fetchAllPapersAsync();
+        // TODO: 적립정책 가져오는 로직.
         mv.addObject("wrappingPaperList", wrapsFuture.join());
         return mv;
     }
