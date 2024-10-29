@@ -10,6 +10,6 @@ import shop.S5G.front.dto.MessageDto;
 @FeignClient(value = "couponPolicy", url = "${gateway.url}")
 public interface CouponPolicyAdapter {
 
-    @PostMapping("/api/admin/coupons/policy")
+    @PostMapping("/api/shop/admin/coupons/policy")
     ResponseEntity<MessageDto> createCouponPolicy(@RequestBody CouponPolicyRegisterRequestDto couponPolicyRegisterRequestDto);
 }
