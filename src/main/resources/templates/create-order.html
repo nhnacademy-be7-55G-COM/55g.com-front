@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="https://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>주문 작성</title>
+  <th:block th:replace="~{fragments/head :: headTemplate}"></th:block>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <style>
+    #section {
+      min-height: calc(100vh - 5rem);
+    }
+    footer {
+      height: 5rem;
+      border-top: 2px solid black;
+    }
+  </style>
+</head>
+
+<body
+    style="background-color: var(--light-color); font-family: var(--body-font),serif; color: var(--body-text-color); height: 100vh">
+  <div class="container" id="section">
+    <div id="order-page">
+      <!-- 주문서 -->
+      <h3>주문서</h3>
+      <hr />
+      <h4 class="mb-2">상품확인</h4>
+      <table class="table mb-2">
+        <thead>
+        <tr>
+          <th class="w-50" scope="col">상품명</th>
+          <th scope="col">정가</th>
+          <th scope="col">수량</th>
+          <th scope="col">할인금액</th>
+          <th scope="col">합계</th>
+          <th scope="col">포장여부</th>
+<!--            <th scope="col">배송일?</th>-->
+        </tr>
+        </thead>
+        <tbody id="shoppingCart">
+        <th:block th:each="cart: ${cartList}">
+        <tr th:data-book-id="${cart.id}">
+          <td th:text="${cart.title}"></td>
+          <td th:text="${cart.price}"></td>
+          <td th:text="${cart.quantity}"></td>
+          <td th:text="${cart.discountPrice}"></td>
+          <td th:text="${cart.totalPrice}"></td>
+          <td>
+            <div>
+              <select class="form-control-sm">
+                <option th:value="0" data-cost="0" selected>포장안함</option>
+                <th:block th:each="paper: ${wrappingPapaerList}">
+                <option th:value="${paper.id}" th:text="${paper.name}" th:data-cost="${paper.price}"></option>
+                </th:block>
+              </select>
+            </div>
+          </td>
+        </tr>
+        </th:block>
+        </tbody>
+      </table>
+      <h4 class="mb-2">배송주소</h4>
+      <div id="receiverInfo">
+        <div class="mb-2">
+          <label for="inputCustomerName" class="form-label">주문인</label>
+          <input id="inputCustomerName" class="form-control" type="text" name="customerName" required>
+        </div>
+        <div class="mb-2">
+          <label for="inputReceiverName" class="form-label">받는 사람</label>
+          <input id="inputReceiverName" class="form-control" type="text" name="receiverName" required>
+        </div>
+        <div class="mb-2">
+          주소 적는 곳
+        </div>
+        <div>
+          <label for="inputPhoneNumber" class="form-label">휴대전화번호</label>
+          <input id="inputPhoneNumber" class="form-control" type="text" name="phoneNumber" required>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer class="d-flex flex-row">
+    <div id="description"></div>
+    <div id="total-price"></div>
+    <div>
+      <button id="purchaseButton">구매하기</button>
+    </div>
+  </footer>
+</body>
+</html>

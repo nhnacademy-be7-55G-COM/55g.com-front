@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-<div th:replace="~{fragments/head}"></div>
+<head>
+  <th:block th:replace="~{fragments/head :: headTemplate}"></th:block>
+  <title>로그인</title>
+  <meta charset="utf-8" />
+</head>
 
 <body
     style="background-color: var(--light-color); font-family: var(--body-font),serif; color: var(--body-text-color);">
