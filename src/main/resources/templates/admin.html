@@ -122,27 +122,26 @@
       </div>
       <div id="coupon-policy-form" style="display:none; text-align: center;">
         <h2>쿠폰 정책 생성</h2>
-        <form style="display: inline-block; width: 100%; max-width: 400px;">
+        <form action="/api/admin/coupons/policy" method="POST" style="display: inline-block; width: 100%; max-width: 400px;">
           <div class="mb-3">
             <label for="condition" class="form-label" style="text-align: left; display: block; margin-bottom: 2px; margin-left: 25px;">조건</label>
-            <input type="text" class="form-control small-input" id="condition" placeholder="예: 20000만원" style="margin: 0 auto; text-align: left; padding-left: 10px;">
+            <input type="text" class="form-control small-input" id="condition" name="condition" placeholder="예: 20000만원" style="margin: 0 auto; text-align: left; padding-left: 10px;" required>
           </div>
           <div class="mb-3">
             <label for="discount-value" class="form-label" style="text-align: left; display: block; margin-bottom: 2px; margin-left: 25px;">할인</label>
-            <input type="text" class="form-control small-input" id="discount-value" placeholder="예: 5%" style="margin: 0 auto; text-align: left; padding-left: 10px;">
+            <input type="text" class="form-control small-input" id="discount-value" name="discountValue" placeholder="예: 5%" style="margin: 0 auto; text-align: left; padding-left: 10px;" required>
           </div>
           <div class="mb-3">
             <label for="max-discount" class="form-label" style="text-align: left; display: block; margin-bottom: 2px; margin-left: 25px;">최대 할인</label>
-            <input type="text" class="form-control small-input" id="max-discount" placeholder="예: 2000원" style="margin: 0 auto; text-align: left; padding-left: 10px;">
+            <input type="text" class="form-control small-input" id="max-discount" name="maxDiscount" placeholder="예: 2000원" style="margin: 0 auto; text-align: left; padding-left: 10px;" required>
           </div>
           <div class="mb-3">
             <label for="duration" class="form-label" style="text-align: left; display: block; margin-bottom: 2px; margin-left: 25px;">기간</label>
-            <input type="text" class="form-control small-input" id="duration" placeholder="예: 30일" style="margin: 0 auto; text-align: left; padding-left: 10px;">
+            <input type="text" class="form-control small-input" id="duration" name="duration" placeholder="예: 30일" style="margin: 0 auto; text-align: left; padding-left: 10px;" required>
           </div>
           <button type="submit" class="styled-button" style="display: block; margin: 0 auto;">생성</button>
         </form>
       </div>
-
 
     </main>
   </div>
