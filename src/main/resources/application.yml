@@ -18,6 +18,9 @@ spring:
     activate:
       on-profile: live
 
+gateway:
+  url: 55g-gateway-live:8000
+
 55g:
   log:
     path: /logs/live/front
@@ -28,7 +31,7 @@ logging:
   logback:
     rollingpolicy:
       max-history: 100
-      file-name-pattern: ${55g.log.path}/front-live-%d{yyyy-MM-dd_HH:mm}.%i.log
+      file-name-pattern: ${55g.log.path}/front-live-%d{yyyy-MM-dd}.%i.log
       max-file-size: 100KB
   level:
     root: info
@@ -45,7 +48,7 @@ server:
   port: 8580
 
 gateway:
-  url:
+  url: 55g-gateway-dev:8050
 
 55g:
   log:
@@ -69,14 +72,3 @@ spring:
   config:
     activate:
       on-profile: docker
-
-gateway:
-  url:
-
-eureka-server:
-  host: 55g-eureka
-
-eureka:
-  client:
-    service-url:
-      defaultZone: http://${eureka.user.name}:${eureka.user.password}@${eureka-server.host}-${eureka-server.postfix}:${eureka-server.port}/eureka
