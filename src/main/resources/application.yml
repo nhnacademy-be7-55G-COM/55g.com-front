@@ -8,28 +8,8 @@ spring:
 server:
   port: 8080
 
-eureka-server:
-  host: localhost
-  port: 8761
-  postfix: default
-
-eureka:
-  user:
-    name: admin
-    password: 1234
-
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    service-url:
-      defaultZone: http://${eureka.user.name}:${eureka.user.password}@${eureka-server.host}:${eureka-server.port}/eureka
-
-    registry-fetch-interval-seconds: 30
-
-    instance:
-      prefer-ip-address: true
-      lease-renewal-interval-in-seconds: 30
-      lease-expiration-duration-in-seconds: 90
+gateway:
+  url: http://localhost:8000
 
 ---
 # on profile 'live'
@@ -64,6 +44,9 @@ spring:
 server:
   port: 8580
 
+gateway:
+  url:
+
 55g:
   log:
     path: /logs/dev/front
@@ -86,6 +69,9 @@ spring:
   config:
     activate:
       on-profile: docker
+
+gateway:
+  url:
 
 eureka-server:
   host: 55g-eureka
