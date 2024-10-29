@@ -1,6 +1,7 @@
 package shop.S5G.front.controller;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,7 @@ public class PurchaseController {
         CompletableFuture<List<WrappingPaperResponseDto>> wrapsFuture = wrappingPaperService.fetchAllPapersAsync();
         // TODO: 적립정책 가져오는 로직.
         mv.addObject("wrappingPaperList", wrapsFuture.join());
+        mv.addObject("customerKey", UUID.randomUUID().toString());
         return mv;
     }
 }
