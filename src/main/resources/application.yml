@@ -1,7 +1,4 @@
 spring:
-  profiles:
-    active: default
-
   application:
     name: front
 
@@ -19,6 +16,7 @@ gateway:
   url: http://localhost:8000
 
 ---
+# on profile 'live'
 spring:
   config:
     activate:
@@ -27,9 +25,28 @@ spring:
     import: optional:configserver:http://55g-config-live:9000
 
 ---
+# on profile 'dev'
 spring:
   config:
     activate:
       on-profile: dev
 
     import: optional:configserver:http://55g-config-dev:9050
+
+---
+# on profile 'docker'
+spring:
+  config:
+    activate:
+      on-profile: docker
+
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+
+logging:
+  level:
+    root: info
+    shop.S5G.front: trace
