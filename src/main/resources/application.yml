@@ -35,7 +35,7 @@ logging:
       max-file-size: 100KB
   level:
     root: info
-    shop.S5G.shop: info
+    shop.S5G.front: info
 
 ---
 # on profile 'dev'
@@ -64,7 +64,7 @@ logging:
       max-file-size: 100KB
   level:
     root: debug
-    shop.S5G.shop: trace
+    shop.S5G.front: trace
 
 ---
 # on profile 'docker'
@@ -72,3 +72,13 @@ spring:
   config:
     activate:
       on-profile: docker
+
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+logging:
+  level:
+    root: info
+    shop.S5G.front: trace
