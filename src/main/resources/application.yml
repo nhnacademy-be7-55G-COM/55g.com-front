@@ -5,8 +5,12 @@ spring:
   mvc:
     static-path-pattern: /static/**
 
-server:
-  port: 8080
+  config:
+    import: optional:configserver:http://localhost:9000
+
+  cloud:
+    config:
+      label: main
 
 gateway:
   url: http://localhost:8000
@@ -18,24 +22,7 @@ spring:
     activate:
       on-profile: live
 
-gateway:
-  url: 55g-gateway-live:8000
-
-55g:
-  log:
-    path: /logs/live/front
-
-logging:
-  file:
-    name: ${55g.log.path}/front-live.log
-  logback:
-    rollingpolicy:
-      max-history: 100
-      file-name-pattern: ${55g.log.path}/front-live-%d{yyyy-MM-dd}.%i.log
-      max-file-size: 100KB
-  level:
-    root: info
-    shop.S5G.front: info
+    import: optional:configserver:http://55g-config-live:9000
 
 ---
 # on profile 'dev'
@@ -44,27 +31,7 @@ spring:
     activate:
       on-profile: dev
 
-server:
-  port: 8580
-
-gateway:
-  url: 55g-gateway-dev:8050
-
-55g:
-  log:
-    path: /logs/dev/front
-
-logging:
-  file:
-    name: ${55g.log.path}/front-dev.log
-  logback:
-    rollingpolicy:
-      max-history: 100
-      file-name-pattern: ${55g.log.path}/front-dev-%d{yyyy-MM-dd}.%i.log
-      max-file-size: 100KB
-  level:
-    root: debug
-    shop.S5G.front: trace
+    import: optional:configserver:http://55g-config-dev:9050
 
 ---
 # on profile 'docker'
@@ -78,6 +45,7 @@ spring:
   config:
     activate:
       on-profile: test
+
 logging:
   level:
     root: info
