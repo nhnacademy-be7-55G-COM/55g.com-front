@@ -49,30 +49,8 @@
       </div>
 <!--      토스페이먼츠 결제-->
       <div id="modal-body-payment">
-        <div id="payment-method"></div>
+        <div style="background-color: white" id="payment-method">결제중...</div>
         <div id="payment-agreement"></div>
-        <script th:inline="javascript">
-          paymentReady();
-
-          async function paymentReady() {
-            const clientKey = 'test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm';
-            const tossPayment = TossPayments(clientKey);
-            const customerKey = [[${customerKey}]];
-            const widgets = tossPayment.widgets({customerKey});
-
-            await widgets.setAmount({
-              currency: "KRW",
-              value: 50000
-            });
-            await Promise.all([
-                widgets.renderPaymentMethods({
-                  selector: "#payment-method",
-                  variantKey: "DEFAULT"
-                }),
-                widgets.renderAgreement({selector: "#payment-agreement", variantKey: "AGREEMENT"})
-            ]);
-          };
-        </script>
         <button class="button" id="payment-button">결제하기</button>
         <script>
           document.querySelector("#payment-button").addEventListener('click', async () => {
@@ -148,11 +126,58 @@
     <div id="description"></div>
     <div id="total-price"></div>
     <div class="d-flex">
-      <button class="m-0" id="purchaseButton" onclick="purchaseHandler()">구매하기</button>
+      <button class="m-0" id="purchaseButton" onclick="paymentReady()">구매하기</button>
       <script>
         const purchaseHandler = () => {
           document.querySelector("#payment-background").style.display = 'block';
         }
+
+      </script>
+      <script th:inline="javascript">
+        // paymentReady();
+
+        async function paymentReady() {
+          const clientKey = [[${clientKey}]];
+          // const clientKey = 'test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm';
+          const tossPayments = TossPayments(clientKey);
+          const customerKey = [[${customerKey}]];
+
+          const payment = tossPayments.payment({ customerKey });
+          await payment.requestPayment({
+            method: 'CARD',
+            amount: {
+              currency: "KRW",
+              value: 5000
+            },
+            orderId: "eRcvSDIfEdFji2jIJ234",
+            orderName: "테스트 결제",
+            successUrl: window.location.origin + "/payment/success",
+            failUrl: window.location.origin + "/payment/fail",
+            customerEmail: "example@example.org",
+            customerName: "홍길동",
+            customerMobilePhone: "01012345678",
+            card: {
+              useEscrow: false,
+              flowMode: "DEFAULT",
+              useCardPoint: false,
+              useAppCardOnly: false
+            }
+          });
+        }
+        //   const widgets = tossPayment.widgets({customerKey});
+        //
+        //   await widgets.setAmount({
+        //     currency: "KRW",
+        //     value: 5000
+        //   });
+        //   await Promise.all([
+        //       widgets.renderPaymentMethods({
+        //         selector: "#payment-method",
+        //         variantKey: "DEFAULT"
+        //       }),
+        //       widgets.renderAgreement({selector: "#payment-agreement", variantKey: "AGREEMENT"})
+        //   ]);
+        // };
       </script>
     </div>
   </footer>
