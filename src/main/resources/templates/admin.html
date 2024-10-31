@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>관리자 대시보드</title>
+  <link rel="stylesheet" href="style.css">
+  <div th:replace="~{fragments/head}"></div>
+  <style>
+    .sidebar {
+      margin-top: 15px;
+      border-right: 1px solid #E0E0E0;
+    }
+    .small-input {
+      width: 350px; /* 원하는 너비로 설정 */
+      max-width: 100%; /* 부모 요소의 크기에 맞게 반응형으로 설정 */
+    }
+    .styled-button {
+      background-color: #8B4513; /* 갈색 배경색 */
+      color: white; /* 텍스트 색상 */
+      padding: 8px 16px; /* 버튼 안쪽 여백 */
+      font-size: 16px; /* 텍스트 크기 */
+      border: none; /* 기본 테두리 제거 */
+      border-radius: 8px; /* 모서리 둥글기 */
+      cursor: pointer; /* 마우스 포인터 변경 */
+      transition: background-color 0.3s, transform 0.2s; /* 효과 추가 */
+      margin-top: 8px; /* 버튼 위쪽 여백 */
+      margin-bottom: 0; /* 버튼 아래 여백 없애기 */
+      width: 100%; /* 버튼 가로 길이 폼 너비만큼 */
+      max-width: 150px; /* 최대 길이 설정 */
+    }
+
+    .styled-button:hover {
+      background-color: #A0522D; /* 호버 시 배경색 변경 */
+      transform: scale(1.05); /* 살짝 확대 */
+    }
+
+    .styled-button:active {
+      background-color: #5C4033; /* 클릭 시 배경색 */
+      transform: scale(0.98); /* 클릭 시 살짝 축소 */
+    }
+  </style>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body style="background-color: var(--light-color); font-family: var(--body-font), serif; color: var(--body-text-color);">
+<!-- 관리자 헤더 -->
+<div th:replace="~{fragments/header}"></div>
+<div class="container-fluid">
+  <div class="row">
+    <!-- 사이드바 -->
+    <nav class="col-md-3 col-lg-2 d-md-block sidebar">
+      <div class="position-sticky">
+        <h3 class="sidebar-heading p-3">관리자 메뉴</h3>
+        <ul class="nav flex-column">
+          <li class="nav-item border-bottom">
+            <a class="nav-link active" aria-current="page" href="#" data-url="/admin/dashboard">포인트</a>
+          </li>
+          <li class="nav-item border-bottom">
+            <a class="nav-link" href="#" data-url="/admin/coupons">쿠폰</a>
+          </li>
+          <li class="nav-item border-bottom">
+            <a class="nav-link" href="#" data-url="/admin/inquiries">배송비 설정</a>
+          </li>
+          <li class="nav-item border-bottom">
+            <a class="nav-link" href="#" data-url="/admin/reports">주문 내역</a>
+          </li>
+          <li class="nav-item border-bottom">
+            <a class="nav-link" href="#" data-url="/admin/settings">설정</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <!-- 메인 콘텐츠 영역 -->
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+      <div id="content-area">
+        <!-- 기본 콘텐츠 또는 로딩 스피너 여기에 -->
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+          <h1 class="h2">대시보드</h1>
+          <div class="btn-toolbar mb-2 mb-md-0">
+            <div class="btn-group me-2">
+              <button type="button" class="btn btn-sm btn-outline-secondary">내보내기</button>
+              <button type="button" class="btn btn-sm btn-outline-secondary">공유</button>
+            </div>
+            <button type="button" class="btn btn-sm btn-primary">새로운 보고서</button>
+          </div>
+        </div>
+        <!-- 대시보드 카드 섹션 -->
+        <div class="row">
+          <div class="col-md-4">
+            <div class="card mb-4 shadow-sm">
+              <div class="card-body">
+                <h5 class="card-title">사용자 수</h5>
+                <p class="card-text">현재 등록된 사용자: 123명</p>
+                <a href="/admin/users" class="btn btn-primary btn-sm">자세히 보기</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card mb-4 shadow-sm">
+              <div class="card-body">
+                <h5 class="card-title">문의 건수</h5>
+                <p class="card-text">이번 달 접수된 문의: 45건</p>
+                <a href="/admin/inquiries" class="btn btn-primary btn-sm">자세히 보기</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card mb-4 shadow-sm">
+              <div class="card-body">
+                <h5 class="card-title">보고서</h5>
+                <p class="card-text">생성된 보고서 수: 8개</p>
+                <a href="/admin/reports" class="btn btn-primary btn-sm">자세히 보기</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- 차트 섹션 -->
+        <div class="my-5">
+          <h4>사용자 활동 차트</h4>
+          <canvas id="userActivityChart" width="400" height="200"></canvas>
+        </div>
+      </div>
+      <div id="coupon-policy-form" style="display:none; text-align: center;">
+        <h2>쿠폰 정책 생성</h2>
+        <form action="/api/admin/coupons/policy" method="POST" style="display: inline-block; width: 100%; max-width: 400px;">
+          <div class="mb-3">
+            <label for="condition" class="form-label" style="text-align: left; display: block; margin-bottom: 2px; margin-left: 25px;">조건</label>
+            <input type="text" class="form-control small-input" id="condition" name="condition" placeholder="예: 20000만원" style="margin: 0 auto; text-align: left; padding-left: 10px;" required>
+          </div>
+          <div class="mb-3">
+            <label for="discount-value" class="form-label" style="text-align: left; display: block; margin-bottom: 2px; margin-left: 25px;">할인</label>
+            <input type="text" class="form-control small-input" id="discount-value" name="discountValue" placeholder="예: 5%" style="margin: 0 auto; text-align: left; padding-left: 10px;" required>
+          </div>
+          <div class="mb-3">
+            <label for="max-discount" class="form-label" style="text-align: left; display: block; margin-bottom: 2px; margin-left: 25px;">최대 할인</label>
+            <input type="text" class="form-control small-input" id="max-discount" name="maxDiscount" placeholder="예: 2000원" style="margin: 0 auto; text-align: left; padding-left: 10px;" required>
+          </div>
+          <div class="mb-3">
+            <label for="duration" class="form-label" style="text-align: left; display: block; margin-bottom: 2px; margin-left: 25px;">기간</label>
+            <input type="text" class="form-control small-input" id="duration" name="duration" placeholder="예: 30일" style="margin: 0 auto; text-align: left; padding-left: 10px;" required>
+          </div>
+          <button type="submit" class="styled-button" style="display: block; margin: 0 auto;">생성</button>
+        </form>
+      </div>
+
+    </main>
+  </div>
+</div>
+<div th:replace="~{fragments/admin-footer}"></div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  $(document).ready(function() {
+    $('.nav-link').on('click', function(e) {
+      e.preventDefault();
+      var url = $(this).data('url');
+      if(url === '/admin/coupons') {
+        $('#content-area').hide();
+        $('#coupon-policy-form').show();
+      } else {
+        $('#coupon-policy-form').hide();
+        $('#content-area').load(url).show();
+      }
+    });
+  });
+
+  // 예시 차트 스크립트
+  var ctx = document.getElementById('userActivityChart').getContext('2d');
+  var userActivityChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['1월', '2월', '3월', '4월', '5월', '6월'],
+      datasets: [{
+        label: '활동 수',
+        data: [10, 20, 15, 25, 30, 35],
+        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'top',
+        }
+      }
+    }
+  });
+</script>
+
+
+</body>
+</html>

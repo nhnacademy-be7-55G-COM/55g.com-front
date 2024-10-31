@@ -1,6 +1,64 @@
 spring:
   application:
-    name: 55g.com-front
+    name: front
 
   mvc:
     static-path-pattern: /static/**
+
+  config:
+    import: optional:configserver:http://localhost:9000
+
+  cloud:
+    config:
+      label: main
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+gateway:
+  url: http://localhost:8000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh,busrefresh
+
+---
+# on profile 'live'
+spring:
+  config:
+    activate:
+      on-profile: live
+
+    import: optional:configserver:http://55g-config-live:9000
+
+---
+# on profile 'dev'
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+    import: optional:configserver:http://55g-config-dev:9050
+
+---
+# on profile 'docker'
+spring:
+  config:
+    activate:
+      on-profile: docker
+
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+
+logging:
+  level:
+    root: info
+    shop.S5G.front: trace

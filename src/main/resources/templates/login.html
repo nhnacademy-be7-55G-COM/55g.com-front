@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <th:block th:replace="~{fragments/head :: headTemplate}"></th:block>
+  <title>로그인</title>
+  <meta charset="utf-8" />
+</head>
+
+<body
+    style="background-color: var(--light-color); font-family: var(--body-font),serif; color: var(--body-text-color);">
+<div th:replace="~{fragments/header}"></div>
+<main class="container my-5 mx-auto" style="max-width: 400px;">
+  <h2 class="text-center" style="color: var(--dark-color); font-family: var(--heading-font),serif;">
+    Login</h2>
+  <form action="/login" method="post">
+    <div class="mb-3">
+      <label for="loginId" class="form-label" style="font-weight: 600;">아이디</label>
+      <input type="text" class="form-control" id="loginId" name="loginId" required>
+    </div>
+    <div class="mb-3">
+      <label for="password" class="form-label" style="font-weight: 600;">비밀번호</label>
+      <input type="password" class="form-control" id="password" name="password" required>
+    </div>
+    <button type="submit" class="btn btn-common w-100">Login</button>
+  </form>
+  <div class="text-center mt-3">
+    <a href="/register" class="btn btn-outline-primary btn-sm mt-2">회원가입</a>
+    <a href="/forgot-password" class="btn btn-outline-secondary btn-sm mt-2">비밀번호 찾기</a>
+  </div>
+</main>
+<div th:replace="~{fragments/footer}"></div>
+</body>
+</html>

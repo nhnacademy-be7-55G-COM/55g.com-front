@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <title>회원가입</title>
+  <meta charset="utf-8">
+  <th:block th:replace="~{fragments/head :: headTemplate}"></th:block>
+</head>
+
+<body
+    style="background-color: var(--light-color); font-family: var(--body-font),serif; color: var(--body-text-color);">
+
+<div th:replace="~{fragments/header}"></div>
+
+<main class="container my-5 mx-auto" style="max-width: 500px;">
+  <h2 class="text-center mb-4"
+      style="color: var(--dark-color); font-family: var(--heading-font),serif;">Sign Up</h2>
+  <form action="/register" method="post">
+    <div class="mb-3">
+      <label for="loginId" class="form-label" style="color: var(--dark-color); font-weight: 600;">아이디</label>
+      <input type="text" class="form-control" id="loginId" name="loginId" required>
+    </div>
+    <div class="mb-3">
+      <label for="password" class="form-label" style="color: var(--dark-color); font-weight: 600;">비밀번호</label>
+      <input type="password" class="form-control" id="password" name="password" required
+             oninput="checkPasswordMatch()">
+    </div>
+    <div class="mb-3">
+      <label for="confirmPassword" class="form-label"
+             style="color: var(--dark-color); font-weight: 600;">비밀번호 확인</label>
+      <input type="password" class="form-control" id="confirmPassword" name="confirmPassword"
+             required oninput="checkPasswordMatch()">
+      <div id="passwordError" style="color: red; font-size: 0.9rem; display: none;">비밀번호가 일치하지
+        않습니다.
+      </div>
+    </div>
+    <div class="mb-3">
+      <label for="name" class="form-label"
+             style="color: var(--dark-color); font-weight: 600;">이름</label>
+      <input type="text" class="form-control" id="name" name="name" required>
+    </div>
+    <div class="mb-3">
+      <label for="email" class="form-label"
+             style="color: var(--dark-color); font-weight: 600;">이메일</label>
+      <input type="email" class="form-control" id="email" name="email" required>
+    </div>
+    <div class="mb-3">
+      <label for="phoneNumber" class="form-label" style="color: var(--dark-color); font-weight: 600;">핸드폰
+        번호</label>
+      <input type="tel" class="form-control" id="phoneNumber" name="phoneNumber" placeholder="010-0000-0000"
+             required oninput="formatPhoneNumber()">
+      <div id="phoneError" style="color: red; font-size: 0.9rem; display: none;">핸드폰 번호는
+        '010-0000-0000' 형식으로 입력해야 합니다.
+      </div>
+    </div>
+    <div class="mb-3">
+      <label for="birthDate" class="form-label" style="color: var(--dark-color); font-weight: 600;">생일</label>
+      <input type="date" class="form-control" id="birthDate" name="birthDate" required min="1900-01-01" max="2024-12-31">
+    </div>
+    <button type="submit" id="submitBtn" class="btn btn-primary w-100"
+            style="--bs-btn-bg: var(--accent-color); --bs-btn-hover-bg: var(--dark-color);"
+            disabled>회원가입
+    </button>
+
+  </form>
+</main>
+
+<div th:replace="~{fragments/footer}"></div>
+
+<script>
+  function checkPasswordMatch() {
+    const password = document.getElementById("password").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
+    const passwordError = document.getElementById("passwordError");
+    const submitBtn = document.getElementById("submitBtn");
+
+    if (password !== confirmPassword || password === "" || confirmPassword === "") {
+      passwordError.style.display = "block";
+      submitBtn.disabled = true;
+    } else {
+      passwordError.style.display = "none";
+      submitBtn.disabled = false;
+    }
+  }
+
+  function formatPhoneNumber() {
+    const phoneInput = document.getElementById("phoneNumber");
+    const phoneError = document.getElementById("phoneError");
+
+    let phoneValue = phoneInput.value.replace(/[^0-9]/g, '');
+
+    if (phoneValue.startsWith("010")) {
+      if (phoneValue.length <= 3) {
+        phoneInput.value = phoneValue;
+      } else if (phoneValue.length <= 7) {
+        phoneInput.value = `${phoneValue.slice(0, 3)}-${phoneValue.slice(3)}`;
+      } else if (phoneValue.length <= 11) {
+        phoneInput.value = `${phoneValue.slice(0, 3)}-${phoneValue.slice(3, 7)}-${phoneValue.slice(
+            7, 11)}`;
+      }
+    } else {
+      phoneError.style.display = "block";
+      return;
+    }
+
+    phoneError.style.display = (phoneValue.length === 11) ? "none" : "block";
+  }
+
+  const today = new Date().toISOString().split("T")[0];
+  document.getElementById("birthDate").setAttribute("max", today);
+
+</script>
+</body>
+</html>
