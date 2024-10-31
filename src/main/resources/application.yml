@@ -12,8 +12,20 @@ spring:
     config:
       label: main
 
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
 gateway:
   url: http://localhost:8000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh,busrefresh
 
 ---
 # on profile 'live'
