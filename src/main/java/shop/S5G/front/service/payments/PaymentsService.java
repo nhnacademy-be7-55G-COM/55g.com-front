@@ -5,5 +5,5 @@ import shop.S5G.front.dto.MessageDto;
 
 public interface PaymentsService {
 
-    MessageDto confirmPayment(long orderRelationId, Map<String, Object> paymentBody);
+    MessageDto confirmPayment(Map<String, Object> paymentBody);
 }

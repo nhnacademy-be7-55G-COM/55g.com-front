@@ -91,7 +91,7 @@
 <!--          <td>-->
 <!--            <div>-->
 <!--              <select class="form-control-sm">-->
-<!--                <option th:value="0" data-cost="0" selected>포장안함</option>-->
+<!--                <option value="0" data-cost="0" selected>포장안함</option>-->
 <!--                <th:block th:each="paper: ${wrappingPapaerList}">-->
 <!--                <option th:value="${paper.id}" th:text="${paper.name}" th:data-cost="${paper.price}"></option>-->
 <!--                </th:block>-->
@@ -138,7 +138,6 @@
 
         async function paymentReady() {
           const clientKey = [[${clientKey}]];
-          // const clientKey = 'test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm';
           const tossPayments = TossPayments(clientKey);
           const customerKey = [[${customerKey}]];
 
@@ -149,7 +148,7 @@
               currency: "KRW",
               value: 5000
             },
-            orderId: "eRcvSDIfEdFji2jIJ234",
+            orderId: [[${randomOrderId}]],
             orderName: "테스트 결제",
             successUrl: window.location.origin + "/payment/success",
             failUrl: window.location.origin + "/payment/fail",
@@ -164,20 +163,6 @@
             }
           });
         }
-        //   const widgets = tossPayment.widgets({customerKey});
-        //
-        //   await widgets.setAmount({
-        //     currency: "KRW",
-        //     value: 5000
-        //   });
-        //   await Promise.all([
-        //       widgets.renderPaymentMethods({
-        //         selector: "#payment-method",
-        //         variantKey: "DEFAULT"
-        //       }),
-        //       widgets.renderAgreement({selector: "#payment-agreement", variantKey: "AGREEMENT"})
-        //   ]);
-        // };
       </script>
     </div>
   </footer>

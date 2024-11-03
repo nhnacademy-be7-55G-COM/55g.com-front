@@ -13,12 +13,14 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.servlet.ModelAndView;
 import shop.S5G.front.dto.wrappingpaper.WrappingPaperResponseDto;
 import shop.S5G.front.service.wrappingpaper.WrappingPaperService;
+import shop.S5G.front.utils.RandomStringProvider;
 
 @RequiredArgsConstructor
 @Slf4j
 @Controller
 public class PurchaseController {
     private final WrappingPaperService wrappingPaperService;
+    private final RandomStringProvider randomStringProvider;
     private String clientKey;
 
     @Autowired
@@ -31,6 +33,11 @@ public class PurchaseController {
         return clientKey;
     }
 
+    @ModelAttribute("randomOrderId")
+    public String injectRandomString() {
+        return randomStringProvider.nextString();
+    }
+
     @GetMapping("/purchase")
     public ModelAndView getPurchaseView(/* User Auth */) {
         ModelAndView mv = new ModelAndView("create-order");
@@ -40,6 +47,7 @@ public class PurchaseController {
         CompletableFuture<List<WrappingPaperResponseDto>> wrapsFuture = wrappingPaperService.fetchAllPapersAsync();
         // TODO: 적립정책 가져오는 로직.
         mv.addObject("wrappingPaperList", wrapsFuture.join());
+        // TODO: CustomerKey 바꿔야함.
         mv.addObject("customerKey", UUID.randomUUID().toString());
         return mv;
     }
