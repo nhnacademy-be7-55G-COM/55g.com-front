@@ -6,64 +6,110 @@
   <th:block th:replace="~{fragments/head :: headTemplate}"></th:block>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script src="https://js.tosspayments.com/v2/standard"></script>
-  <style>
-    #section {
-      min-height: calc(100vh - 5rem);
+  <script src="http://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+  <script src="/static/js/payment-utils.js"></script>
+  <script th:inline="javascript">
+    const addressSelectors = {
+      zipSelector: '#zipInput',
+      addressSelector: '#addressInput',
+      addressDetailSelector: '#addressDetailInput',
+      addressExtraSelector: '#addressExtraInput'
+    };
+
+    const paymentInfo = {
+      orderId: '',
+      orderName: '',
+      customer: {},
+      method: '',
+      amount: {
+        currency: 'KRW',
+        amount: 0
+      },
+      successUrl: window.location.origin + "/payment/success",
+      failUrl: window.location.origin + "/payment/fail"
+    };
+
+    const requestOrderIdPromise = axios.get('/payment/support/generate-order')
+      .then(response => {
+        if (response.status === 200) {
+          paymentInfo.orderId = response.data;
+        } else {
+          alert('주문 세션 생성에 실패했습니다.');
+          returnToIndex();
+        }
+      });
+
+    const customerInfoPromise = axios.get('/payment/support/customer')
+      .then(response => {
+        if (response.status === 200) {
+          paymentInfo.customer = {
+            key: response.data.key,
+            name: response.data.name,
+            email: response.data.email
+          };
+        } else {
+          alert('사용자 정보를 가져오는데 실패했습니다.');
+          returnToIndex();
+        }
+      });
+
+    const switchPayment = (method) => {
+      paymentInfo.method = method;
+    };
+
+    const addAmount = (value) => {
+      paymentInfo.amount.amount += value;
     }
-    footer {
-      height: 5rem;
-      border-top: 2px solid black;
-    }
-    #payment-background {
-      position: absolute;
-      display: none;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background-color: rgba(0, 0, 0, 0.5);
-    }
-    #payment-modal {
-      position: absolute;
-      min-width: 600px;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
-  </style>
+
+    // document.addEventListener('DOMContentLoaded', () => {
+    //   const cartTable =  document.querySelector('#shoppingCart');
+    //   const cartList = cartTable.querySelectorAll('tr');
+    //   orderName = cartList[0].querySelector('td').innerText;
+    //   if (cartList.length > 1) {
+    //     const totalBooks =
+    //     orderName = `${orderName} 등 ${cartList}권`;
+    //   }
+    // });
+  </script>
+  <script>
+    // TODO: 테스트 코드 삭제
+    paymentInfo.orderName = '테스트 주문';
+    paymentInfo.amount = 5000;
+    paymentInfo.method = 'CARD';
+  </script>
+  <link href="/static/css/purchase-style.css" rel="stylesheet" />
 </head>
 
 <body
     style="background-color: var(--light-color); font-family: var(--body-font),serif; color: var(--body-text-color); height: 100vh">
-  <div id="payment-background">
-    <div id="payment-modal">
-      <div id="modal-head-payment" class="d-flex flex-row">
-        <div class="me-auto">토스페이먼트 결제</div>
-        <button onclick="closeHandler()">[X]</button>
-        <script>
-          const closeHandler = () => {
-            document.querySelector("#payment-background").style.display = 'none';
-          }
-        </script>
-      </div>
-<!--      토스페이먼츠 결제-->
-      <div id="modal-body-payment">
-        <div style="background-color: white" id="payment-method">결제중...</div>
-        <div id="payment-agreement"></div>
-        <button class="button" id="payment-button">결제하기</button>
-        <script>
-          document.querySelector("#payment-button").addEventListener('click', async () => {
-            console.log("Payment!");
-            axios.post('/payment/toss', {paymentKey: 'asdf'})
-            .then(response => console.log(`response from controller: ${response.data}`));
-          });
-        </script>
-      </div>
-    </div>
-  </div>
-  <div class="container d-flex flex-column" id="section">
-    <div id="order-page">
+<!--  <div id="payment-background">-->
+<!--    <div id="payment-modal">-->
+<!--      <div id="modal-head-payment" class="d-flex flex-row">-->
+<!--        <div class="me-auto">토스페이먼트 결제</div>-->
+<!--        <button onclick="closeHandler()">[X]</button>-->
+<!--        <script>-->
+<!--          const closeHandler = () => {-->
+<!--            document.querySelector("#payment-background").style.display = 'none';-->
+<!--          }-->
+<!--        </script>-->
+<!--      </div>-->
+<!--&lt;!&ndash;      토스페이먼츠 결제&ndash;&gt;-->
+<!--      <div id="modal-body-payment">-->
+<!--        <div style="background-color: white" id="payment-method">결제중...</div>-->
+<!--        <div id="payment-agreement"></div>-->
+<!--        <button class="button" id="payment-button">결제하기</button>-->
+<!--        <script>-->
+<!--          document.querySelector("#payment-button").addEventListener('click', async () => {-->
+<!--            console.log("Payment!");-->
+<!--            axios.post('/payment/toss', {paymentKey: 'asdf'})-->
+<!--            .then(response => console.log(`response from controller: ${response.data}`));-->
+<!--          });-->
+<!--        </script>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+  <div class="container-sm d-flex flex-row flex-wrap" id="section">
+    <div id="order-page" class="flex-grow-1">
       <!-- 주문서 -->
       <h3>주문서</h3>
       <hr />
@@ -119,52 +165,85 @@
           <label for="inputPhoneNumber" class="form-label">휴대전화번호</label>
           <input id="inputPhoneNumber" class="form-control" type="text" name="phoneNumber" required>
         </div>
+        <div>
+          <div class="d-flex flex-row">
+            <input class="me-2" type="text" id="zipInput" placeholder="우편번호" />
+            <button id="findAddress" onclick="execPostCode(addressSelectors)">주소찾기</button>
+          </div>
+          <div>
+            <input id="addressInput" type="text" placeholder="주소" />
+          </div>
+          <div>
+            <input id="addressDetailInput" type="text" placeholder="상세주소" />
+            <input id="addressExtraInput" type="text"/>
+          </div>
+        </div>
       </div>
     </div>
+
+<!--    결제 정보-->
+<!--    <div id="paymentInfo" class="d-flex flex-column">-->
+<!--      <div class="d-flex flex-column">-->
+<!--        <div class="d-flex flex-row">-->
+<!--          <div>할인 전 가격: </div>-->
+<!--          <div th:text="|₩${5000}|"></div>-->
+<!--        </div>-->
+<!--        <div class="d-flex flex-row">-->
+<!--          <div>할인 가격: </div>-->
+<!--          <div th:text="|₩${0}|"></div>-->
+<!--        </div>-->
+<!--        <div class="d-flex flex-row">-->
+<!--          <div>결제 할 가격: </div>-->
+<!--          <div th:text="|₩${5000}|"></div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="w-100">-->
+<!--        <button>결제하기</button>-->
+<!--      </div>-->
+<!--    </div>-->
   </div>
   <footer class="d-flex flex-row">
-    <div id="description"></div>
-    <div id="total-price"></div>
-    <div class="d-flex">
-      <button class="m-0" id="purchaseButton" onclick="paymentReady()">구매하기</button>
-      <script>
-        const purchaseHandler = () => {
-          document.querySelector("#payment-background").style.display = 'block';
-        }
-
-      </script>
-      <script th:inline="javascript">
-        // paymentReady();
-
-        async function paymentReady() {
-          const clientKey = [[${clientKey}]];
-          const tossPayments = TossPayments(clientKey);
-          const customerKey = [[${customerKey}]];
-
-          const payment = tossPayments.payment({ customerKey });
-          await payment.requestPayment({
-            method: 'CARD',
-            amount: {
-              currency: "KRW",
-              value: 5000
-            },
-            orderId: [[${randomOrderId}]],
-            orderName: "테스트 결제",
-            successUrl: window.location.origin + "/payment/success",
-            failUrl: window.location.origin + "/payment/fail",
-            customerEmail: "example@example.org",
-            customerName: "홍길동",
-            customerMobilePhone: "01012345678",
-            card: {
-              useEscrow: false,
-              flowMode: "DEFAULT",
-              useCardPoint: false,
-              useAppCardOnly: false
-            }
-          });
-        }
-      </script>
+    <div class="d-flex justify-content-center flex-grow-1">
+      <div id="descriptionForm" class="me-auto">책 어쩌고 저쩌고 몇권 외..</div>
+      <div id="priceForm" class="d-flex flex-row ms-3">
+        <div th:replace="~{fragments/purchase :: displayPrice('원 가격', 'originPrice')}"></div>
+<!--        <div>₩5000</div>-->
+        <div class="price-delimiter align-items-center">-</div>
+        <div th:replace="~{fragments/purchase :: displayPrice('할인 가격', 'discountPrice')}"></div>
+<!--        <div>₩0</div>-->
+        <div class="price-delimiter align-items-center">=</div>
+        <div th:replace="~{fragments/purchase :: displayPrice('결제 가격', 'payPrice')}"></div>
+<!--        <div>₩5000</div>-->
+      </div>
+      <div class="d-flex ms-4">
+        <button class="m-0" id="purchaseButton" onclick="callPaymentReady()">구매하기</button>
+      </div>
     </div>
+    <script>
+      const origin = document.querySelector('#originPrice');
+      const discount = document.querySelector('#discountPrice');
+      const pay = document.querySelector('#payPrice');
+
+      origin.innerHTML = '₩ 5000';
+      discount.innerHTML = '₩ 0';
+      pay.innerHTML = '₩ 5000';
+    </script>
   </footer>
 </body>
+<script>
+  const purchaseHandler = () => {
+    document.querySelector("#payment-background").style.display = 'block';
+  }
+</script>
+<script th:inline="javascript">
+  async function callPaymentReady() {
+    const clientKeyResponse = await axios.get('/payment/support/toss/clientKey');
+    if (clientKeyResponse.status !== 200) {
+      alert('클라이언트 키를 가져오는데 실패했습니다.');
+      returnToIndex();
+    } else {
+      await tossPaymentReady(paymentInfo, clientKeyResponse.data);
+    }
+  }
+</script>
 </html>
