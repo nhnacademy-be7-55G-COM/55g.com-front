@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import shop.S5G.front.dto.order.OrderCreateRequestDto;
 import shop.S5G.front.dto.order.OrderCreateResponseDto;
+import shop.S5G.front.dto.order.OrderDetailInfoDto;
 import shop.S5G.front.dto.order.OrderDetailWithBookResponseDto;
+import shop.S5G.front.dto.order.OrderQueryRequestDto;
 import shop.S5G.front.dto.order.OrderWithDetailResponseDto;
 
 @FeignClient(value = "order", url = "${gateway.url}", path = "/api/shop/orders")
@@ -23,4 +25,10 @@ public interface OrderAdapter {
 
     @PostMapping
     ResponseEntity<OrderCreateResponseDto> createNewOrder(@RequestBody OrderCreateRequestDto createRequest);
+
+    @GetMapping
+    List<OrderWithDetailResponseDto> fetchOrderListsBetweenDates(@RequestParam OrderQueryRequestDto queryRequest);
+
+    @GetMapping("/{orderId}?scope=all")
+    OrderDetailInfoDto fetchOrderDetailInfo(@PathVariable long orderId);
 }
