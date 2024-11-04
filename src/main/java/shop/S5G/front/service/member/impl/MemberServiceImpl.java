@@ -47,11 +47,17 @@ public class MemberServiceImpl implements MemberService {
                 TokenResponseDto tokenResponseDto = responseEntity.getBody();
 
                 if (tokenResponseDto != null) {
-                    Cookie cookie = new Cookie("jwt" ,tokenResponseDto.accessToken());
-                    cookie.setPath("/");
-                    cookie.setMaxAge(3600);
-                    cookie.setHttpOnly(true);
-                    response.addCookie(cookie);
+                    Cookie accessJwt = new Cookie("accessJwt" ,tokenResponseDto.accessToken());
+                    accessJwt.setPath("/");
+                    accessJwt.setMaxAge(3600);
+                    accessJwt.setHttpOnly(true);
+                    response.addCookie(accessJwt);
+
+                    Cookie refreshJwt = new Cookie("refreshJwt" ,tokenResponseDto.refreshToken());
+                    refreshJwt.setPath("/");
+                    refreshJwt.setMaxAge(3600);
+                    refreshJwt.setHttpOnly(true);
+                    response.addCookie(refreshJwt);
                 }
 
                 return;
