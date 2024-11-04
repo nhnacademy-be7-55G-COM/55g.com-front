@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <th:block th:replace="~{fragments/head :: headTemplate}" />
+  <style>
+    #messageForm {
+      max-width: 680px;
+      border: 2px solid dimgray;
+    }
+    #outerContainer {
+      padding-top: 120px;
+    }
+  </style>
+</head>
+<body>
+<div id="outerContainer" class="container d-flex">
+  <div id="messageForm" class="mx-auto">
+    <h3 class="display-4 mb-2" th:text="${title}"></h3>
+    <p th:text="${message}"></p>
+    <button>돌아가기</button>
+  </div>
+</div>
+</body>
+</html>
