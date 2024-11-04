@@ -39,7 +39,7 @@
         }
       });
 
-    const customerInfoPromise = axios.get('/payment/support/customer')
+    const fetchCustomerInfoPromise = axios.get('/payment/support/customer')
       .then(response => {
         if (response.status === 200) {
           paymentInfo.customer = {

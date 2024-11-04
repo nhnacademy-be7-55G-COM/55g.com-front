@@ -61,7 +61,8 @@ const tossPaymentReady = async ({
     customer
 }, clientKey) => {
   const tossPayments = TossPayments(clientKey);
-  const payment = tossPayments.payment({ clientKey });
+  const customerKey = customer.key;
+  const payment = tossPayments.payment({ customerKey });
 
   const paymentInfo = {
     method: method,
@@ -85,4 +86,8 @@ const tossPaymentReady = async ({
 
 const returnToIndex = () => {
   window.location.href='/';
+}
+
+const fetchShoppingCart = async () => {
+  return (await axios.get('/payment/support/fetch-cart')).data;
 }
