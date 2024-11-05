@@ -30,7 +30,7 @@ public class PaymentController {
         // TODO: 장바구니를 체크
 
         // TODO: 쿠폰사용여부를 체크
-
+        //
         // TODO: 장바구니와 쿠폰사용여부를 체크하여 결제비용을 검증
 
         // TODO: 값이 다르면 결제를 cancel하는 api를 shop에 요청.

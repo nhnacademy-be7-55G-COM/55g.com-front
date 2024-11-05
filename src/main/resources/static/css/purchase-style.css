@@ -66,3 +66,39 @@ footer {
 #addressDetailInput {
   width: 16rem;
 }
+
+#customerInformation > .card-info-contents > div {
+  padding: 0 0.9rem !important;
+}
+
+#deliveryInformation> .card-info-contents > div {
+  padding: 0 0.9rem !important;
+}
+.card-top {
+  background-color: white;
+}
+.card-top > .card-title {
+  padding: 0.4rem;
+  font-size: 2rem;
+  background-color: lightskyblue;
+  color: white;
+}
+.card-top > .card-info-contents {
+  padding: 0.8rem;
+
+}
+
+hr {
+  border: 0.05rem solid green;
+  margin: 1rem 0;
+}
+
+button.payment-selected {
+  border: 2px solid cornflowerblue;
+  background-color: peachpuff;
+  color: rgba(18,0,141,0.61);
+}
+
+#paymentButtons > button {
+  margin: 0 0.3rem;
+}

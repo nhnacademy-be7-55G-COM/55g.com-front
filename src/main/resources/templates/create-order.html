@@ -16,6 +16,9 @@
       addressExtraSelector: '#addressExtraInput'
     };
 
+    // TODO: Fee id를 가져오도록 해야함.
+    let deliveryFeeId = 1;
+
     const paymentInfo = {
       orderId: '',
       orderName: '',
@@ -23,7 +26,7 @@
       method: '',
       amount: {
         currency: 'KRW',
-        amount: 0
+        value: 0
       },
       successUrl: window.location.origin + "/payment/success",
       failUrl: window.location.origin + "/payment/fail"
@@ -31,35 +34,35 @@
 
     const requestOrderIdPromise = axios.get('/payment/support/generate-order')
       .then(response => {
-        if (response.status === 200) {
-          paymentInfo.orderId = response.data;
-        } else {
-          alert('주문 세션 생성에 실패했습니다.');
-          returnToIndex();
-        }
+        paymentInfo.orderId = response.data;
+      })
+      .catch(err => {
+        alert(`주문 세션 생성에 실패했습니다: ${err}`);
+        returnToIndex();
       });
 
     const fetchCustomerInfoPromise = axios.get('/payment/support/customer')
       .then(response => {
-        if (response.status === 200) {
-          paymentInfo.customer = {
-            key: response.data.key,
-            name: response.data.name,
-            email: response.data.email
-          };
-        } else {
-          alert('사용자 정보를 가져오는데 실패했습니다.');
-          returnToIndex();
-        }
+        paymentInfo.customer = {
+          key: response.data.key,
+          name: response.data.name,
+          email: response.data.email
+        };
+      })
+      .catch(err => {
+        alert(`사용자 정보를 가져오는데 실패했습니다: ${err}`);
+        returnToIndex();
       });
-
-    const switchPayment = (method) => {
+    const switchPayment = (element, method) => {
       paymentInfo.method = method;
+      const paymentButtons = document.querySelectorAll('#paymentButtons > button');
+      paymentButtons.forEach(btn => btn.classList.remove('payment-selected'));
+      element.classList.add('payment-selected');
     };
 
     const addAmount = (value) => {
-      paymentInfo.amount.amount += value;
-    }
+      paymentInfo.amount.value+= value;
+    };
 
     // document.addEventListener('DOMContentLoaded', () => {
     //   const cartTable =  document.querySelector('#shoppingCart');
@@ -70,12 +73,21 @@
     //     orderName = `${orderName} 등 ${cartList}권`;
     //   }
     // });
+    document.addEventListener('DOMContentLoaded', async () => {
+      const customerNameInput = document.querySelector('#customerNameInput');
+      const customerEmailInput = document.querySelector('#customerEmailInput');
+      Promise.all([fetchCustomerInfoPromise, requestOrderIdPromise])
+        .then(value => {
+          customerNameInput.value = paymentInfo.customer.name;
+          customerEmailInput.value = paymentInfo.customer.email;
+        });
+    });
   </script>
   <script>
     // TODO: 테스트 코드 삭제
     paymentInfo.orderName = '테스트 주문';
-    paymentInfo.amount = 5000;
-    paymentInfo.method = 'CARD';
+    paymentInfo.amount.value = 5000;
+    deliveryFeeId = 1;
   </script>
   <link href="/static/css/purchase-style.css" rel="stylesheet" />
 </head>
@@ -148,23 +160,39 @@
 <!--        </th:block>-->
 <!--        </tbody>-->
       </table>
+<!--      주문인 정보-->
+      <hr />
+      <div id="customerInformation" class="card-top">
+        <div class="display-6 info-title card-title">주문인</div>
+        <div class="d-flex flex-row card-info-contents">
+          <div class="flex-grow-1">
+            <div th:replace="~{fragments/purchase :: disabledInputWithLabel('customerNameInput', '성명', 'text')}"></div>
+          </div>
+          <div class="flex-grow-1">
+            <div th:replace="~{fragments/purchase :: disabledInputWithLabel('customerEmailInput', '이메일', 'text')}"></div>
+          </div>
+        </div>
+      </div>
+      <hr />
+
+      <div id="deliveryInformation" class="card-top">
+        <div class="display-6 info-title card-title">배송 정보</div>
+        <div class="d-flex flex-row card-info-contents">
+          <div class="flex-grow-1">
+            <div th:replace="~{fragments/purchase :: inputWithLabel('receiverNameInput', '수신자 성명', 'text', '')}"></div>
+          </div>
+          <div class="flex-grow-1">
+            <div th:replace="~{fragments/purchase :: inputWithLabel('receiverPhoneInput', '휴대전화번호', 'text', '')}"></div>
+          </div>
+          <div>
+            <div th:replace="~{fragments/purchase :: inputWithLabel('receiveDate', '배송받기 원하는 날짜', 'date', ${#dates.format(#dates.createToday(), 'yyyy-MM-dd')})}"></div>
+          </div>
+        </div>
+      </div>
+      <hr />
+
       <h4 class="mb-2">배송주소</h4>
       <div id="receiverInfo">
-        <div class="mb-2">
-          <label for="inputCustomerName" class="form-label">주문인</label>
-          <input id="inputCustomerName" class="form-control" type="text" name="customerName" required>
-        </div>
-        <div class="mb-2">
-          <label for="inputReceiverName" class="form-label">받는 사람</label>
-          <input id="inputReceiverName" class="form-control" type="text" name="receiverName" required>
-        </div>
-        <div class="mb-2">
-          주소 적는 곳
-        </div>
-        <div>
-          <label for="inputPhoneNumber" class="form-label">휴대전화번호</label>
-          <input id="inputPhoneNumber" class="form-control" type="text" name="phoneNumber" required>
-        </div>
         <div>
           <div class="d-flex flex-row">
             <input class="me-2" type="text" id="zipInput" placeholder="우편번호" />
@@ -179,28 +207,16 @@
           </div>
         </div>
       </div>
-    </div>
+      <hr />
 
-<!--    결제 정보-->
-<!--    <div id="paymentInfo" class="d-flex flex-column">-->
-<!--      <div class="d-flex flex-column">-->
-<!--        <div class="d-flex flex-row">-->
-<!--          <div>할인 전 가격: </div>-->
-<!--          <div th:text="|₩${5000}|"></div>-->
-<!--        </div>-->
-<!--        <div class="d-flex flex-row">-->
-<!--          <div>할인 가격: </div>-->
-<!--          <div th:text="|₩${0}|"></div>-->
-<!--        </div>-->
-<!--        <div class="d-flex flex-row">-->
-<!--          <div>결제 할 가격: </div>-->
-<!--          <div th:text="|₩${5000}|"></div>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--      <div class="w-100">-->
-<!--        <button>결제하기</button>-->
-<!--      </div>-->
-<!--    </div>-->
+      <div id="paymentInformation" class="card-top">
+        <div class="display-6 info-title card-title">결제 정보</div>
+        <div id="paymentButtons" class="d-flex flex-row flex-wrap card-info-contents">
+          <button onclick="switchPayment(this, 'CARD')">카드</button>
+          <button onclick="switchPayment(this, 'CULTURE_LAND')">문화상품권</button>
+        </div>
+      </div>
+    </div>
   </div>
   <footer class="d-flex flex-row">
     <div class="d-flex justify-content-center flex-grow-1">
@@ -237,12 +253,34 @@
 </script>
 <script th:inline="javascript">
   async function callPaymentReady() {
-    const clientKeyResponse = await axios.get('/payment/support/toss/clientKey');
-    if (clientKeyResponse.status !== 200) {
-      alert('클라이언트 키를 가져오는데 실패했습니다.');
-      returnToIndex();
-    } else {
-      await tossPaymentReady(paymentInfo, clientKeyResponse.data);
+    try {
+      if (paymentInfo.method === '') {
+        alert('결제 수단을 선택해 주세요');
+        return;
+      }
+      // TODO: 수신자 이름 및 번호 체크
+      const deliveryInfo = getDeliveryInformation(addressSelectors, deliveryFeeId, '#receiveDate');
+
+      const clientKeyResponse = await axios.get('/payment/support/toss/clientKey');
+      if (clientKeyResponse.status !== 200) {
+        alert('클라이언트 키를 가져오는데 실패했습니다.');
+        returnToIndex();
+      } else {
+        // TODO: 여기서 주문을 생성하는 API를 호출해야 할듯.
+        console.log(`deliveryInfo`);
+        console.log(deliveryInfo);
+        createNewOrder(deliveryInfo)
+          .then(response => {
+            if (response.status !== 201)
+              return Promise.reject('Order Creation failed');
+            return tossPaymentReady(paymentInfo, clientKeyResponse.data);
+          })
+          .catch(err => {
+            alert(`주문 생성에 실패했습니다. 다시 시도해 주세요: ${err}`);
+          });
+      }
+    }catch (err) {
+      alert(err);
     }
   }
 </script>
