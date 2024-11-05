@@ -7,5 +7,4 @@ import shop.S5G.front.dto.MessageDto;
 
 public interface MemberService {
     MessageDto registerMember(MemberRegistrationRequestDto memberRegistrationRequestDto);
-    void loginMember(MemberLoginRequestDto memberLoginRequestDto, HttpServletResponse response);
 }
