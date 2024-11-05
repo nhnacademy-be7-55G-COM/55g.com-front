@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>주문 상태 업데이트</title>
+  <th:block th:replace="~{fragments/head :: headTemplate}" />
+</head>
+<body>
+
+<div class="container d-flex flex-column">
+  <form class="d-flex flex-column">
+    <div class="d-flex flex-row">
+      <input id="search" name="search" placeholder="고객 ID..." th:value="${customerId}" required/>
+      <button type="submit" style="height: 4rem;">고객 ID로 검색</button>
+    </div>
+    <div class="d-flex">
+      <div class="ms-auto">
+        <input name="startDate" type="date" th:value="${#dates.format(startDate, 'yyyy-MM-dd')}" />
+        <input name="endDate" type="date" th:value="${#dates.format(endDate, 'yyyy-MM-dd')}" />
+      </div>
+    </div>
+  </form>
+
+  <div>
+    <table id="orderTable" class="table">
+      <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">주문 이름</th>
+        <th scope="col">Total Price</th>
+        <th scope="col">Net Price</th>
+        <th scope="col">주문 시각</th>
+      </tr>
+      </thead>
+      <tbody>
+      <th:block th:each="order: ${orderList}">
+      <tr th:data-order-id="${order.orderId}">
+        <td th:text="${order.orderId}"></td>
+        <td th:text="${order.representTitle}"></td>
+        <td th:text="${order.totalPrice}"></td>
+        <td th:text="${order.netPrice}"></td>
+        <td th:text="${order.orderedAt}"></td>
+      </tr>
+      </th:block>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+</body>
+<script th:inline="javascript">
+  const tableRows = document.querySelectorAll('#orderTable > tbody > tr');
+  tableRows.forEach(rows => {
+    const orderId = rows.getAttribute('data-order-id');
+    rows.style.cursor = 'pointer';
+    rows.addEventListener('click', () => {
+      window.location.href=`/admin/order/${orderId}`;
+    });
+  });
+</script>
+</html>

@@ -1,17 +1,16 @@
 package shop.S5G.front.controller;
 
+import jakarta.servlet.http.HttpServletResponse;
 import java.beans.PropertyEditorSupport;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import shop.S5G.front.dto.MemberRegistrationRequestDto;
+import shop.S5G.front.dto.member.MemberLoginRequestDto;
+import shop.S5G.front.dto.member.MemberRegistrationRequestDto;
 import shop.S5G.front.service.member.MemberService;
 
 @Controller
@@ -30,11 +29,9 @@ public class MemberController {
                 setValue(text != null ? text.replace("-", "") : null);
             }
         });
-        // 전화번호 필드에 대한 커스텀 에디터 예시
         binder.registerCustomEditor(String.class, "phoneNumber", new PropertyEditorSupport() {
             @Override
             public void setAsText(String text) throws IllegalArgumentException {
-                // 숫자만 남기기 (하이픈 제거)
                 setValue(text.replaceAll("\\D", ""));
             }
         });
@@ -56,4 +53,9 @@ public class MemberController {
         return "login";
     }
 
+    @PostMapping("/login")
+    public String login(@ModelAttribute MemberLoginRequestDto requestDto, HttpServletResponse response) {
+        memberService.loginMember(requestDto, response);
+        return "redirect:/";
+    }
 }

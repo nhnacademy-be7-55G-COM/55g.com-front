@@ -61,7 +61,15 @@ spring:
     activate:
       on-profile: test
 
+  cloud:
+    openfeign:
+      client:
+        config:
+          default:
+            logger-level: full
+
 logging:
   level:
     root: info
     shop.S5G.front: trace
+
