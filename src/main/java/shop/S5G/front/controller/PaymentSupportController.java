@@ -5,10 +5,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import shop.S5G.front.dto.CustomerInfoDto;
+import shop.S5G.front.dto.delivery.DeliveryCreateRequestDto;
+import shop.S5G.front.service.order.OrderService;
 import shop.S5G.front.utils.RandomStringProvider;
 
 // 결제에서 사용할 Rest 호출
@@ -19,6 +23,7 @@ import shop.S5G.front.utils.RandomStringProvider;
 public class PaymentSupportController {
     private final RandomStringProvider randomStringProvider;
     private final String tossPaymentsClientKey;
+    private final OrderService orderService;
 
     @GetMapping("/generate-order")
     public String generateOrderId(/* User Auth */) {
@@ -43,5 +48,14 @@ public class PaymentSupportController {
     @GetMapping("/toss/clientKey")
     public String getTossClientKey() {
         return tossPaymentsClientKey;
+    }
+
+    @PostMapping("/create-order")
+    public ResponseEntity<HttpStatus> createNewOrder(/* User Auth */ @RequestBody
+        DeliveryCreateRequestDto delivery) {
+        // TODO: 장바구니 가져오기
+        // TODO: 세션에서 쿠폰 사용 여부, 합계 및 netPrice 가져오기.
+//        orderService.createOrder()
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

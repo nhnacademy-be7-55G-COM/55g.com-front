@@ -91,3 +91,40 @@ const returnToIndex = () => {
 const fetchShoppingCart = async () => {
   return (await axios.get('/payment/support/fetch-cart')).data;
 }
+
+const createNewOrder = (deliveryInfo) => {
+  return axios.post('/payment/support/create-order', deliveryInfo);
+}
+
+const isNotBlank = (...args) => {
+  for (let i=0; i<args.length; i++) {
+    if (args[i] === undefined || args[i] === '') {
+      return false;
+    }
+  }
+  return true;
+}
+
+const getDeliveryInformation = ({
+    zipSelector,
+    addressSelector,
+    addressDetailSelector,
+    addressExtraSelector
+}, feeId, receiveDateSelector) => {
+  const zip = document.querySelector(zipSelector).value;
+  const address= document.querySelector(addressSelector).value;
+  const addressDetail= document.querySelector(addressDetailSelector).value;
+  const addressExtra= document.querySelector(addressExtraSelector).value;
+  const receiveDate = document.querySelector(receiveDateSelector).value;
+
+  // extra는 비어도 허용
+  if (!isNotBlank(zip, address, addressDetail, receiveDate)) {
+    throw "주소가 비어있음";
+  }
+  const addressString = `${zip}, ${address} ${addressDetail} ${addressExtra}`.trim();
+  return {
+    address: addressString,
+    deliveryFeeId: feeId,
+    receivedDate: receiveDate
+  };
+}

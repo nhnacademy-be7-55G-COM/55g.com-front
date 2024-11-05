@@ -19,7 +19,12 @@
   <div id="messageForm" class="mx-auto">
     <h3 class="display-4 mb-2" th:text="${title}"></h3>
     <p th:text="${message}"></p>
-    <button>돌아가기</button>
+    <button onclick="backToPage()">돌아가기</button>
+    <script th:inline="javascript">
+      const backToPage = () => {
+        window.location.href = [[${redirect}]];
+      }
+    </script>
   </div>
 </div>
 </body>
