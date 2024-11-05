@@ -38,7 +38,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     /**
-     * 부모 카테고리 등록을 위한 모든 카테고리 조회
+     * 모든 카테고리 조회
      */
     @Override
     public List<CategoryResponseDto> getParentCategories() {

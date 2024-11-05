@@ -3,7 +3,7 @@ package shop.S5G.front.dto.category;
 import jakarta.validation.constraints.NotNull;
 
 public record CategoryResponseDto(
-        Long parentCategory,
+        String parentCategoryName,
         @NotNull
         String categoryName,
         @NotNull
