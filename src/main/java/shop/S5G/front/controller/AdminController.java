@@ -41,27 +41,24 @@ public class AdminController {
         return "redirect:/admin";
     }
 
-    @GetMapping("/admin/order")
-    public ModelAndView adminManageOrder() {
-        ModelAndView mv = new ModelAndView("admin/order-list");
-
-        mv.addObject("startDate", LocalDate.now().minusMonths(1));
-        mv.addObject("endDate", LocalDate.now());
-        mv.addObject("customerId", "");
-        mv.addObject("orderList", List.of());
-        return mv;
-    }
-
     // Primary Key인 customer id로 검색함. 비회원과 회원 모두 검색하게 하기 위함.
     @GetMapping("/admin/order")
-    public ModelAndView adminManageOrderQuery(@RequestParam OrderQueryRequestDto queryRequest) {
+    public ModelAndView adminManageOrderQuery(@RequestParam(required = false) OrderQueryRequestDto queryRequest) {
         ModelAndView mv = new ModelAndView("admin/order-list");
-        List<OrderWithDetailResponseDto> response = orderService.queryOrdersBetweenDates(queryRequest);
+        if (queryRequest == null) {
+            mv.addObject("startDate", LocalDate.now().minusMonths(1));
+            mv.addObject("endDate", LocalDate.now());
+            mv.addObject("customerId", "");
+            mv.addObject("orderList", List.of());
+        } else {
+            List<OrderWithDetailResponseDto> response = orderService.queryOrdersBetweenDates(
+                queryRequest);
 
-        mv.addObject("startDate", queryRequest.startDate());
-        mv.addObject("endDate", queryRequest.endDate());
-        mv.addObject("customerId", queryRequest.customerId());
-        mv.addObject("orderList", response);
+            mv.addObject("startDate", queryRequest.startDate());
+            mv.addObject("endDate", queryRequest.endDate());
+            mv.addObject("customerId", queryRequest.customerId());
+            mv.addObject("orderList", response);
+        }
         return mv;
     }
 
