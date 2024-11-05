@@ -13,7 +13,7 @@ public class FeignConfig {
     public RequestInterceptor globalRequestInterceptor() {
         return requestTemplate -> {
             log.debug("Authorization token: {}", AuthTokenHolder.getToken());
-            requestTemplate.header("Authorization", AuthTokenHolder.getToken());
+            requestTemplate.header("Authorization", "Bearer " + AuthTokenHolder.getToken());
         };
     }
 }
