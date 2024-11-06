@@ -9,6 +9,7 @@ public record DeliveryResponseDto(
     LocalDate shippingDate,
     int fee,
     String invoiceNumber,
+    String receiverName,
     String status
 ) {
 }
