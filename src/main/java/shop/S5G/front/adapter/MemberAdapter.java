@@ -14,7 +14,4 @@ public interface MemberAdapter {
 
     @PostMapping("/api/shop/member")
     ResponseEntity<MessageDto> registerMember(@RequestBody MemberRegistrationRequestDto memberRegistrationRequestDto);
-
-    @PostMapping("/api/auth/login")
-    ResponseEntity<TokenResponseDto> loginMember(@RequestBody MemberLoginRequestDto memberLoginRequestDto);
 }

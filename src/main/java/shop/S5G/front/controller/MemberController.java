@@ -47,15 +47,4 @@ public class MemberController {
         memberService.registerMember(requestDto);
         return "redirect:/login";
     }
-
-    @GetMapping("/login")
-    public String login() {
-        return "login";
-    }
-
-    @PostMapping("/login")
-    public String login(@ModelAttribute MemberLoginRequestDto requestDto, HttpServletResponse response) {
-        memberService.loginMember(requestDto, response);
-        return "redirect:/";
-    }
 }
