@@ -4,8 +4,134 @@
   <meta charset="UTF-8">
   <title>주문 상세</title>
   <th:block th:replace="~{fragments/head :: headTemplate}" />
+  <style>
+  </style>
 </head>
 <body>
+<div class="container p-3">
+  <div class="display-4">주문 상세</div>
+  <div>
+    <table class="table">
+      <thead>
+      <tr>
+        <th scope="col">주문상세 ID</th>
+        <th scope="col">제목</th>
+        <th scope="col">권 수</th>
+        <th scope="col">총 가격</th>
+        <th scope="col">적립가격</th>
+        <th scope="col">포장지</th>
+      </tr>
+      </thead>
+      <tbody>
+      <th:block th:each="detail: ${info.details}">
+      <tr>
+        <td th:text="${detail.orderDetailId}"></td>
+        <td><a th:href="@{/book/{bookId}(bookId=${detail.bookId})}" th:text="${detail.bookTitle}"></a></td>
+        <td th:text="${detail.quantity}"></td>
+        <td th:text="${detail.totalPrice}"></td>
+        <td th:text="${detail.accumulationPrice}"></td>
+        <th:block th:if="${detail.wrappingPaperName == null || detail.wrappingPaperName.isEmpty()}"><td>없음</td></th:block>
+        <th:block th:unless="${detail.wrappingPaperName == null || detail.wrappingPaperName.isEmpty()}">
+          <td th:text="${detail.wrappingPaperName}"></td>
+        </th:block>
+      </tr>
+      </th:block>
+      </tbody>
+    </table>
+  </div>
 
+  <hr/>
+
+  <div class="display-5">배송상태</div>
+  <form th:action="@{/admin/order/delivery/{id}(id=${info.delivery.id})}" method="post">
+    <input type="number" name="id" th:value="${info.delivery.id}" hidden disabled/>
+    <div>
+      <div class="d-flex flex-row">
+        <div class="m-2 flex-grow-2">
+          <label class="form-label" for="addressInput">배송주소</label>
+          <input type="text" id="addressInput" name="address" th:value="${info.delivery.address}" required disabled />
+        </div>
+        <div class="m-2 flex-grow-1">
+          <label class="form-label" for="invoiceInput">송장</label>
+          <input type="text" id="invoiceInput" name="invoiceNumber" th:value="${info.delivery.invoiceNumber}" disabled />
+        </div>
+      </div>
+      <div class="d-flex flex-row">
+        <div>
+          <label class="form-label" for="receiverName">받는 사람</label>
+          <input type="text" id="receiverName" name="receiverName" th:value="${info.delivery.}"
+        </div>
+        <div class="m-2 flex-grow-1">
+          <label class="form-label" for="receivedDate">받길 희망하는 날짜</label>
+          <input type="date" id="receivedDate" name="receivedDate" th:value="${#temporals.format(info.delivery.receivedDate, 'yyyy-MM-dd')}" disabled />
+        </div>
+        <div class="m-2 flex-grow-1">
+          <label class="form-label" for="shippingDate">배송 시작 날짜</label>
+          <input type="date" id="shippingDate" name="shippingDate" th:value="${#temporals.format(info.delivery.shippingDate, 'yyyy-MM-dd')}" disabled />
+        </div>
+        <div class="m-2 flex-grow-1">
+          <label for="status">배송상태</label>
+          <select name="status" id="status" disabled>
+            <option value="PREPARING">배송준비중</option>
+            <option value="SHIPPING">배송중</option>
+            <option value="DELIVERED">배송완료</option>
+          </select>
+          <script th:inline="javascript">
+            const shippingStatus = [[${info.delivery.status}]];
+            const selectForm = document.querySelector('#status');
+            const options = selectForm.querySelectorAll('option');
+            for (let i=0; options.length; i++) {
+              if (shippingStatus === options[i].value) {
+                options[i].selected = true;
+                break;
+              }
+            }
+          </script>
+        </div>
+      </div>
+    </div>
+    <div class="d-flex flex-column">
+      <button class="btn btn-outline-warning ms-auto" onclick="enableModify()">배송 정보 수정하기</button>
+      <button type="submit" id="applyBtn" class="btn btn-primary ms-3" disabled>적용하기</button>
+    </div>
+  </form>
+
+  <hr/>
+  <div class="display-4">환불정보</div>
+  <div>
+    <table class="table">
+      <thead>
+      <tr>
+        <th scope="col">제목</th>
+        <th scope="col">권 수</th>
+        <th scope="col">환불타입</th>
+        <th scope="col">환불사유</th>
+        <th scope="col">환불시각</th>
+      </tr>
+      </thead>
+      <tbody>
+      <th:block th:each="refund: ${info.refunds}">
+      <tr>
+        <td th:text="${refund.bookTitle}"></td>
+        <td th:text="${refund.quantity}"></td>
+        <td th:text="${refund.type}"></td>
+        <td th:text="${refund.reason}"></td>
+        <td th:text="${#temporals.format(refund.refundedAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+      </tr>
+      </th:block>
+      </tbody>
+    </table>
+  </div>
+</div>
 </body>
+<script>
+  const enableModify = () => {
+    const applyButton = document.querySelector('#applyBtn');
+    applyButton.disabled = false;
+    const inputs = document.querySelectorAll('form input');
+    inputs.forEach((input) => {
+      input.disabled = false;
+    });
+  };
+</script>
 </html>
