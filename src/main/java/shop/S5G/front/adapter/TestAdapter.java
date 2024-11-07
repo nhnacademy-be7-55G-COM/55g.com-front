@@ -8,4 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public interface TestAdapter {
     @GetMapping("/api/shop/test")
     ResponseEntity<String> test();
+
+    @GetMapping("/api/shop/test/auth")
+    ResponseEntity<String> authTest();
 }
