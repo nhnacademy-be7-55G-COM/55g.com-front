@@ -9,6 +9,8 @@ import shop.S5G.front.adapter.WrappingPaperAdapter;
 import shop.S5G.front.dto.wrappingpaper.WrappingPaperRequestDto;
 import shop.S5G.front.dto.wrappingpaper.WrappingPaperResponseDto;
 import shop.S5G.front.service.wrappingpaper.WrappingPaperService;
+import shop.S5G.front.utils.AuthTokenHolder;
+import shop.S5G.front.utils.FunctionalWithAuthToken;
 
 @RequiredArgsConstructor
 @Service
@@ -18,12 +20,20 @@ public class WrappingPaperServiceImpl implements WrappingPaperService {
 
     @Override
     public CompletableFuture<List<WrappingPaperResponseDto>> fetchAllPapersAsync() {
-        return CompletableFuture.supplyAsync(wrappingPaperAdapter::fetchAllPapers);
+        return CompletableFuture.supplyAsync(
+            FunctionalWithAuthToken.supply(AuthTokenHolder.getToken(),
+                wrappingPaperAdapter::fetchAllPapers
+            )
+        );
     }
 
     @Override
     public CompletableFuture<WrappingPaperResponseDto> fetchPaperAsync(long id) {
-        return CompletableFuture.supplyAsync(() -> wrappingPaperAdapter.fetchPaper(id));
+        return CompletableFuture.supplyAsync(
+            FunctionalWithAuthToken.supply(AuthTokenHolder.getToken(),
+                () ->wrappingPaperAdapter.fetchPaper(id)
+            )
+        );
     }
 
     @Override
