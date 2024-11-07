@@ -51,8 +51,8 @@ public class PaymentSupportController {
     }
 
     @PostMapping("/create-order")
-    public ResponseEntity<HttpStatus> createNewOrder(/* User Auth */ @RequestBody
-        DeliveryCreateRequestDto delivery) {
+    // TODO: OrderCreateResponseDto
+    public ResponseEntity<HttpStatus> createNewOrder(@RequestBody DeliveryCreateRequestDto delivery) {
         // TODO: 장바구니 가져오기
         // TODO: 세션에서 쿠폰 사용 여부, 합계 및 netPrice 가져오기.
 //        orderService.createOrder()

@@ -7,6 +7,6 @@ public class ApacheRandomStringUtilCaller implements RandomStringProvider{
 
     @Override
     public String nextString() {
-        return provider.nextAlphanumeric(6, 65);
+        return provider.nextAlphanumeric(45, 65);
     }
 }

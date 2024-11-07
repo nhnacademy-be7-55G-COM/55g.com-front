@@ -18,6 +18,10 @@
 
     // TODO: Fee id를 가져오도록 해야함.
     let deliveryFeeId = 1;
+    let netPrice=0;
+    let totalPrice=0;
+    let cartList = [];
+    let wrappingPaperId = 1;
 
     const paymentInfo = {
       orderId: '',
@@ -88,6 +92,8 @@
     paymentInfo.orderName = '테스트 주문';
     paymentInfo.amount.value = 5000;
     deliveryFeeId = 1;
+    netPrice = 5000;
+    totalPrice = 5000;
   </script>
   <link href="/static/css/purchase-style.css" rel="stylesheet" />
 </head>
@@ -259,7 +265,7 @@
         return;
       }
       // TODO: 수신자 이름 및 번호 체크
-      const deliveryInfo = getDeliveryInformation(addressSelectors, deliveryFeeId, '#receiveDate');
+      const deliveryInfo = getDeliveryInformation(addressSelectors, deliveryFeeId, '#receiveDate', '#receiverNameInput');
 
       const clientKeyResponse = await axios.get('/payment/support/toss/clientKey');
       if (clientKeyResponse.status !== 200) {
@@ -269,7 +275,7 @@
         // TODO: 여기서 주문을 생성하는 API를 호출해야 할듯.
         console.log(`deliveryInfo`);
         console.log(deliveryInfo);
-        createNewOrder(deliveryInfo)
+        createNewOrder(deliveryInfo)    // TODO: OrderCreateRequestDto로 바꿀 예정.
           .then(response => {
             if (response.status !== 201)
               return Promise.reject('Order Creation failed');
