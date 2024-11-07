@@ -48,14 +48,14 @@
           <p>
             <a href="#" data-bs-toggle="modal" data-bs-target="#gradeInfoModal">
               <strong><span th:text="'회원 등급: '"></span></strong>
-              <span th:text="'일반'"></span>
+              <span th:text="${member.grade().gradeName()}"></span>
             </a>
           </p>
           <p>ID: <span th:text="test"></span></p>
-          <p>연락처: <span th:text="'010-1234-5678'"></span></p>
-          <p>생년월일: <span th:text="19990111"></span></p>
-          <p>가입 일자: <span th:text="00"></span></p>
-          <p>최근 로그인: <span th:text="00"></span></p>
+          <p>연락처: <span th:text="${member.phoneNumber()}"></span></p>
+          <p>생년월일: <span th:text="${member.birth()}"></span></p>
+          <p>가입 일자: <span th:text="${member.createdAt()}"></span></p>
+          <p>최근 로그인: <span th:text="${member.latestLoginAt()}"></span></p>
           <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#updatePersonalModal">개인 정보 변경</button>
           <button class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#changePasswordModal">비밀번호 변경</button>
           <br>
@@ -65,7 +65,7 @@
         <!-- 포인트 내역 -->
         <div class="tab-pane fade" id="points" role="tabpanel">
           <h3>포인트 내역</h3>
-          <p>현재 포인트: <span th:text="10000"></span></p>
+          <p>현재 포인트: <span th:text="${member.point()}"></span></p>
           <ul>
             <li th:each="point : ${pointsHistory}">
               <span th:text="${point.date}"></span> - <span th:text="${point.amount}"></span>

@@ -4,11 +4,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.beans.PropertyEditorSupport;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import shop.S5G.front.dto.member.MemberInfoResponseDto;
 import shop.S5G.front.dto.member.MemberLoginRequestDto;
 import shop.S5G.front.dto.member.MemberRegistrationRequestDto;
 import shop.S5G.front.service.member.MemberService;
@@ -48,7 +50,9 @@ public class MemberController {
         return "redirect:/login";
     }
     @GetMapping("/mypage")
-    public String mypage() {
+    public String mypage(Model model) {
+        MemberInfoResponseDto responseDto = memberService.getMemberInfo();
+        model.addAttribute("member", responseDto);
         return "mypage";
     }
 }
