@@ -1,16 +1,20 @@
 package shop.S5G.front.controller;
 
+import java.util.List;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.ModelAndView;
+import shop.S5G.front.dto.coupon.CouponPolicyInquiryResponseDto;
+import shop.S5G.front.dto.coupon.CouponPolicyRegisterRequestDto;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-import shop.S5G.front.dto.CouponPolicyRegisterRequestDto;
 import shop.S5G.front.dto.order.OrderQueryRequestDto;
 import shop.S5G.front.dto.order.OrderWithDetailResponseDto;
 import shop.S5G.front.service.couponpolicy.impl.CouponPolicyServiceImpl;
@@ -27,16 +31,16 @@ public class AdminController {
 
     @GetMapping("/admin")
     public String adminPage() {
-        return "admin";
+        return "admin/admin";
     }
 
     @GetMapping("/admin/settings")
     public String adminSettingsPage() {
-        return "settings";
+        return "admin/settings";
     }
 
-    @PostMapping("/admin/coupons/policy")
-    public String adminCouponPolicyCreate(@RequestBody CouponPolicyRegisterRequestDto couponPolicyRegisterRequestDto) {
+    @PostMapping("/api/shop/admin/coupons/policy")
+    public String adminCouponPolicyCreate(@ModelAttribute CouponPolicyRegisterRequestDto couponPolicyRegisterRequestDto) {
         couponPolicyService.createCouponPolicy(couponPolicyRegisterRequestDto);
         return "redirect:/admin";
     }
@@ -68,4 +72,15 @@ public class AdminController {
         mv.addObject("info", orderDetailService.getOrderDetailAllInfos(orderId));
         return mv;
     }
+    @GetMapping("/api/shop/admin/coupons/policy")
+    public ModelAndView adminCouponPoliciesList() {
+        ModelAndView mv = new ModelAndView("/admin/inquiry");
+
+        List<CouponPolicyInquiryResponseDto> couponPolicyList = couponPolicyService.findCouponPolices();
+
+        mv.addObject("couponPolicyList", couponPolicyList);
+
+        return mv;
+    }
+
 }

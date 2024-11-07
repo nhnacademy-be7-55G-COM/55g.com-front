@@ -1,15 +1,17 @@
 package shop.S5G.front.service.couponpolicy.impl;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import shop.S5G.front.adapter.CouponPolicyAdapter;
-import shop.S5G.front.dto.CouponPolicyRegisterRequestDto;
+import shop.S5G.front.dto.coupon.CouponPolicyInquiryResponseDto;
+import shop.S5G.front.dto.coupon.CouponPolicyRegisterRequestDto;
 import shop.S5G.front.dto.MessageDto;
+import shop.S5G.front.exception.couponpolicy.CouponPolicyNotFoundException;
 import shop.S5G.front.exception.couponpolicy.CouponPolicyRegisterFailedException;
-import shop.S5G.front.exception.member.MemberRegisterFailedException;
 import shop.S5G.front.service.couponpolicy.CouponPolicyService;
 
 @Service
@@ -30,7 +32,20 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
             throw new CouponPolicyRegisterFailedException("CouponPolicy Registration Failed");
         }
         catch (HttpClientErrorException | HttpServerErrorException e) {
-            throw new MemberRegisterFailedException(e.getMessage());
+            throw new CouponPolicyRegisterFailedException(e.getMessage());
+        }
+    }
+
+    public List<CouponPolicyInquiryResponseDto> findCouponPolices() {
+        try {
+            ResponseEntity<List<CouponPolicyInquiryResponseDto>> response = couponPolicyAdapter.findCouponPolices();
+
+            if (response.getStatusCode().is2xxSuccessful()) {
+                return response.getBody();
+            }
+            throw new CouponPolicyNotFoundException("Not Exists Coupon Policy");
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
+            throw new CouponPolicyNotFoundException(e.getMessage());
         }
     }
 }
