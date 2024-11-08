@@ -1,19 +1,18 @@
 package shop.S5G.front.service.member.impl;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import shop.S5G.front.adapter.MemberAdapter;
-import shop.S5G.front.dto.jwt.TokenResponseDto;
-import shop.S5G.front.dto.member.MemberLoginRequestDto;
+import shop.S5G.front.dto.member.MemberInfoResponseDto;
 import shop.S5G.front.dto.member.MemberRegistrationRequestDto;
 import shop.S5G.front.dto.MessageDto;
-import shop.S5G.front.exception.member.MemberLoginFailedException;
+import shop.S5G.front.dto.member.MemberUpdateRequestDto;
+import shop.S5G.front.exception.member.MemberGetInfoFailedException;
 import shop.S5G.front.exception.member.MemberRegisterFailedException;
+import shop.S5G.front.exception.member.MemberUpdateFailedException;
 import shop.S5G.front.service.member.MemberService;
 
 @Service
@@ -39,33 +38,30 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void loginMember(MemberLoginRequestDto memberLoginRequestDto, HttpServletResponse response) {
-        try {
-            ResponseEntity<TokenResponseDto> responseEntity = memberAdapter.loginMember(memberLoginRequestDto);
-
-            if (responseEntity.getStatusCode().is2xxSuccessful()) {
-                TokenResponseDto tokenResponseDto = responseEntity.getBody();
-
-                if (tokenResponseDto != null) {
-                    Cookie accessJwt = new Cookie("accessJwt" ,tokenResponseDto.accessToken());
-                    accessJwt.setPath("/");
-                    accessJwt.setMaxAge(3600);
-                    accessJwt.setHttpOnly(true);
-                    response.addCookie(accessJwt);
-
-                    Cookie refreshJwt = new Cookie("refreshJwt" ,tokenResponseDto.refreshToken());
-                    refreshJwt.setPath("/");
-                    refreshJwt.setMaxAge(3600);
-                    refreshJwt.setHttpOnly(true);
-                    response.addCookie(refreshJwt);
-                }
-
-                return;
+    public MemberInfoResponseDto getMemberInfo() {
+        try{
+            ResponseEntity<MemberInfoResponseDto> response = memberAdapter.getMemberInfo();
+            if (response.getStatusCode().is2xxSuccessful()) {
+                return response.getBody();
             }
-            throw new MemberLoginFailedException("Member login failed");
+            throw new MemberGetInfoFailedException("get member info failed");
         }
         catch (HttpClientErrorException | HttpServerErrorException e) {
-            throw new MemberLoginFailedException(e.getMessage());
+            throw new MemberGetInfoFailedException("get member info failed");
+        }
+    }
+
+    @Override
+    public MessageDto updateMember(MemberUpdateRequestDto updateMemberRequestDto) {
+        try{
+            ResponseEntity<MessageDto> response = memberAdapter.updateMember(updateMemberRequestDto);
+            if (response.getStatusCode().is2xxSuccessful()) {
+                return response.getBody();
+            }
+            throw new MemberUpdateFailedException("Member update failed");
+        }
+        catch (HttpClientErrorException | HttpServerErrorException e) {
+            throw new MemberUpdateFailedException(e.getMessage());
         }
     }
 }

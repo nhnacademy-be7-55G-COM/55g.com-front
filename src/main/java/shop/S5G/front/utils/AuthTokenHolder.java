@@ -1,7 +1,9 @@
 package shop.S5G.front.utils;
 
-public class AuthTokenHolder {
+public final class AuthTokenHolder {
     private static final ThreadLocal<String> tokenHolder = new ThreadLocal<>();
+
+    private AuthTokenHolder() {}
 
     public static void setToken(String token) {
         tokenHolder.set(token);

@@ -1,16 +1,19 @@
 package shop.S5G.front.controller;
 
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import java.beans.PropertyEditorSupport;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import shop.S5G.front.dto.member.MemberLoginRequestDto;
+import shop.S5G.front.dto.member.MemberInfoResponseDto;
 import shop.S5G.front.dto.member.MemberRegistrationRequestDto;
+import shop.S5G.front.dto.member.MemberUpdateRequestDto;
 import shop.S5G.front.service.member.MemberService;
 
 @Controller
@@ -43,19 +46,32 @@ public class MemberController {
     }
 
     @PostMapping("/register")
-    public String register(@ModelAttribute MemberRegistrationRequestDto requestDto) {
+    public String register(@Valid @ModelAttribute MemberRegistrationRequestDto requestDto,
+        BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("error", "회원가입 양식에 부합하지 않습니다");
+            return "register";
+        }
         memberService.registerMember(requestDto);
         return "redirect:/login";
     }
-
-    @GetMapping("/login")
-    public String login() {
-        return "login";
+    @GetMapping("/mypage")
+    public String myPage(Model model) {
+        MemberInfoResponseDto responseDto = memberService.getMemberInfo();
+        model.addAttribute("member", responseDto);
+        return "mypage";
     }
 
-    @PostMapping("/login")
-    public String login(@ModelAttribute MemberLoginRequestDto requestDto, HttpServletResponse response) {
-        memberService.loginMember(requestDto, response);
-        return "redirect:/";
+    @PostMapping("/mypage/changeInfo")
+    public String changeMemberInfo(@Valid @ModelAttribute MemberUpdateRequestDto requestDto,
+        BindingResult bindingResult, Model model) {
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("error", "양식을 확인해주세요");
+            return "mypage";
+        }
+        memberService.updateMember(requestDto);
+
+        return "redirect:/mypage";
     }
 }
