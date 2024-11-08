@@ -23,8 +23,22 @@
         </div>
         <div class="col-md-6">
           <div class="right-element">
-            <a href="#" class="user-account for-buy"><i
-                class="icon icon-user"></i><span>Account</span></a>
+            <a href="/login" th:unless="${isLoggedIn}" id="account-button" class="user-account for-buy">
+              <i class="icon icon-user"></i><span id="account-text1">Login</span>
+            </a>
+
+            <a href="#" th:if="${isLoggedIn}" class="user-account for-buy" onclick="document.getElementById('logout-form').submit();">
+              <i class="icon icon-user"></i><span id="account-text2">Logout</span>
+            </a>
+            <!-- 마이 페이지 링크 (로그인 상태일 때만 표시) -->
+            <a href="/mypage" th:if="${isLoggedIn}" class="user-account for-buy">
+              <i class="icon icon-user"></i><span>My Page</span>
+            </a>
+
+            <!-- 로그아웃을 위한 POST 폼 -->
+            <form id="logout-form" action="/logout" method="POST" style="display:none;">
+              <button type="submit">Logout</button>
+            </form>
             <a href="#" class="cart for-buy"><i class="icon icon-clipboard"></i><span>Cart:(0
 									$)</span></a>
 

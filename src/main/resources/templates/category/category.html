@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>카테고리 리스트</title>
+    <style>
+        /* 전체 페이지 스타일 */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        /* 리스트 스타일 */
+        .category-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 0;
+            list-style-type: none;
+            max-width: 800px;
+            margin: auto;
+        }
+
+        /* 카드 스타일 */
+        .category-item {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            transition: transform 0.2s;
+            text-align: center;
+        }
+
+        .category-item:hover {
+            transform: scale(1.05);
+        }
+
+        .category-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .category-status {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .category-status.active {
+            color: green;
+        }
+
+        .category-status.inactive {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<h1>국내도서 카테고리 목록</h1>
+<ul class="category-list">
+    <!-- allCategories 목록 중 parentCategoryName이 국내도서인 항목만 출력 -->
+    <li th:each="category : ${allCategories}"
+        th:if="${#strings.equals(category.parentCategoryName, '국내도서')}"
+        class="category-item">
+        <div class="category-name">
+            <a th:href="@{'/books/' + ${category.parentCategoryName}}" th:text="${category.categoryName}"></a>
+        </div>
+    </li>
+</ul>
+</body>
+</html>
