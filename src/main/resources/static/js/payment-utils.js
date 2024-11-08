@@ -110,12 +110,13 @@ const getDeliveryInformation = ({
     addressSelector,
     addressDetailSelector,
     addressExtraSelector
-}, feeId, receiveDateSelector) => {
+}, feeId, receiveDateSelector, receiverNameSelector) => {
   const zip = document.querySelector(zipSelector).value;
   const address= document.querySelector(addressSelector).value;
   const addressDetail= document.querySelector(addressDetailSelector).value;
   const addressExtra= document.querySelector(addressExtraSelector).value;
   const receiveDate = document.querySelector(receiveDateSelector).value;
+  const receiverName = document.querySelector(receiverNameSelector).value;
 
   // extra는 비어도 허용
   if (!isNotBlank(zip, address, addressDetail, receiveDate)) {
@@ -125,6 +126,7 @@ const getDeliveryInformation = ({
   return {
     address: addressString,
     deliveryFeeId: feeId,
-    receivedDate: receiveDate
+    receivedDate: receiveDate,
+    receiverName: receiverName
   };
 }
