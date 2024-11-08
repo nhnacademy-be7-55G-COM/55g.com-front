@@ -9,8 +9,10 @@ import shop.S5G.front.adapter.MemberAdapter;
 import shop.S5G.front.dto.member.MemberInfoResponseDto;
 import shop.S5G.front.dto.member.MemberRegistrationRequestDto;
 import shop.S5G.front.dto.MessageDto;
+import shop.S5G.front.dto.member.MemberUpdateRequestDto;
 import shop.S5G.front.exception.member.MemberGetInfoFailedException;
 import shop.S5G.front.exception.member.MemberRegisterFailedException;
+import shop.S5G.front.exception.member.MemberUpdateFailedException;
 import shop.S5G.front.service.member.MemberService;
 
 @Service
@@ -46,6 +48,20 @@ public class MemberServiceImpl implements MemberService {
         }
         catch (HttpClientErrorException | HttpServerErrorException e) {
             throw new MemberGetInfoFailedException("get member info failed");
+        }
+    }
+
+    @Override
+    public MessageDto updateMember(MemberUpdateRequestDto updateMemberRequestDto) {
+        try{
+            ResponseEntity<MessageDto> response = memberAdapter.updateMember(updateMemberRequestDto);
+            if (response.getStatusCode().is2xxSuccessful()) {
+                return response.getBody();
+            }
+            throw new MemberUpdateFailedException("Member update failed");
+        }
+        catch (HttpClientErrorException | HttpServerErrorException e) {
+            throw new MemberUpdateFailedException(e.getMessage());
         }
     }
 }

@@ -17,22 +17,28 @@
       <div class="position-sticky">
         <ul class="nav flex-column">
           <li class="nav-item">
-            <a class="nav-link active" id="personal-tab" data-bs-toggle="tab" href="#personal" role="tab">개인 정보</a>
+            <a class="nav-link active" id="personal-tab" data-bs-toggle="tab" href="#personal"
+               role="tab">개인 정보</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" id="points-tab" data-bs-toggle="tab" href="#points" role="tab">포인트 내역</a>
+            <a class="nav-link" id="points-tab" data-bs-toggle="tab" href="#points" role="tab">포인트
+              내역</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" id="coupons-tab" data-bs-toggle="tab" href="#coupons" role="tab">나의 쿠폰 목록</a>
+            <a class="nav-link" id="coupons-tab" data-bs-toggle="tab" href="#coupons" role="tab">나의
+              쿠폰 목록</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" id="orders-tab" data-bs-toggle="tab" href="#orders" role="tab">주문 목록</a>
+            <a class="nav-link" id="orders-tab" data-bs-toggle="tab" href="#orders" role="tab">주문
+              목록</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" id="address-tab" data-bs-toggle="tab" href="#address" role="tab">주소 정보</a>
+            <a class="nav-link" id="address-tab" data-bs-toggle="tab" href="#address" role="tab">주소
+              정보</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" id="reviews-tab" data-bs-toggle="tab" href="#reviews" role="tab">나의 리뷰 목록</a>
+            <a class="nav-link" id="reviews-tab" data-bs-toggle="tab" href="#reviews" role="tab">나의
+              리뷰 목록</a>
           </li>
         </ul>
       </div>
@@ -45,21 +51,38 @@
         <!-- 개인 정보 및 계정 상태 -->
         <div class="tab-pane fade show active" id="personal" role="tabpanel">
           <h3>개인 정보</h3>
+          <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}">
+            <!-- error 메시지가 여기 출력됨 -->
+          </div>
           <p>
             <a href="#" data-bs-toggle="modal" data-bs-target="#gradeInfoModal">
               <strong><span th:text="'회원 등급: '"></span></strong>
               <span th:text="${member.grade().gradeName()}"></span>
             </a>
           </p>
-          <p>ID: <span th:text="test"></span></p>
-          <p>연락처: <span th:text="${member.phoneNumber()}"></span></p>
-          <p>생년월일: <span th:text="${member.birth()}"></span></p>
-          <p>가입 일자: <span th:text="${member.createdAt()}"></span></p>
-          <p>최근 로그인: <span th:text="${member.latestLoginAt()}"></span></p>
-          <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#updatePersonalModal">개인 정보 변경</button>
-          <button class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#changePasswordModal">비밀번호 변경</button>
+          <p>ID: <span th:text="${member.loginId()}"></span></p>
+          <p>이름: <span th:text="${member.name()}"></span></p>
+          <p>연락처: <span
+              th:text="${member.phoneNumber().substring(0, 3) + '-' + member.phoneNumber().substring(3, 7) + '-' + member.phoneNumber().substring(7)}"></span>
+          </p>
+          <p>이메일: <span th:text="${member.email()}"></span></p>
+          <p>생년월일: <span
+              th:text="${member.birth().substring(0, 4) + '-' + member.birth().substring(4, 6) + '-' + member.birth().substring(6)}"></span>
+          </p>
+          <p>가입 일자: <span
+              th:text="${#temporals.format(member.createdAt(), 'yyyy-MM-dd HH:mm')}"></span></p>
+          <p>최근 로그인: <span
+              th:text="${#temporals.format(member.latestLoginAt(), 'yyyy-MM-dd HH:mm')}"></span></p>
+          <button class="btn btn-secondary" data-bs-toggle="modal"
+                  data-bs-target="#updatePersonalModal">개인 정보 변경
+          </button>
+          <button class="btn btn-primary mt-3" data-bs-toggle="modal"
+                  data-bs-target="#changePasswordModal">비밀번호 변경
+          </button>
           <br>
-          <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">회원 탈퇴</button>
+          <button class="btn btn-danger" data-bs-toggle="modal"
+                  data-bs-target="#deleteAccountModal">회원 탈퇴
+          </button>
         </div>
 
         <!-- 포인트 내역 -->
@@ -99,11 +122,15 @@
           <ul>
             <li th:each="address : ${addresses}">
               <span th:text="${address}"></span>
-              <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteAddressModal" data-bs-address-id="[[${address.id}]]">삭제</button>
+              <button class="btn btn-danger" data-bs-toggle="modal"
+                      data-bs-target="#deleteAddressModal" data-bs-address-id="[[${address.id}]]">삭제
+              </button>
             </li>
           </ul>
 
-          <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAddressModal">배송지 추가</button>
+          <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAddressModal">
+            배송지 추가
+          </button>
         </div>
         <!-- 리뷰 목록 -->
         <div class="tab-pane fade" id="reviews" role="tabpanel">
@@ -122,9 +149,9 @@
     </main>
   </div>
 </div>
-
 <!-- 개인 정보 변경 Modal -->
-<div class="modal fade" id="updatePersonalModal" tabindex="-1" aria-labelledby="updatePersonalModalLabel" aria-hidden="true">
+<div class="modal fade" id="updatePersonalModal" tabindex="-1"
+     aria-labelledby="updatePersonalModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -132,24 +159,26 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form>
+        <form th:action="@{/mypage/changeInfo}" method="post">
           <div class="mb-3">
-            <label for="newId" class="form-label">새 ID</label>
-            <input type="text" class="form-control" id="newId" placeholder="새 ID를 입력하세요">
+            <label for="newName" class="form-label">새 이름</label>
+            <input type="text" class="form-control" id="newName" name="name" placeholder="새 이름을 입력하세요"
+                   th:value="${member.name}">
           </div>
           <div class="mb-3">
-            <label for="phoneNumber" class="form-label">새 연락처</label>
-            <input type="tel" class="form-control" id="phoneNumber" placeholder="새 연락처를 입력하세요"
-                   oninput="formatPhoneNumber()">
-            <div id="phoneError" style="color: red; font-size: 0.9rem; display: none;">핸드폰 번호는
-              '010-0000-0000' 형식으로 입력해야 합니다
+            <label for="newPhoneNumber" class="form-label">새 연락처</label>
+            <input type="tel" class="form-control" id="newPhoneNumber" name="phoneNumber" placeholder="새 연락처를 입력하세요"
+                   th:value="${member.phoneNumber().substring(0, 3) + '-' + member.phoneNumber().substring(3, 7) + '-' + member.phoneNumber().substring(7)}" oninput="formatPhoneNumber()">
+            <div id="phoneError" style="color: red; font-size: 0.9rem; display: none;">
+              핸드폰 번호는 '010-0000-0000' 형식으로 입력해야 합니다
+            </div>
           </div>
           <div class="mb-3">
             <label for="newEmail" class="form-label">새 이메일</label>
-            <input type="email" class="form-control" id="newEmail" placeholder="새 이메일을 입력하세요">
+            <input type="email" class="form-control" id="newEmail" name="email" placeholder="새 이메일을 입력하세요"
+                   th:value="${member.email}">
           </div>
           <button type="submit" class="btn btn-primary">변경 저장</button>
-          </div>
         </form>
       </div>
     </div>
@@ -157,7 +186,8 @@
 </div>
 
 <!-- 회원 탈퇴 Modal -->
-<div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
+<div class="modal fade" id="deleteAccountModal" tabindex="-1"
+     aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -173,7 +203,8 @@
   </div>
 </div>
 <!-- 비밀번호 변경 Modal -->
-<div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+<div class="modal fade" id="changePasswordModal" tabindex="-1"
+     aria-labelledby="changePasswordModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -184,17 +215,22 @@
         <form id="changePasswordForm">
           <div class="mb-3">
             <label for="currentPassword" class="form-label">현재 비밀번호</label>
-            <input type="password" class="form-control" id="currentPassword" placeholder="현재 비밀번호를 입력하세요" required>
+            <input type="password" class="form-control" id="currentPassword"
+                   placeholder="현재 비밀번호를 입력하세요" required>
           </div>
           <div class="mb-3">
             <label for="newPassword" class="form-label">새 비밀번호</label>
-            <input type="password" class="form-control" id="newPassword" placeholder="새 비밀번호를 입력하세요" required>
+            <input type="password" class="form-control" id="newPassword" placeholder="새 비밀번호를 입력하세요"
+                   required>
           </div>
           <div class="mb-3">
             <label for="confirmNewPassword" class="form-label">새 비밀번호 확인</label>
-            <input type="password" class="form-control" id="confirmNewPassword" placeholder="새 비밀번호를 다시 입력하세요" required>
+            <input type="password" class="form-control" id="confirmNewPassword"
+                   placeholder="새 비밀번호를 다시 입력하세요" required>
           </div>
-          <div id="passwordError" class="text-danger" style="display: none;">새 비밀번호와 확인 비밀번호가 일치하지 않습니다.</div>
+          <div id="passwordError" class="text-danger" style="display: none;">새 비밀번호와 확인 비밀번호가 일치하지
+            않습니다.
+          </div>
           <button type="submit" class="btn btn-primary">비밀번호 변경</button>
         </form>
       </div>
@@ -202,7 +238,8 @@
   </div>
 </div>
 <!-- 회원 등급 정보 Modal -->
-<div class="modal fade" id="gradeInfoModal" tabindex="-1" aria-labelledby="gradeInfoModalLabel" aria-hidden="true">
+<div class="modal fade" id="gradeInfoModal" tabindex="-1" aria-labelledby="gradeInfoModalLabel"
+     aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -221,7 +258,8 @@
   </div>
 </div>
 <!-- 배송지 추가 Modal -->
-<div class="modal fade" id="addAddressModal" tabindex="-1" aria-labelledby="addAddressModalLabel" aria-hidden="true">
+<div class="modal fade" id="addAddressModal" tabindex="-1" aria-labelledby="addAddressModalLabel"
+     aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -245,7 +283,8 @@
   </div>
 </div>
 <!-- 배송지 삭제 Modal -->
-<div class="modal fade" id="deleteAddressModal" tabindex="-1" aria-labelledby="deleteAddressModalLabel" aria-hidden="true">
+<div class="modal fade" id="deleteAddressModal" tabindex="-1"
+     aria-labelledby="deleteAddressModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -262,7 +301,7 @@
 </div>
 
 <script>
-  document.getElementById('changePasswordForm').addEventListener('submit', function(event) {
+  document.getElementById('changePasswordForm').addEventListener('submit', function (event) {
     const newPassword = document.getElementById('newPassword').value;
     const confirmNewPassword = document.getElementById('confirmNewPassword').value;
     const passwordError = document.getElementById('passwordError');
