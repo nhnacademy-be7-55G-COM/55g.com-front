@@ -35,4 +35,9 @@ public class TestController {
     public ModelAndView testAlertPage() {
         throw new IllegalStateException("테스트 예외 던짐");
     }
+
+    @GetMapping("/auth")
+    public String authTest() {
+        return testAdapter.authTest().getBody();
+    }
 }
