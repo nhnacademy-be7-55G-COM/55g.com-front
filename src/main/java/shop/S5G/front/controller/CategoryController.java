@@ -19,7 +19,7 @@ public class CategoryController {
     @GetMapping("/category/register")
     public String showCategoryForm(Model model) {
         model.addAttribute("parentCategories", categoryService.getParentCategories());
-        return "category/category-register";
+        return "category-register";
     }
 
     //카테고리 등록
@@ -34,6 +34,6 @@ public class CategoryController {
     @GetMapping("/category")
     public String allCategory(Model model) {
         model.addAttribute("allCategories", categoryService.getParentCategories());
-        return "category/category";
+        return "category";
     }
 }

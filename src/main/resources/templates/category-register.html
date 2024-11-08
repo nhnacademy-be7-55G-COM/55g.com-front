@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <th:block th:replace="~{fragments/head :: headTemplate}"></th:block>
     <meta charset="utf-8">
     <title>카테고리 등록</title>
     <style>
@@ -101,5 +102,6 @@
     <!-- 등록 버튼 -->
     <button type="submit">카테고리 등록</button>
 </form>
+<div th:replace="~{fragments/footer}"></div>
 </body>
 </html>
