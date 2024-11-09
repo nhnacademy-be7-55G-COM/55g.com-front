@@ -128,8 +128,7 @@
           <h3>포인트 내역</h3>
           <p>현재 포인트: <span th:text="${member.point()}"></span></p>
           <div th:replace="~{fragments/point-history :: #pointHistoryTable}"></div>
-          <p>총 페이지: </p>
-          <ul id="point-pagination" class="pagination"></ul>
+          <ul id="point-pagination" class="pagination d-flex justify-content-end"></ul>
         </div>
 
         <!-- 나의 쿠폰 목록 -->
