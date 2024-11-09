@@ -18,6 +18,10 @@ spring:
     username: guest
     password: guest
 
+image:
+  appkey: appkey
+  secretKey: secretKey
+
 rabbitmq:
   host: localhost
 
