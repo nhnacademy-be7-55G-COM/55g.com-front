@@ -13,4 +13,6 @@ public interface DeliveryAdapter {
 
     @PutMapping("/admin")
     DeliveryResponseDto adminUpdateDelivery(@RequestBody DeliveryUpdateRequestDto updateRequest);
+
+
 }
