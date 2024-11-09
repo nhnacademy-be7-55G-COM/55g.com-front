@@ -4,7 +4,7 @@ import org.springframework.data.domain.Pageable;
 import shop.s5g.front.dto.PageResponseDto;
 import shop.s5g.front.dto.point.PointHistoryResponseDto;
 
-public interface PointerService {
+public interface PointHistoryService {
 
     PageResponseDto<PointHistoryResponseDto> getHistory(Pageable pageable);
 }

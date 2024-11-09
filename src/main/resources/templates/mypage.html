@@ -4,6 +4,11 @@
   <title>My Page</title>
   <meta charset="utf-8">
   <th:block th:replace="~{fragments/head :: headTemplate}"></th:block>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="/static/js/mypage-utils.js"></script>
+  <script>
+    const defaultSize=10;
+  </script>
 </head>
 
 <body data-bs-spy="scroll" data-bs-target="#sidebar" tabindex="0">
@@ -23,6 +28,39 @@
           <li class="nav-item">
             <a class="nav-link" id="points-tab" data-bs-toggle="tab" href="#points" role="tab">포인트
               내역</a>
+            <script>
+              const pointButton = document.querySelector('a#points-tab');
+              const pointHistoryCaller = async (size, page) => {
+                const { totalPage, totalElements } = await callPointHistoryPage('#pointHistoryTable', {size: size, page: page});
+                const pageButtonTemplate = `<li class="page-item"><button class="page-link"></button></li>`;
+                const pageButtonActiveTemplate = `<li class="page-item active"><button class="page-link"></button></li>`;
+                const pagination = document.querySelector('#point-pagination');
+                pagination.innerHTML = '';
+                console.log(`totalPage: ${totalPage}, totalElements: ${totalElements}`);
+                if (totalPage > 0) {
+                  for (let i=0; i<totalPage; i++) {
+                    let pageButton = null;
+                    console.log(`i: ${i}, page: ${page}, page===i => ${page === i}`);
+                    console.log(`typeof(i): ${typeof(i)}, typeof(page): ${typeof(page)}`);
+                    if (page === i) { // isActive
+                      pageButton = `<li class="page-item active"><button class="page-link" data-index="${i}">${i+1}</button></li>`;
+                    } else {
+                      pageButton = `<li class="page-item"><button class="page-link" data-index="${i}">${i+1}</button></li>`;
+                    }
+                    pagination.innerHTML += pageButton;
+                  }
+                }
+                const buttons = pagination.querySelectorAll('li > button');
+                buttons.forEach(button => {
+                  const index = button.getAttribute('data-index');
+                  button.addEventListener('click', () => {
+                    console.log(`call page: ${index}`);
+                    pointHistoryCaller(defaultSize, parseInt(index));
+                  });
+                })
+              };
+              pointButton.addEventListener('click', () => pointHistoryCaller(defaultSize, 0));
+            </script>
           </li>
           <li class="nav-item">
             <a class="nav-link" id="coupons-tab" data-bs-toggle="tab" href="#coupons" role="tab">나의
@@ -89,11 +127,9 @@
         <div class="tab-pane fade" id="points" role="tabpanel">
           <h3>포인트 내역</h3>
           <p>현재 포인트: <span th:text="${member.point()}"></span></p>
-          <ul>
-            <li th:each="point : ${pointsHistory}">
-              <span th:text="${point.date}"></span> - <span th:text="${point.amount}"></span>
-            </li>
-          </ul>
+          <div th:replace="~{fragments/point-history :: #pointHistoryTable}"></div>
+          <p>총 페이지: </p>
+          <ul id="point-pagination" class="pagination"></ul>
         </div>
 
         <!-- 나의 쿠폰 목록 -->

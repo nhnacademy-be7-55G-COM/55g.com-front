@@ -6,11 +6,11 @@ import org.springframework.stereotype.Service;
 import shop.s5g.front.adapter.PointAdapter;
 import shop.s5g.front.dto.PageResponseDto;
 import shop.s5g.front.dto.point.PointHistoryResponseDto;
-import shop.s5g.front.service.point.PointerService;
+import shop.s5g.front.service.point.PointHistoryService;
 
 @Service
 @RequiredArgsConstructor
-public class PointerServiceImpl implements PointerService {
+public class PointHistoryServiceImpl implements PointHistoryService {
     private final PointAdapter pointAdapter;
 
     @Override
