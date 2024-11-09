@@ -6,11 +6,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import shop.s5g.front.config.FeignGatewayAuthorizationConfig;
 import shop.s5g.front.dto.delivery.DeliveryFeeCreateRequestDto;
 import shop.s5g.front.dto.delivery.DeliveryFeeResponseDto;
 import shop.s5g.front.dto.delivery.DeliveryFeeUpdateRequestDto;
 
-@FeignClient(name = "deliveryFee", url = "${gateway.url}", path = "/api/shop/delivery/fee")
+@FeignClient(name = "deliveryFee", url = "${gateway.url}", path = "/api/shop/delivery/fee", configuration = FeignGatewayAuthorizationConfig.class)
 public interface DeliveryFeeAdapter {
     @GetMapping
     List<DeliveryFeeResponseDto> fetchDeliveryFees();

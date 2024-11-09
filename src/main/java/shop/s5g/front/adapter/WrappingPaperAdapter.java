@@ -9,10 +9,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import shop.s5g.front.config.FeignGatewayAuthorizationConfig;
 import shop.s5g.front.dto.wrappingpaper.WrappingPaperRequestDto;
 import shop.s5g.front.dto.wrappingpaper.WrappingPaperResponseDto;
 
-@FeignClient(name = "wrappingPaper", url = "${gateway.url}", path = "/api/shop/wrapping-paper")
+@FeignClient(name = "wrappingPaper", url = "${gateway.url}", path = "/api/shop/wrapping-paper", configuration = FeignGatewayAuthorizationConfig.class)
 public interface WrappingPaperAdapter {
     @GetMapping
     List<WrappingPaperResponseDto> fetchAllPapers();
