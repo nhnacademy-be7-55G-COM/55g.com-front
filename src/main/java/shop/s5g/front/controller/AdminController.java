@@ -12,9 +12,11 @@ import org.springframework.web.servlet.ModelAndView;
 import shop.s5g.front.dto.coupon.CouponPolicyInquiryResponseDto;
 import shop.s5g.front.dto.coupon.CouponPolicyRegisterRequestDto;
 import org.springframework.web.bind.annotation.RequestParam;
+import shop.s5g.front.dto.coupon.CouponTemplateRegisterRequestDto;
 import shop.s5g.front.dto.order.OrderQueryRequestDto;
 import shop.s5g.front.dto.order.OrderWithDetailResponseDto;
-import shop.s5g.front.service.couponpolicy.impl.CouponPolicyServiceImpl;
+import shop.s5g.front.service.coupon.policy.impl.CouponPolicyServiceImpl;
+import shop.s5g.front.service.coupon.template.impl.CouponTemplateServiceImpl;
 import shop.s5g.front.service.order.OrderDetailService;
 import shop.s5g.front.service.order.OrderService;
 
@@ -23,17 +25,31 @@ import shop.s5g.front.service.order.OrderService;
 public class AdminController {
 
     private final CouponPolicyServiceImpl couponPolicyService;
+    private final CouponTemplateServiceImpl couponTemplateService;
     private final OrderService orderService;
     private final OrderDetailService orderDetailService;
 
     @GetMapping("/admin")
-    public String adminPage() {
-        return "admin/admin";
+    public ModelAndView adminPage() {
+
+        ModelAndView mv = new ModelAndView("/admin/admin");
+
+        List<CouponPolicyInquiryResponseDto> couponPolicyList = couponPolicyService.findCouponPolices();
+
+        mv.addObject("couponPolicyList", couponPolicyList);
+
+        return mv;
     }
 
     @GetMapping("/admin/settings")
     public String adminSettingsPage() {
         return "admin/settings";
+    }
+
+    @PostMapping("/api/shop/admin/coupons/template")
+    public String adminCouponTemplateCreate(@ModelAttribute CouponTemplateRegisterRequestDto couponTemplateRegisterRequestDto) {
+        couponTemplateService.createCouponTemplate(couponTemplateRegisterRequestDto);
+        return "redirect:/admin";
     }
 
     @PostMapping("/api/shop/admin/coupons/policy")
@@ -69,6 +85,7 @@ public class AdminController {
         mv.addObject("info", orderDetailService.getOrderDetailAllInfos(orderId));
         return mv;
     }
+
     @GetMapping("/api/shop/admin/coupons/policy")
     public ModelAndView adminCouponPoliciesList() {
         ModelAndView mv = new ModelAndView("/admin/inquiry");
