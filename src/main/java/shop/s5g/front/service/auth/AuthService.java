@@ -9,4 +9,5 @@ public interface AuthService {
     void loginAdmin(LoginRequestDto loginRequestDto, HttpServletResponse response);
     void logoutMember(HttpServletRequest request, HttpServletResponse response);
     void reissueToken(String refreshToken, HttpServletResponse response);
+    String getRole(String accessToken);
 }

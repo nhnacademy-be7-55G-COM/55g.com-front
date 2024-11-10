@@ -1,4 +1,4 @@
-package shop.s5g.front.filter;
+package shop.s5g.front.interceptor;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;

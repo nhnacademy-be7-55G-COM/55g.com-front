@@ -2,9 +2,11 @@ package shop.s5g.front.adapter;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import shop.s5g.front.dto.auth.RoleResponseDto;
 import shop.s5g.front.dto.jwt.TokenResponseDto;
 import shop.s5g.front.dto.member.LoginRequestDto;
 
@@ -21,4 +23,7 @@ public interface AuthAdapter {
 
     @PostMapping("/api/auth/admin/login")
     ResponseEntity<TokenResponseDto> loginAdmin(@RequestBody LoginRequestDto loginRequestDto);
+
+    @GetMapping("/api/auth/role")
+    ResponseEntity<RoleResponseDto> getRole(@RequestHeader(name = "Authorization") String accessToken);
 }

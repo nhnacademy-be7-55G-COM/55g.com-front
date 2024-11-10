@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import shop.s5g.front.filter.LoginStatusInterceptor;
+import shop.s5g.front.filter.AuthorizationFilter;
 import shop.s5g.front.filter.TokenRefreshFilter;
 import shop.s5g.front.service.auth.AuthService;
 
@@ -20,6 +20,15 @@ public class FilterConfig {
         registrationBean.setFilter(new TokenRefreshFilter(authService));
         registrationBean.addUrlPatterns("/*");
         registrationBean.setOrder(1);
+        return registrationBean;
+    }
+
+    @Bean
+    public FilterRegistrationBean<AuthorizationFilter> authorizationFilter() {
+        FilterRegistrationBean<AuthorizationFilter> registrationBean = new FilterRegistrationBean<>();
+        registrationBean.setFilter(new AuthorizationFilter(authService));
+        registrationBean.addUrlPatterns("/*");
+        registrationBean.setOrder(2);
         return registrationBean;
     }
 }
