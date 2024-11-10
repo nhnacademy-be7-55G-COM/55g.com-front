@@ -1,10 +1,11 @@
 package shop.s5g.front.dto.wrappingpaper;
 
-public record WrappingPaperResponseDto(
+public record WrappingPaperView(
     long id,
     boolean active,
     String name,
     int price,
-    String imageName
+    String imageLink
 ) {
+
 }

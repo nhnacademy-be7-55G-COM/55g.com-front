@@ -16,7 +16,7 @@ import shop.s5g.front.config.FeignImageProviderAuthorizationConfig;
 )
 public interface ImageProviderAdapter {
     @PutMapping(
-        value = "/images",
+        value = "/images?overwrite=true",
         consumes = MediaType.APPLICATION_OCTET_STREAM_VALUE
     )
     @Headers({"Content-Type: application/octet-stream", "Authorization: ${image.secretKey}"})

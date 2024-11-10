@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 import shop.s5g.front.dto.coupon.CouponPolicyInquiryResponseDto;
 import shop.s5g.front.dto.coupon.CouponPolicyRegisterRequestDto;
+import shop.s5g.front.dto.wrappingpaper.WrappingPaperView;
 import shop.s5g.front.service.couponpolicy.impl.CouponPolicyServiceImpl;
 import shop.s5g.front.service.delivery.DeliveryFeeService;
+import shop.s5g.front.service.wrappingpaper.WrappingPaperService;
 
 @Controller
 @RequiredArgsConstructor
@@ -18,6 +20,7 @@ public class AdminController {
 
     private final CouponPolicyServiceImpl couponPolicyService;
     private final DeliveryFeeService deliveryFeeService;
+    private final WrappingPaperService wrappingPaperService;
 
     @GetMapping("/admin")
     public String adminPage() {
@@ -47,10 +50,22 @@ public class AdminController {
     }
 
     @GetMapping("/admin/delivery-fee")
-    public ModelAndView testInquiries() {
+    public ModelAndView adminDeliveryFeePage() {
         ModelAndView mv = new ModelAndView("admin/delivery-fee");
         mv.addObject("feeList", deliveryFeeService.getAllFees());
+
         return mv;
     }
 
+    @GetMapping("/admin/wrappingpaper")
+    public ModelAndView adminWrappingPaperPage() {
+        ModelAndView mv = new ModelAndView("admin/wrappingpaper");
+        List<WrappingPaperView> views =
+            wrappingPaperService.fetchAllPapers().stream()
+                .map(wrappingPaperService::convertToView)
+                .toList();
+        mv.addObject("paperList", views);
+
+        return mv;
+    }
 }

@@ -24,7 +24,7 @@ public class PurchaseController {
         // TODO: 장바구니 가져오는 로직.
         //  장바구니가 비어있으면 장바구니로 리디렉트되도록 함.
         // 포장지 가져오는 로직.
-        CompletableFuture<List<WrappingPaperResponseDto>> wrapsFuture = wrappingPaperService.fetchAllPapersAsync();
+        CompletableFuture<List<WrappingPaperResponseDto>> wrapsFuture = wrappingPaperService.fetchActivePapersAsync();
         // TODO: 적립정책 가져오는 로직.
         mv.addObject("wrappingPaperList", wrapsFuture.join());
         // TODO: CustomerKey 바꿔야함.

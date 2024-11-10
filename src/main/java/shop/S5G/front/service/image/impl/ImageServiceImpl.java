@@ -3,12 +3,14 @@ package shop.s5g.front.service.image.impl;
 import java.io.IOException;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import shop.s5g.front.adapter.ImageProviderAdapter;
 import shop.s5g.front.dto.image.ImageResponseDto;
 import shop.s5g.front.service.image.ImageService;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ImageServiceImpl implements ImageService {
@@ -16,6 +18,7 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public ImageResponseDto uploadImage(String path, byte[] image) {
+        log.debug("Uploading image: path={}", path);
         return mapResponseToDto(imageProviderAdapter.uploadImage(path, image));
     }
 
