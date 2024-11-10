@@ -10,4 +10,6 @@ public interface CouponTemplateService {
     MessageDto createCouponTemplate(CouponTemplateRegisterRequestDto couponTemplateRegisterRequestDto);
 
     List<CouponTemplateInquiryResponseDto> findCouponTemplates(int page, int size);
+
+    CouponTemplateInquiryResponseDto findCouponTemplateById(Long couponTemplateId);
 }

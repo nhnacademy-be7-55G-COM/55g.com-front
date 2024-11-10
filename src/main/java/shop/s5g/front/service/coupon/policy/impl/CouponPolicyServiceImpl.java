@@ -10,8 +10,8 @@ import shop.s5g.front.adapter.CouponPolicyAdapter;
 import shop.s5g.front.dto.coupon.CouponPolicyInquiryResponseDto;
 import shop.s5g.front.dto.coupon.CouponPolicyRegisterRequestDto;
 import shop.s5g.front.dto.MessageDto;
-import shop.s5g.front.exception.couponpolicy.CouponPolicyNotFoundException;
-import shop.s5g.front.exception.couponpolicy.CouponPolicyRegisterFailedException;
+import shop.s5g.front.exception.coupon.CouponPolicyNotFoundException;
+import shop.s5g.front.exception.coupon.CouponPolicyRegisterFailedException;
 import shop.s5g.front.service.coupon.policy.CouponPolicyService;
 
 @Service

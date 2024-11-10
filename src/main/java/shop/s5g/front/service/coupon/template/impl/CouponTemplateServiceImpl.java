@@ -10,8 +10,8 @@ import shop.s5g.front.adapter.CouponTemplateAdapter;
 import shop.s5g.front.dto.MessageDto;
 import shop.s5g.front.dto.coupon.CouponTemplateInquiryResponseDto;
 import shop.s5g.front.dto.coupon.CouponTemplateRegisterRequestDto;
-import shop.s5g.front.exception.couponpolicy.CouponTemplateNotFoundException;
-import shop.s5g.front.exception.couponpolicy.CouponTemplateRegisterFailedException;
+import shop.s5g.front.exception.coupon.CouponTemplateNotFoundException;
+import shop.s5g.front.exception.coupon.CouponTemplateRegisterFailedException;
 import shop.s5g.front.service.coupon.template.CouponTemplateService;
 
 @Service
@@ -61,5 +61,22 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
          catch (HttpClientErrorException | HttpServerErrorException e) {
             throw new CouponTemplateRegisterFailedException(e.getMessage());
          }
+    }
+
+    @Override
+    public CouponTemplateInquiryResponseDto findCouponTemplateById(Long couponTemplateId) {
+
+        try {
+            ResponseEntity<CouponTemplateInquiryResponseDto> response = couponTemplateAdapter.findCouponTemplateById(couponTemplateId);
+
+            if (response.getStatusCode().is2xxSuccessful()) {
+                return response.getBody();
+            }
+            throw new CouponTemplateNotFoundException("CouponTemplate Not Found...!");
+        }
+        catch (HttpClientErrorException | HttpServerErrorException e) {
+            throw new CouponTemplateRegisterFailedException(e.getMessage());
+        }
+
     }
 }

@@ -1,4 +1,4 @@
-package shop.s5g.front.exception.couponpolicy;
+package shop.s5g.front.exception.coupon;
 
 public class CouponTemplateRegisterFailedException extends RuntimeException {
 

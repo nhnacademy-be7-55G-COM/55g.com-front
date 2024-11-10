@@ -11,22 +11,23 @@
 <div class="container">
   <h2>쿠폰 상세 정보</h2>
 
-<!--  &lt;!&ndash; 쿠폰 정보 표시 &ndash;&gt;-->
-<!--  <div>-->
-<!--    <p><strong>쿠폰 이름:</strong> <span th:text="${couponTemplate.couponName}"></span></p>-->
-<!--    <p><strong>할인 금액:</strong> <span th:text="${couponTemplate.discountPrice}"></span></p>-->
-<!--    <p><strong>조건:</strong> <span th:text="${couponTemplate.condition}"></span></p>-->
-<!--    <p><strong>최대 할인 금액:</strong> <span th:text="${couponTemplate.maxPrice}"></span></p>-->
-<!--    <p><strong>기간:</strong> <span th:text="${couponTemplate.duration}"></span></p>-->
-<!--    <p><strong>설명:</strong> <span th:text="${couponTemplate.couponDescription}"></span></p>-->
-<!--  </div>-->
+  <!-- 쿠폰 정보 표시 -->
+  <div>
+    <p><strong>쿠폰 이름:</strong> <span th:text="${couponTemplate.couponName()}"></span></p>
+    <p><strong>할인 금액:</strong> <span th:text="${couponTemplate.discountPrice()}"></span></p>
+    <p><strong>조건:</strong> <span th:text="${couponTemplate.condition()}"></span></p>
+    <p><strong>최대 할인 금액:</strong> <span th:text="${couponTemplate.maxPrice()}"></span></p>
+    <p><strong>기간:</strong> <span th:text="${couponTemplate.duration()}"></span></p>
+    <p><strong>설명:</strong> <span th:text="${couponTemplate.couponDescription()}"></span></p>
+  </div>
 
-<!--  &lt;!&ndash; 만료일 입력 폼 &ndash;&gt;-->
-<!--  <form action="#" th:action="@{/coupon/{id}/expireDate(id=${couponTemplate.id})}" method="post">-->
-<!--    <label for="expireDate">만료일:</label>-->
-<!--    <input type="date" id="expireDate" name="expireDate" required="required">-->
-<!--    <button type="submit">만료일 설정</button>-->
-<!--  </form>-->
+  <!-- 만료일 입력 폼 -->
+  <form action="#" th:action="@{/api/shop/admin/coupons}" method="post">
+    <input type="hidden" name="couponTemplateId" th:value="${couponTemplateId}">
+    <label for="expiredAt">만료일:</label>
+    <input type="datetime-local" id="expiredAt" name="expiredAt" required="required">
+    <button type="submit">만료일 설정</button>
+  </form>
 </div>
 </body>
 </html>
