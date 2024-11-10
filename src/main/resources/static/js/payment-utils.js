@@ -91,10 +91,18 @@ const returnToIndex = () => {
 const fetchShoppingCart = async () => {
   return (await axios.get('/payment/support/fetch-cart')).data;
 }
+//
+// const createNewOrder = (deliveryInfo) => {
+//   return axios.post('/payment/support/create-order', deliveryInfo);
+// }
 
-const createNewOrder = (deliveryInfo) => {
-  return axios.post('/payment/support/create-order', deliveryInfo);
-}
+const createNewOrder = ({
+  customerId, delivery, elements, netPrice, totalPrice
+}) => {
+  return axios.post('/payment/support/create-order', {
+    customerId, delivery, elements, netPrice, totalPrice
+  });
+};
 
 const isNotBlank = (...args) => {
   for (let i=0; i<args.length; i++) {
@@ -129,4 +137,26 @@ const getDeliveryInformation = ({
     receivedDate: receiveDate,
     receiverName: receiverName
   };
+};
+
+// 적립률을 여기서 계산하지 말고 컨트롤러에서 계산하도록 하자.
+// 아니아니 적립률을 보여줘야 할거 아니냐..
+// 근데 그러면 여기서 계산하는게 아니라 미리 계산해서 보여줘야 하는게 아닌지?
+const convertCartToRequest = ({
+    id, paperSelector, quantity, totalPrice
+}) => {
+  const paper = document.querySelector(paperSelector);
+  const val = parseInt(paper.value);
+  const paperId = val < 0 ? null : val;
+
+  return {
+    bookId: id,
+    wrappingPaperId: paperId,
+    quantity: quantity,
+    totalPrice: totalPrice
+  };
+};
+
+const onPaymentFail = (orderDataId) => {
+  return axios.delete(`/payment/support/order`);
 }
