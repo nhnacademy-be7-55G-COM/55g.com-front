@@ -4,6 +4,7 @@ import java.util.List;
 import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 import shop.s5g.front.dto.coupon.CouponPolicyInquiryResponseDto;
 import shop.s5g.front.dto.coupon.CouponPolicyRegisterRequestDto;
 import org.springframework.web.bind.annotation.RequestParam;
+import shop.s5g.front.dto.coupon.CouponTemplateInquiryResponseDto;
 import shop.s5g.front.dto.coupon.CouponTemplateRegisterRequestDto;
 import shop.s5g.front.dto.order.OrderQueryRequestDto;
 import shop.s5g.front.dto.order.OrderWithDetailResponseDto;
@@ -44,6 +46,25 @@ public class AdminController {
     @GetMapping("/admin/settings")
     public String adminSettingsPage() {
         return "admin/settings";
+    }
+
+    @GetMapping("/coupon/create/templateId={templateId}")
+    public String adminCouponCreate(@PathVariable("templateId") Long templateId) {
+        return "admin/coupon";
+    }
+
+    @GetMapping("/api/shop/admin/coupons/templates")
+    public String adminCouponTemplatePage(
+        @RequestParam(defaultValue = "1") int page,
+        @RequestParam(defaultValue = "15") int size,
+        Model model
+        ) {
+        List<CouponTemplateInquiryResponseDto> couponTemplateList = couponTemplateService.findCouponTemplates(page, size);
+
+        model.addAttribute("couponTemplate", couponTemplateList);
+        model.addAttribute("currentPage", page);
+
+        return "admin/templateInquiry";
     }
 
     @PostMapping("/api/shop/admin/coupons/template")
@@ -88,7 +109,7 @@ public class AdminController {
 
     @GetMapping("/api/shop/admin/coupons/policy")
     public ModelAndView adminCouponPoliciesList() {
-        ModelAndView mv = new ModelAndView("/admin/inquiry");
+        ModelAndView mv = new ModelAndView("policyInquiry");
 
         List<CouponPolicyInquiryResponseDto> couponPolicyList = couponPolicyService.findCouponPolices();
 

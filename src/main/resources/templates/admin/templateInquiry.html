@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>쿠폰 템플릿 조회</title>
+  <link rel="stylesheet" href="style.css">
+  <div th:replace="~{fragments/head}"></div>
+</head>
+<body>
+<div class="container">
+  <h2>쿠폰 템플릿 조회</h2>
+
+  <!-- 쿠폰 목록 테이블 -->
+  <table border="1" style="width: 100%; margin-top: 20px; border-collapse: collapse;">
+    <thead>
+    <tr>
+      <th style="padding: 10px; background-color: #f0f0f0;">순번</th>
+      <th style="padding: 10px; background-color: #f0f0f0;">쿠폰 이름</th>
+      <th style="padding: 10px; background-color: #f0f0f0;">할인 금액</th>
+      <th style="padding: 10px; background-color: #f0f0f0;">조건</th>
+      <th style="padding: 10px; background-color: #f0f0f0;">최대 할인 금액</th>
+      <th style="padding: 10px; background-color: #f0f0f0;">기간</th>
+      <th style="padding: 10px; background-color: #f0f0f0;">설명</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- 쿠폰 정책 리스트를 반복해서 화면에 표시 -->
+    <tr th:each="template, iterStat : ${couponTemplate}">
+      <!-- 순번 표시 -->
+      <td style="padding: 10px;" th:text="${iterStat.index + 1}">순번</td>
+
+      <td style="padding: 10px;">
+        <!-- 쿠폰 이름을 클릭하면 coupon.html로 이동 -->
+        <a th:href="@{/coupon/create/templateId={templateId}(templateId=${iterStat.index + 1})}" th:text="${template.couponName()}">쿠폰 이름</a>
+      </td>
+      <td style="padding: 10px;" th:text="${template.discountPrice()}">할인 금액</td>
+      <td style="padding: 10px;" th:text="${template.condition()}">조건</td>
+      <td style="padding: 10px;" th:text="${template.maxPrice()}">최대 할인 금액</td>
+      <td style="padding: 10px;" th:text="${template.duration()}">기간</td>
+      <td style="padding: 10px;" th:text="${template.couponDescription()}">설명</td>
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- 페이지 네비게이션 -->
+  <div class="pagination">
+    <!-- 이전 페이지 버튼 -->
+    <span th:if="${currentPage > 1}">
+      <a th:href="@{/api/shop/admin/coupons/templates?page=${currentPage - 1}}">이전</a>
+    </span>
+
+    <!-- 현재 페이지 표시 -->
+    <span>현재 페이지: <span th:text="${currentPage}"></span></span>
+
+    <!-- 다음 페이지 버튼 -->
+    <span th:if="${currentPage < 999}">
+      <a th:href="@{/api/shop/admin/coupons/templates?page=${currentPage + 1}}"> : 다음</a>
+    </span>
+  </div>
+
+</div>
+</body>
+</html>
