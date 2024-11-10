@@ -5,7 +5,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
-import shop.s5g.front.dto.jwt.RefreshTokenRequestDto;
 import shop.s5g.front.dto.jwt.TokenResponseDto;
 import shop.s5g.front.dto.member.MemberLoginRequestDto;
 
@@ -17,7 +16,7 @@ public interface AuthAdapter {
     @PostMapping("/api/auth/logout")
     ResponseEntity<Void> logoutMember(@RequestHeader(name = "Authorization") String refreshToken);
 
-    //TODO 헤더로 변경 예정
     @PostMapping("/api/auth/reissue")
-    ResponseEntity<TokenResponseDto> reissueToken(@RequestBody RefreshTokenRequestDto refreshTokenRequestDto);
+    ResponseEntity<TokenResponseDto> reissueToken(@RequestHeader(name = "Authorization") String refreshToken);
+
 }

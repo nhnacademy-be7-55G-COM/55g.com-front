@@ -27,26 +27,7 @@ public class AuthServiceImpl implements AuthService {
     public void loginMember(MemberLoginRequestDto memberLoginRequestDto, HttpServletResponse response) {
         try {
             ResponseEntity<TokenResponseDto> responseEntity = authAdapter.loginMember(memberLoginRequestDto);
-
-            if (responseEntity.getStatusCode().is2xxSuccessful()) {
-                TokenResponseDto tokenResponseDto = responseEntity.getBody();
-
-                if (tokenResponseDto != null) {
-                    Cookie accessJwt = new Cookie("accessJwt" ,tokenResponseDto.accessToken());
-                    accessJwt.setPath("/");
-                    accessJwt.setMaxAge(3600);
-                    accessJwt.setHttpOnly(true);
-                    response.addCookie(accessJwt);
-
-                    Cookie refreshJwt = new Cookie("refreshJwt" ,tokenResponseDto.refreshToken());
-                    refreshJwt.setPath("/");
-                    refreshJwt.setMaxAge(3600);
-                    refreshJwt.setHttpOnly(true);
-                    response.addCookie(refreshJwt);
-                }
-                return;
-            }
-            throw new MemberLoginFailedException("Member login failed");
+            setTokenAtCookie(response, responseEntity);
         }
         catch (HttpClientErrorException | HttpServerErrorException e) {
             throw new MemberLoginFailedException(e.getMessage());
@@ -80,6 +61,40 @@ public class AuthServiceImpl implements AuthService {
         catch (HttpClientErrorException | HttpServerErrorException e) {
             throw new LogoutException("Logout failed");
         }
+    }
+
+    @Override
+    public void reissueToken(String refreshToken, HttpServletResponse response) {
+        try {
+            ResponseEntity<TokenResponseDto> responseEntity = authAdapter.reissueToken("Bearer " + refreshToken);
+            setTokenAtCookie(response, responseEntity);
+        }
+        catch (HttpClientErrorException | HttpServerErrorException e) {
+            throw new MemberLoginFailedException(e.getMessage());
+        }
+    }
+
+    private void setTokenAtCookie(HttpServletResponse response,
+        ResponseEntity<TokenResponseDto> responseEntity) {
+        if (responseEntity.getStatusCode().is2xxSuccessful()) {
+            TokenResponseDto tokenResponseDto = responseEntity.getBody();
+
+            if (tokenResponseDto != null) {
+                Cookie accessJwt = new Cookie("accessJwt" ,tokenResponseDto.accessToken());
+                accessJwt.setPath("/");
+                accessJwt.setMaxAge(3600);
+                accessJwt.setHttpOnly(true);
+                response.addCookie(accessJwt);
+
+                Cookie refreshJwt = new Cookie("refreshJwt" ,tokenResponseDto.refreshToken());
+                refreshJwt.setPath("/");
+                refreshJwt.setMaxAge(3600);
+                refreshJwt.setHttpOnly(true);
+                response.addCookie(refreshJwt);
+            }
+            return;
+        }
+        throw new MemberLoginFailedException("Member login failed");
     }
 
 }

@@ -1,4 +1,4 @@
-package shop.s5g.front.interceptor;
+package shop.s5g.front.filter;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,9 +12,9 @@ public class LoginStatusInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
         Object handler) throws Exception {
 
-        Cookie refreshJwt = WebUtils.getCookie(request, "refreshJwt");
+        Cookie accessJwt = WebUtils.getCookie(request, "accessJwt");
 
-        request.setAttribute("isLoggedIn", refreshJwt != null);
+        request.setAttribute("isLoggedIn", accessJwt != null);
         return true;
     }
 }
