@@ -1,6 +1,5 @@
 package shop.s5g.front.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -12,24 +11,18 @@ import shop.s5g.front.service.auth.AuthService;
 
 @Controller
 @RequiredArgsConstructor
-public class AuthController {
+public class AdminLoginController {
 
     private final AuthService authService;
 
-    @GetMapping("/login")
+    @GetMapping("/admin/login")
     public String login() {
-        return "login";
+        return "admin/admin-login";
     }
 
-    @PostMapping("/login")
-    public String login(@ModelAttribute LoginRequestDto requestDto, HttpServletResponse response) {
-        authService.loginMember(requestDto, response);
-        return "redirect:/";
-    }
-
-    @PostMapping("/logout")
-    public String logout(HttpServletRequest request, HttpServletResponse response) {
-        authService.logoutMember(request, response);
-        return "redirect:/";
+    @PostMapping("/admin/login")
+    public String loginPost(@ModelAttribute LoginRequestDto requestDto, HttpServletResponse response) {
+        authService.loginAdmin(requestDto, response);
+        return "redirect:/admin";
     }
 }

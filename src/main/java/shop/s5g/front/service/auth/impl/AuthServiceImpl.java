@@ -11,7 +11,7 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.util.WebUtils;
 import shop.s5g.front.adapter.AuthAdapter;
 import shop.s5g.front.dto.jwt.TokenResponseDto;
-import shop.s5g.front.dto.member.MemberLoginRequestDto;
+import shop.s5g.front.dto.member.LoginRequestDto;
 import shop.s5g.front.exception.auth.LogoutException;
 import shop.s5g.front.exception.auth.TokenNotFoundException;
 import shop.s5g.front.exception.member.MemberLoginFailedException;
@@ -24,9 +24,22 @@ public class AuthServiceImpl implements AuthService {
     private final AuthAdapter authAdapter;
 
     @Override
-    public void loginMember(MemberLoginRequestDto memberLoginRequestDto, HttpServletResponse response) {
+    public void loginMember(LoginRequestDto loginRequestDto, HttpServletResponse response) {
         try {
-            ResponseEntity<TokenResponseDto> responseEntity = authAdapter.loginMember(memberLoginRequestDto);
+            ResponseEntity<TokenResponseDto> responseEntity = authAdapter.loginMember(
+                loginRequestDto);
+            setTokenAtCookie(response, responseEntity);
+        }
+        catch (HttpClientErrorException | HttpServerErrorException e) {
+            throw new MemberLoginFailedException(e.getMessage());
+        }
+    }
+
+    @Override
+    public void loginAdmin(LoginRequestDto loginRequestDto, HttpServletResponse response) {
+        try {
+            ResponseEntity<TokenResponseDto> responseEntity = authAdapter.loginAdmin(
+                loginRequestDto);
             setTokenAtCookie(response, responseEntity);
         }
         catch (HttpClientErrorException | HttpServerErrorException e) {
