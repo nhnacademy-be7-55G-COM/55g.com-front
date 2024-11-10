@@ -12,8 +12,6 @@ import shop.s5g.front.service.auth.AuthService;
 @RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
 
-    private final AuthService authService;
-
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new AuthorizationInterceptor());
