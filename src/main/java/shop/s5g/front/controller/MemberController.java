@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import shop.s5g.front.dto.member.MemberInfoResponseDto;
+import shop.s5g.front.dto.member.MemberRegistrationRequestDto;
+import shop.s5g.front.dto.member.MemberUpdateRequestDto;
 import shop.s5g.front.service.member.MemberService;
 
 @Controller

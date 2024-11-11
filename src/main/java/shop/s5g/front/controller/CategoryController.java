@@ -15,10 +15,11 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
-    //DB의 모든 카테고리 이름 가져오기(등록)
+    //카테고리 등록
     @GetMapping("/category/register")
     public String showCategoryForm(Model model) {
-        model.addAttribute("parentCategories", categoryService.getParentCategories());
+//        model.addAttribute("parentCategories", categoryService.getParentCategories());
+        model.addAttribute("parentCategories", categoryService.getKoreaCategories());
         return "category-register";
     }
 

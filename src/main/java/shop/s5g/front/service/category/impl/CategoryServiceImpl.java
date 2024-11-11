@@ -53,4 +53,21 @@ public class CategoryServiceImpl implements CategoryService {
             throw new CategoryRegisterFailedException(e.getMessage());
         }
     }
+
+    /**
+     * 국내도서 하위 카테고리 조회
+     */
+    @Override
+    public List<CategoryResponseDto> getKoreaCategories() {
+        try{
+            ResponseEntity<List<CategoryResponseDto>> koreaCategories = categoryAdapter.getKoreaCategories();
+            if (koreaCategories.getStatusCode().is2xxSuccessful()) {
+                return koreaCategories.getBody();
+            }
+            throw new CategoryRegisterFailedException("카테고리가 존재하지 않습니다.");
+        }
+        catch (HttpClientErrorException | HttpServerErrorException e) {
+            throw new CategoryRegisterFailedException(e.getMessage());
+        }
+    }
 }

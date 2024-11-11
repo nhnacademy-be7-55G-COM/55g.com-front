@@ -22,7 +22,7 @@ rabbitmq:
   host: localhost
 
 gateway:
-  url: http://localhost:8000
+  url: http://localhost:8081
 
 management:
   endpoints:
@@ -71,7 +71,7 @@ spring:
 logging:
   level:
     root: info
-    shop.S5G.front: trace
+    shop.s5g.front: trace
 
 ---
 spring:

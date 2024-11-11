@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import shop.s5g.front.adapter.BookAdapter;
+import shop.s5g.front.dto.PageResponseDto;
 import shop.s5g.front.dto.book.BookPageableResponseDto;
 import shop.s5g.front.exception.book.BookGetFailedException;
 import shop.s5g.front.service.book.BookService;
@@ -22,9 +23,10 @@ public class BookServiceImpl implements BookService {
      * 모든 도서 조회
      */
     @Override
-    public Page<BookPageableResponseDto> getAllBooks(Pageable pageable) {
+//    public Page<BookPageableResponseDto> getAllBooks(Pageable pageable) {
+    public PageResponseDto<BookPageableResponseDto> getAllBooks(Pageable pageable) {
         try {
-            ResponseEntity<Page<BookPageableResponseDto>> allBooks = bookAdapter.getAllBooksPage(pageable);
+            ResponseEntity<PageResponseDto<BookPageableResponseDto>> allBooks = bookAdapter.getAllBooksPageable(pageable);
             if (allBooks.getStatusCode().is2xxSuccessful()) {
                 return allBooks.getBody();
             }

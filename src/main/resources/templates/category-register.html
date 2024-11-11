@@ -1,65 +1,65 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <th:block th:replace="~{fragments/head :: headTemplate}"></th:block>
     <meta charset="utf-8">
+    <th:block th:replace="~{fragments/head :: headTemplate}"></th:block>
     <title>카테고리 등록</title>
     <style>
-        /* 기본 폼 스타일 */
+        /* 기본 스타일 */
         body {
             font-family: Arial, sans-serif;
-            display: flex;
+        /*    background-color: #f9f9f9;*/
+        /*    display: flex;*/
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
+            padding: 20px;
+        }
+
+        /* 폼 컨테이너 */
+        form {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 25px 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
         }
 
         h1 {
-            text-align: center;
-            color: #333;
             font-size: 1.8rem;
+            color: #333;
+            text-align: center;
             margin-bottom: 20px;
         }
 
-        /* 폼 컨테이너 스타일 */
-        form {
-            background: #ffffff;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 300px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* 라벨 및 입력 스타일 */
         label {
+            font-size: 0.9rem;
             font-weight: bold;
-            margin-top: 10px;
+            margin-bottom: 5px;
             color: #333;
         }
 
         input[type="text"],
         select {
             width: 100%;
-            padding: 8px;
+            padding: 10px;
             margin-top: 5px;
+            margin-bottom: 15px;
             border: 1px solid #ddd;
             border-radius: 4px;
             font-size: 1rem;
         }
 
-        /* 체크박스 스타일 */
         input[type="checkbox"] {
-            margin-right: 5px;
+            margin-right: 8px;
             transform: scale(1.2);
         }
 
-        /* 버튼 스타일 */
         button {
-            margin-top: 15px;
-            padding: 10px;
+            width: 100%;
+            padding: 12px;
             font-size: 1rem;
             font-weight: bold;
             color: #fff;
@@ -67,41 +67,42 @@
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s ease;
         }
 
         button:hover {
             background-color: #434190;
         }
     </style>
+
+
 </head>
 <body>
+<div th:replace="~{fragments/header}"></div>
 
 <form action="/category" method="post">
+    <h1>카테고리 등록</h1>
+
     <!-- 카테고리 이름 입력 -->
-    <label for="categoryName">카테고리 이름:</label>
-    <input type="text" id="categoryName" th:field="*{categoryName}" placeholder="카테고리 이름 입력" required />
-    <br>
+    <label for="name">카테고리 이름</label>
+    <input type="text" id="name" name="categoryName" placeholder="카테고리 이름 입력" required />
 
     <!-- 상위 카테고리 선택 -->
-    <label for="parentCategoryId">상위 카테고리:</label>
-    <select id="parentCategoryId" th:field="*{parentCategoryName}">
+    <label for="parentCategoryId">상위 카테고리</label>
+    <select id="parentCategoryId" name="parentCategoryId">
         <option th:value="0">없음 (루트 카테고리)</option>
         <option th:each="parentCategory : ${parentCategories}"
                 th:value="${parentCategory.categoryName}"
                 th:text="${parentCategory.categoryName}">
         </option>
     </select>
-    <br>
 
-    <!-- 활성화 상태 선택 -->
-    <label for="active">활성화 상태:</label>
-    <input type="checkbox" id="active" th:field="*{active}" /> 활성화
-    <br>
+
 
     <!-- 등록 버튼 -->
     <button type="submit">카테고리 등록</button>
 </form>
+
 <div th:replace="~{fragments/footer}"></div>
 </body>
 </html>
