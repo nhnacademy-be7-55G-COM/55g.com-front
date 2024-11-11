@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>포장지 수정</title>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <style>
+    input.input-name {
+      width: 24rem;
+    }
+    input.input-price, input.input-imageLink, input.input-refundFee {
+      width: 8rem;
+    }
+    tr button{
+      margin: 0;
+      height: 2.4rem;
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <table class="table table-hover">
+      <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Name</th>
+        <th scope="col">Price</th>
+        <th scope="col">ImageLink</th>
+        <th scope="col">Active</th>
+        <th scope="col">Edit</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr id="tr-save">
+        <td></td>
+        <td><input type="text" id="add-paper-name" name="name" class="input-name input-param" placeholder="Name" /></td>
+        <td><input type="number" id="add-paper-price" name="price" class="input-price input-param" placeholder="Price"/></td>
+        <td colspan="2"><input type="file" id="add-paper-image" name="imageFile" accept="image/*"></td>
+        <td><button class="btn btn-primary save-button" onclick="savePaper()">추가</button></td>
+        <script>
+          const savePaper = () => {
+            const headers = { 'Content-Type': 'multipart/form-data' };
+            const imageFileInput = document.querySelector("input#add-paper-image");
+
+            const formData = new FormData();
+            const inputs = document.querySelectorAll('#tr-save input.input-param');
+            inputs.forEach(input => {
+              formData.append(input.name, input.value);
+            });
+            formData.append("imageFile", imageFileInput.files[0]);
+            axios.post('/admin/support/wrappingpaper', formData, {headers})
+              .then(response => {
+                alert('데이터가 추가되었습니다.');
+                window.location.reload();
+              })
+              .catch(err => {
+                console.log(err);
+                alert(err);
+              });
+          };
+        </script>
+      </tr>
+      <th:block th:each="paper: ${paperList}">
+      <tr th:id="|tr-${paper.id}|" th:data-id="${paper.id}" class="table-data">
+        <td th:text="${paper.id}"></td>
+        <td th:text="${paper.name}"></td>
+        <td th:text="${paper.price}"></td>
+        <td><a th:href="${paper.imageLink}">이미지 링크</a></td>
+        <td th:text="${paper.active}"></td>
+        <td>
+          <div class="d-flex">
+            <button class="btn btn-outline-danger delete-button" th:data-id="${paper.id}">삭제</button>
+          </div>
+        </td>
+      </tr>
+      </th:block>
+      </tbody>
+    </table>
+  </div>
+</body>
+<script>
+  const dataRows = document.querySelectorAll('tr.table-data');
+
+  dataRows.forEach(row => {
+    const deleteButton = row.querySelector('button.delete-button');
+    const allocId = deleteButton.getAttribute('data-id');
+
+    deleteButton.addEventListener('click', () => {
+      axios.delete(`/admin/support/wrappingpaper/${allocId}`)
+        .then(response => {
+          alert('데이터가 inactive 되었습니다');
+          window.location.reload();
+        })
+        .catch(err => {
+          console.log(err);
+          alert(err);
+        });
+    });
+  });
+</script>
+</html>

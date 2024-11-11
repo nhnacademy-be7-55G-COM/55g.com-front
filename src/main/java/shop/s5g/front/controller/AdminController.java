@@ -26,6 +26,10 @@ import shop.s5g.front.service.coupon.template.impl.CouponTemplateServiceImpl;
 import shop.s5g.front.service.order.OrderDetailService;
 import shop.s5g.front.service.order.OrderService;
 
+import shop.s5g.front.dto.wrappingpaper.WrappingPaperView;
+import shop.s5g.front.service.couponpolicy.impl.CouponPolicyServiceImpl;
+import shop.s5g.front.service.delivery.DeliveryFeeService;
+import shop.s5g.front.service.wrappingpaper.WrappingPaperService;
 
 @Controller
 @RequiredArgsConstructor
@@ -37,6 +41,8 @@ public class AdminController {
     private final OrderService orderService;
     private final OrderDetailService orderDetailService;
 
+    private final DeliveryFeeService deliveryFeeService;
+    private final WrappingPaperService wrappingPaperService;
 
     @GetMapping("/admin")
     @RedirectWithAlert(redirect = "/", title = "권한 없음", exceptions = UnauthorizedException.class)
@@ -138,4 +144,23 @@ public class AdminController {
         return mv;
     }
 
+    @GetMapping("/admin/delivery-fee")
+    public ModelAndView adminDeliveryFeePage() {
+        ModelAndView mv = new ModelAndView("admin/delivery-fee");
+        mv.addObject("feeList", deliveryFeeService.getAllFees());
+
+        return mv;
+    }
+
+    @GetMapping("/admin/wrappingpaper")
+    public ModelAndView adminWrappingPaperPage() {
+        ModelAndView mv = new ModelAndView("admin/wrappingpaper");
+        List<WrappingPaperView> views =
+            wrappingPaperService.fetchAllPapers().stream()
+                .map(wrappingPaperService::convertToView)
+                .toList();
+        mv.addObject("paperList", views);
+
+        return mv;
+    }
 }

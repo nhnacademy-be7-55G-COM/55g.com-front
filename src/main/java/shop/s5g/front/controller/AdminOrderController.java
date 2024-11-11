@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import shop.s5g.front.dto.delivery.DeliveryUpdateRequestDto;
+import shop.s5g.front.service.delivery.DeliveryService;
 import shop.s5g.front.service.order.OrderService;
 import shop.s5g.front.service.order.OrderDetailService;
 import shop.s5g.front.annotation.RedirectWithAlert;
@@ -22,7 +23,7 @@ import shop.s5g.front.dto.order.OrderWithDetailResponseDto;
 @RequestMapping("/admin/order")
 @Controller
 public class AdminOrderController {
-    private final shop.s5g.front.service.order.DeliveryService deliveryService;
+    private final DeliveryService deliveryService;
     private final OrderService orderService;
     private final OrderDetailService orderDetailService;
 

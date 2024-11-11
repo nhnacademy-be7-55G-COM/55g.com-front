@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>배송비 수정</title>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <style>
+    input.input-name {
+      width: 24rem;
+    }
+    input.input-condition, input.input-fee, input.input-refundFee {
+      width: 8rem;
+    }
+    tr button{
+      margin: 0;
+      height: 2.4rem;
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <table class="table table-hover">
+      <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Name</th>
+        <th scope="col">Fee</th>
+        <th scope="col">Condition</th>
+        <th scope="col">RefundFee</th>
+        <th scope="col">Edit</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr id="tr-save">
+        <td></td>
+        <td><input type="text" id="add-fee-name" name="name" class="input-name" placeholder="Name" /></td>
+        <td><input type="text" id="add-fee-fee" name="fee" class="input-fee" placeholder="Fee"/></td>
+        <td><input type="text" id="add-fee-condition" name="condition" class="input-condition" placeholder=">= N"/></td>
+        <td><input type="text" id="add-fee-refundFee" name="refundFee" class="input-refundFee" placeholder="RefundFee"/></td>
+        <td><button class="btn btn-primary save-button" onclick="saveFee()">추가</button></td>
+        <script>
+          const saveFee = () => {
+            const inputs = document.querySelectorAll('#tr-save input');
+            const body = {};
+            inputs.forEach(input => {
+              body[input.name] = input.value;
+            });
+            axios.post('/admin/support/delivery-fee', body)
+              .then(response => {
+                alert('데이터가 추가되었습니다.');
+                window.location.reload();
+              })
+              .catch(err => {
+                console.log(err);
+                alert(err);
+              });
+          };
+        </script>
+      </tr>
+      <th:block th:each="fee: ${feeList}">
+      <tr th:id="|tr-${fee.id}|" th:data-id="${fee.id}" class="table-data">
+        <td th:text="${fee.id}"></td>
+        <td th:text="${fee.name}"></td>
+        <td th:text="${fee.fee}"></td>
+        <td th:text="${fee.condition}"></td>
+        <td th:text="${fee.refundFee}"></td>
+        <td>
+          <div class="d-flex">
+            <button class="btn btn-outline-warning edit-button" th:data-id="${fee.id}">수정</button>
+          </div>
+        </td>
+      </tr>
+      <tr th:id="|tr-edit-${fee.id}|" th:data-id="${fee.id}" style="display: none;" class="table-data-edit">
+        <td><input type="number" class="input-id" th:value="${fee.id}" name="id" disabled hidden /></td>
+        <td><input type="text" maxlength="20" th:value="${fee.name}" class="input-name" name="name" /></td>
+        <td><input type="number" class="input-fee" name="fee" th:value="${fee.fee}" /></td>
+        <td><input type="number" class="input-condition" name="condition" th:value="${fee.condition}"/></td>
+        <td><input type="number" class="input-refundFee" name="refundFee" th:value="${fee.refundFee}" /></td>
+        <td><button class="btn btn-warning confirm-button" >확인</button></td>
+      </tr>
+      </th:block>
+      </tbody>
+    </table>
+  </div>
+</body>
+<script>
+  const dataRows = document.querySelectorAll('tr.table-data');
+  const dataInputRows = document.querySelectorAll('tr.table-data-edit');
+
+  dataRows.forEach(row => {
+    const editButton = row.querySelector('button.edit-button');
+    const allocId = editButton.getAttribute('data-id');
+    const editRow = document.querySelector(`#tr-edit-${allocId}`);
+
+    editButton.addEventListener('click', () => {
+      if (editRow.style.display !== 'none') {
+        editRow.style.display = 'none';
+      } else {
+        editRow.style.display = 'table-row';
+      }
+    });
+  });
+
+  dataInputRows.forEach(row => {
+    const confirmButton = row.querySelector('button.confirm-button');
+    confirmButton.addEventListener('click', () => {
+      const inputs = row.querySelectorAll('input');
+      const body = {};
+      inputs.forEach(input => {
+        body[input.name] = input.value;
+      });
+      axios.put('/admin/support/delivery-fee', body)
+        .then(response => {
+          alert('정상적으로 변경되었습니다.');
+          window.location.reload();
+        })
+        .catch(err => {
+          console.log(err);
+          alert(err);
+        });
+    });
+  });
+</script>
+</html>

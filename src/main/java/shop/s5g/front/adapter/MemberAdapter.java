@@ -6,12 +6,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import shop.s5g.front.config.FeignGatewayAuthorizationConfig;
 import shop.s5g.front.dto.member.MemberInfoResponseDto;
 import shop.s5g.front.dto.member.MemberRegistrationRequestDto;
 import shop.s5g.front.dto.MessageDto;
 import shop.s5g.front.dto.member.MemberUpdateRequestDto;
 
-@FeignClient(name = "member", url = "${gateway.url}")
+@FeignClient(name = "member", url = "${gateway.url}", configuration = FeignGatewayAuthorizationConfig.class)
 public interface MemberAdapter {
 
     @PostMapping("/api/shop/member")
