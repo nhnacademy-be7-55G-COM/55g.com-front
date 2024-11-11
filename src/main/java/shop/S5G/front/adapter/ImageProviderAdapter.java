@@ -19,7 +19,7 @@ public interface ImageProviderAdapter {
         value = "/images?overwrite=true",
         consumes = MediaType.APPLICATION_OCTET_STREAM_VALUE
     )
-    @Headers({"Content-Type: application/octet-stream", "Authorization: ${image.secretKey}"})
+    @Headers({"Content-Type: application/octet-stream"})
     Map<String, Object> uploadImage(@RequestParam("path") String path, @RequestBody byte[] image);
 
 

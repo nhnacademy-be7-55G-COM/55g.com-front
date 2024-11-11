@@ -30,7 +30,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<OrderWithDetailResponseDto> queryOrdersBetweenDates(
         OrderQueryRequestDto queryRequest) {
-        return orderAdapter.fetchOrderListsBetweenDates(queryRequest);
+        return orderAdapter.fetchOrderListsBetweenDates(queryRequest.startDate(), queryRequest.endDate());
     }
 
     @Override
