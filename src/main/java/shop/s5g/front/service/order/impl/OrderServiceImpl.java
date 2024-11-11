@@ -19,17 +19,22 @@ public class OrderServiceImpl implements OrderService {
     private static final OrderCreationFailedException FAIL_EXCEPTION = new OrderCreationFailedException("주문 생성 실패");
 
     @Override
-    public long createOrder(OrderCreateRequestDto createRequest) {
+    public OrderCreateResponseDto createOrder(OrderCreateRequestDto createRequest) {
         OrderCreateResponseDto response = orderAdapter.createNewOrder(createRequest).getBody();
         if (response == null) {
             throw FAIL_EXCEPTION;
         }
-        return response.orderId();
+        return response;
     }
 
     @Override
     public List<OrderWithDetailResponseDto> queryOrdersBetweenDates(
         OrderQueryRequestDto queryRequest) {
         return orderAdapter.fetchOrderListsBetweenDates(queryRequest);
+    }
+
+    @Override
+    public void deleteOrder(long orderId) {
+        orderAdapter.deleteOrder(orderId);
     }
 }
