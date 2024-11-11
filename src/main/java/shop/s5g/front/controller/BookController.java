@@ -20,16 +20,11 @@ public class BookController {
 
     //모든 도서 목록 조회
     @GetMapping("/book/allList")
-    public String bookByCategory(Model model, @PageableDefault(page = 0, size = 9, sort = "title", direction = Sort.Direction.ASC) Pageable pageable) {
+    public String bookByCategory(Model model, @PageableDefault(page = 0, size = 9, sort = "price", direction = Sort.Direction.DESC) Pageable pageable) {
 
         PageResponseDto<BookPageableResponseDto> allBooks = bookService.getAllBooks(pageable);
 
-//        Page<BookPageableResponseDto> allBooks = bookService.fake_getAllBooks(pageable);
-
-        //현재 페이지(page)
-//        int nowPage = allBooks.getPageable().getPageNumber() + 1;
         int nowPage = pageable.getPageNumber() + 1;
-        int a = allBooks.totalPage() + 1;
 
         //시작 페이지
         int startPage = Math.max(nowPage - 4, 1);
