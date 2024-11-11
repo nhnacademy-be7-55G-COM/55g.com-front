@@ -10,9 +10,11 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.util.WebUtils;
 import shop.s5g.front.adapter.AuthAdapter;
+import shop.s5g.front.dto.auth.RoleResponseDto;
 import shop.s5g.front.dto.jwt.TokenResponseDto;
-import shop.s5g.front.dto.member.MemberLoginRequestDto;
+import shop.s5g.front.dto.member.LoginRequestDto;
 import shop.s5g.front.exception.auth.LogoutException;
+import shop.s5g.front.exception.auth.RoleGetInfoFailedException;
 import shop.s5g.front.exception.auth.TokenNotFoundException;
 import shop.s5g.front.exception.member.MemberLoginFailedException;
 import shop.s5g.front.service.auth.AuthService;
@@ -24,29 +26,23 @@ public class AuthServiceImpl implements AuthService {
     private final AuthAdapter authAdapter;
 
     @Override
-    public void loginMember(MemberLoginRequestDto memberLoginRequestDto, HttpServletResponse response) {
+    public void loginMember(LoginRequestDto loginRequestDto, HttpServletResponse response) {
         try {
-            ResponseEntity<TokenResponseDto> responseEntity = authAdapter.loginMember(memberLoginRequestDto);
+            ResponseEntity<TokenResponseDto> responseEntity = authAdapter.loginMember(
+                loginRequestDto);
+            setTokenAtCookie(response, responseEntity);
+        }
+        catch (HttpClientErrorException | HttpServerErrorException e) {
+            throw new MemberLoginFailedException(e.getMessage());
+        }
+    }
 
-            if (responseEntity.getStatusCode().is2xxSuccessful()) {
-                TokenResponseDto tokenResponseDto = responseEntity.getBody();
-
-                if (tokenResponseDto != null) {
-                    Cookie accessJwt = new Cookie("accessJwt" ,tokenResponseDto.accessToken());
-                    accessJwt.setPath("/");
-                    accessJwt.setMaxAge(3600);
-                    accessJwt.setHttpOnly(true);
-                    response.addCookie(accessJwt);
-
-                    Cookie refreshJwt = new Cookie("refreshJwt" ,tokenResponseDto.refreshToken());
-                    refreshJwt.setPath("/");
-                    refreshJwt.setMaxAge(3600);
-                    refreshJwt.setHttpOnly(true);
-                    response.addCookie(refreshJwt);
-                }
-                return;
-            }
-            throw new MemberLoginFailedException("Member login failed");
+    @Override
+    public void loginAdmin(LoginRequestDto loginRequestDto, HttpServletResponse response) {
+        try {
+            ResponseEntity<TokenResponseDto> responseEntity = authAdapter.loginAdmin(
+                loginRequestDto);
+            setTokenAtCookie(response, responseEntity);
         }
         catch (HttpClientErrorException | HttpServerErrorException e) {
             throw new MemberLoginFailedException(e.getMessage());
@@ -80,6 +76,55 @@ public class AuthServiceImpl implements AuthService {
         catch (HttpClientErrorException | HttpServerErrorException e) {
             throw new LogoutException("Logout failed");
         }
+    }
+
+    @Override
+    public void reissueToken(String refreshToken, HttpServletResponse response) {
+        try {
+            ResponseEntity<TokenResponseDto> responseEntity = authAdapter.reissueToken("Bearer " + refreshToken);
+            setTokenAtCookie(response, responseEntity);
+        }
+        catch (HttpClientErrorException | HttpServerErrorException e) {
+            throw new MemberLoginFailedException(e.getMessage());
+        }
+    }
+
+    @Override
+    public String getRole(String accessToken) {
+        try {
+            ResponseEntity<RoleResponseDto> responseEntity = authAdapter.getRole("Bearer " + accessToken);
+            if (responseEntity.getStatusCode().is2xxSuccessful() && responseEntity.getBody() != null){
+                return responseEntity.getBody().role();
+            }
+            throw new RoleGetInfoFailedException("get role failed");
+
+        }
+        catch (HttpClientErrorException | HttpServerErrorException e) {
+            throw new RoleGetInfoFailedException("get role failed");
+        }
+    }
+
+    private void setTokenAtCookie(HttpServletResponse response,
+        ResponseEntity<TokenResponseDto> responseEntity) {
+        if (responseEntity.getStatusCode().is2xxSuccessful()) {
+            TokenResponseDto tokenResponseDto = responseEntity.getBody();
+
+            if (tokenResponseDto != null) {
+                Cookie accessJwt = new Cookie("accessJwt" ,tokenResponseDto.accessToken());
+                accessJwt.setPath("/");
+                accessJwt.setMaxAge(3600);
+                accessJwt.setHttpOnly(true);
+                response.addCookie(accessJwt);
+
+                Cookie refreshJwt = new Cookie("refreshJwt" ,tokenResponseDto.refreshToken());
+                refreshJwt.setPath("/");
+                refreshJwt.setMaxAge(3600);
+                refreshJwt.setHttpOnly(true);
+                response.addCookie(refreshJwt);
+            }
+            return;
+        }
+        throw new MemberLoginFailedException("Member login failed");
     }
 
 }

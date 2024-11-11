@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
+import shop.s5g.front.annotation.AdminOnly;
+import shop.s5g.front.annotation.RedirectWithAlert;
 import shop.s5g.front.dto.coupon.CouponPolicyInquiryResponseDto;
 import shop.s5g.front.dto.coupon.CouponPolicyRegisterRequestDto;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,6 +20,8 @@ import shop.s5g.front.dto.coupon.CouponTemplateInquiryResponseDto;
 import shop.s5g.front.dto.coupon.CouponTemplateRegisterRequestDto;
 import shop.s5g.front.dto.order.OrderQueryRequestDto;
 import shop.s5g.front.dto.order.OrderWithDetailResponseDto;
+import shop.s5g.front.exception.auth.UnauthorizedException;
+import shop.s5g.front.service.coupon.policy.impl.CouponPolicyServiceImpl;
 import shop.s5g.front.service.coupon.coupon.impl.CouponServiceImpl;
 import shop.s5g.front.service.coupon.policy.impl.CouponPolicyServiceImpl;
 import shop.s5g.front.service.coupon.template.impl.CouponTemplateServiceImpl;
@@ -35,6 +39,7 @@ public class AdminController {
     private final OrderDetailService orderDetailService;
 
     @GetMapping("/admin")
+    @RedirectWithAlert(redirect = "/", title = "권한 없음", exceptions = UnauthorizedException.class)
     public ModelAndView adminPage() {
 
         ModelAndView mv = new ModelAndView("/admin/admin");
