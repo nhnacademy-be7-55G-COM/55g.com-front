@@ -25,6 +25,8 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
      * @param couponTemplateRegisterRequestDto
      * @return MessageDto
      */
+
+    //TODO (young ho) - 나중에 에러처리 수정예정
     @Override
     public MessageDto createCouponTemplate(
         CouponTemplateRegisterRequestDto couponTemplateRegisterRequestDto) {

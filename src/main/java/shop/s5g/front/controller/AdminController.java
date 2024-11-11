@@ -124,7 +124,7 @@ public class AdminController {
 
     @GetMapping("/api/shop/admin/coupons/policy")
     public ModelAndView adminCouponPoliciesList() {
-        ModelAndView mv = new ModelAndView("policyInquiry");
+        ModelAndView mv = new ModelAndView("admin/policyInquiry");
 
         List<CouponPolicyInquiryResponseDto> couponPolicyList = couponPolicyService.findCouponPolices();
 

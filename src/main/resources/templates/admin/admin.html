@@ -280,7 +280,7 @@
               </li>
 
               <li>
-                <a class="nav-link" href="#" data-url="/admin/coupons/template">쿠폰 템플릿</a>
+                <a>쿠폰 템플릿</a>
                 <ul>
                   <a class="nav-link" href="#" data-url="/admin/coupons/template/create">템플릿 생성</a>
                   <a class="nav-link" href="/api/shop/admin/coupons/templates?page=1&size=15">템플릿 조회</a>
@@ -288,10 +288,19 @@
               </li>
 
               <li>
-                <a class="nav-link" href="#" data-url="/admin/coupons">쿠폰</a>
+                <a>쿠폰</a>
                 <ul>
-                  <a class="nav-link" href="/api/shop/admin/coupons/templates">쿠폰 생성</a>
-                  <a class="nav-link" href="/api/shop/admin/coupons">쿠폰 조회</a>
+                  <li>
+                    <a class="nav-link" data-url="/admin/coupons">쿠폰 생성</a>
+                    <ul>
+                      <li><a class="nav-link" href="/api/shop/admin/coupons/templates">사용자 쿠폰 생성</a></li>
+                      <li><a class="nav-link" href="/api/shop/admin/coupons/templates">도서 쿠폰 생성</a></li>
+                      <li><a class="nav-link" href="/api/shop/admin/coupons/templates">카테고리 쿠폰 생성</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a class="nav-link" href="/api/shop/admin/coupons">쿠폰 조회</a>
+                  </li>
                 </ul>
               </li>
 
@@ -361,14 +370,15 @@
       </div>
       <div id="coupon-policy-form" style="display:none; text-align: center;">
         <h2>쿠폰 정책 생성</h2>
-        <form action="/api/shop/admin/coupons/policy" method="POST" style="display: inline-block; width: 100%; max-width: 400px;">
+        <form id="coupon-form" action="/api/shop/admin/coupons/policy" method="POST" style="display: inline-block; width: 100%; max-width: 400px;">
           <div class="mb-3">
             <label for="condition" class="form-label" style="text-align: left; display: block; margin-bottom: 2px; margin-left: 25px;">조건</label>
             <input type="text" class="form-control small-input" id="condition" name="condition" placeholder="예: 20000원" style="margin: 0 auto; text-align: left; padding-left: 10px;" required>
           </div>
           <div class="mb-3">
             <label for="discount-value" class="form-label" style="text-align: left; display: block; margin-bottom: 2px; margin-left: 25px;">할인</label>
-            <input type="text" class="form-control small-input" id="discount-value" name="discountPrice" placeholder="예: 5%" style="margin: 0 auto; text-align: left; padding-left: 10px;" required>
+            <input type="text" class="form-control small-input" id="discount-value" name="discountPrice" placeholder="예: 0.05" style="margin: 0 auto; text-align: left; padding-left: 10px;" required>
+            <small style="display: block; text-align: left; margin-left: 25px; color: #6c757d;">ex) 0.05 = 5%, 0.5 = 50%, 1000 = 1000원 할인 적용</small>
           </div>
           <div class="mb-3">
             <label for="max-discount" class="form-label" style="text-align: left; display: block; margin-bottom: 2px; margin-left: 25px;">최대 할인</label>
@@ -434,6 +444,10 @@
             <button type="submit">제출</button>
           </form>
         </div>
+      </div>
+
+      <div id="">
+
       </div>
 
     </main>
@@ -524,6 +538,17 @@
     }
   });
 
+  document.getElementById("coupon-form").onsubmit = function(event) {
+    const discountValue = document.getElementById("discount-value").value;
+    const isInteger = /^\d+$/.test(discountValue); // 정수인지 확인
+    const isDecimalBelowOne = /^0(\.\d+)?$/.test(discountValue); // 1 미만의 소수인지 확인
+
+    if (!isInteger && !isDecimalBelowOne) {
+      // 유효하지 않은 입력인 경우 경고 메시지를 띄우고 제출을 막음
+      alert("할인 필드는 정수(예: 1000) 또는 1 미만의 소수(예: 0.5, 0.05)만 입력 가능합니다.");
+      event.preventDefault();
+    }
+  };
 </script>
 
 
