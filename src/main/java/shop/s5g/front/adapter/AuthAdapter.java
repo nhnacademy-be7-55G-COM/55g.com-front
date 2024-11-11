@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import shop.s5g.front.config.FeignGatewayAuthorizationConfig;
-import shop.s5g.front.dto.jwt.RefreshTokenRequestDto;
 import shop.s5g.front.dto.auth.RoleResponseDto;
 import shop.s5g.front.dto.jwt.TokenResponseDto;
 import shop.s5g.front.dto.member.LoginRequestDto;
