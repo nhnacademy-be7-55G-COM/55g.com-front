@@ -8,11 +8,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import shop.s5g.front.config.FeignGatewayAuthorizationConfig;
 import shop.s5g.front.dto.MessageDto;
 import shop.s5g.front.dto.coupon.CouponTemplateInquiryResponseDto;
 import shop.s5g.front.dto.coupon.CouponTemplateRegisterRequestDto;
 
-@FeignClient(name = "couponTemplate", url = "${gateway.url}")
+@FeignClient(name = "couponTemplate", url = "${gateway.url}", configuration = FeignGatewayAuthorizationConfig.class)
 public interface CouponTemplateAdapter {
 
     @PostMapping("/api/shop/admin/coupons/template")
