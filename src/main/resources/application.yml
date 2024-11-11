@@ -18,11 +18,15 @@ spring:
     username: guest
     password: guest
 
+image:
+  appkey: appkey
+  secretKey: secretKey
+
 rabbitmq:
   host: localhost
 
 gateway:
-  url: http://localhost:8081
+  url: http://localhost:8000
 
 management:
   endpoints:
@@ -71,15 +75,5 @@ spring:
 logging:
   level:
     root: info
-    shop.s5g.front: trace
-
----
-spring:
-  config:
-    activate:
-      on-profile: embed-db
-
-
-  jpa:
-    database: h2
+    shop.S5G.front: trace
 

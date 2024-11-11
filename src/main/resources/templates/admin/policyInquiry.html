@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>쿠폰 정책 조회</title>
+  <link rel="stylesheet" href="style.css">
+  <div th:replace="~{fragments/head}"></div>
+</head>
+<body>
+<div class="container">
+  <h2>쿠폰 정책 조회</h2>
+  <table border="1" style="width: 100%; margin-top: 20px; border-collapse: collapse;">
+    <thead>
+    <tr>
+      <th style="padding: 10px; background-color: #f0f0f0;">조건(이상)</th>
+      <th style="padding: 10px; background-color: #f0f0f0;">할인(률)</th>
+      <th style="padding: 10px; background-color: #f0f0f0;">최대 할인 금액</th>
+      <th style="padding: 10px; background-color: #f0f0f0;">기간</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- 쿠폰 정책 리스트를 반복해서 화면에 표시 -->
+    <tr th:each="policy : ${couponPolicyList}">
+      <td style="padding: 10px;" th:text="${policy.condition()}">조건</td>
+      <td style="padding: 10px;"
+          th:text="${policy.discountPrice() < 1 ? policy.discountPrice().multiply(100).stripTrailingZeros().toPlainString() + '%'
+                   : policy.discountPrice().stripTrailingZeros().toPlainString() + '원'}">
+        할인(률)
+      </td>
+      <td style="padding: 10px;" th:text="${policy.maxPrice()}">최대 할인 금액</td>
+      <td style="padding: 10px;" th:text="${policy.duration()}">기간</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>

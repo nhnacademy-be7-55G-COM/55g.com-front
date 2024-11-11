@@ -1,5 +1,6 @@
 package shop.s5g.front.service.category.impl;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -11,8 +12,6 @@ import shop.s5g.front.dto.category.CategoryRequestDto;
 import shop.s5g.front.dto.category.CategoryResponseDto;
 import shop.s5g.front.exception.category.CategoryRegisterFailedException;
 import shop.s5g.front.service.category.CategoryService;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor

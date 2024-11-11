@@ -7,7 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import shop.s5g.front.dto.member.MemberLoginRequestDto;
+import shop.s5g.front.dto.member.LoginRequestDto;
 import shop.s5g.front.service.auth.AuthService;
 
 @Controller
@@ -22,7 +22,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public String login(@ModelAttribute MemberLoginRequestDto requestDto, HttpServletResponse response) {
+    public String login(@ModelAttribute LoginRequestDto requestDto, HttpServletResponse response) {
         authService.loginMember(requestDto, response);
         return "redirect:/";
     }
