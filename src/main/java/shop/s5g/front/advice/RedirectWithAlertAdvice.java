@@ -6,11 +6,13 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import shop.s5g.front.annotation.RedirectWithAlert;
 import shop.s5g.front.exception.AlertRedirectException;
 
 @Aspect
+@Order(1)
 @Component
 public class RedirectWithAlertAdvice {
     @Pointcut("@annotation(shop.s5g.front.annotation.RedirectWithAlert)")
@@ -20,9 +22,12 @@ public class RedirectWithAlertAdvice {
     @Pointcut("@annotation(shop.s5g.front.annotation.RedirectWithAlertContainer)")
     public void redirectContainerCut(){}
 
+    @Pointcut("@within(shop.s5g.front.annotation.RedirectWithAlert)")
+    public void classCut() {}
+
     // RedirectToAlert 어노테이션을 읽어 예외가 발생했을때 해당 경로로 메세지와 함께 throw 하여
     // ControllerAdvice 에서 캐치하게 해줌.
-    @Around("redirectCut() || redirectContainerCut()")
+    @Around("redirectCut() || redirectContainerCut() || classCut()")
     public Object redirectAspect(ProceedingJoinPoint joinPoint) throws Throwable{
         try {
             return joinPoint.proceed();

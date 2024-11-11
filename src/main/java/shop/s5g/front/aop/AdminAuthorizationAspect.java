@@ -2,6 +2,7 @@ package shop.s5g.front.aop;
 
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import shop.s5g.front.exception.auth.UnauthorizedException;
 import shop.s5g.front.utils.UserRoleHolder;
