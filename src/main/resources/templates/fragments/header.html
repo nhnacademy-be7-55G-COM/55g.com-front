@@ -39,8 +39,10 @@
             <form id="logout-form" action="/logout" method="POST" style="display:none;">
               <button type="submit">Logout</button>
             </form>
-            <a href="#" class="cart for-buy"><i class="icon icon-clipboard"></i><span>Cart:(0
-									$)</span></a>
+            <a href="/" class="cart for-buy" onclick="loadCartPage()">
+              <span class="cart-text">Cart</span>
+              <span class="cart-count-badge" id="cart-count">0</span>
+            </a>
 
             <div class="action-menu">
 
@@ -116,6 +118,64 @@
 
       </div>
     </div>
+
+    <script>
+
+
+
+      async function loadCartPage() {
+        const loggedIn = await isLoggedIn();
+        console.log('cartPageLoad')
+
+        if (loggedIn) {
+          window.location.href = "/cart/detailPage";
+          return;
+        }
+        if (!localStorage.getItem('cart')){
+          localStorage.setItem('cart', JSON.stringify({ cartBookInfoList: [] }));
+          localStorage.setItem('cartCount',0);
+          console.log('loadcartPage')
+        }
+        const books = localStorage.getItem('cart');
+        const encodedBooks = encodeURIComponent(btoa(books));
+        window.location.href = `/cart/detailPage?cartBookInfoList=${encodedBooks}`;
+
+      }
+
+      async function updateCartCount() {
+        console.log('update Cart Count start');
+        const loggedIn = await isLoggedIn();
+
+        if (!loggedIn){
+          // 비로그인 상태에서는 localStorage 에서 항목 수 확인
+          if (!localStorage.getItem('cart')){
+            localStorage.setItem('cart', JSON.stringify({ cartBookInfoList: [] }));
+            localStorage.setItem('cartCount',0);
+          }
+        }
+
+        // DOM 업데이트
+        const cartCountElement = document.getElementById('cart-count');
+        cartCountElement.textContent = localStorage.getItem('cartCount');
+
+      }
+
+
+
+
+      // 쿠키를 이용해 로그인 여부 확인인데 http only 라서 자바스크립트에서는 쿠키를 직접 확인할 수 없고 서버에 요청을 해야한다.
+      async function isLoggedIn() {
+        const response = await fetch("/cart/loginCheck",{method:'GET',credentials:"include"});
+        const data = await response.json();
+        return  data.isLoggedIn;
+      }
+
+      window.onload = async function(){
+        await updateCartCount();
+      }
+
+
+    </script>
   </header>
 
 </div><!--header-wrap-->
