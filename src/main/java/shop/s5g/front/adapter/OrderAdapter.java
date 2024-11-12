@@ -1,6 +1,5 @@
 package shop.s5g.front.adapter;
 
-import java.time.LocalDate;
 import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.HttpStatus;
@@ -30,7 +29,7 @@ public interface OrderAdapter {
     ResponseEntity<OrderCreateResponseDto> createNewOrder(@RequestBody OrderCreateRequestDto createRequest);
 
     @GetMapping
-    List<OrderWithDetailResponseDto> fetchOrderListsBetweenDates(@RequestParam LocalDate startDate, @RequestParam LocalDate endDate);
+    List<OrderWithDetailResponseDto> fetchOrderListsBetweenDates(@RequestParam String startDate, @RequestParam String endDate);
 
     @GetMapping("/{orderId}?scope=all")
     OrderDetailInfoDto fetchOrderDetailInfo(@PathVariable long orderId);
