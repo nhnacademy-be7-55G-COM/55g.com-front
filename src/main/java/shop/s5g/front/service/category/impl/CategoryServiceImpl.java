@@ -1,5 +1,6 @@
 package shop.s5g.front.service.category.impl;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -11,8 +12,6 @@ import shop.s5g.front.dto.category.CategoryRequestDto;
 import shop.s5g.front.dto.category.CategoryResponseDto;
 import shop.s5g.front.exception.category.CategoryRegisterFailedException;
 import shop.s5g.front.service.category.CategoryService;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -46,6 +45,23 @@ public class CategoryServiceImpl implements CategoryService {
             ResponseEntity<List<CategoryResponseDto>> allCategories = categoryAdapter.getAllCategories();
             if (allCategories.getStatusCode().is2xxSuccessful()) {
                 return allCategories.getBody();
+            }
+            throw new CategoryRegisterFailedException("카테고리가 존재하지 않습니다.");
+        }
+        catch (HttpClientErrorException | HttpServerErrorException e) {
+            throw new CategoryRegisterFailedException(e.getMessage());
+        }
+    }
+
+    /**
+     * 국내도서 하위 카테고리 조회
+     */
+    @Override
+    public List<CategoryResponseDto> getKoreaCategories() {
+        try{
+            ResponseEntity<List<CategoryResponseDto>> koreaCategories = categoryAdapter.getKoreaCategories();
+            if (koreaCategories.getStatusCode().is2xxSuccessful()) {
+                return koreaCategories.getBody();
             }
             throw new CategoryRegisterFailedException("카테고리가 존재하지 않습니다.");
         }

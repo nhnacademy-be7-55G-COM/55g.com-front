@@ -11,9 +11,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import shop.s5g.front.annotation.MemberAndAdminOnly;
+import shop.s5g.front.annotation.RedirectWithAlert;
 import shop.s5g.front.dto.member.MemberInfoResponseDto;
 import shop.s5g.front.dto.member.MemberRegistrationRequestDto;
 import shop.s5g.front.dto.member.MemberUpdateRequestDto;
+import shop.s5g.front.exception.auth.UnauthorizedException;
 import shop.s5g.front.service.member.MemberService;
 
 @Controller
@@ -55,6 +58,9 @@ public class MemberController {
         memberService.registerMember(requestDto);
         return "redirect:/login";
     }
+
+    @MemberAndAdminOnly
+    @RedirectWithAlert(title = "로그인 필요", redirect = "/login", exceptions = UnauthorizedException.class)
     @GetMapping("/mypage")
     public String myPage(Model model) {
         MemberInfoResponseDto responseDto = memberService.getMemberInfo();

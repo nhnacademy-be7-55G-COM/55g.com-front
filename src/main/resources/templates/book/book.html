@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <th:block th:replace="~{fragments/head :: headTemplate}"></th:block>
+    <title>도서 목록</title>
+    <style>
+        /* 전체 페이지 스타일 */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        /* 필터 버튼 스타일 */
+        .filter-buttons {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .filter-button {
+            font-size: 14px;
+            padding: 5px 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #fff;
+            color: #00796b;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .filter-button:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* 도서 리스트 스타일 */
+        .book-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 0;
+            list-style-type: none;
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        /* 도서 카드 스타일 */
+        .book-item {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            transition: transform 0.2s;
+            text-align: center;
+        }
+
+        .book-item:hover {
+            transform: scale(1.05);
+        }
+
+        .book-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .book-price {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+        .discount-rate {
+            font-size: 14px;
+            color: #00796b;
+        }
+
+        /* 페이지네이션 스타일 */
+        .pagination {
+            margin-top: 20px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .pagination a {
+            color: #00796b;
+            text-decoration: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            transition: background-color 0.2s;
+        }
+
+        .pagination a:hover {
+            background-color: #f0f0f0;
+        }
+
+        .pagination strong {
+            color: red;
+            padding: 5px 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+             /* 페이지 크기 버튼 스타일 */
+         .page-size-buttons {
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             gap: 10px;
+             margin-bottom: 20px;
+             font-size: 14px;
+         }
+
+        .page-size-buttons span {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .page-size-button {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #fff;
+            color: #00796b;
+            text-decoration: none;
+            transition: background-color 0.2s, color 0.2s, transform 0.2s;
+        }
+
+        .page-size-button:hover {
+            background-color: #f0f0f0;
+            transform: scale(1.05);
+        }
+
+        .page-size-button.active {
+            background-color: #00796b;
+            color: #fff;
+            cursor: default;
+            pointer-events: none;
+        }
+
+    </style>
+</head>
+<body>
+<div th:replace="~{fragments/header}"></div>
+<h1>도서 목록</h1>
+
+<!-- 필터 버튼 추가 -->
+<div class="filter-buttons">
+    <a th:href="@{/book/allList(sort='publishedDate', sortDirection='ASC')}" class="filter-button">출간일순</a>
+    <a th:href="@{/book/allList(sort='createdAt', sortDirection='ASC')}" class="filter-button">등록일순</a>
+    <a th:href="@{/book/allList(sort='title', sortDirection='ASC')}" class="filter-button">상품명순</a>
+    <a th:href="@{/book/allList(sort='reviews', sortDirection='ASC')}" class="filter-button">리뷰순</a>
+    <a th:href="@{/book/allList(sort='price', sortDirection='ASC')}" class="filter-button">가격순</a>
+</div>
+<!-- 페이지 크기 설정 -->
+<div class="page-size-buttons">
+    <span>페이지 크기:</span>
+    <a th:href="@{/book/allList(size=3, sortDirection='ASC')}"
+       th:classappend="${size == 3} ? 'active' : ''"
+       class="page-size-button">3개씩</a>
+    <a th:href="@{/book/allList(size=4, sortDirection='ASC')}"
+       th:classappend="${size == 4} ? 'active' : ''"
+       class="page-size-button">4개씩</a>
+    <a th:href="@{/book/allList(size=5, sortDirection='ASC')}"
+       th:classappend="${size == 5} ? 'active' : ''"
+       class="page-size-button">5개씩</a>
+</div>
+
+
+
+<ul class="book-list">
+    <!-- allBooks 목록을 반복하여 도서 정보 표시 -->
+    <li th:each="book : ${allBooks}" class="book-item">
+        <!-- 도서 썸네일 -->
+        <div class="book-title" th:text="${book.imageName}">도서 이미지</div>
+        <!-- 도서 제목 -->
+        <div class="book-title" th:text="${book.title}">도서 제목</div>
+
+        <!-- 도서 가격 -->
+        <div class="book-price" th:text="'₩' + ${book.price}">도서 가격</div>
+
+        <!-- 할인율 -->
+        <div class="discount-rate" th:text="'할인율: ' + ${book.discountRate} + '%'">할인율</div>
+    </li>
+</ul>
+
+<!-- 페이지네이션 -->
+<div class="pagination">
+    <th:block th:each="page : ${#numbers.sequence(startPage, endPage)}">
+        <a th:if="${page != nowPage}" th:href="@{/book/allList(page=${page - 1})}" th:text="${page}"></a>
+        <strong th:if="${page == nowPage}" th:text="${page}"></strong>
+    </th:block>
+</div>
+<div th:replace="~{fragments/footer}"></div>
+</body>
+</html>

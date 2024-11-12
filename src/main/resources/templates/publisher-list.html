@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+  <th:block th:replace="~{fragments/head :: headTemplate}"></th:block>
+    <title>츌판사 목록</title>
+</head>
+<body>
+<div th:replace="~{fragments/header}"></div>
+<h1>출판사 목록</h1>
+<div th:each="publisher : ${allPublisher}">
+    <div th:text="${publisher.name()}"></div>
+    <a th:href="@{/publisher/modify/{id}(id = ${publisher.id})}">수정</a>
+</div>
+<div th:replace="~{fragments/footer}"></div>
+</body>
+</html>

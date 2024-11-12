@@ -2,6 +2,7 @@ package shop.s5g.front.dto.delivery;
 
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 
@@ -17,6 +18,9 @@ public record DeliveryCreateRequestDto(
     @Min(1)
     long deliveryFeeId,
     @FutureOrPresent
-    LocalDate receivedDate) {
+    LocalDate receivedDate,
+    @NotNull
+    String receiverName
+) {
     // 출고일, 배송비, 송장번호는 서비스레이어가 생성할 것.
 }
