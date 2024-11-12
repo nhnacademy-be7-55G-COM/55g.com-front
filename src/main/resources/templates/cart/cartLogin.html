@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>processing Login</title>
+</head>
+<body>
+<script>
+
+  function cartLogin() {
+    console.log('cartLogin start')
+    const cart = JSON.parse(localStorage.getItem('cart'));
+
+    fetch("/cart/login", {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        cartBookInfoList: cart.cartBookInfoList
+      })
+    })
+    .then(response => {
+      console.log('localStorageTest')
+      if (response.ok) {
+        return response.json();
+      } else {
+        console.log('response status : ', response.status);
+      }
+    })
+    .then(data =>{
+      localStorage.removeItem('cart');
+      localStorage.setItem('cartCount',data.cartCount);
+      console.log('cart localStorage delete')
+      window.location.href = "/";
+    })
+    .catch(error => console.log('fetch error : ', error));
+  }
+
+  window.onload = cartLogin;
+
+</script>
+</body>
+</html>

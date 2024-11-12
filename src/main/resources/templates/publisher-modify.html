@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <th:block th:replace="~{fragments/head :: headTemplate}"></th:block>
+    <title>출판사 수정</title>
+</head>
+<body>
+<div th:replace="~{fragments/header}"></div>
+<form th:action="@{publisher/update/{id} (id = ${modifyPublisher.id})}" method="post">
+    <label for="name">출판사 제목 수정</label>
+    <input type="text" id="name" name="name" th:value="${modifyPublisher.name}">
+    <button type="submit">수정</button>
+</form>
+<div th:replace="~{fragments/footer}"></div>
+</body>
+</html>

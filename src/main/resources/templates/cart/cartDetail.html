@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en" th:attr="data-page-id=${pageId}">
+<head th:insert="~{fragments/head}">
+  <meta charset="UTF-8" http-equiv="Cache-Control" content="no-cache">
+  <title>장바구니 상세 페이지</title>
+  <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+  <link rel="stylesheet" th:href="@{/themes/smoothness/jquery-ui.css}">
+  <style>
+    .quantity-btn {
+      height: 30px ;
+      width: 30px ;
+      padding: 0 ;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+  </style>
+
+</head>
+
+<body style="background-color: var(--light-color); font-family: var(--body-font),serif; color: var(--body-text-color); display: none">
+<div th:replace="~{fragments/header}"></div>
+
+<script>
+
+  const [navigationEntry] = performance.getEntriesByType("navigation");
+  (async () => {
+    if (navigationEntry && navigationEntry.type === "reload") {
+      const loggedIn = await isLoggedIn();
+      if (!loggedIn) {
+        console.log("Page was refreshed...");
+
+        const books = localStorage.getItem('cart');
+        const encodedBooks = encodeURIComponent(btoa(books));
+
+        window.location.href = `/cart/detailPage?cartBookInfoList=${encodedBooks}`;
+      }else if (loggedIn){
+        console.log("Page was refreshed...");
+
+        window.location.href = "/cart/detailPage";
+      } else{
+        document.body.style.display = "block";
+
+      }
+    }else if (navigationEntry && navigationEntry.type === "back_forward"){
+      const loggedIn = await isLoggedIn();
+      if (!loggedIn) {
+        console.log("back_forward...");
+
+        const books = localStorage.getItem('cart');
+        const encodedBooks = encodeURIComponent(btoa(books));
+
+        window.location.href = `/cart/detailPage?cartBookInfoList=${encodedBooks}`;
+      }else if (loggedIn){
+        console.log("back_forward...");
+
+        window.location.href = "/cart/detailPage";
+
+      }else{
+        document.body.style.display = "block";
+
+      }
+    } else {
+      // 리디렉션이 필요하지 않을 때만 페이지 표시
+      document.body.style.display = "block";
+    }
+  })();
+
+
+
+</script>
+
+<main class="container my-5">
+  <!-- 페이지 제목 -->
+  <section class="text-center mb-5">
+    <h2 class="fw-bold" style="color: var(--dark-color);">장바구니</h2>
+  </section>
+
+  <!-- 장바구니 아이템 테이블 -->
+  <div class="row gx-3">
+    <div class="col-lg-8">
+      <table id="cartTable" class="table table-bordered align-middle text-center" style="width: 100%; ">
+        <thead>
+        <tr>
+          <th class="text-center p-2">선택</th>
+          <th class="text-center p-2">상품 이미지</th>
+          <th class="text-center p-2">상품 정보</th>
+          <th class="text-center p-2">수량</th>
+          <th class="text-center p-2">가격</th>
+          <th class="text-center p-2">총액</th>
+          <th class="text-center p-2">삭제</th>
+        </tr>
+        </thead>
+        <tbody th:each="book : ${books}">
+        <tr th:id="'item-row-' + ${book.bookId}" class="text-center">
+          <td class="text-center">
+            <!-- 체크박스 추가 -->
+            <input type="checkbox" th:id="'select-' + ${book.bookId}" checked
+                   th:attr="onclick='updateSelectedTotal(' + ${book.bookId} + ', ' + ${book.discountedPrice} + ')'"
+                   th:attrappend="disabled=${book.quantity > book.stock ? 'disabled' : ''}">
+          </td>
+          <td class="text-center">
+<!--            <img th:src="${book.image}" alt="Book Image" class="img-fluid" style="max-width: 100px;">-->
+          </td>
+          <td class="text-center">
+            <h5 th:text="${book.title}">Book Name</h5>
+          </td>
+          <td class="text-center">
+
+            <span th:id="'out-of-stock-' + ${book.bookId}" style="color: red; display: none;">
+              재고 없음 (현재 재고: <span th:text="${book.stock}"></span>개)
+            </span>
+            <div class="d-flex justify-content-center align-items-center">
+              <button  class="btn btn-outline-secondary quantity-btn" style="height: 30px; width: 30px; padding: 0;" th:attr="onclick='updateQuantity(-1, ' + ${book.bookId} + ', ' + ${book.discountedPrice} +', ' + ${book.stock} +')'">-</button>
+
+              <input type="text" th:id="'quantity-' + ${book.bookId}" th:value="${book.quantity}" class="form-control text-center mx-2" style="width: 50px;" readonly>
+              <button  class="btn btn-outline-secondary quantity-btn" style="height: 30px; width: 30px; padding: 0;" th:attr="onclick='updateQuantity(1, ' + ${book.bookId} + ', ' + ${book.discountedPrice} +', ' + ${book.stock}+ ')'">+</button>
+            </div>
+          </td>
+          <td class="text-center">
+            <p style="text-decoration: line-through; color: red;">$<span th:text="${book.price}">1000</span></p>
+            <p style="color: green;">할인가: $<span th:text="${book.discountedPrice}">500</span></p>
+          </td>
+          <td class="text-center">
+            <span th:id="'total-price-' + ${book.bookId}" th:text="${book.discountedPrice * book.quantity}">500</span>
+          </td>
+          <td class="text-center">
+            <!-- 삭제 버튼 추가 -->
+            <button class="btn btn-outline-secondary quantity-btn" style="height: 30px; width: 30px; padding: 0;" th:attr="onclick='removeItem(' + ${book.bookId} + ', ' + ${book.discountedPrice} + ')'">
+              X
+            </button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 주문 요약 -->
+    <div class="col-lg-4">
+      <div class="card p-3">
+        <h4 class="fw-bold">주문 요약</h4>
+        <hr>
+        <p>총 상품 가격: $<span id="total-price" th:text="${feeInfo.totalPrice}">0</span></p>
+        <p id="free-shipping-message" style="color: green; font-weight: bold;"
+           th:text="${feeInfo.totalPrice >= feeInfo.freeShippingThreshold} ?
+            '총 금액이 $' + ${feeInfo.freeShippingThreshold} + ' 이상이므로 배송비가 무료입니다!' :
+            '총 $' + ${feeInfo.freeShippingThreshold} + ' 이상 구매 시 배송비가 무료입니다.'">
+          배송비 무료
+        </p>
+        <p>배송비: $<span id="shipping-cost" th:text="${feeInfo.totalPrice >= feeInfo.freeShippingThreshold} ? 0 : ${feeInfo.deliveryFee}">0</span></p>
+        <hr>
+        <p class="fw-bold">총 결제 금액: $<span id="final-price" th:text="${feeInfo.totalPrice >= feeInfo.freeShippingThreshold} ? ${feeInfo.totalPrice} : ${feeInfo.totalPrice + feeInfo.deliveryFee}">0</span></p>
+        <button class="btn btn-primary w-100 mt-3">결제하기</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div th:replace="~{fragments/footer}"></div>
+
+<script th:inline="javascript">
+
+  // 초기 총 금액 및 배송비 설정
+  let totalPrice = parseFloat(document.getElementById('total-price').innerText) || 0;
+  const freeShippingThreshold = /*[[${feeInfo.freeShippingThreshold}]]*/ 0;
+  let shippingCost = parseFloat(document.getElementById('shipping-cost').innerText) || 0;
+
+
+
+  // 카트에 들어있는 개수 초기화
+  function updateCartCountWhenRemoved() {
+
+    let cartCountElement = document.getElementById('cart-count');
+    let currentCount = parseInt(cartCountElement.innerText,10) - 1;
+    currentCount = currentCount >= 0 ? currentCount : 0;
+    cartCountElement.innerText = currentCount;
+    localStorage.setItem('cartCount', currentCount);
+
+  }
+
+  // 페이지 로드 시 각 항목을 초기화
+  function initializeCart() {
+    const books = /*[[${books}]]*/ []; // 서버에서 받은 books 객체 배열
+    if (books.length === 0){
+      shippingCost = 0;
+    }
+    books.forEach(book => {
+      const checkBox = document.getElementById('select-' + book.bookId);
+      const outOfStockLabel = document.getElementById('out-of-stock-' + book.bookId);
+
+      if (book.quantity > book.stock) {
+        checkBox.disabled = true;  // 재고보다 많으면 체크박스 비활성화
+        checkBox.checked = false;  // 선택 해제
+        outOfStockLabel.style.display = 'block';  // "재고 없음" 문구 표시
+        outOfStockLabel.innerHTML = `재고 없음 (현재 재고: ${book.stock}개)`;
+      } else {
+        checkBox.disabled = false;
+        outOfStockLabel.style.display = 'none';
+      }
+
+      // 체크박스가 비활성화 또는 선택되지 않은 경우 총 금액에서 제외
+      if (checkBox.disabled || !checkBox.checked) {
+        totalPrice -= book.discountedPrice * book.quantity;
+      }
+    });
+
+    updateFinalPriceAndShipping(); // 초기화 후 최종 가격 업데이트
+  }
+
+  function updateQuantityViewReflection(change, bookId, discountedPrice, stock){
+    const quantityInput = document.getElementById('quantity-' + bookId);
+    let currentQuantity = parseInt(quantityInput.value) || 0;
+    const newQuantity = currentQuantity + change;
+    const checkBox = document.getElementById('select-' + bookId);
+    const outOfStockLabel = document.getElementById('out-of-stock-' + bookId);
+
+    const bookTotalPriceElement = document.getElementById('total-price-' + bookId);
+    const newBookTotalPrice = newQuantity * discountedPrice;
+    bookTotalPriceElement.innerText = newBookTotalPrice;  // 수정된 개수를 기반으로 1개의 책의 총가격 수정
+
+    if (newQuantity <= stock) {
+      checkBox.disabled = false;
+      outOfStockLabel.style.display = 'none';
+    }
+
+    if (!checkBox.disabled && checkBox.checked) {
+      totalPrice += change * discountedPrice;
+    }
+    quantityInput.value = newQuantity;
+
+    updateFinalPriceAndShipping();
+
+  }
+
+  // +,- 버튼으로 개수 변경시 동작
+  async function updateQuantity(change, bookId, discountedPrice, stock) {
+    const quantityInput = document.getElementById('quantity-' + bookId);
+    let currentQuantity = parseInt(quantityInput.value) || 0;
+    const newQuantity = currentQuantity + change;
+
+    if (change > 0 && newQuantity > stock) {
+      alert("재고를 초과할 수 없습니다.");
+      return;
+    }
+
+    if (newQuantity <= 0) {
+      removeItem(bookId, discountedPrice, currentQuantity);
+      return;
+    }
+
+    const loggedIn = await isLoggedIn();
+    console.log('cart update loggedIn:', loggedIn);
+    if (loggedIn){
+      //레디스에 반영
+
+      fetch('/cart/updateQuantity', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          bookId: bookId,
+          change: change
+        })
+      })
+      .then(response =>{
+        if (response.ok){
+          updateQuantityViewReflection(change, bookId, discountedPrice, stock);
+        }else {
+          throw new Error("수량변경에 실패했습니다.");
+        }
+      })
+      .catch(error =>{
+        alert(error.message);
+        console.error('Error updating quantity:', error);
+      })
+
+    }else {
+        // 세션 스토리지에 대한 변경을 여기서 하면 될 듯하다.
+      const cartData = JSON.parse(localStorage.getItem('cart'));
+      const existingBook = cartData.cartBookInfoList.find(book => book.bookId === bookId);
+
+      if (existingBook){
+        existingBook.quantity += change;
+        localStorage.setItem('cart',JSON.stringify(cartData));
+
+        updateQuantityViewReflection(change, bookId, discountedPrice, stock);
+      }
+
+    }
+  }
+
+  // 장바구니페이지에서 물품 삭제시 동작
+  async function removeItem(bookId, discountedPrice) {
+    // 아이템 삭제 시 총 금액에서 해당 금액 차감
+    const checkBox = document.getElementById('select-' + bookId);
+    const quantity = parseInt(document.getElementById('quantity-' + bookId).value);
+
+    if (!checkBox.disabled && checkBox.checked) {
+      totalPrice -= discountedPrice * quantity;
+    }
+    const loggedIn = await isLoggedIn();
+    if (loggedIn){
+      // 레디스에 반영
+      fetch(`/cart/removeBook`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          bookId: bookId,
+        })
+      })
+      .then(response => {
+        if (response.ok){
+          document.getElementById('item-row-' + bookId).remove();
+          updateCartCountWhenRemoved();
+          updateFinalPriceAndShipping();
+        } else {
+          return response.json().then(errorData => {
+                throw new Error(errorData.error);
+              }
+          )
+        }
+      })
+      .catch(error => {
+          alert(error.message);
+          console.error('Error removing item:', error);
+      })
+    }else {
+      // 로컬 스토리지에 반영
+      const bookData = JSON.parse(localStorage.getItem('cart'));
+
+      const existingBookIndex = bookData.cartBookInfoList.findIndex(book => book.bookId === bookId);
+
+      if (existingBookIndex !== -1){
+        bookData.cartBookInfoList.splice(existingBookIndex,1);
+        document.getElementById('item-row-' + bookId).remove();
+        updateCartCountWhenRemoved();
+        updateFinalPriceAndShipping();
+        localStorage.setItem('cart', JSON.stringify(bookData));
+      }
+
+    }
+
+
+
+  }
+
+  // 총 금액과 총금액에 따른 배송비 결정
+  function updateFinalPriceAndShipping() {
+    // 무료 배송 조건 확인 후 배송비 설정
+    shippingCost = totalPrice >= freeShippingThreshold || totalPrice === 0 ? 0 : parseFloat(/*[[${feeInfo.deliveryFee}]]*/ 0);
+    document.getElementById('total-price').innerText = totalPrice;
+    document.getElementById('shipping-cost').innerText = shippingCost;
+    document.getElementById('final-price').innerText = (totalPrice + shippingCost);
+    document.getElementById('free-shipping-message').innerText = totalPrice >= freeShippingThreshold
+        ? `총 금액이 $${freeShippingThreshold} 이상이므로 배송비가 무료입니다!`
+        : `총 $${freeShippingThreshold} 이상 구매 시 배송비가 무료입니다.`;
+  }
+
+  // 물품 체크박스 선택여부에 따라 가격반영
+  function updateSelectedTotal(bookId, discountedPrice) {
+    const isSelected = document.getElementById('select-' + bookId).checked;
+    const quantity = parseInt(document.getElementById('quantity-' + bookId).value);
+    const itemTotal = discountedPrice * quantity;
+
+    // 체크박스 상태에 따라 금액을 추가하거나 차감
+    if (isSelected) {
+      totalPrice += itemTotal;
+    } else {
+      totalPrice = totalPrice-itemTotal > 0 ? totalPrice-itemTotal : 0;
+    }
+
+    // 최종 결제 금액 및 배송비 업데이트
+    updateFinalPriceAndShipping();
+  }
+  function updateCartCountOnLoad(){
+    const cartCountElement = document.getElementById('cart-count');
+    cartCountElement.textContent = localStorage.getItem('cartCount');
+  }
+
+  window.onload = function(){
+    initializeCart();
+    updateCartCountOnLoad()
+  };
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+</body>
+</html>

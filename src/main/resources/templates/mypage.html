@@ -144,11 +144,13 @@
         <!-- 주문 목록 -->
         <div class="tab-pane fade" id="orders" role="tabpanel">
           <h3>주문 목록</h3>
-          <ul>
-            <li th:each="order : ${orders}">
-              <span th:text="${order.date}"></span> - <span th:text="${order.amount}"></span>
-            </li>
-          </ul>
+          <th:block th:replace="~{order/order-list :: #orderHistory}" />
+<!--          <ul>-->
+<!--            <li th:each="order : ${orders}">-->
+<!--              <span th:text="${order.date}"></span> - <span th:text="${order.amount}"></span>-->
+<!--            </li>-->
+<!--          </ul>-->
+
         </div>
 
         <!-- 주소 정보 -->
