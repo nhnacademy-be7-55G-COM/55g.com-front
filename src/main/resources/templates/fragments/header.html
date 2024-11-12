@@ -39,10 +39,10 @@
             <form id="logout-form" action="/logout" method="POST" style="display:none;">
               <button type="submit">Logout</button>
             </form>
-            <a href="/" class="cart for-buy" onclick="loadCartPage()">
+            <button class="cart for-buy" onclick="loadCartPage()">
               <span class="cart-text">Cart</span>
               <span class="cart-count-badge" id="cart-count">0</span>
-            </a>
+            </button>
 
             <div class="action-menu">
 
@@ -124,6 +124,7 @@
 
 
       async function loadCartPage() {
+
         const loggedIn = await isLoggedIn();
         console.log('cartPageLoad')
 
