@@ -22,14 +22,14 @@
     <tbody>
     <!-- 쿠폰 정책 리스트를 반복해서 화면에 표시 -->
     <tr th:each="policy : ${couponPolicyList}">
-      <td style="padding: 10px;" th:text="${policy.condition()}">조건</td>
+      <td style="padding: 10px;" th:text="${policy.condition() + '원'}">조건</td>
       <td style="padding: 10px;"
           th:text="${policy.discountPrice() < 1 ? policy.discountPrice().multiply(100).stripTrailingZeros().toPlainString() + '%'
                    : policy.discountPrice().stripTrailingZeros().toPlainString() + '원'}">
         할인(률)
       </td>
-      <td style="padding: 10px;" th:text="${policy.maxPrice()}">최대 할인 금액</td>
-      <td style="padding: 10px;" th:text="${policy.duration()}">기간</td>
+      <td style="padding: 10px;" th:text="${policy.maxPrice() + '원'}">최대 할인 금액</td>
+      <td style="padding: 10px;" th:text="${policy.duration() + '일'}">기간</td>
     </tr>
     </tbody>
   </table>

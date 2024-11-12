@@ -11,11 +11,13 @@ import shop.s5g.front.dto.PageResponseDto;
 import shop.s5g.front.dto.point.PointHistoryResponseDto;
 import shop.s5g.front.service.point.PointHistoryService;
 
+
 @RequestMapping("/point/support")
 @RestController
 @RequiredArgsConstructor
 @Slf4j
 public class PointSupportController {
+
     private final PointHistoryService pointHistoryService;
 
     @GetMapping("/history")

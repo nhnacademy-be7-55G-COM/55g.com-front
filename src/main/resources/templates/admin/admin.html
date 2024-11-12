@@ -283,7 +283,7 @@
                 <a>쿠폰 템플릿</a>
                 <ul>
                   <a class="nav-link" href="#" data-url="/admin/coupons/template/create">템플릿 생성</a>
-                  <a class="nav-link" href="/api/shop/admin/coupons/templates?page=1&size=15">템플릿 조회</a>
+                  <a class="nav-link" href="/api/shop/admin/coupons/templates">템플릿 조회</a>
                 </ul>
               </li>
 
@@ -294,7 +294,7 @@
                     <a class="nav-link" data-url="/admin/coupons">쿠폰 생성</a>
                     <ul>
                       <li><a class="nav-link" href="/api/shop/admin/coupons/templates">사용자 쿠폰 생성</a></li>
-                      <li><a class="nav-link" href="/api/shop/admin/coupons/templates">도서 쿠폰 생성</a></li>
+                      <li><a class="nav-link" href="/api/shop/books/pageable">도서 쿠폰 생성</a></li>
                       <li><a class="nav-link" href="/api/shop/admin/coupons/templates">카테고리 쿠폰 생성</a></li>
                     </ul>
                   </li>
@@ -409,7 +409,7 @@
               <thead>
               <tr>
                 <th>순번</th>
-                <th>조건</th>
+                <th>조건(원 이상)</th>
                 <th>할인 금액</th>
                 <th>기간</th>
                 <th>최대 할인 금액</th>
@@ -420,10 +420,13 @@
               <!-- 쿠폰 정책 리스트 반복 -->
               <tr th:each="policy, stat : ${couponPolicyList}">
                 <td th:text="${stat.index + 1}">순번</td>
-                <td th:text="${policy.condition}">조건</td>
-                <td th:text="${policy.discountPrice}">할인 금액</td>
-                <td th:text="${policy.duration}">기간</td>
-                <td th:text="${policy.maxPrice}">최대 할인 금액</td>
+                <td th:text="${policy.condition + '원'}">조건</td>
+                <td th:text="${policy.discountPrice() < 1 ? policy.discountPrice().multiply(100).stripTrailingZeros().toPlainString() + '%'
+                   : policy.discountPrice().stripTrailingZeros().toPlainString() + '원'}">
+                  할인(률)
+                </td>
+                <td th:text="${policy.duration + '일'}">기간</td>
+                <td th:text="${policy.maxPrice + '원'}">최대 할인 금액</td>
                 <td>
                   <!-- 각 정책 선택 버튼 -->
                   <button th:onclick="|selectCouponPolicy(${stat.index + 1},'${policy.condition}')|">선택</button>
