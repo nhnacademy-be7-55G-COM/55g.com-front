@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.util.Map;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.Banner.Mode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -69,13 +70,8 @@ public class CartController {
         if (cartSessionStorage == null) {
             // 로그인한 경우
             try {
+                cartDetailPageWhenLogin(response, model);
 
-                Map<String, Object> cartDetailPageInfo = cartService.getCartDetailPageInfo(); // 로그인 상태라면 api 에 가서 장바구니 정보를 가져와야한다.
-                response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
-                response.setHeader("Pragma", "no-cache");
-                response.setHeader("Expires", "0");
-                model.addAttribute("books", cartDetailPageInfo.get("books"));
-                model.addAttribute("feeInfo", cartDetailPageInfo.get("feeInfo"));
                 return "cart/cartDetail";
 
             } catch (CartDetailPageException e) {
@@ -86,13 +82,7 @@ public class CartController {
         } else {
             // 로그인 하지 않은 경우
             try {
-                Map<String, Object> cartDetailPageInfo = cartService.getCartDetailPageInfoWhenGuest(cartSessionStorage); // 로그인 상태라면 api 에 가서 장바구니 정보를 가져와야한다.
-
-                response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
-                response.setHeader("Pragma", "no-cache");
-                response.setHeader("Expires", "0");
-                model.addAttribute("books", cartDetailPageInfo.get("books"));
-                model.addAttribute("feeInfo", cartDetailPageInfo.get("feeInfo"));
+                cartDetailPageWhenGuest(cartSessionStorage, response, model);
                 return "cart/cartDetail";
 
             } catch (CartDetailPageException e) {
@@ -125,6 +115,27 @@ public class CartController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(Map.of("error", e.getMessage()));
         }
+
+    }
+
+    private void cartDetailPageWhenLogin(HttpServletResponse response, Model model) {
+        Map<String, Object> cartDetailPageInfo = cartService.getCartDetailPageInfo(); // 로그인 상태라면 api 에 가서 장바구니 정보를 가져와야한다.
+        response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
+        response.setHeader("Pragma", "no-cache");
+        response.setHeader("Expires", "0");
+        model.addAttribute("books", cartDetailPageInfo.get("books"));
+        model.addAttribute("feeInfo", cartDetailPageInfo.get("feeInfo"));
+    }
+
+    private void cartDetailPageWhenGuest(String cartSessionStorage, HttpServletResponse response,
+        Model model) {
+        Map<String, Object> cartDetailPageInfo = cartService.getCartDetailPageInfoWhenGuest(cartSessionStorage);
+
+        response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
+        response.setHeader("Pragma", "no-cache");
+        response.setHeader("Expires", "0");
+        model.addAttribute("books", cartDetailPageInfo.get("books"));
+        model.addAttribute("feeInfo", cartDetailPageInfo.get("feeInfo"));
 
     }
 }

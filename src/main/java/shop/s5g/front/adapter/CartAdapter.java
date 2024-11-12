@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import shop.s5g.front.config.FeignGatewayAuthorizationConfig;
 import shop.s5g.front.dto.MessageDto;
 import shop.s5g.front.dto.cart.request.CartLoginRequestDto;
 import shop.s5g.front.dto.cart.request.CartPutRequestDto;
@@ -16,7 +17,7 @@ import shop.s5g.front.dto.cart.request.CartRemoveBookRequestDto;
 import shop.s5g.front.dto.cart.request.CartUpdateQuantityRequestDto;
 
 
-@FeignClient(value = "cart", url = "${gateway.url}")
+@FeignClient(value = "cart", url = "${gateway.url}", configuration = FeignGatewayAuthorizationConfig.class)
 public interface CartAdapter {
 
     @PostMapping("/api/shop/cart")
@@ -31,7 +32,8 @@ public interface CartAdapter {
 
 
     @PostMapping("/api/shop/cart/login")
-    ResponseEntity<Map<String,Integer>> convertCartToRedis(@RequestBody CartLoginRequestDto cartLoginRequestDto);
+    ResponseEntity<Map<String, Integer>> convertCartToRedis(
+        @RequestBody CartLoginRequestDto cartLoginRequestDto);
 
     @PostMapping("/api/shop/cart/logout")
     ResponseEntity<Void> redisToDbWhenLogout();
