@@ -67,11 +67,7 @@
     }
   })();
 
-  async function isLoggedIn() {
-    const response = await fetch("/cart/loginCheck", { method: 'GET' });
-    const data = await response.json();
-    return data.isLoggedIn;
-  }
+
 
 </script>
 
@@ -170,18 +166,16 @@
   const freeShippingThreshold = /*[[${feeInfo.freeShippingThreshold}]]*/ 0;
   let shippingCost = parseFloat(document.getElementById('shipping-cost').innerText) || 0;
 
-  // 로그인 여부 확인
-  async function isLoggedIn() {
-    const response = await  fetch("/cart/loginCheck",{method:'GET'});
-    const data = await response.json();
-    return data.isLoggedIn;
-  }
+
 
   // 카트에 들어있는 개수 초기화
-  function updateCartCount() {
+  function updateCartCountWhenRemoved() {
 
-    const cartCountElement = document.getElementById('cart-count');
-    cartCountElement.textContent = localStorage.getItem('cartCount');
+    let cartCountElement = document.getElementById('cart-count');
+    let currentCount = parseInt(cartCountElement.innerText,10) - 1;
+    currentCount = currentCount >= 0 ? currentCount : 0;
+    cartCountElement.innerText = currentCount;
+    localStorage.setItem('cartCount', currentCount);
 
   }
 
@@ -287,10 +281,11 @@
 
       if (existingBook){
         existingBook.quantity += change;
-      }
-      localStorage.setItem('cart',JSON.stringify(cartData));
+        localStorage.setItem('cart',JSON.stringify(cartData));
 
-      updateQuantityViewReflection(change, bookId, discountedPrice, stock);
+        updateQuantityViewReflection(change, bookId, discountedPrice, stock);
+      }
+
     }
   }
 
@@ -316,6 +311,7 @@
       .then(response => {
         if (response.ok){
           document.getElementById('item-row-' + bookId).remove();
+          updateCartCountWhenRemoved();
           updateFinalPriceAndShipping();
         } else {
           return response.json().then(errorData => {
@@ -337,17 +333,14 @@
       if (existingBookIndex !== -1){
         bookData.cartBookInfoList.splice(existingBookIndex,1);
         document.getElementById('item-row-' + bookId).remove();
+        updateCartCountWhenRemoved();
         updateFinalPriceAndShipping();
+        localStorage.setItem('cart', JSON.stringify(bookData));
       }
 
-      localStorage.setItem('cart', JSON.stringify(bookData));
     }
 
-    let cartCountElement = document.getElementById('cart-count');
-    let currentCount = parseInt(cartCountElement.innerText,10) - 1;
-    currentCount = currentCount >= 0 ? currentCount : 0;
-    cartCountElement.innerText = currentCount;
-    localStorage.setItem('cartCount', currentCount);
+
 
   }
 
@@ -379,11 +372,14 @@
     // 최종 결제 금액 및 배송비 업데이트
     updateFinalPriceAndShipping();
   }
+  function updateCartCountOnLoad(){
+    const cartCountElement = document.getElementById('cart-count');
+    cartCountElement.textContent = localStorage.getItem('cartCount');
+  }
 
-
-  window.onload = async function(){
+  window.onload = function(){
     initializeCart();
-    updateCartCount();
+    updateCartCountOnLoad()
   };
 </script>
 
