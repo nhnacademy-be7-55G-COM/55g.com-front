@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
-import shop.s5g.front.adapter.CouponTemplateAdapter;
+import shop.s5g.front.adapter.coupon.CouponTemplateAdapter;
 import shop.s5g.front.dto.MessageDto;
 import shop.s5g.front.dto.coupon.CouponTemplateInquiryResponseDto;
 import shop.s5g.front.dto.coupon.CouponTemplateRegisterRequestDto;

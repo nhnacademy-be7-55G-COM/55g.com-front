@@ -1,4 +1,4 @@
-package shop.s5g.front.adapter;
+package shop.s5g.front.adapter.coupon;
 
 import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
