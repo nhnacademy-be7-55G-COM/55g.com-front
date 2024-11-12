@@ -2,6 +2,7 @@ package shop.s5g.front.controller;
 
 import jakarta.validation.Valid;
 import java.beans.PropertyEditorSupport;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,10 +14,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import shop.s5g.front.annotation.MemberAndAdminOnly;
 import shop.s5g.front.annotation.RedirectWithAlert;
+import shop.s5g.front.dto.address.AddressResponseDto;
 import shop.s5g.front.dto.member.MemberInfoResponseDto;
 import shop.s5g.front.dto.member.MemberRegistrationRequestDto;
 import shop.s5g.front.dto.member.MemberUpdateRequestDto;
 import shop.s5g.front.exception.auth.UnauthorizedException;
+import shop.s5g.front.service.address.AddressService;
 import shop.s5g.front.service.member.MemberService;
 
 @Controller
@@ -24,6 +27,7 @@ import shop.s5g.front.service.member.MemberService;
 public class MemberController {
 
     private final MemberService memberService;
+    private final AddressService addressService;
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
@@ -64,7 +68,10 @@ public class MemberController {
     @GetMapping("/mypage")
     public String myPage(Model model) {
         MemberInfoResponseDto responseDto = memberService.getMemberInfo();
+        List<AddressResponseDto> addresses = addressService.getAddresses();
         model.addAttribute("member", responseDto);
+        model.addAttribute("addresses", addresses);
+
         return "mypage";
     }
 
@@ -73,8 +80,7 @@ public class MemberController {
         BindingResult bindingResult, Model model) {
 
         if (bindingResult.hasErrors()) {
-            model.addAttribute("error", "양식을 확인해주세요");
-            return "mypage";
+            return "redirect:/mypage";
         }
         memberService.updateMember(requestDto);
 

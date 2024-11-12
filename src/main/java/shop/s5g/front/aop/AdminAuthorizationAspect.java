@@ -9,6 +9,7 @@ import shop.s5g.front.utils.UserRoleHolder;
 
 @Aspect
 @Component
+@Order(4)
 public class AdminAuthorizationAspect {
 
     @Before("@within(shop.s5g.front.annotation.AdminOnly) || @annotation(shop.s5g.front.annotation.AdminOnly)")

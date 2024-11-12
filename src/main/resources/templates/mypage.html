@@ -4,123 +4,314 @@
   <title>My Page</title>
   <meta charset="utf-8">
   <th:block th:replace="~{fragments/head :: headTemplate}"></th:block>
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css">
+  <link rel="stylesheet" href="/static/style-mypage.css">
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script src="/static/js/mypage-utils.js"></script>
   <script>
-    const defaultSize=10;
+    const defaultSize = 10;
   </script>
 </head>
 
-<body data-bs-spy="scroll" data-bs-target="#sidebar" tabindex="0">
+<body data-bs-spy="scroll" data-bs-target="#sidebar" tabindex="0"
+      style="font-family: 'Pretendard', sans-serif;">
 
 <div th:replace="~{fragments/header}"></div>
 
 <div class="container">
   <div class="row">
     <!-- 사이드바 -->
-    <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+    <!-- 사이드바 -->
+    <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block sidebar">
       <div class="position-sticky">
         <ul class="nav flex-column">
+
+          <!-- 회원 정보 -->
           <li class="nav-item">
-            <a class="nav-link active" id="personal-tab" data-bs-toggle="tab" href="#personal"
-               role="tab">개인 정보</a>
+            <a class="nav-link collapsed d-flex justify-content-between align-items-center"
+               data-bs-toggle="collapse" href="#memberInfo" role="button"
+               aria-expanded="false" aria-controls="memberInfo">
+              회원 정보
+              <i class="fas fa-chevron-right toggle-icon"></i>
+            </a>
+            <div class="collapse" id="memberInfo">
+              <ul class="nav flex-column ms-3" style="margin-top: 0">
+                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#personalInfo">개인
+                  정보 관리</a></li>
+                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab"
+                                        href="#deliveryAddress">배송 주소</a></li>
+                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#coupons">쿠폰</a>
+                </li>
+                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab"
+                                        href="#gradeInfo">등급</a></li>
+                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#deleteAccount">회원
+                  탈퇴</a></li>
+              </ul>
+            </div>
           </li>
+
+          <!-- 쇼핑 내역 -->
           <li class="nav-item">
-            <a class="nav-link" id="points-tab" data-bs-toggle="tab" href="#points" role="tab">포인트
-              내역</a>
-            <script>
-              const pointButton = document.querySelector('a#points-tab');
-              const pointHistoryCaller = async (size, page) => {
-                const { totalPage, totalElements } = await callPointHistoryPage('#pointHistoryTable', {size: size, page: page});
-                const pageButtonTemplate = `<li class="page-item"><button class="page-link"></button></li>`;
-                const pageButtonActiveTemplate = `<li class="page-item active"><button class="page-link"></button></li>`;
-                const pagination = document.querySelector('#point-pagination');
-                pagination.innerHTML = '';
-                console.log(`totalPage: ${totalPage}, totalElements: ${totalElements}`);
-                if (totalPage > 0) {
-                  for (let i=0; i<totalPage; i++) {
-                    let pageButton = null;
-                    console.log(`i: ${i}, page: ${page}, page===i => ${page === i}`);
-                    console.log(`typeof(i): ${typeof(i)}, typeof(page): ${typeof(page)}`);
-                    if (page === i) { // isActive
-                      pageButton = `<li class="page-item active"><button class="page-link" data-index="${i}">${i+1}</button></li>`;
-                    } else {
-                      pageButton = `<li class="page-item"><button class="page-link" data-index="${i}">${i+1}</button></li>`;
+            <a class="nav-link collapsed d-flex justify-content-between align-items-center"
+               data-bs-toggle="collapse" href="#shoppingHistory" role="button"
+               aria-expanded="false" aria-controls="shoppingHistory">
+              쇼핑 내역
+              <i class="fas fa-chevron-right toggle-icon"></i>
+            </a>
+            <div class="collapse" id="shoppingHistory">
+              <ul class="nav flex-column ms-3" style="margin-top: 0">
+                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#orders">주문
+                  내역</a></li>
+              </ul>
+            </div>
+          </li>
+
+          <!-- 활동 내역 -->
+          <li class="nav-item">
+            <a class="nav-link collapsed d-flex justify-content-between align-items-center"
+               data-bs-toggle="collapse" href="#activityHistory" role="button"
+               aria-expanded="false" aria-controls="activityHistory">
+              활동 내역
+              <i class="fas fa-chevron-right toggle-icon"></i>
+            </a>
+            <div class="collapse" id="activityHistory">
+              <ul class="nav flex-column ms-3" style="margin-top: 0">
+                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#likes">좋아요</a>
+                </li>
+                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#reviews">리뷰
+                  내역</a></li>
+                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#points">포인트
+                  내역</a></li>
+                <script>
+                  const pointButton = document.querySelector('a#points-tab');
+                  const pointHistoryCaller = async (size, page) => {
+                    const {totalPage, totalElements} = await callPointHistoryPage(
+                        '#pointHistoryTable', {size: size, page: page});
+                    const pageButtonTemplate = `<li class="page-item"><button class="page-link"></button></li>`;
+                    const pageButtonActiveTemplate = `<li class="page-item active"><button class="page-link"></button></li>`;
+                    const pagination = document.querySelector('#point-pagination');
+                    pagination.innerHTML = '';
+                    console.log(`totalPage: ${totalPage}, totalElements: ${totalElements}`);
+                    if (totalPage > 0) {
+                      for (let i = 0; i < totalPage; i++) {
+                        let pageButton = null;
+                        console.log(`i: ${i}, page: ${page}, page===i => ${page === i}`);
+                        console.log(`typeof(i): ${typeof (i)}, typeof(page): ${typeof (page)}`);
+                        if (page === i) { // isActive
+                          pageButton = `<li class="page-item active"><button class="page-link" data-index="${i}">${i
+                          + 1}</button></li>`;
+                        } else {
+                          pageButton = `<li class="page-item"><button class="page-link" data-index="${i}">${i
+                          + 1}</button></li>`;
+                        }
+                        pagination.innerHTML += pageButton;
+                      }
                     }
-                    pagination.innerHTML += pageButton;
-                  }
-                }
-                const buttons = pagination.querySelectorAll('li > button');
-                buttons.forEach(button => {
-                  const index = button.getAttribute('data-index');
-                  button.addEventListener('click', () => {
-                    console.log(`call page: ${index}`);
-                    pointHistoryCaller(defaultSize, parseInt(index));
-                  });
-                })
-              };
-              pointButton.addEventListener('click', () => pointHistoryCaller(defaultSize, 0));
-            </script>
+                    const buttons = pagination.querySelectorAll('li > button');
+                    buttons.forEach(button => {
+                      const index = button.getAttribute('data-index');
+                      button.addEventListener('click', () => {
+                        console.log(`call page: ${index}`);
+                        pointHistoryCaller(defaultSize, parseInt(index));
+                      });
+                    })
+                  };
+                  pointButton.addEventListener('click', () => pointHistoryCaller(defaultSize, 0));
+                </script>
+              </ul>
+            </div>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" id="coupons-tab" data-bs-toggle="tab" href="#coupons" role="tab">나의
-              쿠폰 목록</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" id="orders-tab" data-bs-toggle="tab" href="#orders" role="tab">주문
-              목록</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" id="address-tab" data-bs-toggle="tab" href="#address" role="tab">주소
-              정보</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" id="reviews-tab" data-bs-toggle="tab" href="#reviews" role="tab">나의
-              리뷰 목록</a>
-          </li>
+
         </ul>
       </div>
     </nav>
-
     <!-- 메인 콘텐츠 -->
     <main class="col-md-9 col-lg-10">
       <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade" id="personalInfo" role="tabpanel">
+          <h3 style="font-family: 'Pretendard', sans-serif;">개인 정보</h3>
+          <div class="info-card">
+            <p class="info-item">
+              <i class="fas fa-user"></i> <strong>아이디:</strong> <span
+                th:text="${member.loginId()}"></span>
+            </p>
+            <p class="info-item">
+              <i class="fas fa-id-card"></i> <strong>이름:</strong> <span
+                th:text="${member.name()}"></span>
+            </p>
+            <p class="info-item">
+              <i class="fas fa-phone-alt"></i> <strong>연락처:</strong>
+              <span
+                  th:text="${member.phoneNumber().substring(0, 3) + '-' + member.phoneNumber().substring(3, 7) + '-' + member.phoneNumber().substring(7)}"></span>
+            </p>
+            <p class="info-item">
+              <i class="fas fa-envelope"></i> <strong>이메일:</strong> <span
+                th:text="${member.email()}"></span>
+            </p>
+            <p class="info-item">
+              <i class="fas fa-birthday-cake"></i> <strong>생년월일:</strong>
+              <span
+                  th:text="${member.birth().substring(0, 4)} + '년 ' + ${member.birth().substring(4, 6)} + '월 ' + ${member.birth().substring(6)} + '일'"></span>
+            </p>
+            <p class="info-item">
+              <i class="fas fa-calendar-alt"></i> <strong>가입 일자:</strong>
+              <span
+                  th:text="${#temporals.format(member.createdAt(), 'yyyy년 MM월 dd일 HH시 mm분')}"></span>
+            </p>
 
-        <!-- 개인 정보 및 계정 상태 -->
-        <div class="tab-pane fade show active" id="personal" role="tabpanel">
-          <h3>개인 정보</h3>
-          <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}">
-            <!-- error 메시지가 여기 출력됨 -->
+            <p class="info-item">
+              <i class="fas fa-sign-in-alt"></i> <strong>최근 로그인:</strong>
+              <span
+                  th:text="${#temporals.format(member.latestLoginAt(), 'yyyy년 MM월 dd일 HH시 mm분')}"></span>
+            </p>
           </div>
-          <p>
-            <a href="#" data-bs-toggle="modal" data-bs-target="#gradeInfoModal">
-              <strong><span th:text="'회원 등급: '"></span></strong>
-              <span th:text="${member.grade().gradeName()}"></span>
-            </a>
-          </p>
-          <p>ID: <span th:text="${member.loginId()}"></span></p>
-          <p>이름: <span th:text="${member.name()}"></span></p>
-          <p>연락처: <span
-              th:text="${member.phoneNumber().substring(0, 3) + '-' + member.phoneNumber().substring(3, 7) + '-' + member.phoneNumber().substring(7)}"></span>
-          </p>
-          <p>이메일: <span th:text="${member.email()}"></span></p>
-          <p>생년월일: <span
-              th:text="${member.birth().substring(0, 4) + '-' + member.birth().substring(4, 6) + '-' + member.birth().substring(6)}"></span>
-          </p>
-          <p>가입 일자: <span
-              th:text="${#temporals.format(member.createdAt(), 'yyyy-MM-dd HH:mm')}"></span></p>
-          <p>최근 로그인: <span
-              th:text="${#temporals.format(member.latestLoginAt(), 'yyyy-MM-dd HH:mm')}"></span></p>
-          <button class="btn btn-secondary" data-bs-toggle="modal"
-                  data-bs-target="#updatePersonalModal">개인 정보 변경
+
+          <button class="btn btn-custom btn-lg mt-3" data-bs-toggle="modal"
+                  data-bs-target="#updatePersonalModal">
+            개인 정보 변경
           </button>
-          <button class="btn btn-primary mt-3" data-bs-toggle="modal"
-                  data-bs-target="#changePasswordModal">비밀번호 변경
+          <!-- 비밀번호 변경 버튼 -->
+          <button class="btn btn-custom btn-lg mt-3 ms-2" data-bs-toggle="modal"
+                  data-bs-target="#changePasswordModal">
+            비밀번호 변경
           </button>
-          <br>
-          <button class="btn btn-danger" data-bs-toggle="modal"
-                  data-bs-target="#deleteAccountModal">회원 탈퇴
-          </button>
+        </div>
+
+        <!-- 배송 주소 -->
+        <div class="tab-pane fade" id="deliveryAddress" role="tabpanel">
+          <h3 style="font-family: 'Pretendard', sans-serif;">배송 주소 관리</h3>
+          <div class="info-card">
+            <!-- 현재 주소 목록 -->
+            <h5 style="font-family: 'Pretendard', sans-serif"><strong>등록된 주소</strong></h5>
+            <ul class="list-unstyled">
+              <li th:each="address : ${addresses}" class="mb-4">
+                <div class="address-card">
+                  <div>
+                    <h6 class="address-title">
+                      <strong th:text="${address.alias()}"></strong>
+                      <span th:if="${address.isDefault()}" class="badge">기본 배송지</span>
+                    </h6>
+                    <p class="address-details"><strong>주소:</strong> <span
+                        th:text="${address.primaryAddress()}"></span></p>
+                    <p class="address-details"><strong>상세주소:</strong> <span
+                        th:text="${address.detailAddress()}"></span></p>
+                  </div>
+                  <!-- 버튼 섹션 -->
+                  <div class="d-flex justify-content-between align-items-center mt-3">
+                    <!-- 수정 버튼 -->
+                    <button type="button" class="btn btn-edit btn-sm"
+                            data-bs-toggle="modal"
+                            th:attr="data-bs-target=${'#editAddressModal' + address.addressId()}">
+                      수정
+                    </button>
+
+                    <!-- 삭제 버튼 -->
+                    <form th:action="@{/mypage/deleteAddress}" method="post" class="mb-0">
+                      <input type="hidden" name="addressId" th:value="${address.addressId()}">
+                      <button type="submit" class="btn btn-delete btn-sm">삭제</button>
+                    </form>
+                  </div>
+                </div>
+              </li>
+            </ul>
+            <!-- 주소 추가하기 버튼 -->
+            <button class="btn btn-custom btn-lg mt-3" data-bs-toggle="modal"
+                    data-bs-target="#addAddressModal">
+              주소 추가하기
+            </button>
+          </div>
+        </div>
+
+        <!-- 쿠폰 -->
+        <div class="tab-pane fade" id="coupons" role="tabpanel">
+          <h3>쿠폰 목록</h3>
+          <p>현재 보유 중인 쿠폰 목록입니다.</p>
+          <!-- 쿠폰 목록 및 정보 -->
+        </div>
+
+
+        <!-- 등급 정보 섹션 -->
+        <div class="tab-pane fade" id="gradeInfo" role="tabpanel">
+          <h3 style="font-family: 'Pretendard', sans-serif;">등급 정보</h3>
+          <div class="info-card">
+            <!-- 현재 등급 -->
+            <p class="info-item">
+              <i class="fas fa-medal bronze-icon" th:if="${member.grade().gradeName() == '일반'}"></i>
+              <i class="fas fa-medal silver-icon" th:if="${member.grade().gradeName() == '로얄'}"></i>
+              <i class="fas fa-medal gold-icon" th:if="${member.grade().gradeName() == '골드'}"></i>
+              <i class="fas fa-medal platinum-icon"
+                 th:if="${member.grade().gradeName() == '플래티넘'}"></i>
+              <strong>현재 등급:</strong> <span th:text="${member.grade().gradeName()}"></span>
+            </p>
+
+            <!-- 등급 산정 기간 -->
+            <p class="info-item">
+              <i class="fas fa-calendar-alt"></i> <strong>등급 산정 기간:</strong>
+              <span
+                  th:text="${#temporals.format(#temporals.createNow().minus(3, T(java.time.temporal.ChronoUnit).MONTHS), 'yyyy-MM-dd')}"></span>
+              ~
+              <span th:text="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}"></span>
+            </p>
+
+            <!-- 현재 구매 금액 -->
+            <p class="info-item">
+              <i class="fas fa-won-sign"></i> <strong>현재 구매 금액:</strong> <span th:text="'원'"></span>
+            </p>
+
+            <!-- 다음 등급까지 남은 금액 -->
+            <p class="info-item">
+              <i class="fas fa-arrow-up"></i> <strong>다음 등급까지 남은 금액:</strong>
+              <span th:text="'원'"></span>
+            </p>
+
+            <!-- 등급 혜택 확인 버튼 -->
+            <button class="btn btn-custom btn-lg mt-3" data-bs-toggle="modal"
+                    data-bs-target="#gradeBenefitsModal">
+              등급 혜택 확인
+            </button>
+          </div>
+        </div>
+
+        <!-- 회원 탈퇴 -->
+        <div class="tab-pane fade" id="deleteAccount" role="tabpanel">
+          <h3 style="font-family: 'Pretendard', sans-serif; font-weight: bold;">회원 탈퇴</h3>
+          <p style="font-family: 'Pretendard', sans-serif;">정말로 회원 탈퇴를 원하시면 아래 버튼을 눌러 진행해주세요.</p>
+
+          <!-- 회원 탈퇴 폼 -->
+          <form th:action="@{/mypage/deleteAccount}" method="post">
+            <!-- 탈퇴 버튼 -->
+            <button type="submit" class="btn btn-danger"
+                    style="font-family: 'Pretendard', sans-serif; font-weight: 600; border-radius: 5px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); padding: 5px 10px;">
+              회원 탈퇴
+            </button>
+          </form>
+        </div>
+        <!-- 좋아요 -->
+        <div class="tab-pane fade" id="likes" role="tabpanel">
+          <h3>좋아요 목록</h3>
+          <p>좋아요 표시한 상품 목록입니다.</p>
+          <!-- 좋아요 목록 표시 -->
+        </div>
+
+        <!-- 리뷰 내역 -->
+        <div class="tab-pane fade" id="reviews" role="tabpanel">
+          <h3>리뷰 내역</h3>
+          <p>작성한 리뷰 목록입니다.</p>
+          <!-- 리뷰 목록 표시 -->
+        </div>
+        <!-- 주문 목록 -->
+        <div class="tab-pane fade" id="orders" role="tabpanel">
+          <h3>주문 목록</h3>
+          <th:block th:replace="~{order/order-list :: #orderHistory}"/>
+          <!--          <ul>-->
+          <!--            <li th:each="order : ${orders}">-->
+          <!--              <span th:text="${order.date}"></span> - <span th:text="${order.amount}"></span>-->
+          <!--            </li>-->
+          <!--          </ul>-->
+
         </div>
 
         <!-- 포인트 내역 -->
@@ -131,211 +322,249 @@
           <ul id="point-pagination" class="pagination d-flex justify-content-end"></ul>
         </div>
 
-        <!-- 나의 쿠폰 목록 -->
-        <div class="tab-pane fade" id="coupons" role="tabpanel">
-          <h3>나의 쿠폰 목록</h3>
-          <ul>
-            <li th:each="coupon : ${coupons}">
-              <span th:text="${coupon.name}"></span> - <span th:text="${coupon.discount}"></span>
-            </li>
-          </ul>
-        </div>
-
-        <!-- 주문 목록 -->
-        <div class="tab-pane fade" id="orders" role="tabpanel">
-          <h3>주문 목록</h3>
-          <th:block th:replace="~{order/order-list :: #orderHistory}" />
-<!--          <ul>-->
-<!--            <li th:each="order : ${orders}">-->
-<!--              <span th:text="${order.date}"></span> - <span th:text="${order.amount}"></span>-->
-<!--            </li>-->
-<!--          </ul>-->
-
-        </div>
-
-        <!-- 주소 정보 -->
-        <div class="tab-pane fade" id="address" role="tabpanel">
-          <h3>주소 정보</h3>
-          <ul>
-            <li th:each="address : ${addresses}">
-              <span th:text="${address}"></span>
-              <button class="btn btn-danger" data-bs-toggle="modal"
-                      data-bs-target="#deleteAddressModal" data-bs-address-id="[[${address.id}]]">삭제
-              </button>
-            </li>
-          </ul>
-
-          <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAddressModal">
-            배송지 추가
-          </button>
-        </div>
-        <!-- 리뷰 목록 -->
-        <div class="tab-pane fade" id="reviews" role="tabpanel">
-          <h3>나의 리뷰 목록</h3>
-          <ul>
-            <li th:each="review : ${reviewList}">
-              <p><strong>상품:</strong> <span th:text="${review.productName}"></span></p>
-              <p><strong>작성일:</strong> <span th:text="${review.date}"></span></p>
-              <p><strong>평점:</strong> <span th:text="${review.rating}"></span> / 5</p>
-              <p><strong>리뷰 내용:</strong> <span th:text="${review.content}"></span></p>
-              <hr>
-            </li>
-          </ul>
-        </div>
       </div>
     </main>
   </div>
 </div>
+
 <!-- 개인 정보 변경 Modal -->
 <div class="modal fade" id="updatePersonalModal" tabindex="-1"
      aria-labelledby="updatePersonalModalLabel" aria-hidden="true">
   <div class="modal-dialog">
-    <div class="modal-content">
+    <div class="modal-content info-card">
       <div class="modal-header">
-        <h5 class="modal-title" id="updatePersonalModalLabel">개인 정보 변경</h5>
+        <h5 class="modal-title info-title" id="updatePersonalModalLabel">개인 정보 변경</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <form th:action="@{/mypage/changeInfo}" method="post">
           <div class="mb-3">
             <label for="newName" class="form-label">새 이름</label>
-            <input type="text" class="form-control" id="newName" name="name" placeholder="새 이름을 입력하세요"
-                   th:value="${member.name}">
+            <input type="text" class="form-control form-input" id="newName" name="name"
+                   placeholder="새 이름을 입력하세요" th:value="${member.name}">
           </div>
           <div class="mb-3">
             <label for="newPhoneNumber" class="form-label">새 연락처</label>
-            <input type="tel" class="form-control" id="newPhoneNumber" name="phoneNumber" placeholder="새 연락처를 입력하세요"
-                   th:value="${member.phoneNumber().substring(0, 3) + '-' + member.phoneNumber().substring(3, 7) + '-' + member.phoneNumber().substring(7)}" oninput="formatPhoneNumber()">
+            <input type="tel" class="form-control form-input" id="newPhoneNumber" name="phoneNumber"
+                   placeholder="010-0000-0000 형식으로 입력하세요"
+                   th:value="${member.phoneNumber().substring(0, 3) + '-' + member.phoneNumber().substring(3, 7) + '-' + member.phoneNumber().substring(7)}">
             <div id="phoneError" style="color: red; font-size: 0.9rem; display: none;">
               핸드폰 번호는 '010-0000-0000' 형식으로 입력해야 합니다
             </div>
           </div>
           <div class="mb-3">
             <label for="newEmail" class="form-label">새 이메일</label>
-            <input type="email" class="form-control" id="newEmail" name="email" placeholder="새 이메일을 입력하세요"
-                   th:value="${member.email}">
+            <input type="email" class="form-control form-input" id="newEmail" name="email"
+                   placeholder="새 이메일을 입력하세요" th:value="${member.email}">
           </div>
-          <button type="submit" class="btn btn-primary">변경 저장</button>
+          <button type="submit" class="btn btn-custom btn-lg mt-3">변경 저장</button>
         </form>
       </div>
     </div>
   </div>
 </div>
 
-<!-- 회원 탈퇴 Modal -->
-<div class="modal fade" id="deleteAccountModal" tabindex="-1"
-     aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="deleteAccountModalLabel">회원 탈퇴</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <p>정말로 회원 탈퇴를 하시겠습니까?</p>
-        <button class="btn btn-danger" id="confirmDeleteBtn">회원 탈퇴</button>
-        <button class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-      </div>
-    </div>
-  </div>
-</div>
 <!-- 비밀번호 변경 Modal -->
 <div class="modal fade" id="changePasswordModal" tabindex="-1"
      aria-labelledby="changePasswordModalLabel" aria-hidden="true">
   <div class="modal-dialog">
-    <div class="modal-content">
+    <div class="modal-content info-card">
       <div class="modal-header">
-        <h5 class="modal-title" id="changePasswordModalLabel">비밀번호 변경</h5>
+        <h5 class="modal-title info-title" id="changePasswordModalLabel">비밀번호 변경</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form id="changePasswordForm">
+        <form id="changePasswordForm" th:action="@{/mypage/changePassword}" method="post">
           <div class="mb-3">
             <label for="currentPassword" class="form-label">현재 비밀번호</label>
-            <input type="password" class="form-control" id="currentPassword"
-                   placeholder="현재 비밀번호를 입력하세요" required>
+            <input type="password" class="form-control form-input" id="currentPassword"
+                   name="currentPassword" placeholder="현재 비밀번호를 입력하세요" required>
           </div>
           <div class="mb-3">
             <label for="newPassword" class="form-label">새 비밀번호</label>
-            <input type="password" class="form-control" id="newPassword" placeholder="새 비밀번호를 입력하세요"
-                   required>
+            <input type="password" class="form-control form-input" id="newPassword"
+                   name="newPassword" placeholder="새 비밀번호를 입력하세요" required>
           </div>
           <div class="mb-3">
             <label for="confirmNewPassword" class="form-label">새 비밀번호 확인</label>
-            <input type="password" class="form-control" id="confirmNewPassword"
-                   placeholder="새 비밀번호를 다시 입력하세요" required>
+            <input type="password" class="form-control form-input" id="confirmNewPassword"
+                   name="confirmNewPassword" placeholder="새 비밀번호를 다시 입력하세요" required>
           </div>
           <div id="passwordError" class="text-danger" style="display: none;">새 비밀번호와 확인 비밀번호가 일치하지
             않습니다.
           </div>
-          <button type="submit" class="btn btn-primary">비밀번호 변경</button>
+          <button type="submit" class="btn btn-custom btn-lg mt-3">비밀번호 변경</button>
         </form>
       </div>
     </div>
   </div>
 </div>
-<!-- 회원 등급 정보 Modal -->
-<div class="modal fade" id="gradeInfoModal" tabindex="-1" aria-labelledby="gradeInfoModalLabel"
-     aria-hidden="true">
+
+<!-- 등급 혜택 모달 -->
+<div class="modal fade" id="gradeBenefitsModal" tabindex="-1"
+     aria-labelledby="gradeBenefitsModalLabel" aria-hidden="true">
   <div class="modal-dialog">
-    <div class="modal-content">
+    <div class="modal-content info-card">
       <div class="modal-header">
-        <h5 class="modal-title" id="gradeInfoModalLabel">회원 등급 정보</h5>
+        <h5 class="modal-title info-title" id="gradeBenefitsModalLabel">등급별 혜택</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <!-- 회원 등급에 대한 설명 -->
-        <h3>회원 등급은 최근 3개월 간의 순수 주문 금액을 기준으로 합니다.</h3>
-        <p><strong>일반:</strong> 0 ~ 10만 포인트 미만, 1%의 적립 혜택이 있습니다.</p>
-        <p><strong>로얄:</strong> 10만 ~ 20만 포인트 미만, 2%의 적립 혜택이 있습니다.</p>
-        <p><strong>골드:</strong> 20만 ~ 30만 포인트 미만, 3%의 적립 혜택이 있습니다.</p>
-        <p><strong>플래티넘:</strong> 30만 ~ , 4%의 적립 혜택이 있습니다.</p>
+        <ul>
+          <li><strong>일반:</strong> 0 ~ 10만 포인트 미만, 1%의 적립 혜택이 있습니다.</li>
+          <li><strong>로얄:</strong> 10만 ~ 20만 포인트 미만, 2%의 적립 혜택이 있습니다.</li>
+          <li><strong>골드:</strong> 20만 ~ 30만 포인트 미만, 3%의 적립 혜택이 있습니다.</li>
+          <li><strong>플래티넘:</strong> 30만 ~ , 4%의 적립 혜택이 있습니다.</li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
       </div>
     </div>
   </div>
 </div>
-<!-- 배송지 추가 Modal -->
+<!-- 주소 추가 모달 -->
 <div class="modal fade" id="addAddressModal" tabindex="-1" aria-labelledby="addAddressModalLabel"
      aria-hidden="true">
   <div class="modal-dialog">
-    <div class="modal-content">
+    <div class="modal-content info-card" style="padding: 20px;">
       <div class="modal-header">
-        <h5 class="modal-title" id="addAddressModalLabel">배송지 추가</h5>
+        <h5 class="modal-title" id="addAddressModalLabel"
+            style="font-family: 'Pretendard', sans-serif; font-weight: bold;">주소 추가</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form>
+        <form th:action="@{/mypage/addAddress}" method="post">
+
+          <!-- 별칭 입력 -->
           <div class="mb-3">
-            <label for="addressLine" class="form-label">배송지</label>
-            <input type="text" class="form-control" id="addressLine" placeholder="배송지 정보를 입력하세요">
+            <label for="addressAlias" class="form-label" style="font-weight: 600;">별칭</label>
+            <input type="text" class="form-control form-input" id="addressAlias" name="alias"
+                   placeholder="주소의 별칭 (예: 집, 회사)" required>
           </div>
+
+          <!-- 우편번호 입력 및 찾기 버튼 -->
           <div class="mb-3">
-            <label for="addressDetails" class="form-label">상세 주소</label>
-            <input type="text" class="form-control" id="addressDetails" placeholder="상세 주소를 입력하세요">
+            <label for="zipCode" class="form-label" style="font-weight: 600;">우편번호</label>
+            <div class="input-group" style="display: flex; align-items: stretch;">
+              <!-- 우편번호 입력란 -->
+              <input type="text" class="form-control form-input" id="zipCode" name="zipCode"
+                     placeholder="우편번호" required readonly
+                     style="height: calc(1.5em + .75rem + 2px); margin-top: 15px;margin-right:30px; padding-right: 30px;">
+              <!-- 찾기 버튼 -->
+              <button type="button" class="btn btn-secondary" onclick="execDaumPostcode()"
+                      style="height: calc(1.5em + .75rem + 2px);">
+                찾기
+              </button>
+            </div>
           </div>
-          <button type="submit" class="btn btn-primary">배송지 추가</button>
+
+          <!-- 주소 입력 -->
+          <div class="mb-3">
+            <label for="address" class="form-label" style="font-weight: 600;">주소</label>
+            <input type="text" class="form-control form-input" id="address" name="primaryAddress"
+                   placeholder="주소" required readonly>
+          </div>
+
+          <!-- 상세 주소 입력 -->
+          <div class="mb-3">
+            <label for="detailAddress" class="form-label" style="font-weight: 600;">상세 주소</label>
+            <input type="text" class="form-control form-input" id="detailAddress"
+                   name="detailAddress" placeholder="상세 주소 입력" required>
+          </div>
+
+          <!-- 기본 배송지 여부 -->
+          <div class="form-check mb-3" style="padding-left: 1.5em;">
+            <input type="checkbox" class="form-check-input" id="setAsDefault" name="isDefault"
+                   value="true">
+            <label class="form-check-label" for="setAsDefault" style="font-weight: 600;">기본 주소지로
+              설정</label>
+          </div>
+
+          <!-- 제출 버튼 -->
+          <div class="d-grid mt-4">
+            <button type="submit" class="btn btn-custom" onclick="prepareFormAndSubmit()">주소 추가
+            </button>
+          </div>
         </form>
       </div>
     </div>
   </div>
 </div>
-<!-- 배송지 삭제 Modal -->
-<div class="modal fade" id="deleteAddressModal" tabindex="-1"
-     aria-labelledby="deleteAddressModalLabel" aria-hidden="true">
+
+<<!-- 기본 배송지 수정 모달 -->
+<div th:each="address : ${addresses}"
+     th:id="'editAddressModal' + ${address.addressId()}"
+     class="modal fade" tabindex="-1" aria-labelledby="editAddressModalLabel" aria-hidden="true">
   <div class="modal-dialog">
-    <div class="modal-content">
+    <div class="modal-content info-card">
       <div class="modal-header">
-        <h5 class="modal-title" id="deleteAddressModalLabel">배송지 삭제</h5>
+        <h5 class="modal-title" id="editAddressModalLabel">수정</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <p>정말로 이 배송지를 삭제하시겠습니까?</p>
-        <button class="btn btn-danger" id="confirmDeleteAddressBtn">삭제</button>
-        <button class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+        <form th:action="@{/mypage/updateAddress}" method="post" id="editAddressForm">
+          <input type="hidden" name="addressId" th:value="${address.addressId()}">
+
+          <!-- 별칭 입력 -->
+          <div class="mb-3">
+            <label for="alias" class="form-label">별칭</label>
+            <input type="text" class="form-control form-input" id="alias" name="alias"
+                   th:value="${address.alias()}" placeholder="예: 집, 회사">
+          </div>
+
+          <!-- 기본 배송지 여부 -->
+          <div class="form-check mb-3 d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+              <input type="checkbox" class="form-check-input" id="isDefault" name="isDefault"
+                     value="true"
+                     th:checked="${address.isDefault()}">
+              <label class="form-check-label ms-2" for="isDefault">기본 배송지로 설정</label>
+            </div>
+
+          </div>
+
+          <button type="button" class="btn btn-custom btn-sm" onclick="submitIsDefault()">설정
+          </button>
+        </form>
       </div>
     </div>
   </div>
 </div>
+
+<script>
+  function prepareFormAndSubmit() {
+    const checkbox = document.getElementById("setAsDefault");
+
+    // 체크박스가 체크되지 않았으면 value를 "false"로 설정
+    if (!checkbox.checked) {
+      // hidden input 생성
+      const hiddenFalseInput = document.createElement("input");
+      hiddenFalseInput.type = "hidden";
+      hiddenFalseInput.name = checkbox.name;
+      hiddenFalseInput.value = "false";
+      checkbox.form.appendChild(hiddenFalseInput);
+    }
+
+    // 폼 제출
+    checkbox.form.submit();
+  }
+
+  function submitIsDefault() {
+    const checkbox = document.getElementById("isDefault");
+
+    if (!checkbox.checked) {
+      const hiddenFalseInput = document.createElement("input");
+      hiddenFalseInput.type = "hidden";
+      hiddenFalseInput.name = checkbox.name;
+      hiddenFalseInput.value = "false";
+      checkbox.form.appendChild(hiddenFalseInput);
+    }
+
+    // 폼 제출
+    checkbox.form.submit();
+  }
+</script>
 
 <script>
   document.getElementById('changePasswordForm').addEventListener('submit', function (event) {
@@ -374,11 +603,41 @@
 
     phoneError.style.display = (phoneValue.length === 11) ? "none" : "block";
   }
-</script>
 
+  document.getElementById('changePasswordForm').addEventListener('submit', function (event) {
+    const newPassword = document.getElementById('newPassword').value;
+    const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+    const passwordError = document.getElementById('passwordError');
+
+    if (newPassword !== confirmNewPassword) {
+      event.preventDefault(); // 폼 제출 방지
+      passwordError.style.display = 'block'; // 오류 메시지 표시
+    } else {
+      passwordError.style.display = 'none'; // 오류 메시지 숨김
+    }
+  });
+</script>
 <div th:replace="~{fragments/footer}"></div>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- 카카오 주소 API -->
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+  function execDaumPostcode() {
+    new daum.Postcode({
+      oncomplete: function (data) {
+        document.getElementById("zipCode").value = data.zonecode;
+        document.getElementById("address").value = data.address;
+        document.getElementById("detailAddress").focus();
+      }
+    }).open();
+  }
+</script>
 
+<script>
+  function updateCheckboxValue(checkbox) {
+    checkbox.value = checkbox.checked ? 'true' : 'false';
+  }
+</script>
 </body>
 </html>

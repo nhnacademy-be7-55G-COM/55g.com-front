@@ -112,13 +112,13 @@ public class AuthServiceImpl implements AuthService {
             if (tokenResponseDto != null) {
                 Cookie accessJwt = new Cookie("accessJwt" ,tokenResponseDto.accessToken());
                 accessJwt.setPath("/");
-                accessJwt.setMaxAge(3600);
+                accessJwt.setMaxAge(600);
                 accessJwt.setHttpOnly(true);
                 response.addCookie(accessJwt);
 
                 Cookie refreshJwt = new Cookie("refreshJwt" ,tokenResponseDto.refreshToken());
                 refreshJwt.setPath("/");
-                refreshJwt.setMaxAge(3600);
+                refreshJwt.setMaxAge(1200);
                 refreshJwt.setHttpOnly(true);
                 response.addCookie(refreshJwt);
             }
