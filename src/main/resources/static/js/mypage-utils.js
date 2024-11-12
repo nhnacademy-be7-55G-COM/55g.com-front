@@ -36,3 +36,38 @@ const callPointHistoryPage = async (tableSelector, { size, page }) => {
   console.log(`totalPage: ${totalPage}, totalElements: ${totalElements}`);
   return {totalPage, totalElements};
 }
+
+const callOrderHistoryPage = async (tableSelector, {startDate, endDate}) => {
+  const table = document.querySelector(tableSelector);
+  const orders = (await axios.get('/mypage/support/orders',
+      {params: { startDate: startDate, endDate: endDate}}
+      )).data;
+
+  const tbody = table.querySelector('tbody');
+  tbody.innerHTML = '';
+  orders.forEach(order => {
+    const tr = document.createElement('tr');
+    const orderId = document.createElement('td');
+    orderId.innerHTML = order.orderId;
+
+    const totalPrice= document.createElement('td');
+    totalPrice.innerHTML = order.totalPrice;
+
+    const representTitle= document.createElement('td');
+    representTitle.innerHTML = order.representTitle;
+
+    const orderedAt= document.createElement('td');
+    orderedAt.innerHTML = order.orderedAt;
+
+    const quantity = order.totalQuantity;
+    const kind = order.totalKind;
+
+    if (kind > 1) {
+      representTitle.innerHTML = `<p>${representTitle.innerHTML} 등</p><p>${kind} 종류 ${quantity} 권</p>`;
+    } else if (quantity > 1){
+      representTitle.innerHTML = `${representTitle.innerHTML} ${quantity}권`;
+    }
+    tr.append(orderId, representTitle, totalPrice, orderedAt);
+    tbody.appendChild(tr);
+  });
+}
