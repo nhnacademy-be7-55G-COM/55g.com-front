@@ -75,5 +75,4 @@ spring:
 logging:
   level:
     root: info
-    shop.S5G.front: trace
-
+    shop.s5g.front: trace

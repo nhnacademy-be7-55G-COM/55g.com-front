@@ -4,11 +4,12 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import shop.s5g.front.config.FeignGatewayAuthorizationConfig;
 import shop.s5g.front.dto.PageResponseDto;
 import shop.s5g.front.dto.book.BookPageableResponseDto;
 
 
-@FeignClient(value = "book", url = "${gateway.url}")
+@FeignClient(value = "book", url = "${gateway.url}", configuration = FeignGatewayAuthorizationConfig.class)
 public interface BookAdapter {
 
     //모든 도서 페이저블

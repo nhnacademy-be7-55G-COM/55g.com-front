@@ -4,13 +4,14 @@ import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import shop.s5g.front.config.FeignGatewayAuthorizationConfig;
 import shop.s5g.front.dto.MessageDto;
 import shop.s5g.front.dto.publisher.PublisherRequestDto;
 import shop.s5g.front.dto.publisher.PublisherResponseDto;
 
 import java.util.List;
 
-@FeignClient(value = "publisher", url = "${gateway.url}")
+@FeignClient(value = "publisher", url = "${gateway.url}", configuration = FeignGatewayAuthorizationConfig.class)
 public interface PublisherAdapter {
 
     //출판사 등록 db에 전달
