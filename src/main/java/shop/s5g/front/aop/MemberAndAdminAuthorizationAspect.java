@@ -21,7 +21,7 @@ public class MemberAndAdminAuthorizationAspect {
     public void checkMemberAccess() {
         Boolean isLoggedIn = (Boolean) request.getAttribute("isLoggedIn");
         if (isLoggedIn == null || !isLoggedIn) {
-            throw new UnauthorizedException("로그인 하셔야 합니다");
+            throw new UnauthorizedException("로그인이 필요합니다");
         }
     }
 }

@@ -16,7 +16,7 @@ public class AdminAuthorizationAspect {
     public void adminOnly() {
         String role = UserRoleHolder.getRole();
         if (!"ROLE_ADMIN".equals(role)) {
-            throw new UnauthorizedException("Admin 권한이 없습니다");
+            throw new UnauthorizedException("권한이 없습니다");
         }
     }
 }

@@ -20,6 +20,11 @@
       style="font-family: 'Pretendard', sans-serif;">
 
 <div th:replace="~{fragments/header}"></div>
+<!-- 실패 메시지 -->
+<div th:if="${error}" th:attr="data-error=${error}" style="display:none;"></div>
+
+<!-- 성공 메시지 -->
+<div th:if="${success}" th:attr="data-success=${success}" style="display:none;"></div>
 
 <div class="container">
   <div class="row">
@@ -281,9 +286,8 @@
           <p style="font-family: 'Pretendard', sans-serif;">정말로 회원 탈퇴를 원하시면 아래 버튼을 눌러 진행해주세요.</p>
 
           <!-- 회원 탈퇴 폼 -->
-          <form th:action="@{/mypage/deleteAccount}" method="post">
-            <!-- 탈퇴 버튼 -->
-            <button type="submit" class="btn btn-danger"
+          <form>
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal"
                     style="font-family: 'Pretendard', sans-serif; font-weight: 600; border-radius: 5px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); padding: 5px 10px;">
               회원 탈퇴
             </button>
@@ -374,25 +378,23 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form id="changePasswordForm" th:action="@{/mypage/changePassword}" method="post">
+        <form id="changePasswordForm" th:action="@{/mypage/changePassword}" method="post" onsubmit="return validatePassword()">
           <div class="mb-3">
-            <label for="currentPassword" class="form-label">현재 비밀번호</label>
-            <input type="password" class="form-control form-input" id="currentPassword"
-                   name="currentPassword" placeholder="현재 비밀번호를 입력하세요" required>
+            <label for="oldPassword" class="form-label">현재 비밀번호</label>
+            <input type="password" class="form-control form-input" id="oldPassword"
+                   name="oldPassword" placeholder="현재 비밀번호를 입력하세요" required>
           </div>
           <div class="mb-3">
             <label for="newPassword" class="form-label">새 비밀번호</label>
             <input type="password" class="form-control form-input" id="newPassword"
-                   name="newPassword" placeholder="새 비밀번호를 입력하세요" required>
+                   name="newPassword" placeholder="새 비밀번호를 입력하세요" required oninput="validatePassword()">
           </div>
           <div class="mb-3">
             <label for="confirmNewPassword" class="form-label">새 비밀번호 확인</label>
             <input type="password" class="form-control form-input" id="confirmNewPassword"
-                   name="confirmNewPassword" placeholder="새 비밀번호를 다시 입력하세요" required>
+                   name="confirmNewPassword" placeholder="새 비밀번호를 다시 입력하세요" required oninput="validatePassword()">
           </div>
-          <div id="passwordError" class="text-danger" style="display: none;">새 비밀번호와 확인 비밀번호가 일치하지
-            않습니다.
-          </div>
+          <div id="passwordError" class="text-danger" style="display: none;">새 비밀번호와 확인 비밀번호가 일치하지 않습니다.</div>
           <button type="submit" class="btn btn-custom btn-lg mt-3">비밀번호 변경</button>
         </form>
       </div>
@@ -531,7 +533,29 @@
     </div>
   </div>
 </div>
+<!-- 회원 탈퇴 모달 -->
+<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+      <div class="modal-header" style="border-bottom: 1px solid #ddd;">
+        <h5 class="modal-title" id="deleteConfirmationModalLabel" style="font-family: 'Pretendard', sans-serif; font-weight: bold;">회원 탈퇴 확인</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" style="font-family: 'Pretendard', sans-serif; font-size: 1.1rem;">
+        <p>정말로 회원 탈퇴를 하시겠습니까?</p>
+        <p style="color: red;">* 탈퇴 후에는 복구가 불가능합니다.</p>
+      </div>
+      <div class="modal-footer" style="border-top: 1px solid #ddd; justify-content: space-between;">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="font-family: 'Pretendard', sans-serif;">취소</button>
 
+        <!-- 탈퇴 요청을 위한 폼 -->
+        <form th:action="@{/mypage/deleteAccount}" method="post">
+          <button type="submit" class="btn btn-danger" style="font-family: 'Pretendard', sans-serif; font-weight: 600; border-radius: 5px; padding: 8px 16px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">탈퇴하기</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 <script>
   function prepareFormAndSubmit() {
     const checkbox = document.getElementById("setAsDefault");
@@ -634,10 +658,38 @@
   }
 </script>
 
+<!-- 자바스크립트로 메시지 가져와서 alert 처리 -->
 <script>
-  function updateCheckboxValue(checkbox) {
-    checkbox.value = checkbox.checked ? 'true' : 'false';
+  window.onload = function() {
+    // error 메시지 확인 후 alert
+    var errorMessage = document.querySelector('[data-error]');
+    if (errorMessage) {
+      alert(errorMessage.getAttribute('data-error'));
+    }
+
+    // success 메시지 확인 후 alert
+    var successMessage = document.querySelector('[data-success]');
+    if (successMessage) {
+      alert(successMessage.getAttribute('data-success'));
+    }
+  };
+</script>
+
+<script>
+  // 실시간 비밀번호 확인 로직
+  function validatePassword() {
+    const newPassword = document.getElementById("newPassword").value;
+    const confirmNewPassword = document.getElementById("confirmNewPassword").value;
+    const passwordError = document.getElementById("passwordError");
+
+    // 비밀번호가 일치하지 않으면 오류 메시지 표시
+    if (newPassword !== confirmNewPassword) {
+      passwordError.style.display = "block";
+    } else {
+      passwordError.style.display = "none";
+    }
   }
 </script>
+
 </body>
 </html>

@@ -30,7 +30,15 @@ public class AuthServiceImpl implements AuthService {
         try {
             ResponseEntity<TokenResponseDto> responseEntity = authAdapter.loginMember(
                 loginRequestDto);
-            setTokenAtCookie(response, responseEntity);
+            if (responseEntity.getStatusCode().is2xxSuccessful()) {
+                TokenResponseDto tokenResponseDto = responseEntity.getBody();
+
+                if (tokenResponseDto != null) {
+                    setTokenAtCookie(response, tokenResponseDto.accessToken(), tokenResponseDto.refreshToken(), 600, 1200);
+                }
+                return;
+            }
+            throw new MemberLoginFailedException("Member login failed");
         }
         catch (HttpClientErrorException | HttpServerErrorException e) {
             throw new MemberLoginFailedException(e.getMessage());
@@ -42,7 +50,15 @@ public class AuthServiceImpl implements AuthService {
         try {
             ResponseEntity<TokenResponseDto> responseEntity = authAdapter.loginAdmin(
                 loginRequestDto);
-            setTokenAtCookie(response, responseEntity);
+            if (responseEntity.getStatusCode().is2xxSuccessful()) {
+                TokenResponseDto tokenResponseDto = responseEntity.getBody();
+
+                if (tokenResponseDto != null) {
+                    setTokenAtCookie(response, tokenResponseDto.accessToken(), tokenResponseDto.refreshToken(), 600, 1200);
+                }
+                return;
+            }
+            throw new MemberLoginFailedException("Member login failed");
         }
         catch (HttpClientErrorException | HttpServerErrorException e) {
             throw new MemberLoginFailedException(e.getMessage());
@@ -82,9 +98,19 @@ public class AuthServiceImpl implements AuthService {
     public void reissueToken(String refreshToken, HttpServletResponse response) {
         try {
             ResponseEntity<TokenResponseDto> responseEntity = authAdapter.reissueToken("Bearer " + refreshToken);
-            setTokenAtCookie(response, responseEntity);
+                if (responseEntity.getStatusCode().is2xxSuccessful()) {
+                    TokenResponseDto tokenResponseDto = responseEntity.getBody();
+
+                    if (tokenResponseDto != null) {
+                        setTokenAtCookie(response, tokenResponseDto.accessToken(), tokenResponseDto.refreshToken(), 600, 1200);
+                    }
+                    return;
+                }
+                throw new MemberLoginFailedException("Member login failed");
+
         }
         catch (HttpClientErrorException | HttpServerErrorException e) {
+            setTokenAtCookie(response, null, null, 0 ,0);
             throw new MemberLoginFailedException(e.getMessage());
         }
     }
@@ -105,26 +131,19 @@ public class AuthServiceImpl implements AuthService {
     }
 
     private void setTokenAtCookie(HttpServletResponse response,
-        ResponseEntity<TokenResponseDto> responseEntity) {
-        if (responseEntity.getStatusCode().is2xxSuccessful()) {
-            TokenResponseDto tokenResponseDto = responseEntity.getBody();
+        String accessToken, String refreshToken, int accessTokenExpiredTime, int refreshTokenExpiredTime) {
 
-            if (tokenResponseDto != null) {
-                Cookie accessJwt = new Cookie("accessJwt" ,tokenResponseDto.accessToken());
-                accessJwt.setPath("/");
-                accessJwt.setMaxAge(600);
-                accessJwt.setHttpOnly(true);
-                response.addCookie(accessJwt);
+        Cookie accessJwt = new Cookie("accessJwt", accessToken);
+        accessJwt.setPath("/");
+        accessJwt.setMaxAge(accessTokenExpiredTime);
+        accessJwt.setHttpOnly(true);
+        response.addCookie(accessJwt);
 
-                Cookie refreshJwt = new Cookie("refreshJwt" ,tokenResponseDto.refreshToken());
-                refreshJwt.setPath("/");
-                refreshJwt.setMaxAge(1200);
-                refreshJwt.setHttpOnly(true);
-                response.addCookie(refreshJwt);
-            }
-            return;
-        }
-        throw new MemberLoginFailedException("Member login failed");
+        Cookie refreshJwt = new Cookie("refreshJwt", refreshToken);
+        refreshJwt.setPath("/");
+        refreshJwt.setMaxAge(refreshTokenExpiredTime);
+        refreshJwt.setHttpOnly(true);
+        response.addCookie(refreshJwt);
+
     }
-
 }
