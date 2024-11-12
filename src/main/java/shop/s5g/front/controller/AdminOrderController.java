@@ -42,7 +42,7 @@ public class AdminOrderController {
 
             mv.addObject("startDate", queryRequest.startDate());
             mv.addObject("endDate", queryRequest.endDate());
-            mv.addObject("customerId", queryRequest.customerId());
+//            mv.addObject("customerId", queryRequest.customerId());
             mv.addObject("orderList", response);
         }
         return mv;

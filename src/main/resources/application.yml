@@ -76,4 +76,3 @@ logging:
   level:
     root: info
     shop.s5g.front: trace
-

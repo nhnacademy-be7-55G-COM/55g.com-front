@@ -15,11 +15,12 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
-    //DB의 모든 카테고리 이름 가져오기(등록)
+    //카테고리 등록
     @GetMapping("/category/register")
     public String showCategoryForm(Model model) {
-        model.addAttribute("parentCategories", categoryService.getParentCategories());
-        return "category/category-register";
+//        model.addAttribute("parentCategories", categoryService.getParentCategories());
+        model.addAttribute("parentCategories", categoryService.getKoreaCategories());
+        return "category-register";
     }
 
     //카테고리 등록
@@ -34,6 +35,6 @@ public class CategoryController {
     @GetMapping("/category")
     public String allCategory(Model model) {
         model.addAttribute("allCategories", categoryService.getParentCategories());
-        return "category/category";
+        return "category";
     }
 }

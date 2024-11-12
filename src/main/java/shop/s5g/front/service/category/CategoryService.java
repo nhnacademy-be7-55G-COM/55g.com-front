@@ -9,4 +9,6 @@ public interface CategoryService {
     MessageDto addCategory(CategoryRequestDto requestDto);
 
     List<CategoryResponseDto> getParentCategories();
+
+    List<CategoryResponseDto> getKoreaCategories();
 }
