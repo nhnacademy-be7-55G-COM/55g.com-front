@@ -13,17 +13,14 @@ spring:
       label: main
 
   rabbitmq:
-    host: ${rabbitmq.host}
-    port: 5672
-    username: guest
-    password: guest
+    host: host
+    port: 0
+    username: username
+    password: password
 
 image:
   appkey: appkey
   secretKey: secretKey
-
-rabbitmq:
-  host: localhost
 
 gateway:
   url: http://localhost:8000
