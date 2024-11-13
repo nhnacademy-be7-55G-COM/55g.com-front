@@ -6,7 +6,8 @@
   <th:block th:replace="~{fragments/head :: headTemplate}"></th:block>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script src="https://js.tosspayments.com/v2/standard"></script>
-  <script src="http://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+  <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/decimal.js-light@2.5.1/decimal.min.js"></script>
   <script src="/static/js/payment-utils.js"></script>
   <script th:inline="javascript">
     const addressSelectors = {
@@ -22,9 +23,11 @@
     let netPrice=0;
     // let totalPrice=0;
     const originPrice = [[${originPrice}]];
-    const discountPrice = [[${discountPrice}]];
-    const totalPrice = [[${summation}]];
+    let discountPrice = [[${discountPrice}]];
+    let totalPrice = new Decimal([[${summation}]]);
     const cartList = [];
+
+    const accRate = new Decimal([[${accRate}]]);
 
     [# th:each="cart: ${cartList}"]
     cartList.push([[${cart}]]);
@@ -38,7 +41,7 @@
       method: '',
       amount: {
         currency: 'KRW',
-        value: totalPrice
+        value: parseInt(totalPrice.toString())
       },
       successUrl: window.location.origin + "/payment/success",
       failUrl: window.location.origin + "/payment/fail"
@@ -85,6 +88,9 @@
           customerNameInput.value = paymentInfo.customer.name;
           customerEmailInput.value = paymentInfo.customer.email;
         });
+
+      const acc = document.querySelector('#accSumSpan');
+      acc.textContent = Math.floor(totalPrice.mul(accRate)).toString();
     });
   </script>
   <script>
@@ -96,6 +102,7 @@
     // totalPrice = 5000;
   </script>
   <link href="/static/css/purchase-style.css" rel="stylesheet" />
+  <script src="../static/js/payment-utils.js"></script>
 </head>
 
 <body
@@ -154,8 +161,12 @@
             <div>
               <select class="form-control-sm" th:id="|paper-select-${cart.id}|">
                 <option value="-1" data-cost="0" selected>포장안함</option>
-                <th:block th:each="paper: ${wrappingPapaerList}">
-                <option th:value="${paper.id}" th:text="${paper.name}" th:data-cost="${paper.price}"></option>
+                <th:block th:each="paper: ${wrappingPaperList}">
+                <option
+                    th:value="${paper.id}"
+                    th:text="${paper.name}"
+                    th:data-cost="${paper.price}"
+                ></option>
                 </th:block>
               </select>
             </div>
@@ -174,6 +185,12 @@
           </div>
           <div class="flex-grow-1">
             <div th:replace="~{fragments/purchase :: disabledInputWithLabel('customerEmailInput', '이메일', 'text')}"></div>
+          </div>
+          <div class="flex-grow-1">
+            <div>회원 적립률: <span th:text="${#numbers.formatPercent(memberInfo.grade.point*0.01, 0, 1)}"></span></div>
+            <div>기본 적립률: <span th:text="|${#numbers.formatPercent(purchasePointPolicy.value, 0, 1)}|"></span></div>
+            <div>예상 적립 포인트: <span id="accSumSpan" style="color:red;"></span></div>
+<!--            <div>예상 적립 포인트: <span id="accSumSpan" style="color:red;" th:text="${#numbers.formatDecimal(T(java.lang.Math).floor(summation * accRate), 0, 0)}"></span></div>-->
           </div>
         </div>
       </div>
@@ -303,6 +320,7 @@
             return tossPaymentReady(paymentInfo, clientKeyResponse.data);
           })
           .catch(err => {
+            console.log(err);
             if (err.response.status === 408) {
               alert('주문 세션이 종료되었습니다. 다시 시도해 주세요.');
               window.location.reload();

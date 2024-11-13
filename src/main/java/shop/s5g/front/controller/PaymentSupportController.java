@@ -2,6 +2,7 @@ package shop.s5g.front.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import java.math.BigDecimal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,7 @@ import shop.s5g.front.dto.order.OrderDetailCreateRequestDto;
 import shop.s5g.front.dto.order.PurchaseRequestDto;
 import shop.s5g.front.service.member.MemberService;
 import shop.s5g.front.service.order.OrderService;
+import shop.s5g.front.service.point.PointPolicyService;
 import shop.s5g.front.utils.PaymentUtils;
 import shop.s5g.front.utils.RandomStringProvider;
 
@@ -37,6 +39,7 @@ public class PaymentSupportController {
     private final String tossPaymentsClientKey;
     private final OrderService orderService;
     private final MemberService memberService;
+    private final PointPolicyService pointPolicyService;
 
     @GetMapping("/generate-order")
     @SessionRequired
@@ -82,7 +85,8 @@ public class PaymentSupportController {
     @SessionRequired
     // TODO: OrderCreateResponseDto
     public ResponseEntity<OrderCreateResponseDto> createNewOrder(HttpServletRequest request, @RequestBody PurchaseRequestDto purchase) {
-        double accRate = 0; // TODO: 멤버 정보에서 포인트 적립률과 기본 적립률을 가져오기.
+        // TODO: 멤버 정보에서 포인트 적립률과 기본 적립률을 가져오기.
+        BigDecimal accRate = pointPolicyService.getPointAccRateForPurchase();
         HttpSession session = request.getSession(false);
         // TODO: 장바구니 가져오기
         // TODO: 세션에서 쿠폰 사용 여부, 합계 및 netPrice 가져오기.

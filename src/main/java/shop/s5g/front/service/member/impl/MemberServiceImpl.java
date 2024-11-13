@@ -1,5 +1,6 @@
 package shop.s5g.front.service.member.impl;
 
+import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,8 @@ import shop.s5g.front.exception.member.MemberUpdateFailedException;
 import shop.s5g.front.exception.member.MemberWithdrawalFailedException;
 import shop.s5g.front.exception.member.PasswordChangeFailedException;
 import shop.s5g.front.service.member.MemberService;
+import shop.s5g.front.utils.AuthTokenHolder;
+import shop.s5g.front.utils.FunctionalWithAuthToken;
 
 @Service
 @RequiredArgsConstructor
@@ -53,6 +56,14 @@ public class MemberServiceImpl implements MemberService {
         catch (HttpClientErrorException | HttpServerErrorException e) {
             throw new MemberGetInfoFailedException("get member info failed");
         }
+    }
+
+    @Override
+    public CompletableFuture<MemberInfoResponseDto> getMemberInfoAsync() {
+        return CompletableFuture.supplyAsync(FunctionalWithAuthToken.supply(
+            AuthTokenHolder.getToken(),
+            this::getMemberInfo
+        ));
     }
 
     @Override
