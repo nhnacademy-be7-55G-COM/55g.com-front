@@ -57,7 +57,7 @@ public class AdminController {
     @GetMapping("/admin")
     public ModelAndView adminPage() {
 
-        ModelAndView mv = new ModelAndView("/admin/admin");
+        ModelAndView mv = new ModelAndView("admin/admin");
 
         List<CouponPolicyInquiryResponseDto> couponPolicyList = couponPolicyService.findCouponPolices();
 
@@ -145,7 +145,7 @@ public class AdminController {
         model.addAttribute("couponTemplate", couponTemplateList);
         model.addAttribute("currentPage", (page + 1));
 
-        return "/admin/template-inquiry";
+        return "admin/template-inquiry";
     }
 
     /**
@@ -167,7 +167,7 @@ public class AdminController {
         model.addAttribute("bookList", bookList);
         model.addAttribute("currentPage", page);
 
-        return "/admin/book-list";
+        return "admin/book-list";
     }
 
     /**
@@ -188,7 +188,7 @@ public class AdminController {
         model.addAttribute("categoryList", categoryList);
         model.addAttribute("currentPage", page);
 
-        return "/admin/category-list";
+        return "admin/category-list";
     }
 
     @PostMapping("/api/shop/admin/coupons/category")
@@ -238,7 +238,7 @@ public class AdminController {
      */
     @GetMapping("/api/shop/admin/coupons/policy")
     public ModelAndView adminCouponPoliciesList() {
-        ModelAndView mv = new ModelAndView("/admin/policy-inquiry");
+        ModelAndView mv = new ModelAndView("admin/policy-inquiry");
 
         List<CouponPolicyInquiryResponseDto> couponPolicyList = couponPolicyService.findCouponPolices();
 
