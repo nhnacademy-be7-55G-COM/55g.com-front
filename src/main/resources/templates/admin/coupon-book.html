@@ -76,7 +76,7 @@
   }
 
   function fetchCoupons(page) {
-    fetch(`/api/shop/admin/coupons/templates?page=${page}`)
+    fetch(`/admin/coupons/templates?page=${page}`)
     .then(response => response.json())
     .then(data => {
       renderCoupons(data.content); // 쿠폰 목록 표시
