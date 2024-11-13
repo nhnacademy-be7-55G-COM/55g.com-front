@@ -25,11 +25,10 @@
     <!-- 책 목록을 반복해서 화면에 표시 -->
     <tr th:each="book, iterStat : ${bookList.content}">
       <!-- 순번 표시 -->
-      <td style="padding: 10px;" th:text="${iterStat.index + 1 + bookList.number * bookList.size}">순번</td>
+      <td style="padding: 10px;" th:text="${iterStat.index + 1 + (currentPage * bookList.size)}">순번</td>
 
-      <!-- 책 이름을 클릭하면 상세 페이지로 이동 -->
       <td style="padding: 10px;">
-        <a th:href="@{/admin/book/details/{bookId}(bookId=${book.bookId})}"
+        <a th:href="@{/api/shop/admin/coupons/books/{bookId}(bookId=${book.bookId})}"
            th:text="${book.title}">책 이름</a>
       </td>
 
@@ -37,26 +36,26 @@
       <td style="padding: 10px;" th:text="${book.description}">설명</td>
 
       <!-- 가격 표시 -->
-      <td style="padding: 10px;" th:text="${#numbers.formatDecimal(book.price, 0, 'POINT', ',', '원')}">가격</td>
+      <td style="padding: 10px;" th:text="${book.price + '원'}">가격</td>
     </tr>
     </tbody>
   </table>
 
-  <!-- 페이지 네비게이션 -->
   <div class="pagination" style="text-align: center; margin-top: 20px;">
     <!-- 이전 페이지 버튼 -->
-    <span th:if="${bookList.hasPrevious()}">
-      <a th:href="@{/admin/bookList(page=${bookList.number - 1})}">이전</a>
-    </span>
+    <span th:if="${currentPage > 0}" style="margin-right: 15px;">
+    <a th:href="@{/api/shop/books/pageable(page=${currentPage - 1})}">이전</a>
+  </span>
 
     <!-- 현재 페이지 표시 -->
-    <span>현재 페이지: <span th:text="${bookList.number + 1}"></span></span>
+    <span style="margin: 0 15px;">현재 페이지: <span th:text="${currentPage + 1}"></span></span>
 
     <!-- 다음 페이지 버튼 -->
-    <span th:if="${bookList.hasNext()}">
-      <a th:href="@{/admin/bookList(page=${bookList.number + 1})}">다음</a>
-    </span>
+    <span th:if="${bookList.hasNext()}" style="margin-left: 15px;">
+    <a th:href="@{/api/shop/books/pageable(page=${currentPage + 1})}">다음</a>
+  </span>
   </div>
+
 </div>
 </body>
 </html>
