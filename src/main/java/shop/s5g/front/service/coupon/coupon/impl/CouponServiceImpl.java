@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
-import shop.s5g.front.adapter.CouponAdapter;
+import shop.s5g.front.adapter.coupon.CouponAdapter;
 import shop.s5g.front.dto.MessageDto;
 import shop.s5g.front.dto.coupon.CouponRegisterRequestDto;
 import shop.s5g.front.exception.coupon.CouponRegisterFailedException;

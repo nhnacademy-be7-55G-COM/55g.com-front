@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>쿠폰 카테고리</title>
+  <link rel="stylesheet" href="style.css">
+  <div th:replace="~{fragments/head}"></div>
+</head>
+<body>
+<div class="container">
+  <h2>쿠폰 카테고리 등록</h2>
+
+  <!-- 카테고리 정보 표시 -->
+  <div>
+    <p><strong>카테고리 이름:</strong> <span th:text="${category.categoryName}"></span></p>
+  </div>
+
+  <!-- 선택된 템플릿 ID를 form에서 사용할 hidden input으로 설정 -->
+  <form id="couponForm" action="/api/shop/admin/coupons/category" method="POST">
+    <!-- 카테고리 ID (hidden input) -->
+    <input type="hidden" name="categoryId" th:value="${category.categoryId}">
+
+    <!-- 쿠폰 템플릿 목록 -->
+    <table border="1" style="width: 100%; margin-top: 20px; border-collapse: collapse;">
+      <thead>
+      <tr>
+        <th style="padding: 10px; background-color: #f0f0f0;">순번</th>
+        <th style="padding: 10px; background-color: #f0f0f0;">쿠폰 이름</th>
+        <th style="padding: 10px; background-color: #f0f0f0;">할인(률)</th>
+        <th style="padding: 10px; background-color: #f0f0f0;">조건(이상)</th>
+        <th style="padding: 10px; background-color: #f0f0f0;">최대 할인 금액</th>
+        <th style="padding: 10px; background-color: #f0f0f0;">기간</th>
+        <th style="padding: 10px; background-color: #f0f0f0;">설명</th>
+        <th style="padding: 10px; background-color: #f0f0f0;">선택</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="template, iterStat : ${templateList}">
+        <td th:text="${iterStat.index + 1}"></td>
+        <td th:text="${template.couponName}"></td>
+        <td th:text="${template.discountPrice < 1 ? (template.discountPrice * 100) + '%' : template.discountPrice + '원'}"></td>
+        <td th:text="${template.condition} + '원'"></td>
+        <td th:text="${template.maxPrice} + '원'"></td>
+        <td th:text="${template.duration} + '일'"></td>
+        <td th:text="${template.couponDescription}"></td>
+        <td>
+          <input type="radio" name="couponTemplateId" th:value="${template.couponTemplateId}"
+                 th:id="'template-' + ${template.couponTemplateId}" />
+          <label th:for="'template-' + ${template.couponTemplateId}">선택</label>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+    <!-- 제출 버튼 -->
+    <button type="submit">카테고리에 쿠폰 추가</button>
+  </form>
+</div>
+
+<script>
+  // 선택된 템플릿을 POST 방식으로 전송
+  document.getElementById('couponForm').addEventListener('submit', function(event) {
+    // 선택된 쿠폰 템플릿이 없으면 경고 메시지를 표시하고 폼 제출을 막음
+    const selectedTemplate = document.querySelector('input[name="couponTemplateId"]:checked');
+    if (!selectedTemplate) {
+      alert('쿠폰 템플릿을 선택해 주세요!');
+      event.preventDefault();
+    }
+  });
+</script>
+
+</body>
+</html>

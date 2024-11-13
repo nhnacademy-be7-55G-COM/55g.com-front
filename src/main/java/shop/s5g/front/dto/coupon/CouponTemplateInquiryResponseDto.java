@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 public record CouponTemplateInquiryResponseDto(
 
-    Long couponPolicyId,
+    Long couponTemplateId,
 
     BigDecimal discountPrice,
 
@@ -17,6 +17,7 @@ public record CouponTemplateInquiryResponseDto(
     String couponName,
 
     String couponDescription
+
 ) {
 
 }
