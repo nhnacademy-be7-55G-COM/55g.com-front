@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>카테고리 쿠폰 조회</title>
+  <link rel="stylesheet" href="style.css">
+  <div th:replace="~{fragments/head}"></div>
+</head>
+<body>
+<div class="container">
+  <h2>카테고리 쿠폰 조회</h2>
+
+  <!-- 카테고리 목록 테이블 -->
+  <table border="1" style="width: 100%; margin-top: 20px; border-collapse: collapse;">
+    <thead>
+    <tr>
+      <th style="padding: 10px; background-color: #f0f0f0;">순번</th>
+      <th style="padding: 10px; background-color: #f0f0f0;">카테고리 이름</th>
+      <th style="padding: 10px; background-color: #f0f0f0;">적용된 쿠폰 템플릿</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- 카테고리 리스트를 반복해서 화면에 표시 -->
+    <tr th:each="couponCategory, iterStat : ${couponCategoryList}">
+      <!-- 순번 표시 -->
+      <td style="padding: 10px;" th:text="${iterStat.index + 1 + (currentPage * couponCategoryList.size)}">순번</td>
+
+      <!-- 카테고리 이름 표시 -->
+      <td style="padding: 10px;">
+        <a th:href="@{/admin/coupons/category/create/categoryId={categoryId}(categoryId=${couponCategory.categoryId()})}"
+           th:text="${couponCategory.categoryName()}">카테고리 이름</a>
+      </td>
+
+      <td th:text="${'이 쿠폰은 '
+    + couponCategory.couponDescription()
+    + '이며, '
+    + couponCategory.condition()
+    + '이상 구매 시 '
+    + (template.discountPrice() < 1
+        ? template.discountPrice().multiply(100).stripTrailingZeros().toPlainString() + '%'
+        : template.discountPrice().stripTrailingZeros().toPlainString() + '원')
+    + ' 할인 적용되며 최대 '
+    + couponCategory.maxPrice()
+    + ' 할인이 가능한 '
+    + couponCategory.categoryName()
+    + '입니다. 최대 '
+    + couponCategory.duration()
+    + '일 적용 가능합니다.'}">
+        적용된 쿠폰 템플릿
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <!--  &lt;!&ndash; 페이지 네비게이션 (예시로 추가한 부분) &ndash;&gt;-->
+  <div class="pagination">
+    <!-- 이전 페이지 버튼 -->
+    <span th:if="${currentPage >= 1}">
+      <a th:href="@{/admin/categories/coupons(page=${currentPage - 1})}">이전</a>
+    </span>
+
+    <!-- 현재 페이지 표시 -->
+    <span>현재 페이지: <span th:text="${currentPage + 1}"></span></span>
+
+    <!-- 다음 페이지 버튼 -->
+    <span th:if="${currentPage <= 999}">
+      <a th:href="@{/admin/categories/coupons(page=${currentPage + 1})}">다음</a>
+    </span>
+  </div>
+
+</div>
+</body>
+</html>

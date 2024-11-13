@@ -39,7 +39,7 @@
   <div class="pagination">
     <!-- 이전 페이지 버튼 -->
     <span th:if="${currentPage >= 1}">
-      <a th:href="@{/api/shop/admin/coupons/category(page=${currentPage - 1})}">이전</a>
+      <a th:href="@{/category/list(page=${currentPage - 1})}">이전</a>
     </span>
 
     <!-- 현재 페이지 표시 -->
@@ -47,7 +47,7 @@
 
     <!-- 다음 페이지 버튼 -->
     <span th:if="${currentPage <= 999}">
-      <a th:href="@{/api/shop/admin/coupons/category(page=${currentPage + 1})}">다음</a>
+      <a th:href="@{/category/list(page=${currentPage + 1})}">다음</a>
     </span>
   </div>
 

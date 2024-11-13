@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import shop.s5g.front.config.FeignGatewayAuthorizationConfig;
-import shop.s5g.front.dto.coupon.CouponBookDetailsBookResponseDto;
+import shop.s5g.front.dto.coupon.BookDetailsBookResponseDto;
 import shop.s5g.front.dto.coupon.CouponBookDetailsBookTitleResponseDto;
 import shop.s5g.front.dto.coupon.CouponBookResponseDto;
 import shop.s5g.front.dto.coupon.CouponTemplateInquiryResponseDto;
@@ -17,10 +17,10 @@ import shop.s5g.front.dto.coupon.CouponTemplateInquiryResponseDto;
 public interface CouponBookAdapter {
 
     @GetMapping("/api/shop/book/{bookId}")
-    ResponseEntity<CouponBookDetailsBookResponseDto> findBook(@PathVariable("bookId") Long bookId);
+    ResponseEntity<BookDetailsBookResponseDto> findBook(@PathVariable("bookId") Long bookId);
 
     @GetMapping("/api/shop/books/pageable")
-    ResponseEntity<Page<CouponBookDetailsBookResponseDto>> findAllBooks(
+    ResponseEntity<Page<BookDetailsBookResponseDto>> findAllBooks(
         Pageable pageable);
 
     @GetMapping("/api/shop/admin/coupons/books")

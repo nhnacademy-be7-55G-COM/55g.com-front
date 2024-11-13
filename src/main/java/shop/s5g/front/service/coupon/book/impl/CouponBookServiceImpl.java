@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import shop.s5g.front.adapter.coupon.CouponBookAdapter;
-import shop.s5g.front.dto.coupon.CouponBookDetailsBookResponseDto;
+import shop.s5g.front.dto.coupon.BookDetailsBookResponseDto;
 import shop.s5g.front.dto.coupon.CouponBookDetailsBookTitleResponseDto;
 import shop.s5g.front.dto.coupon.CouponBookResponseDto;
 import shop.s5g.front.dto.coupon.CouponTemplateInquiryResponseDto;
@@ -20,9 +20,9 @@ public class CouponBookServiceImpl implements CouponBookService {
     private final CouponBookAdapter couponBookAdapter;
 
     @Override
-    public CouponBookDetailsBookResponseDto getBook(Long bookId) {
+    public BookDetailsBookResponseDto getBook(Long bookId) {
         try {
-            ResponseEntity<CouponBookDetailsBookResponseDto> response = couponBookAdapter.findBook(bookId);
+            ResponseEntity<BookDetailsBookResponseDto> response = couponBookAdapter.findBook(bookId);
 
             if (response.getStatusCode().is2xxSuccessful()) {
                 return response.getBody();
@@ -39,10 +39,10 @@ public class CouponBookServiceImpl implements CouponBookService {
      * @return Page<CouponBookDetailsBookResponseDto>
      */
     @Override
-    public Page<CouponBookDetailsBookResponseDto> getAllBooks(Pageable pageable) {
+    public Page<BookDetailsBookResponseDto> getAllBooks(Pageable pageable) {
 
         try {
-            ResponseEntity<Page<CouponBookDetailsBookResponseDto>> response = couponBookAdapter.findAllBooks(pageable);
+            ResponseEntity<Page<BookDetailsBookResponseDto>> response = couponBookAdapter.findAllBooks(pageable);
 
             if (response.getStatusCode().is2xxSuccessful()) {
                 return response.getBody();
