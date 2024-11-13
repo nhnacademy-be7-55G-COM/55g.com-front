@@ -7,12 +7,16 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import shop.s5g.front.adapter.MemberAdapter;
 import shop.s5g.front.dto.MessageDto;
+import shop.s5g.front.dto.member.IdCheckResponseDto;
 import shop.s5g.front.dto.member.MemberInfoResponseDto;
 import shop.s5g.front.dto.member.MemberRegistrationRequestDto;
 import shop.s5g.front.dto.member.MemberUpdateRequestDto;
+import shop.s5g.front.dto.member.PasswordChangeRequestDto;
 import shop.s5g.front.exception.member.MemberGetInfoFailedException;
 import shop.s5g.front.exception.member.MemberRegisterFailedException;
 import shop.s5g.front.exception.member.MemberUpdateFailedException;
+import shop.s5g.front.exception.member.MemberWithdrawalFailedException;
+import shop.s5g.front.exception.member.PasswordChangeFailedException;
 import shop.s5g.front.service.member.MemberService;
 
 @Service
@@ -62,6 +66,49 @@ public class MemberServiceImpl implements MemberService {
         }
         catch (HttpClientErrorException | HttpServerErrorException e) {
             throw new MemberUpdateFailedException(e.getMessage());
+        }
+    }
+
+    @Override
+    public MessageDto deleteMember() {
+        try{
+            ResponseEntity<MessageDto> response = memberAdapter.deleteMember();
+            if (response.getStatusCode().is2xxSuccessful()) {
+                return response.getBody();
+            }
+            throw new MemberWithdrawalFailedException("Member withdrawal failed");
+        }
+        catch (HttpClientErrorException | HttpServerErrorException e) {
+            throw new MemberWithdrawalFailedException(e.getMessage());
+        }
+    }
+
+    @Override
+    public boolean isExistsLoginId(String loginId) {
+        try {
+            ResponseEntity<IdCheckResponseDto> response = memberAdapter.checkId(loginId);
+
+            if (response.getStatusCode().is2xxSuccessful()) {
+                return response.getBody().isExists();
+            }
+            return true;
+        }
+        catch (Exception e) {
+            return true;
+        }
+    }
+
+    @Override
+    public MessageDto changePassword(PasswordChangeRequestDto passwordChangeRequestDto) {
+        try{
+            ResponseEntity<MessageDto> responseEntity = memberAdapter.changePassword(passwordChangeRequestDto);
+            if (responseEntity.getStatusCode().is2xxSuccessful()) {
+                return responseEntity.getBody();
+            }
+            throw new PasswordChangeFailedException("Password change failed");
+        }
+        catch (HttpClientErrorException | HttpServerErrorException e) {
+            throw new PasswordChangeFailedException(e.getMessage());
         }
     }
 }
