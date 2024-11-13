@@ -28,7 +28,7 @@
 
       <!-- 카테고리 이름 표시 -->
       <td style="padding: 10px;">
-        <a th:href="@{/api/shop/admin/coupons/category/{categoryId}(categoryId=${category.categoryId()})}"
+        <a th:href="@{admin/coupons/category/{categoryId}(categoryId=${category.categoryId()})}"
            th:text="${category.categoryName()}">카테고리 이름</a>
       </td>
     </tr>
