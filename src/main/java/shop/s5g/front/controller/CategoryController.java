@@ -34,9 +34,10 @@ public class CategoryController {
 
     //전체 카테고리 조회
     @GetMapping("/category")
-    public String allCategory(Model model) {
-        model.addAttribute("allCategories", categoryService.getKoreaCategories());
-        return "category";
+    @ResponseBody
+    public List<CategoryResponseDto> allCategory(Model model) {
+        List<CategoryResponseDto> koreaCategories = categoryService.getKoreaCategories();
+        return koreaCategories;
     }
 
     //하위 카테고리 조회

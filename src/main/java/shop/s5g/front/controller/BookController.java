@@ -19,7 +19,7 @@ public class BookController {
     private final BookService bookService;
 
     //모든 도서 목록 조회
-    @GetMapping("/book/allList")
+    @GetMapping("/")
     public String bookByCategory(Model model, @PageableDefault(page = 0, size = 9, sort = "price", direction = Sort.Direction.DESC) Pageable pageable) {
 
         PageResponseDto<BookPageableResponseDto> allBooks = bookService.getAllBooks(pageable);
@@ -36,6 +36,6 @@ public class BookController {
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
 
-        return "book/book";
+        return "index";
     }
 }
