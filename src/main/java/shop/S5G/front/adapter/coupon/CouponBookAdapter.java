@@ -16,7 +16,7 @@ import shop.s5g.front.dto.coupon.CouponTemplateInquiryResponseDto;
 @FeignClient(name = "couponBook", url = "${gateway.url}", configuration = FeignGatewayAuthorizationConfig.class)
 public interface CouponBookAdapter {
 
-    @GetMapping("/api/shop/books/{bookId}")
+    @GetMapping("/api/shop/book/{bookId}")
     ResponseEntity<CouponBookDetailsBookResponseDto> findBook(@PathVariable("bookId") Long bookId);
 
     @GetMapping("/api/shop/books/pageable")
