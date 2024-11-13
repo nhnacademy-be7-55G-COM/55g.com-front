@@ -53,6 +53,7 @@ for ((i=0; i<${#server_port[@]}; i++)); do
      --env SPRING_PROFILE=$spring_env \
      --env SERVER_PORT=${server_port[i]} \
      --add-host host.docker.internal:host-gateway \
+     --memory="300m" \
      -p ${server_port[i]}:${server_port[i]} \
      -v /logs:/logs \
      $image_name-$container_prefix
