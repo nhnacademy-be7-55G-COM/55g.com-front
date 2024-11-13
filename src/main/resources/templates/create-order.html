@@ -21,10 +21,6 @@
     let deliveryFeeId = 1;
     // TODO: netPrice를 가져오도록 해야함.
     let netPrice=0;
-    // let totalPrice=0;
-    const originPrice = [[${originPrice}]];
-    let discountPrice = [[${discountPrice}]];
-    let totalPrice = new Decimal([[${summation}]]);
     const cartList = [];
 
     const accRate = new Decimal([[${accRate}]]);
@@ -33,6 +29,13 @@
     cartList.push([[${cart}]]);
     [/]
     let wrappingPaperId = 1;
+    // let totalPrice=0;
+    // let originPrice = 0;
+    // let discountPrice = 0;
+    const priceInfo = getCopyOfPriceInfo();
+
+    calcFromCart(priceInfo, cartList);
+    // let totalPrice = new Decimal([[${summation}]]);
 
     const paymentInfo = {
       orderId: '',
@@ -41,7 +44,7 @@
       method: '',
       amount: {
         currency: 'KRW',
-        value: parseInt(totalPrice.toString())
+        value: parseInt(priceInfo.totalPrice.toString())
       },
       successUrl: window.location.origin + "/payment/success",
       failUrl: window.location.origin + "/payment/fail"
@@ -90,7 +93,7 @@
         });
 
       const acc = document.querySelector('#accSumSpan');
-      acc.textContent = Math.floor(totalPrice.mul(accRate)).toString();
+      acc.textContent = Math.floor(priceInfo.totalPrice.mul(accRate)).toString();
     });
   </script>
   <script>
@@ -138,8 +141,8 @@
         <tr>
           <th class="w-50" scope="col">상품명</th>
           <th scope="col">정가</th>
-          <th scope="col">수량</th>
           <th scope="col">할인금액</th>
+          <th scope="col">수량</th>
           <th scope="col">합계</th>
           <th scope="col"><a id="wrap-info" href="#">포장여부*</a></th>
           <script>
@@ -154,9 +157,9 @@
         <tr th:id="|cart-row-${cart.id}|" th:data-book-id="${cart.id}">
           <td th:text="${cart.title}"></td>
           <td th:text="${cart.price}"></td>
-          <td th:text="${cart.quantity}"></td>
           <td th:text="${cart.discountPrice}"></td>
-          <td th:text="${cart.totalPrice}"></td>
+          <td th:text="${cart.quantity}"></td>
+          <td th:text="${cart.totalPrice * cart.quantity}"></td>
           <td>
             <div>
               <select class="form-control-sm" th:id="|paper-select-${cart.id}|">
@@ -261,9 +264,9 @@
       const discount = document.querySelector('#discountPrice');
       const pay = document.querySelector('#payPrice');
 
-      origin.innerHTML = `₩ ${originPrice}`;
-      discount.innerHTML = `₩ ${discountPrice}`;
-      pay.innerHTML = `₩ ${totalPrice}`;
+      origin.innerHTML = `₩ ${priceInfo.originPrice}`;
+      discount.innerHTML = `₩ ${priceInfo.discountPrice}`;
+      pay.innerHTML = `₩ ${priceInfo.totalPrice.toString()}`;
     </script>
   </footer>
 </body>
@@ -302,11 +305,11 @@
             totalPrice: cart.totalPrice
           })),
           netPrice: netPrice,
-          totalPrice: totalPrice
+          totalPrice: parseInt(priceInfo.totalPrice.toString())
         };
         console.log(`purchaseInfo`);
         console.log(purchaseInfo);
-        createNewOrder(purchaseInfo)  // TODO: OrderCreateRequestDto로 바꿀 예정.
+        createNewOrder(purchaseInfo)
           .then(response => {
             return axios.get(`/payment/support/generate-order?orderId=${response.data.orderId}`);
           })

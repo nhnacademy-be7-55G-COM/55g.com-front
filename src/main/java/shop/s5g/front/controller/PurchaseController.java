@@ -3,6 +3,7 @@ package shop.s5g.front.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
@@ -10,12 +11,21 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
+import shop.s5g.front.dto.book.BookPurchaseView;
+import shop.s5g.front.dto.book.BookSimpleResponseDto;
+import shop.s5g.front.dto.cart.request.CartBookInfoRequestDto;
+import shop.s5g.front.dto.delivery.DeliveryFeeResponseDto;
 import shop.s5g.front.dto.member.MemberInfoResponseDto;
 import shop.s5g.front.dto.point.PointPolicyView;
 import shop.s5g.front.dto.wrappingpaper.WrappingPaperResponseDto;
+import shop.s5g.front.exception.ResourceNotFoundException;
+import shop.s5g.front.service.book.BookService;
+import shop.s5g.front.service.delivery.DeliveryFeeService;
 import shop.s5g.front.service.member.MemberService;
 import shop.s5g.front.service.point.PointPolicyService;
 import shop.s5g.front.service.wrappingpaper.WrappingPaperService;
+import shop.s5g.front.utils.AuthTokenHolder;
+import shop.s5g.front.utils.FunctionalWithAuthToken;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -24,6 +34,8 @@ public class PurchaseController {
     private final WrappingPaperService wrappingPaperService;
     private final MemberService memberService;
     private final PointPolicyService pointPolicyService;
+    private final DeliveryFeeService deliveryFeeService;
+    private final BookService bookService;
 
 //    @ModelAttribute("memberInfo")
 //    public MemberInfoResponseDto getMemberInfo() {
@@ -51,11 +63,25 @@ public class PurchaseController {
 
         // TODO: 장바구니 가져오는 로직.
         //  장바구니가 비어있으면 장바구니로 리디렉트되도록 함.
+        List<CartBookInfoRequestDto> rawCartList = List.of(
+            new CartBookInfoRequestDto(1L, 2), new CartBookInfoRequestDto(3L, 1)
+        );
+
+        // 책 가져오는 로직.
+        CompletableFuture<List<BookPurchaseView>> cartListFuture = CompletableFuture.supplyAsync(
+            FunctionalWithAuthToken.supply(
+                AuthTokenHolder.getToken(),
+                () -> convertCartToView(rawCartList)
+            )
+        );
         // 포장지 가져오는 로직.
         CompletableFuture<List<WrappingPaperResponseDto>> wrapsFuture = wrappingPaperService.fetchActivePapersAsync();
         // 적립정책 가져오기.
         CompletableFuture<PointPolicyView> policyFuture = pointPolicyService.getPurchasePointPolicyAsync();
+        // 멤버 정보 가져오기.
         CompletableFuture<MemberInfoResponseDto> memberInfoFuture = memberService.getMemberInfoAsync();
+        // 배송비 가져오기.
+        CompletableFuture<List<DeliveryFeeResponseDto>> feeFuture = deliveryFeeService.getAllFeesAsync();
 
         mv.addObject("wrappingPaperList", wrapsFuture.join().stream().map(wrappingPaperService::convertToView).toList());
         sumAccRate(mv, policyFuture.join(), memberInfoFuture.join());
@@ -65,10 +91,11 @@ public class PurchaseController {
 
         // 테스트 영역
         session.setAttribute("purchase-summation", 52600L);
-        mv.addObject("summation", 52600L);
-        mv.addObject("originPrice", 52600L);
-        mv.addObject("discountPrice", 0L);
-        mv.addObject("cartList", getTestCart());
+//        mv.addObject("summation", 52600L);
+//        mv.addObject("originPrice", 52600L);
+//        mv.addObject("discountPrice", 0L);
+        mv.addObject("cartList", cartListFuture.join());
+        mv.addObject("fees", feeFuture.join());
 
         return mv;
     }
@@ -83,23 +110,52 @@ public class PurchaseController {
         return rate;
     }
 
-    record TestCartDto(
-        long id,
-        String title,
-        long price,
-        long discountPrice,
-        int quantity,
-        long totalPrice
-    ) {}
+    private List<BookPurchaseView> convertCartToView(List<CartBookInfoRequestDto> cartList) {
+        List<BookSimpleResponseDto> bookList = bookService.getSimpleBooksFromCart(cartList);
 
-    private List<TestCartDto> getTestCart() {
-        return List.of(
-            new TestCartDto(
-                5, "트리 생쥐의 완벽한크리스마스 선물 대작전", 16800, 0, 2, 33600
-            ),
-            new TestCartDto(
-                6, "안아주기 - 50편의 영화 대사가 들려주는 용기와 희망의 메시지", 19000, 0, 1, 19000
-            )
-        );
+        if (bookList.size() != cartList.size()) {
+            throw new ResourceNotFoundException("카트에 담긴 책이 존재하지 않음.");
+        }
+        List<BookPurchaseView> bookView = new ArrayList<>(cartList.size());
+        for (int i=0; i<cartList.size(); i++) {
+            BookSimpleResponseDto book = bookList.get(i);
+            BigDecimal rate = book.discountRate();
+            CartBookInfoRequestDto cart = cartList.get(i);
+            long price = book.price();
+            long discountPrice = BigDecimal.valueOf(price).multiply(rate).longValue();
+            bookView.add(new BookPurchaseView(book.id(), book.title(), price, cart.quantity(), discountPrice, price - discountPrice));
+        }
+        return bookView;
     }
+//
+//    private void calcPurchasePrices(ModelAndView mv, List<BookPurchaseView> books, List<DeliveryFeeResponseDto> fees) {
+//        long originPrice = 0;
+//        long discountPrice = 0;
+//        for (BookPurchaseView book: books) {
+//            originPrice += (book.price() * book.quantity());
+//            discountPrice += (book.discountPrice() * book.quantity());
+//        }
+//        final long summation = originPrice - discountPrice;
+//        if (summation)
+//    }
+
+//    record TestCartDto(
+//        long id,
+//        String title,
+//        long price,
+//        long discountPrice,
+//        int quantity,
+//        long totalPrice
+//    ) {}
+//
+//    private List<TestCartDto> getTestCart() {
+//        return List.of(
+//            new TestCartDto(
+//                5, "트리 생쥐의 완벽한크리스마스 선물 대작전", 16800, 0, 2, 33600
+//            ),
+//            new TestCartDto(
+//                6, "안아주기 - 50편의 영화 대사가 들려주는 용기와 희망의 메시지", 19000, 0, 1, 19000
+//            )
+//        );
+//    }
 }

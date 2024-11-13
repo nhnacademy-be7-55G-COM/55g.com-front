@@ -1,7 +1,7 @@
 package shop.s5g.front.service.book.impl;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -10,6 +10,8 @@ import org.springframework.web.client.HttpServerErrorException;
 import shop.s5g.front.adapter.BookAdapter;
 import shop.s5g.front.dto.PageResponseDto;
 import shop.s5g.front.dto.book.BookPageableResponseDto;
+import shop.s5g.front.dto.book.BookSimpleResponseDto;
+import shop.s5g.front.dto.cart.request.CartBookInfoRequestDto;
 import shop.s5g.front.exception.book.BookGetFailedException;
 import shop.s5g.front.service.book.BookService;
 
@@ -36,6 +38,28 @@ public class BookServiceImpl implements BookService {
         }
     }
 
+    @Override
+    public List<BookSimpleResponseDto> getSimpleBooks(List<Long> bookIds) {
+        return bookAdapter.getSimpleBooks(bookIds);
+//        return bookAdapter.getSimpleBooks(String.join(",", bookIds.stream().map(String::valueOf).toList()));
+    }
+
+//    @Override
+//    public CompletableFuture<List<BookSimpleResponseDto>> getSimpleBooksAsync(List<Long> bookIds) {
+//        return CompletableFuture.supplyAsync(() -> bookAdapter.getSimpleBooks(bookIds));
+//    }
+    @Override
+    public List<BookSimpleResponseDto> getSimpleBooksFromCart(List<CartBookInfoRequestDto> cart) {
+        List<Long> ids = cart.stream().map(CartBookInfoRequestDto::bookId).toList();
+        return getSimpleBooks(ids);
+    }
+
+//    @Override
+//    public CompletableFuture<List<BookSimpleResponseDto>> getSimpleBooksFromCartAsync(
+//        List<CartBookInfoRequestDto> cart) {
+//        List<Long> ids = cart.stream().map(CartBookInfoRequestDto::bookId).toList();
+//        return getSimpleBooksAsync(ids);
+//    }
     /**
      * 화면 확인용 데미 데이터
      */
