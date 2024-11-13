@@ -1,6 +1,8 @@
 package shop.s5g.front.adapter;
 
 import java.util.List;
+
+import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,11 +25,11 @@ public interface CategoryAdapter {
     @GetMapping("/api/shop/category")
     ResponseEntity<List<CategoryResponseDto>> getAllCategories();
 
-    //자식 카테고리 조회
-    @GetMapping("/api/shop/category/childCategory/{categoryId}")
-    ResponseEntity<List<CategoryResponseDto>> getChildCategories(@PathVariable("categoryId") Long categoryId);
-
     //국내도서 하위 카테고리 조회
     @GetMapping("/api/shop/category/korea")
     ResponseEntity<List<CategoryResponseDto>> getKoreaCategories();
+
+    //자식 카테고리 조회
+    @GetMapping("/api/shop/category/childCategory/{categoryId}")
+    ResponseEntity<List<CategoryResponseDto>> getChildCategories(@Valid @PathVariable("categoryId") long categoryId);
 }

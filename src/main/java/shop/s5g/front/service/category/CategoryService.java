@@ -8,7 +8,9 @@ import shop.s5g.front.dto.category.CategoryResponseDto;
 public interface CategoryService {
     MessageDto addCategory(CategoryRequestDto requestDto);
 
-    List<CategoryResponseDto> getParentCategories();
+//    List<CategoryResponseDto> getParentCategories();
 
     List<CategoryResponseDto> getKoreaCategories();
+
+    List<CategoryResponseDto> getChildCategories(long categoryId);
 }
