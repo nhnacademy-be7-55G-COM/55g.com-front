@@ -80,7 +80,7 @@
 <body>
 <div th:replace="~{fragments/header}"></div>
 
-<form action="/category" method="post">
+<form action="/category/register" method="post">
     <h1>카테고리 등록</h1>
 
     <!-- 카테고리 이름 입력 -->
@@ -89,20 +89,62 @@
 
     <!-- 상위 카테고리 선택 -->
     <label for="parentCategoryId">상위 카테고리</label>
-    <select id="parentCategoryId" name="parentCategoryId">
-        <option th:value="0">없음 (루트 카테고리)</option>
+    <select id="parentCategoryId" name="parentCategoryId" onchange="loadSubCategories(this.value)">
+        <option th:value="0" disabled selected>없음 (루트 카테고리)</option>
         <option th:each="parentCategory : ${parentCategories}"
-                th:value="${parentCategory.categoryName}"
+                th:value="${parentCategory.categoryId}"
                 th:text="${parentCategory.categoryName}">
         </option>
     </select>
 
-
+    <div id="selectContainer"></div>
 
     <!-- 등록 버튼 -->
     <button type="submit">카테고리 등록</button>
 </form>
 
 <div th:replace="~{fragments/footer}"></div>
+<script>
+    function loadSubCategories(categoryId) {
+        // 서버로 선택한 카테고리 ID를 보내기 (AJAX 요청)
+        fetch(`/category/child/${categoryId}`)
+            .then(response => response.json()) // 서버에서 JSON으로 데이터 받기
+            .then(data => {
+                if (data.length > 0) {
+                    createNewSelect(data); // 새 드롭다운 만들기
+                } else {
+                    alert("더 이상 하위 카테고리가 없습니다!");
+                }
+            });
+    }
+
+    function createNewSelect(subcategories) {
+        // 새로운 드롭다운 생성
+        const newSelect = document.createElement('select');
+        newSelect.name = 'subcategory';
+        newSelect.onchange = function () {
+            loadSubCategories(this.value); // 선택할 때 다시 하위 카테고리 로드
+        };
+
+        // 기본 옵션 추가
+        const defaultOption = document.createElement('option');
+        defaultOption.value = "";
+        defaultOption.disabled = true;
+        defaultOption.selected = true;
+        defaultOption.textContent = "카테고리 선택";
+        newSelect.appendChild(defaultOption);
+
+        // 서버에서 받은 하위 카테고리 리스트 추가
+        subcategories.forEach(subcategory => {
+            const option = document.createElement('option');
+            option.value = subcategory.categoryId;
+            option.textContent = subcategory.categoryName;
+            newSelect.appendChild(option);
+        });
+
+        // 새 드롭다운을 화면에 추가
+        document.getElementById('selectContainer').appendChild(newSelect);
+    }
+</script>
 </body>
 </html>
