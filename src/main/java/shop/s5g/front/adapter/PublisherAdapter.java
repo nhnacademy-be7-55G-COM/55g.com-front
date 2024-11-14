@@ -27,6 +27,6 @@ public interface PublisherAdapter {
     ResponseEntity<PublisherResponseDto> findPublisher(@Valid @PathVariable("publisherId") Long publisherId);
 
     //출판사 수정
-    @PutMapping("/publisher/{publisherId}")
+    @PutMapping("/api/shop/publisher/{publisherId}")
     ResponseEntity<MessageDto> updatePublisher(@Valid @PathVariable("publisherId") Long publisherId, @Valid @RequestBody PublisherRequestDto publisherRequestDto);
 }
