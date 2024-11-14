@@ -17,7 +17,7 @@
   </div>
 
   <!-- 선택된 템플릿 ID를 form에서 사용할 hidden input으로 설정 -->
-  <form id="couponForm" action="admin/coupons/category" method="POST">
+  <form id="couponForm" action="/admin/coupons/category/create" method="POST">
     <!-- 카테고리 ID (hidden input) -->
     <input type="hidden" name="categoryId" th:value="${category.categoryId}">
 

@@ -283,7 +283,7 @@
                 <a>쿠폰 템플릿</a>
                 <ul>
                   <a class="nav-link" href="#" data-url="/admin/coupons/template/create">템플릿 생성</a>
-                  <a class="nav-link" href="/api/shop/admin/coupons/templates">템플릿 조회</a>
+                  <a class="nav-link" href="templates/list">템플릿 조회</a>
                 </ul>
               </li>
 
@@ -293,9 +293,9 @@
                   <li>
                     <a class="nav-link" data-url="/admin/coupons">쿠폰 생성</a>
                     <ul>
-                      <li><a class="nav-link" href="/admin/coupons/templates">사용자 쿠폰 생성</a></li>
-                      <li><a class="nav-link" href="/books/pageable">도서 쿠폰 생성</a></li>
-                      <li><a class="nav-link" href="/admin/coupons/category">카테고리 쿠폰 생성</a></li>
+                      <li><a class="nav-link" href="/templates/list">사용자 쿠폰 생성</a></li>
+                      <li><a class="nav-link" href="/books/list">도서 쿠폰 생성</a></li>
+                      <li><a class="nav-link" href="/category/list">카테고리 쿠폰 생성</a></li>
                     </ul>
                   </li>
                   <li>
@@ -373,7 +373,7 @@
       </div>
       <div id="coupon-policy-form" style="display:none; text-align: center;">
         <h2>쿠폰 정책 생성</h2>
-        <form id="coupon-form" action="/admin/coupons/policy" method="POST" style="display: inline-block; width: 100%; max-width: 400px;">
+        <form id="coupon-form" action="/admin/coupons/policy/create" method="POST" style="display: inline-block; width: 100%; max-width: 400px;">
           <div class="mb-3">
             <label for="condition" class="form-label" style="text-align: left; display: block; margin-bottom: 2px; margin-left: 25px;">조건</label>
             <input type="text" class="form-control small-input" id="condition" name="condition" placeholder="예: 20000원" style="margin: 0 auto; text-align: left; padding-left: 10px;" required>
@@ -440,7 +440,7 @@
         <!-- 쿠폰 폼 (동적으로 표시됨) -->
         <div id="couponForm" style="display:none;">
           <h3>쿠폰 이름과 설명을 입력하세요</h3>
-          <form id="couponTemplateForm" method="post" action="/admin/coupons/template">
+          <form id="couponTemplateForm" method="post" action="/admin/coupons/template/create">
             <label for="couponPolicyId">쿠폰 정책 ID:</label>
             <input id="couponPolicyId" name="couponPolicyId" value="couponPolicyId" />
             <label for="couponName">쿠폰 이름:</label>
