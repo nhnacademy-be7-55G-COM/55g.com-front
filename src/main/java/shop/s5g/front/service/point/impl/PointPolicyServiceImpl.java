@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import shop.s5g.front.adapter.PointPolicyAdapter;
 import shop.s5g.front.dto.member.MemberInfoResponseDto;
@@ -24,10 +25,9 @@ public class PointPolicyServiceImpl implements PointPolicyService {
     }
 
     @Override
+    @Async("purchaseRequest")
     public CompletableFuture<PointPolicyView> getPurchasePointPolicyAsync() {
-        return CompletableFuture.supplyAsync(
-                pointPolicyAdapter::getPurchasePolicy
-        );
+        return CompletableFuture.completedFuture(getPurchasePointPolicy());
     }
 
     @Override

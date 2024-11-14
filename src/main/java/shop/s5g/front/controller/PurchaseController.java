@@ -3,24 +3,25 @@ package shop.s5g.front.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 import shop.s5g.front.domain.PurchaseSheet;
 import shop.s5g.front.dto.book.BookPurchaseView;
-import shop.s5g.front.dto.book.BookSimpleResponseDto;
 import shop.s5g.front.dto.cart.request.CartBookInfoRequestDto;
 import shop.s5g.front.dto.delivery.DeliveryFeeResponseDto;
 import shop.s5g.front.dto.member.MemberInfoResponseDto;
 import shop.s5g.front.dto.point.PointPolicyView;
 import shop.s5g.front.dto.wrappingpaper.WrappingPaperResponseDto;
-import shop.s5g.front.exception.ResourceNotFoundException;
 import shop.s5g.front.service.book.BookService;
+import shop.s5g.front.service.cart.CartService;
 import shop.s5g.front.service.delivery.DeliveryFeeService;
 import shop.s5g.front.service.member.MemberService;
 import shop.s5g.front.service.point.PointPolicyService;
@@ -35,8 +36,15 @@ public class PurchaseController {
     private final PointPolicyService pointPolicyService;
     private final DeliveryFeeService deliveryFeeService;
     private final BookService bookService;
+    private final CartService cartService;
     private final PurchaseSheet purchaseSheet;
 
+    private Executor requestExecutor;
+
+    @Autowired
+    public void setRequestExecutor(@Qualifier("purchaseRequest") Executor requestExecutor) {
+        this.requestExecutor = requestExecutor;
+    }
     /**
      * 여기서 주문세션이 시작됨.
      * /purchase에 접근하면 주문세션이 시작(최대 1시간).
@@ -64,9 +72,7 @@ public class PurchaseController {
         );
 
         // 책 가져오는 로직.
-        CompletableFuture<List<BookPurchaseView>> cartListFuture = CompletableFuture.supplyAsync(
-                () -> convertCartToView(rawCartList)
-        );
+        CompletableFuture<List<BookPurchaseView>> cartListFuture = cartService.convertCartToView(rawCartList);
         // 포장지 가져오는 로직.
         CompletableFuture<List<WrappingPaperResponseDto>> wrapsFuture = wrappingPaperService.fetchActivePapersAsync();
         // 적립정책 가져오기.
@@ -95,23 +101,5 @@ public class PurchaseController {
         mv.addObject("accRate", rate);
 
         return rate;
-    }
-
-    private List<BookPurchaseView> convertCartToView(List<CartBookInfoRequestDto> cartList) {
-        List<BookSimpleResponseDto> bookList = bookService.getSimpleBooksFromCart(cartList);
-
-        if (bookList.size() != cartList.size()) {
-            throw new ResourceNotFoundException("카트에 담긴 책이 존재하지 않음.");
-        }
-        List<BookPurchaseView> bookView = new ArrayList<>(cartList.size());
-        for (int i=0; i<cartList.size(); i++) {
-            BookSimpleResponseDto book = bookList.get(i);
-            BigDecimal rate = book.discountRate();
-            CartBookInfoRequestDto cart = cartList.get(i);
-            long price = book.price();
-            long discountPrice = BigDecimal.valueOf(price).multiply(rate).longValue();
-            bookView.add(new BookPurchaseView(book.id(), book.title(), price, cart.quantity(), discountPrice, price - discountPrice));
-        }
-        return bookView;
     }
 }

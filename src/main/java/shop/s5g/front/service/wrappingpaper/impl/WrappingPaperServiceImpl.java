@@ -10,6 +10,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 import shop.s5g.front.adapter.WrappingPaperAdapter;
@@ -43,10 +44,9 @@ public class WrappingPaperServiceImpl implements WrappingPaperService {
     public static final String SCOPE_ALL = "all";
 
     @Override
+    @Async("purchaseRequest")
     public CompletableFuture<List<WrappingPaperResponseDto>> fetchActivePapersAsync() {
-        return CompletableFuture.supplyAsync(
-                this::fetchActivePapers
-        );
+        return CompletableFuture.completedFuture(fetchActivePapers());
     }
 
     @Override
