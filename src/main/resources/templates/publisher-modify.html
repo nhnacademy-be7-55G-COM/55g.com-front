@@ -7,7 +7,8 @@
 </head>
 <body>
 <div th:replace="~{fragments/header}"></div>
-<form th:action="@{publisher/update/{id} (id = ${modifyPublisher.id})}" method="post">
+<form th:action="@{/publisher/update/{id} (id = ${modifyPublisher.id})}" method="post">
+    <input type="hidden" name="_method" value="PUT">
     <label for="name">출판사 제목 수정</label>
     <input type="text" id="name" name="name" th:value="${modifyPublisher.name}">
     <button type="submit">수정</button>
