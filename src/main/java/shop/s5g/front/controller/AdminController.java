@@ -37,8 +37,8 @@ import shop.s5g.front.service.wrappingpaper.WrappingPaperService;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-@AdminOnly
-@RedirectWithAlert(redirect = "/", title = "권한 없음", exceptions = UnauthorizedException.class)
+//@AdminOnly
+//@RedirectWithAlert(redirect = "/", title = "권한 없음", exceptions = UnauthorizedException.class)
 public class AdminController {
 
     private final CouponPolicyService couponPolicyService;
@@ -72,7 +72,7 @@ public class AdminController {
      * @param model
      * @return String
      */
-    @GetMapping("/admin/coupons/template/{templateId}")
+    @GetMapping("/admin/coupons/template/templateId={templateId}")
     public String adminCouponCreate(@PathVariable("templateId") Long templateId, Model model) {
 
         CouponTemplateInquiryResponseDto couponTemplate = couponTemplateService.findCouponTemplateById(templateId);
@@ -89,7 +89,7 @@ public class AdminController {
      * @param model
      * @return String
      */
-    @GetMapping("/admin/coupons/books/{bookId}")
+    @GetMapping("/admin/coupons/books/create/bookId={bookId}")
     public String adminCouponBookCreate(@PathVariable("bookId") Long bookId, Model model, Pageable pageable) {
 
         CouponBookDetailsBookResponseDto detailBook = couponBookService.getBook(bookId);
@@ -109,7 +109,7 @@ public class AdminController {
      * @param pageable
      * @return String
      */
-    @GetMapping("/admin/coupons/category/{categoryId}")
+    @GetMapping("/admin/coupons/category/create/categoryId={categoryId}")
     public String adminCouponCategoryCreate(
         @PathVariable("categoryId") Long categoryId,
         Model model,
@@ -134,7 +134,7 @@ public class AdminController {
      * @param model
      * @return String
      */
-    @GetMapping("/admin/coupons/templates")
+    @GetMapping("/templates/list")
     public String adminCouponTemplatePage(
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "15") int size,
@@ -154,7 +154,7 @@ public class AdminController {
      * @param model
      * @return String
      */
-    @GetMapping("/books/pageable")
+    @GetMapping("/books/list")
     public String getBookList(
         @RequestParam(defaultValue = "0") int page,
         Model model
@@ -176,7 +176,7 @@ public class AdminController {
      * @param page
      * @return String
      */
-    @GetMapping("/admin/coupons/category")
+    @GetMapping("/category/list")
     public String getAllCategories(
         Model model,
         @RequestParam(defaultValue = "0") int page) {
@@ -191,7 +191,12 @@ public class AdminController {
         return "admin/category-list";
     }
 
-    @PostMapping("/admin/coupons/category")
+    /**
+     * 관리자 - 카테고리 쿠폰 생성
+     * @param couponCategoryRequestDto
+     * @return String
+     */
+    @PostMapping("/admin/coupons/category/create")
     public String adminCouponCategoryCreate(@ModelAttribute CouponCategoryRequestDto couponCategoryRequestDto) {
 
         couponCategoryService.createCouponCategory(couponCategoryRequestDto);
@@ -204,7 +209,7 @@ public class AdminController {
      * @param couponTemplateRegisterRequestDto
      * @return String
      */
-    @PostMapping("/admin/coupons/template")
+    @PostMapping("/admin/coupons/template/create")
     public String adminCouponTemplateCreate(@ModelAttribute CouponTemplateRegisterRequestDto couponTemplateRegisterRequestDto) {
         couponTemplateService.createCouponTemplate(couponTemplateRegisterRequestDto);
         return "redirect:/admin";
@@ -215,7 +220,7 @@ public class AdminController {
      * @param couponPolicyRegisterRequestDto
      * @return String
      */
-    @PostMapping("/admin/coupons/policy")
+    @PostMapping("/admin/coupons/policy/create")
     public String adminCouponPolicyCreate(@ModelAttribute CouponPolicyRegisterRequestDto couponPolicyRegisterRequestDto) {
         couponPolicyService.createCouponPolicy(couponPolicyRegisterRequestDto);
         return "redirect:/admin";
@@ -226,7 +231,7 @@ public class AdminController {
      * @param couponRegisterRequestDto
      * @return String
      */
-    @PostMapping("/admin/coupons")
+    @PostMapping("/admin/coupons/create")
     public String adminCouponCreate(@ModelAttribute CouponRegisterRequestDto couponRegisterRequestDto) {
         couponService.createCoupon(couponRegisterRequestDto);
         return "redirect:/admin";
