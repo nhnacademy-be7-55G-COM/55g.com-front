@@ -76,3 +76,5 @@ logging:
   level:
     root: info
     shop.s5g.front: trace
+    shop.s5g.front.adapter.AuthAdapter: warn
+    shop.s5g.front.config.FeignGatewayAuthorizationConfig: info

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 import shop.s5g.front.annotation.SessionRequired;
-import shop.s5g.front.domain.PurchaseSheet;
+import shop.s5g.front.domain.purchase.PurchaseSheet;
 import shop.s5g.front.dto.cart.request.CartBookInfoRequestDto;
 
 @RequiredArgsConstructor
