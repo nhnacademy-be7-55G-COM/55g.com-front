@@ -15,7 +15,7 @@ import shop.s5g.front.dto.PageResponseDto;
 import shop.s5g.front.dto.BookDetailResponseDto;
 import shop.s5g.front.dto.book.BookPageableResponseDto;
 
-@FeignClient(value = "shop-service", url = "${gateway.url}")
+@FeignClient(value = "shop-service", url = "${gateway.url}", configuration = FeignGatewayAuthorizationConfig.class)
 public interface BookAdapter {
 
     @GetMapping("/api/shop/book/{bookId}")
