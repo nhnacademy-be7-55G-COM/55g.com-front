@@ -3,6 +3,8 @@ package shop.s5g.front.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +31,8 @@ public class PaymentController {
 
     // 프록시로 작동해서 ObjectProvider 를 사용하지 않아도 됨!
     private final PurchaseSheet purchaseSheet;
+
+    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 
     // https://docs.tosspayments.com/sdk/v2/js#%EC%9D%91%EB%8B%B5-21
@@ -73,7 +77,11 @@ public class PaymentController {
 
         HttpSession session = request.getSession(false);
         session.invalidate();
-        return "payments/toss-success";
+        LocalDate date = LocalDate.now();
+        return String.format(
+            "redirect:/mypage?startDate=%s&endDate=%s#orders",
+            date.format(dateTimeFormatter), date.format(dateTimeFormatter)
+        );
     }
 
     @GetMapping("/fail")
