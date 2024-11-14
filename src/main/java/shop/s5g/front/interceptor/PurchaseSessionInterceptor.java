@@ -18,7 +18,8 @@ public class PurchaseSessionInterceptor implements HandlerInterceptor {
             session.invalidate();
         }
         log.trace("Purchase Session Created.");
-        request.getSession();
+        HttpSession newSession = request.getSession();
+        newSession.setMaxInactiveInterval(1800);
         return true;
     }
 }

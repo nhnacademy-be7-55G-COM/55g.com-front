@@ -123,11 +123,4 @@ public class PaymentSupportController {
         session.invalidate();
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
-
-    @GetMapping("/test")
-    @SessionRequired
-    public String test() {
-        purchaseSheet.hello();
-        return "good";
-    }
 }
