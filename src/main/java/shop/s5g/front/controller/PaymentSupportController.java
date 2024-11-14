@@ -21,7 +21,7 @@ import shop.s5g.front.dto.member.MemberInfoResponseDto;
 import shop.s5g.front.dto.order.OrderCreateRequestDto;
 import shop.s5g.front.dto.order.OrderCreateResponseDto;
 import shop.s5g.front.dto.order.PurchaseRequestDto;
-import shop.s5g.front.service.member.MemberService;
+import shop.s5g.front.dto.order.WrapModifyRequestDo;
 import shop.s5g.front.service.order.OrderService;
 import shop.s5g.front.utils.PaymentUtils;
 
@@ -33,7 +33,6 @@ import shop.s5g.front.utils.PaymentUtils;
 public class PaymentSupportController {
     private final String tossPaymentsClientKey;
     private final OrderService orderService;
-    private final MemberService memberService;
     private final PurchaseSheet purchaseSheet;
 
     /**
@@ -91,6 +90,12 @@ public class PaymentSupportController {
 //        // TODO: 세션에서 쿠폰 사용 여부, 합계 및 netPrice 가져오기.
 
         return ResponseEntity.status(HttpStatus.CREATED).body(orderService.createOrder(order));
+    }
+
+    @PutMapping("/wrap")
+    public ResponseEntity<HttpStatus> modifyWraps(@RequestBody WrapModifyRequestDo wrapModify) {
+        purchaseSheet.changeWrappingPaper(wrapModify);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/order")

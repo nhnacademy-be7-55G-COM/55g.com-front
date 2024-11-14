@@ -3,8 +3,10 @@ package shop.s5g.front.domain.purchase;
 import jakarta.annotation.PostConstruct;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -21,8 +23,10 @@ import shop.s5g.front.dto.delivery.DeliveryFeeResponseDto;
 import shop.s5g.front.dto.member.MemberInfoResponseDto;
 import shop.s5g.front.dto.order.OrderCreateRequestDto;
 import shop.s5g.front.dto.order.OrderDetailCreateRequestDto;
+import shop.s5g.front.dto.order.WrapModifyRequestDo;
 import shop.s5g.front.dto.point.PointPolicyView;
 import shop.s5g.front.dto.wrappingpaper.WrappingPaperResponseDto;
+import shop.s5g.front.dto.wrappingpaper.WrappingPaperView;
 import shop.s5g.front.service.cart.CartService;
 import shop.s5g.front.service.delivery.DeliveryFeeService;
 import shop.s5g.front.service.member.MemberService;
@@ -62,6 +66,7 @@ public class PurchaseSheet {
 
     private boolean cartReady;
     private boolean joined;
+    private Map<Long, WrappingPaperView> wrapMap;
 
     private OrderInformation orderInfo;
     // ------------------------------
@@ -70,6 +75,7 @@ public class PurchaseSheet {
     public void init() {
         log.trace("---------- PurchaseSheet is initializing -----------");
         futures = new LinkedList<>();
+        wrapMap = new HashMap<>();
         futures.add(pointPolicyService.getPurchasePointPolicyAsync().thenAccept(
             view -> {
                 policy = view;
@@ -83,7 +89,12 @@ public class PurchaseSheet {
             }
         ));
         futures.add(wrappingPaperService.fetchActivePapersAsync().thenAccept(
-            papers -> wraps = papers
+            papers -> {
+                wraps = papers;
+                wraps.stream().map(wrappingPaperService::convertToView).forEach(
+                    w-> wrapMap.put(w.id(), w)
+                );
+            }
         ));
         futures.add(deliveryFeeService.getAllFeesAsync().thenAccept(
             fees-> fee = fees
@@ -144,11 +155,11 @@ public class PurchaseSheet {
         mv.addObject("memberInfo", memberInfo);
         mv.addObject("accRate", accRateSum);
         mv.addObject("wrappingPaperList", wraps.stream().map(wrappingPaperService::convertToView).toList());
+        cartList.forEach(cart -> orderInfo.purchaseMap.put(cart.id(), new PurchaseCell(cart)));
     }
 
     public String generateOrder() {
-        orderInfo = new OrderInformation(randomStringProvider);
-        cartList.forEach(cart -> orderInfo.purchaseMap.put(cart.id(), new PurchaseCell(cart)));
+//        orderInfo = new OrderInformation(randomStringProvider);
         return orderInfo.randomOrderId;
     }
 
@@ -184,7 +195,8 @@ public class PurchaseSheet {
         for (PurchaseCell cell: orderInfo.purchaseMap.values()) {
             BookPurchaseView book = cell.book;
             // TODO: 쿠폰 적용, 한 권만 적용
-            long subTotalPrice = book.totalPrice() - 0 + (book.totalPrice() * (book.quantity()-1));
+            long wrapCost = cell.wrappingPaper != null ? cell.wrappingPaper.price() : 0;
+            long subTotalPrice = book.totalPrice() - 0 + (book.totalPrice() * (book.quantity()-1)) + wrapCost;
             int subAccPrice = BigDecimal.valueOf(subTotalPrice).multiply(accRateSum).intValue();
             // netPrice...
             totalPrice += subTotalPrice;
@@ -206,5 +218,17 @@ public class PurchaseSheet {
         );
 
         return orderInfo.order;
+    }
+
+    public void changeWrappingPaper(WrapModifyRequestDo wrapModify) {
+        Map<Long, PurchaseCell> purchaseMap = orderInfo.purchaseMap;
+       PurchaseCell cell = purchaseMap.get(wrapModify.bookId());
+
+       if (wrapModify.wrapId() == -1) {
+           cell.wrappingPaper = null;
+       } else {
+           cell.wrappingPaper = wrapMap.get(wrapModify.wrapId());
+       }
+
     }
 }
