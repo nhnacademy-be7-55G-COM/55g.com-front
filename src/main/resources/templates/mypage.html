@@ -24,6 +24,23 @@
   </style>
   <script>
     const defaultSize = 10;
+    const hash = window.location.hash;
+    const getHashFromHref = (href) => {
+      return href.substring(href.search('#'));
+    }
+
+    if (hash !== '') {
+      document.addEventListener('DOMContentLoaded', () => {
+        const tabs = document.querySelectorAll('nav#sidebar li.nav-item > a');
+        for (let i = 0; i<tabs.length; i++) {
+          const hrefHash = getHashFromHref(tabs[i].href);
+          if (hrefHash === hash) {
+            tabs[i].click();
+            return;
+          }
+        }
+      });
+    }
   </script>
 </head>
 
