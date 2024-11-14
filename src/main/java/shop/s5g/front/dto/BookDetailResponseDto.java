@@ -1,11 +1,12 @@
-package shop.s5g.front.dto.coupon;
+package shop.s5g.front.dto;
 
-import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import lombok.Builder;
 
-public record CouponBookDetailsBookResponseDto(
+//@Builder
+public record BookDetailResponseDto(
     long bookId,
     String publisherName,
     String typeName,
@@ -19,6 +20,9 @@ public record CouponBookDetailsBookResponseDto(
     boolean isPacked,
     int stock,
     long views,
-    LocalDateTime createdAt
+    LocalDateTime createdAt,
+    List<BookAuthorResponseDto> authorList,
+    List<BookCategoryResponseDto> categoryList
 ) {
+
 }

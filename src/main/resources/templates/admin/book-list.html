@@ -28,7 +28,7 @@
       <td style="padding: 10px;" th:text="${iterStat.index + 1 + (currentPage * bookList.size)}">순번</td>
 
       <td style="padding: 10px;">
-        <a th:href="@{/api/shop/admin/coupons/books/{bookId}(bookId=${book.bookId})}"
+        <a th:href="@{/admin/coupons/books/create/bookId={bookId}(bookId=${book.bookId})}"
            th:text="${book.title}">책 이름</a>
       </td>
 

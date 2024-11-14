@@ -14,7 +14,7 @@
   <!-- 책 정보 표시 -->
   <div>
     <p><strong>책 이름:</strong> <span th:text="${book.title}"></span></p>
-    <p><strong>저자:</strong> <span th:text="${book.author}"></span></p>
+    <p><strong>출판사:</strong> <span th:text="${book.publisherName}"></span></p>
   </div>
 
   <!-- 쿠폰 선택 버튼 -->
@@ -76,7 +76,7 @@
   }
 
   function fetchCoupons(page) {
-    fetch(`/api/shop/admin/coupons/templates?page=${page}`)
+    fetch(`/admin/coupons/templates?page=${page}`)
     .then(response => response.json())
     .then(data => {
       renderCoupons(data.content); // 쿠폰 목록 표시

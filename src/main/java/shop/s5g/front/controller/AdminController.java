@@ -37,8 +37,8 @@ import shop.s5g.front.service.wrappingpaper.WrappingPaperService;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-@AdminOnly
-@RedirectWithAlert(redirect = "/", title = "권한 없음", exceptions = UnauthorizedException.class)
+//@AdminOnly
+//@RedirectWithAlert(redirect = "/", title = "권한 없음", exceptions = UnauthorizedException.class)
 public class AdminController {
 
     private final CouponPolicyService couponPolicyService;
@@ -57,7 +57,7 @@ public class AdminController {
     @GetMapping("/admin")
     public ModelAndView adminPage() {
 
-        ModelAndView mv = new ModelAndView("/admin/admin");
+        ModelAndView mv = new ModelAndView("admin/admin");
 
         List<CouponPolicyInquiryResponseDto> couponPolicyList = couponPolicyService.findCouponPolices();
 
@@ -72,7 +72,7 @@ public class AdminController {
      * @param model
      * @return String
      */
-    @GetMapping("/api/shop/admin/coupons/template/{templateId}")
+    @GetMapping("/admin/coupons/template/templateId={templateId}")
     public String adminCouponCreate(@PathVariable("templateId") Long templateId, Model model) {
 
         CouponTemplateInquiryResponseDto couponTemplate = couponTemplateService.findCouponTemplateById(templateId);
@@ -89,7 +89,7 @@ public class AdminController {
      * @param model
      * @return String
      */
-    @GetMapping("/api/shop/admin/coupons/books/{bookId}")
+    @GetMapping("/admin/coupons/books/create/bookId={bookId}")
     public String adminCouponBookCreate(@PathVariable("bookId") Long bookId, Model model, Pageable pageable) {
 
         CouponBookDetailsBookResponseDto detailBook = couponBookService.getBook(bookId);
@@ -109,7 +109,7 @@ public class AdminController {
      * @param pageable
      * @return String
      */
-    @GetMapping("/api/shop/admin/coupons/category/{categoryId}")
+    @GetMapping("/admin/coupons/category/create/categoryId={categoryId}")
     public String adminCouponCategoryCreate(
         @PathVariable("categoryId") Long categoryId,
         Model model,
@@ -134,7 +134,7 @@ public class AdminController {
      * @param model
      * @return String
      */
-    @GetMapping("/api/shop/admin/coupons/templates")
+    @GetMapping("/templates/list")
     public String adminCouponTemplatePage(
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "15") int size,
@@ -145,7 +145,7 @@ public class AdminController {
         model.addAttribute("couponTemplate", couponTemplateList);
         model.addAttribute("currentPage", (page + 1));
 
-        return "/admin/template-inquiry";
+        return "admin/template-inquiry";
     }
 
     /**
@@ -154,7 +154,7 @@ public class AdminController {
      * @param model
      * @return String
      */
-    @GetMapping("/api/shop/books/pageable")
+    @GetMapping("/books/list")
     public String getBookList(
         @RequestParam(defaultValue = "0") int page,
         Model model
@@ -167,7 +167,7 @@ public class AdminController {
         model.addAttribute("bookList", bookList);
         model.addAttribute("currentPage", page);
 
-        return "/admin/book-list";
+        return "admin/book-list";
     }
 
     /**
@@ -176,7 +176,7 @@ public class AdminController {
      * @param page
      * @return String
      */
-    @GetMapping("/api/shop/admin/coupons/category")
+    @GetMapping("/category/list")
     public String getAllCategories(
         Model model,
         @RequestParam(defaultValue = "0") int page) {
@@ -188,10 +188,15 @@ public class AdminController {
         model.addAttribute("categoryList", categoryList);
         model.addAttribute("currentPage", page);
 
-        return "/admin/category-list";
+        return "admin/category-list";
     }
 
-    @PostMapping("/api/shop/admin/coupons/category")
+    /**
+     * 관리자 - 카테고리 쿠폰 생성
+     * @param couponCategoryRequestDto
+     * @return String
+     */
+    @PostMapping("/admin/coupons/category/create")
     public String adminCouponCategoryCreate(@ModelAttribute CouponCategoryRequestDto couponCategoryRequestDto) {
 
         couponCategoryService.createCouponCategory(couponCategoryRequestDto);
@@ -204,7 +209,7 @@ public class AdminController {
      * @param couponTemplateRegisterRequestDto
      * @return String
      */
-    @PostMapping("/api/shop/admin/coupons/template")
+    @PostMapping("/admin/coupons/template/create")
     public String adminCouponTemplateCreate(@ModelAttribute CouponTemplateRegisterRequestDto couponTemplateRegisterRequestDto) {
         couponTemplateService.createCouponTemplate(couponTemplateRegisterRequestDto);
         return "redirect:/admin";
@@ -215,7 +220,7 @@ public class AdminController {
      * @param couponPolicyRegisterRequestDto
      * @return String
      */
-    @PostMapping("/api/shop/admin/coupons/policy")
+    @PostMapping("/admin/coupons/policy/create")
     public String adminCouponPolicyCreate(@ModelAttribute CouponPolicyRegisterRequestDto couponPolicyRegisterRequestDto) {
         couponPolicyService.createCouponPolicy(couponPolicyRegisterRequestDto);
         return "redirect:/admin";
@@ -226,7 +231,7 @@ public class AdminController {
      * @param couponRegisterRequestDto
      * @return String
      */
-    @PostMapping("/api/shop/admin/coupons")
+    @PostMapping("/admin/coupons/create")
     public String adminCouponCreate(@ModelAttribute CouponRegisterRequestDto couponRegisterRequestDto) {
         couponService.createCoupon(couponRegisterRequestDto);
         return "redirect:/admin";
@@ -236,9 +241,9 @@ public class AdminController {
      * 관리자 - 쿠폰 정책 조회
      * @return ModelAndView
      */
-    @GetMapping("/api/shop/admin/coupons/policy")
+    @GetMapping("/admin/coupons/policy-inquiry")
     public ModelAndView adminCouponPoliciesList() {
-        ModelAndView mv = new ModelAndView("/admin/policy-inquiry");
+        ModelAndView mv = new ModelAndView("admin/policy-inquiry");
 
         List<CouponPolicyInquiryResponseDto> couponPolicyList = couponPolicyService.findCouponPolices();
 
