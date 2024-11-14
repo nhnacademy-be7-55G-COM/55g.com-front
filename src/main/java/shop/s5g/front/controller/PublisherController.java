@@ -3,10 +3,7 @@ package shop.s5g.front.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import shop.s5g.front.dto.publisher.PublisherRequestDto;
 import shop.s5g.front.dto.publisher.PublisherResponseDto;
 import shop.s5g.front.service.publisher.PublisherService;
@@ -45,7 +42,7 @@ public class PublisherController {
     }
 
     //출판사 수정
-    @PostMapping("/publisher/update/{id}")
+    @PutMapping("/publisher/update/{id}")
     public String publisherUpdate(@PathVariable("id") Long id, @ModelAttribute PublisherRequestDto publisherRequestDto) {
 
         //publisher -> publisherRequestDto로 바꿔야 함
