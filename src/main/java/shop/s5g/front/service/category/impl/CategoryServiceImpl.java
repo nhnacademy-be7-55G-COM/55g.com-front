@@ -39,19 +39,19 @@ public class CategoryServiceImpl implements CategoryService {
     /**
      * 모든 카테고리 조회
      */
-    @Override
-    public List<CategoryResponseDto> getParentCategories() {
-        try {
-            ResponseEntity<List<CategoryResponseDto>> allCategories = categoryAdapter.getAllCategories();
-            if (allCategories.getStatusCode().is2xxSuccessful()) {
-                return allCategories.getBody();
-            }
-            throw new CategoryRegisterFailedException("카테고리가 존재하지 않습니다.");
-        }
-        catch (HttpClientErrorException | HttpServerErrorException e) {
-            throw new CategoryRegisterFailedException(e.getMessage());
-        }
-    }
+//    @Override
+//    public List<CategoryResponseDto> getParentCategories() {
+//        try {
+//            ResponseEntity<List<CategoryResponseDto>> allCategories = categoryAdapter.getAllCategories();
+//            if (allCategories.getStatusCode().is2xxSuccessful()) {
+//                return allCategories.getBody();
+//            }
+//            throw new CategoryRegisterFailedException("카테고리가 존재하지 않습니다.");
+//        }
+//        catch (HttpClientErrorException | HttpServerErrorException e) {
+//            throw new CategoryRegisterFailedException(e.getMessage());
+//        }
+//    }
 
     /**
      * 국내도서 하위 카테고리 조회
@@ -62,6 +62,23 @@ public class CategoryServiceImpl implements CategoryService {
             ResponseEntity<List<CategoryResponseDto>> koreaCategories = categoryAdapter.getKoreaCategories();
             if (koreaCategories.getStatusCode().is2xxSuccessful()) {
                 return koreaCategories.getBody();
+            }
+            throw new CategoryRegisterFailedException("카테고리가 존재하지 않습니다.");
+        }
+        catch (HttpClientErrorException | HttpServerErrorException e) {
+            throw new CategoryRegisterFailedException(e.getMessage());
+        }
+    }
+
+    /**
+     * 하위 카테고리 조회
+     */
+    @Override
+    public List<CategoryResponseDto> getChildCategories(long categoryId) {
+        try{
+            ResponseEntity<List<CategoryResponseDto>> childCategories = categoryAdapter.getChildCategories(categoryId);
+            if (childCategories.getStatusCode().is2xxSuccessful()) {
+                return childCategories.getBody();
             }
             throw new CategoryRegisterFailedException("카테고리가 존재하지 않습니다.");
         }

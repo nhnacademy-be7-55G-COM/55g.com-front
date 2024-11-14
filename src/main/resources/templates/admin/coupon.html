@@ -23,7 +23,7 @@
   </div>
 
   <!-- 만료일 입력 폼 -->
-  <form action="#" th:action="@{/api/shop/admin/coupons}" method="post">
+  <form action="#" th:action="@{/admin/coupons/create}" method="post">
     <input type="hidden" name="couponTemplateId" th:value="${couponTemplateId}">
     <label for="expiredAt">만료일:</label>
     <input type="datetime-local" id="expiredAt" name="expiredAt" required="required">
