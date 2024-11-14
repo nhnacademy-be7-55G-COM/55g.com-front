@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>책 쿠폰 조회</title>
+  <link rel="stylesheet" href="style.css">
+  <div th:replace="~{fragments/head}"></div>
+  <style>
+    .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: transparent;
+      border: none;
+      font-size: 24px;
+      color: #333;
+      cursor: pointer;
+      z-index: 10;
+    }
+  </style>
+</head>
+<body>
+<div class="container" style="position: relative;">
+  <button class="close-btn" onclick="window.location.href='/admin'">&times;</button>
+  <h2>책 쿠폰 조회</h2>
+
+  <table border="1" style="width: 100%; margin-top: 20px; border-collapse: collapse;">
+    <thead>
+    <tr>
+      <th style="padding: 10px; background-color: #f0f0f0;">순번</th>
+      <th style="padding: 10px; background-color: #f0f0f0;">책 이름</th>
+      <th style="padding: 10px; background-color: #f0f0f0;">적용된 쿠폰 템플릿</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="couponBook, iterStat : ${couponBookList}">
+
+      <td style="padding: 10px;" th:text="${iterStat.index + 1 + (currentPage * couponBookList.size)}">순번</td>
+
+      <td style="padding: 10px;">
+        <a th:text="${couponBook.title()}">책 이름</a>
+      </td>
+
+      <td id="couponDescription"
+          th:text="${'이 쿠폰은 '
+    + couponBook.couponDescription()
+    + ' '
+    + couponBook.condition()
+    + ' 이상 구매 시 '
+    + (couponBook.discountPrice() < 1
+        ? (couponBook.discountPrice().multiply(100).stripTrailingZeros().toPlainString() + '%')
+        : couponBook.discountPrice().stripTrailingZeros().toPlainString() + '원')
+    + ' 할인 적용되며 최대 '
+    + couponBook.maxPrice()
+    + ' 할인이 가능한 쿠폰으로 최대 '
+    + couponBook.duration()
+    + '일 적용 가능합니다.'}">
+        적용된 쿠폰 템플릿
+      </td>
+
+      </script>
+    </tr>
+    </tbody>
+  </table>
+
+  <div class="pagination">
+    <span th:if="${currentPage >= 1}">
+      <a th:href="@{/admin/books/coupons(page=${currentPage - 1})}">이전</a>
+    </span>
+
+    <span>현재 페이지: <span th:text="${currentPage + 1}"></span></span>
+
+    <span th:if="${currentPage <= 999}">
+      <a th:href="@{/admin/books/coupons(page=${currentPage + 1})}">다음</a>
+    </span>
+  </div>
+
+</div>
+</body>
+</html>

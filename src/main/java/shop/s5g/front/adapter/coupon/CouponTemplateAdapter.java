@@ -2,6 +2,8 @@ package shop.s5g.front.adapter.coupon;
 
 import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,4 +29,7 @@ public interface CouponTemplateAdapter {
 
     @GetMapping("/api/shop/admin/coupons/template/{templateId}")
     ResponseEntity<CouponTemplateInquiryResponseDto> findCouponTemplateById(@PathVariable("templateId") Long templateId);
+
+    @GetMapping("/api/shop/admin/coupons/templates/unused")
+    ResponseEntity<Page<CouponTemplateInquiryResponseDto>> findCouponTemplatesUnused(Pageable pageable);
 }
