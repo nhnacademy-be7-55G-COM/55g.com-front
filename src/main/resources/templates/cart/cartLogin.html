@@ -19,11 +19,14 @@
       })
     })
     .then(response => {
-      console.log('localStorageTest')
+
       if (response.ok) {
+        console.log('convert cart to redis success when login');
         return response.json();
       } else {
-        console.log('response status : ', response.status);
+        alert("장바구니를 초기화하는데 실패했습니다.")
+        return {cartCount: 0};
+
       }
     })
     .then(data =>{
