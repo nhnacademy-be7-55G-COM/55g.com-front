@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import shop.s5g.front.annotation.SessionRequired;
+import shop.s5g.front.domain.PurchaseSheet;
 import shop.s5g.front.dto.CustomerInfoDto;
 import shop.s5g.front.dto.member.MemberInfoResponseDto;
 import shop.s5g.front.dto.order.OrderCreateRequestDto;
@@ -40,12 +41,12 @@ public class PaymentSupportController {
     private final OrderService orderService;
     private final MemberService memberService;
     private final PointPolicyService pointPolicyService;
+    private final PurchaseSheet purchaseSheet;
 
     @GetMapping("/generate-order")
     @SessionRequired
     public String generateOrderId(/* User Auth */HttpServletRequest request, @RequestParam long orderId) {
         HttpSession session = request.getSession(false);
-        // TODO: 세션에 OrderId를 업데이트 할것.
         String value = randomStringProvider.nextString();
 //        session.setAttribute("orderSession", new OrderSession(
 //            orderId, value
@@ -121,5 +122,12 @@ public class PaymentSupportController {
         orderService.deleteOrder((long) session.getAttribute("orderDataId"));
         session.invalidate();
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @GetMapping("/test")
+    @SessionRequired
+    public String test() {
+        purchaseSheet.hello();
+        return "good";
     }
 }

@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
+import shop.s5g.front.domain.PurchaseSheet;
 import shop.s5g.front.dto.book.BookPurchaseView;
 import shop.s5g.front.dto.book.BookSimpleResponseDto;
 import shop.s5g.front.dto.cart.request.CartBookInfoRequestDto;
@@ -24,8 +25,6 @@ import shop.s5g.front.service.delivery.DeliveryFeeService;
 import shop.s5g.front.service.member.MemberService;
 import shop.s5g.front.service.point.PointPolicyService;
 import shop.s5g.front.service.wrappingpaper.WrappingPaperService;
-import shop.s5g.front.utils.AuthTokenHolder;
-import shop.s5g.front.utils.FunctionalWithAuthToken;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -36,12 +35,8 @@ public class PurchaseController {
     private final PointPolicyService pointPolicyService;
     private final DeliveryFeeService deliveryFeeService;
     private final BookService bookService;
+    private final PurchaseSheet purchaseSheet;
 
-//    @ModelAttribute("memberInfo")
-//    public MemberInfoResponseDto getMemberInfo() {
-//        return memberService.getMemberInfo();
-//    }
-//
     /**
      * 여기서 주문세션이 시작됨.
      * /purchase에 접근하면 주문세션이 시작(최대 1시간).
@@ -54,6 +49,7 @@ public class PurchaseController {
     @GetMapping("/purchase")
     public ModelAndView getPurchaseView(/* User Auth */ HttpServletRequest request) {
         ModelAndView mv = new ModelAndView("create-order");
+//        purchaseSheet.hello();
 
         log.trace("Getting shopping cart...");
         // 주문 세션의 시작.
@@ -69,10 +65,7 @@ public class PurchaseController {
 
         // 책 가져오는 로직.
         CompletableFuture<List<BookPurchaseView>> cartListFuture = CompletableFuture.supplyAsync(
-            FunctionalWithAuthToken.supply(
-                AuthTokenHolder.getToken(),
                 () -> convertCartToView(rawCartList)
-            )
         );
         // 포장지 가져오는 로직.
         CompletableFuture<List<WrappingPaperResponseDto>> wrapsFuture = wrappingPaperService.fetchActivePapersAsync();
@@ -87,13 +80,7 @@ public class PurchaseController {
         sumAccRate(mv, policyFuture.join(), memberInfoFuture.join());
 
         // 만약 결제할때 세션의 값을 사용한다면 멤버 등급이 바뀌거나 해서 적립률이 달라진다면 오차가 생기게 됨.
-//        session.setAttribute("accRate", accRate);
 
-        // 테스트 영역
-        session.setAttribute("purchase-summation", 52600L);
-//        mv.addObject("summation", 52600L);
-//        mv.addObject("originPrice", 52600L);
-//        mv.addObject("discountPrice", 0L);
         mv.addObject("cartList", cartListFuture.join());
         mv.addObject("fees", feeFuture.join());
 
@@ -127,35 +114,4 @@ public class PurchaseController {
         }
         return bookView;
     }
-//
-//    private void calcPurchasePrices(ModelAndView mv, List<BookPurchaseView> books, List<DeliveryFeeResponseDto> fees) {
-//        long originPrice = 0;
-//        long discountPrice = 0;
-//        for (BookPurchaseView book: books) {
-//            originPrice += (book.price() * book.quantity());
-//            discountPrice += (book.discountPrice() * book.quantity());
-//        }
-//        final long summation = originPrice - discountPrice;
-//        if (summation)
-//    }
-
-//    record TestCartDto(
-//        long id,
-//        String title,
-//        long price,
-//        long discountPrice,
-//        int quantity,
-//        long totalPrice
-//    ) {}
-//
-//    private List<TestCartDto> getTestCart() {
-//        return List.of(
-//            new TestCartDto(
-//                5, "트리 생쥐의 완벽한크리스마스 선물 대작전", 16800, 0, 2, 33600
-//            ),
-//            new TestCartDto(
-//                6, "안아주기 - 50편의 영화 대사가 들려주는 용기와 희망의 메시지", 19000, 0, 1, 19000
-//            )
-//        );
-//    }
 }

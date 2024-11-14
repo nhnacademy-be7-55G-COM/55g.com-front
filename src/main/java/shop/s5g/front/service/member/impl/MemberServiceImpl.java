@@ -19,8 +19,6 @@ import shop.s5g.front.exception.member.MemberUpdateFailedException;
 import shop.s5g.front.exception.member.MemberWithdrawalFailedException;
 import shop.s5g.front.exception.member.PasswordChangeFailedException;
 import shop.s5g.front.service.member.MemberService;
-import shop.s5g.front.utils.AuthTokenHolder;
-import shop.s5g.front.utils.FunctionalWithAuthToken;
 
 @Service
 @RequiredArgsConstructor
@@ -60,10 +58,9 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public CompletableFuture<MemberInfoResponseDto> getMemberInfoAsync() {
-        return CompletableFuture.supplyAsync(FunctionalWithAuthToken.supply(
-            AuthTokenHolder.getToken(),
+        return CompletableFuture.supplyAsync(
             this::getMemberInfo
-        ));
+        );
     }
 
     @Override

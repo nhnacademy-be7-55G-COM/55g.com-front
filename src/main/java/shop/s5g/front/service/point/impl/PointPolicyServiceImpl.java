@@ -11,8 +11,6 @@ import shop.s5g.front.dto.point.PointPolicyResponseDto;
 import shop.s5g.front.dto.point.PointPolicyView;
 import shop.s5g.front.service.member.MemberService;
 import shop.s5g.front.service.point.PointPolicyService;
-import shop.s5g.front.utils.AuthTokenHolder;
-import shop.s5g.front.utils.FunctionalWithAuthToken;
 
 @Service
 @RequiredArgsConstructor
@@ -28,10 +26,7 @@ public class PointPolicyServiceImpl implements PointPolicyService {
     @Override
     public CompletableFuture<PointPolicyView> getPurchasePointPolicyAsync() {
         return CompletableFuture.supplyAsync(
-            FunctionalWithAuthToken.supply(
-                AuthTokenHolder.getToken(),
                 pointPolicyAdapter::getPurchasePolicy
-            )
         );
     }
 
