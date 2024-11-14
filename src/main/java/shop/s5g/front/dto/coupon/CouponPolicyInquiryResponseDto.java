@@ -5,19 +5,20 @@ import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 public record CouponPolicyInquiryResponseDto(
-    @Min(0)
+
+    @Min(1)
+    @NotNull
+    Long couponPolicyId,
+
     @NotNull
     BigDecimal discountPrice,
 
-    @Min(0)
     @NotNull
     Long condition,
 
-    @Min(0)
-    @NotNull
     Long maxPrice,
 
-    @Min(0)
+    @Min(1)
     @NotNull
     Integer duration
 ) {

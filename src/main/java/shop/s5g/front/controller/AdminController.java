@@ -16,6 +16,8 @@ import org.springframework.web.servlet.ModelAndView;
 import shop.s5g.front.annotation.AdminOnly;
 import shop.s5g.front.annotation.RedirectWithAlert;
 import shop.s5g.front.dto.coupon.BookDetailsBookResponseDto;
+import shop.s5g.front.dto.coupon.CouponBookRequestDto;
+import shop.s5g.front.dto.coupon.CouponBookResponseDto;
 import shop.s5g.front.dto.coupon.CouponCategoryRequestDto;
 import shop.s5g.front.dto.coupon.CategoryResponseDto;
 import shop.s5g.front.dto.coupon.CouponCategoryResponseDto;
@@ -37,8 +39,8 @@ import shop.s5g.front.service.wrappingpaper.WrappingPaperService;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-@AdminOnly
-@RedirectWithAlert(redirect = "/", title = "권한 없음", exceptions = UnauthorizedException.class)
+//@AdminOnly
+//@RedirectWithAlert(redirect = "/", title = "권한 없음", exceptions = UnauthorizedException.class)
 public class AdminController {
 
     private final CouponPolicyService couponPolicyService;
@@ -56,14 +58,7 @@ public class AdminController {
      */
     @GetMapping("/admin")
     public ModelAndView adminPage() {
-
-        ModelAndView mv = new ModelAndView("admin/admin");
-
-        List<CouponPolicyInquiryResponseDto> couponPolicyList = couponPolicyService.findCouponPolices();
-
-        mv.addObject("couponPolicyList", couponPolicyList);
-
-        return mv;
+        return new ModelAndView("admin/admin");
     }
 
     /**
@@ -93,13 +88,13 @@ public class AdminController {
     public ModelAndView getAdminCouponBookCreatePage(@PathVariable("bookId") Long bookId, Pageable pageable) {
 
         BookDetailsBookResponseDto detailBook = couponBookService.getBook(bookId);
-        List<CouponTemplateInquiryResponseDto> couponTemplateList = couponTemplateService.getCouponTemplates(
-            pageable.getPageNumber(), pageable.getPageSize());
+        Page<CouponTemplateInquiryResponseDto> couponTemplateList = couponTemplateService.getCouponTemplatesUnused(
+            pageable);
 
         ModelAndView mv = new ModelAndView("admin/coupon-book");
 
         mv.addObject("book", detailBook);
-        mv.addObject("template", couponTemplateList);
+        mv.addObject("templateList", couponTemplateList);
 
         return mv;
     }
@@ -218,6 +213,38 @@ public class AdminController {
     }
 
     /**
+     * 관리자 - Book 쿠폰 조회 - API
+     * @param page
+     * @return ModelAndView
+     */
+    @GetMapping("/admin/books/coupons")
+    public ModelAndView getBooksCoupons(@RequestParam(defaultValue = "0") int page) {
+
+        ModelAndView mv = new ModelAndView("admin/coupon-book-inquiry");
+        Pageable pageable = PageRequest.of(page, 15);
+
+        Page<CouponBookResponseDto> couponBookList = couponBookService.getAllCouponBooks(pageable);
+
+        mv.addObject("couponBookList", couponBookList);
+        mv.addObject("currentPage", page);
+
+        return mv;
+    }
+
+    /**
+     * 관리자 - Book 쿠폰 생성 - API
+     * @param couponBookRequestDto
+     * @return String
+     */
+    @PostMapping("/admin/coupons/book/create")
+    public String adminCouponBookCreate(@ModelAttribute CouponBookRequestDto couponBookRequestDto) {
+
+        couponBookService.createCouponBook(couponBookRequestDto);
+
+        return "redirect:/admin/books/coupons";
+    }
+
+    /**
      * 관리자 - 카테고리 쿠폰 생성
      * @param couponCategoryRequestDto
      * @return String
@@ -227,7 +254,7 @@ public class AdminController {
 
         couponCategoryService.createCouponCategory(couponCategoryRequestDto);
 
-        return "redirect:/admin";
+        return "redirect:/admin/categories/coupons";
     }
 
     /**
@@ -249,7 +276,7 @@ public class AdminController {
     @PostMapping("/admin/coupons/policy/create")
     public String adminCouponPolicyCreate(@ModelAttribute CouponPolicyRegisterRequestDto couponPolicyRegisterRequestDto) {
         couponPolicyService.createCouponPolicy(couponPolicyRegisterRequestDto);
-        return "redirect:/admin";
+        return "redirect:/admin/coupons/policy-inquiry";
     }
 
     /**
@@ -268,12 +295,14 @@ public class AdminController {
      * @return ModelAndView
      */
     @GetMapping("/admin/coupons/policy-inquiry")
-    public ModelAndView adminCouponPoliciesList() {
+    public ModelAndView adminCouponPoliciesList(@RequestParam(defaultValue = "0") int page) {
         ModelAndView mv = new ModelAndView("admin/policy-inquiry");
+        Pageable pageable = PageRequest.of(page, 15);
 
-        List<CouponPolicyInquiryResponseDto> couponPolicyList = couponPolicyService.findCouponPolices();
+        Page<CouponPolicyInquiryResponseDto> couponPolicyList = couponPolicyService.findCouponPolices(pageable);
 
         mv.addObject("couponPolicyList", couponPolicyList);
+        mv.addObject("currentPage", page);
 
         return mv;
     }

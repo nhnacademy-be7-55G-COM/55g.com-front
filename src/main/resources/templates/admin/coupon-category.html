@@ -11,17 +11,13 @@
 <div class="container">
   <h2>쿠폰 카테고리 등록</h2>
 
-  <!-- 카테고리 정보 표시 -->
   <div>
     <p><strong>카테고리 이름:</strong> <span th:text="${category.categoryName}"></span></p>
   </div>
 
-  <!-- 선택된 템플릿 ID를 form에서 사용할 hidden input으로 설정 -->
   <form id="couponForm" action="/admin/coupons/category/create" method="POST">
-    <!-- 카테고리 ID (hidden input) -->
     <input type="hidden" name="categoryId" th:value="${category.categoryId}">
 
-    <!-- 쿠폰 템플릿 목록 -->
     <table border="1" style="width: 100%; margin-top: 20px; border-collapse: collapse;">
       <thead>
       <tr>
@@ -39,7 +35,8 @@
       <tr th:each="template, iterStat : ${templateList}">
         <td th:text="${iterStat.index + 1}"></td>
         <td th:text="${template.couponName}"></td>
-        <td th:text="${template.discountPrice < 1 ? (template.discountPrice * 100) + '%' : template.discountPrice + '원'}"></td>
+        <td th:text="${template.discountPrice() < 1 ? template.discountPrice().multiply(100).stripTrailingZeros().toPlainString() + '%'
+                   : template.discountPrice().stripTrailingZeros().toPlainString() + '원'}"></td>
         <td th:text="${template.condition} + '원'"></td>
         <td th:text="${template.maxPrice} + '원'"></td>
         <td th:text="${template.duration} + '일'"></td>

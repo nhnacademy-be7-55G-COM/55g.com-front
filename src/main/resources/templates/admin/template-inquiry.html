@@ -6,9 +6,23 @@
   <title>쿠폰 템플릿 조회</title>
   <link rel="stylesheet" href="style.css">
   <div th:replace="~{fragments/head}"></div>
+  <style>
+    .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: transparent;
+      border: none;
+      font-size: 24px;
+      color: #333;
+      cursor: pointer;
+      z-index: 10;
+    }
+  </style>
 </head>
 <body>
-<div class="container">
+<div class="container" style="position: relative;">
+  <button class="close-btn" onclick="window.location.href='/admin'">&times;</button>
   <h2>쿠폰 템플릿 조회</h2>
 
   <!-- 쿠폰 목록 테이블 -->
