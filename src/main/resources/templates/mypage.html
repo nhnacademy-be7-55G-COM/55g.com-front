@@ -341,7 +341,6 @@
     </main>
   </div>
 </div>
-
 <!-- 개인 정보 변경 Modal -->
 <div class="modal fade" id="updatePersonalModal" tabindex="-1"
      aria-labelledby="updatePersonalModalLabel" aria-hidden="true">
@@ -362,7 +361,9 @@
             <label for="newPhoneNumber" class="form-label">새 연락처</label>
             <input type="tel" class="form-control form-input" id="newPhoneNumber" name="phoneNumber"
                    placeholder="010-0000-0000 형식으로 입력하세요"
-                   th:value="${member.phoneNumber().substring(0, 3) + '-' + member.phoneNumber().substring(3, 7) + '-' + member.phoneNumber().substring(7)}">
+                   th:value="${member.phoneNumber().substring(0, 3) + '-' + member.phoneNumber().substring(3, 7) + '-' + member.phoneNumber().substring(7)}"
+                   required
+                   oninput="formatPhoneNumber()">
             <div id="phoneError" style="color: red; font-size: 0.9rem; display: none;">
               핸드폰 번호는 '010-0000-0000' 형식으로 입력해야 합니다
             </div>
@@ -372,7 +373,7 @@
             <input type="email" class="form-control form-input" id="newEmail" name="email"
                    placeholder="새 이메일을 입력하세요" th:value="${member.email}">
           </div>
-          <button type="submit" class="btn btn-custom btn-lg mt-3">변경 저장</button>
+          <button type="submit" class="btn btn-custom btn-lg mt-3" onclick="removeHyphens()" >변경 저장</button>
         </form>
       </div>
     </div>
@@ -642,7 +643,7 @@
   });
 
   function formatPhoneNumber() {
-    const phoneInput = document.getElementById("phoneNumber");
+    const phoneInput = document.getElementById("newPhoneNumber");
     const phoneError = document.getElementById("phoneError");
 
     let phoneValue = phoneInput.value.replace(/[^0-9]/g, '');
@@ -726,6 +727,7 @@
       passwordError.style.display = "none";
     }
   }
+
   // DOM이 준비되었을 때 실행
   document.addEventListener("DOMContentLoaded", () => {
     // 모든 탭 링크 요소 선택
@@ -750,6 +752,10 @@
       });
     });
   });
+  function removeHyphens() {
+    const phoneInput = document.getElementById("newPhoneNumber");
+    phoneInput.value = phoneInput.value.replace(/-/g, ''); // 하이픈 제거
+  }
 </script>
 
 
