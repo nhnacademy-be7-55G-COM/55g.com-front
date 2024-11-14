@@ -8,6 +8,7 @@ import shop.s5g.front.dto.wrappingpaper.WrappingPaperView;
 @RequiredArgsConstructor
 public class PurchaseCell {
     final BookPurchaseView book;
+    // TODO: 쿠폰!
     @Nullable
     Long couponId;
     @Nullable
