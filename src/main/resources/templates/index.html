@@ -258,6 +258,7 @@
 		<ul class="book-list">
 			<!-- allBooks 목록을 반복하여 도서 정보 표시 -->
 			<li th:each="book : ${allBooks}" class="book-item">
+				<a th:href = "'/book/'+${book.bookId}">
 				<!-- 도서 썸네일 -->
 				<div class="book-title" th:text="${book.imageName}">도서 이미지</div>
 				<!-- 도서 제목 -->
@@ -268,6 +269,7 @@
 
 				<!-- 할인율 -->
 				<div class="discount-rate" th:text="'할인율: ' + ${book.discountRate} + '%'">할인율</div>
+				</a>
 			</li>
 		</ul>
 

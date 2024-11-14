@@ -26,8 +26,12 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public PageResponseDto<BookPageableResponseDto> getAllBooks(Pageable pageable) {
-        //
-        return null;
+        try{
+            ResponseEntity<PageResponseDto<BookPageableResponseDto>> allBooks = bookAdapter.getAllBooksPageable(pageable);
+            return allBooks.getBody();
+        }catch (FeignException e) {
+            throw new BookNotFoundException(e.getMessage());
+        }
     }
 
     @Override
