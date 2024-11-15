@@ -14,27 +14,27 @@ public class PublisherController {
     public final PublisherService publisherService;
 
     //출판사 등록 뷰
-    @GetMapping("/publisher/register")
+    @GetMapping("/admin/publisher/register")
     public String publisherRegister() {
         return "publisher-register";
     }
 
     //출판사 등록
-    @PostMapping("/publisher/register")
+    @PostMapping("/admin/publisher/register")
     public String publisherRegister(@ModelAttribute PublisherRequestDto publisherRequestDto) {
         publisherService.addPublisher(publisherRequestDto);
-        return "redirect:/";
+        return "redirect:/admin";
     }
 
     //db의 모든 출판사 목록 가져오기
-    @GetMapping("/publisher/list")
+    @GetMapping("/admin/publisher/list")
     public String publisherList(Model model) {
         model.addAttribute("allPublisher", publisherService.getPublisherList());
         return "publisher-list";
     }
 
     //출판사 수정 페이지 이동
-    @GetMapping("/publisher/modify/{id}")
+    @GetMapping("/admin/publisher/modify/{id}")
     public String publishersModify(@PathVariable("id") Long id, Model model) {
         PublisherResponseDto publisher = publisherService.getPublisherById(id);
         model.addAttribute("modifyPublisher", publisher);
@@ -42,12 +42,12 @@ public class PublisherController {
     }
 
     //출판사 수정
-    @PutMapping("/publisher/update/{id}")
+    @PutMapping("/admin/publisher/update/{id}")
     public String publisherUpdate(@PathVariable("id") Long id, @ModelAttribute PublisherRequestDto publisherRequestDto) {
 
         //publisher -> publisherRequestDto로 바꿔야 함
         //publisher.setPublisherName(publisherRequestDto.getPublisherName());
         publisherService.updatePublisher(id, publisherRequestDto);
-        return "redirect:/publisher/list";
+        return "redirect:/admin";
     }
 }
