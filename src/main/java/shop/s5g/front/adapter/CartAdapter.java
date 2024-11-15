@@ -1,6 +1,7 @@
 package shop.s5g.front.adapter;
 
 
+import java.util.List;
 import java.util.Map;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import shop.s5g.front.config.FeignGatewayAuthorizationConfig;
 import shop.s5g.front.dto.MessageDto;
+import shop.s5g.front.dto.cart.request.CartBookInfoRequestDto;
 import shop.s5g.front.dto.cart.request.CartLoginRequestDto;
 import shop.s5g.front.dto.cart.request.CartPutRequestDto;
 import shop.s5g.front.dto.cart.request.CartRemoveBookRequestDto;
@@ -48,4 +50,6 @@ public interface CartAdapter {
     @DeleteMapping("/api/shop/cart")
     ResponseEntity<Void> removeBook(@RequestBody CartRemoveBookRequestDto cartRemoveBookRequestDto);
 
+    @GetMapping("/api/shop/cart/cartWhenPurchase")
+    ResponseEntity<List<CartBookInfoRequestDto>> getBooksWhenPurchase();
 }

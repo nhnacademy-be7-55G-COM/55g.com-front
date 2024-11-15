@@ -4,19 +4,22 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.Banner.Mode;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 import shop.s5g.front.annotation.SessionRequired;
 import shop.s5g.front.domain.purchase.PurchaseSheet;
 import shop.s5g.front.dto.cart.request.CartBookInfoRequestDto;
+import shop.s5g.front.exception.cart.CartPurchaseException;
+import shop.s5g.front.service.cart.CartService;
 
 @RequiredArgsConstructor
 @Slf4j
 @Controller
 public class PurchaseController {
     private final PurchaseSheet purchaseSheet;
-
+    private final CartService cartService;
     /**
      * 여기서 주문세션이 시작됨.
      * /purchase에 접근하면 주문세션이 시작(최대 1시간).
@@ -29,20 +32,34 @@ public class PurchaseController {
     @GetMapping("/purchase")
     @SessionRequired
     public ModelAndView getPurchaseView(/* User Auth */ HttpServletRequest request) {
+
         ModelAndView mv = new ModelAndView("create-order");
 
         log.trace("Getting shopping cart...");
         // TODO: 장바구니 가져오는 로직.
+
+        try {
+            List<CartBookInfoRequestDto> bookListWhenPurchase = cartService.getBooksWhenPurchase();
+
+            purchaseSheet
+                .pushCartList(bookListWhenPurchase)
+                .join();
+            purchaseSheet.pushToModel(mv);
+
+            return mv;
+
+        }catch (CartPurchaseException e){
+            mv = new ModelAndView("cart/cartDetail");
+            mv.addObject("PurchaseError", e.getMessage());
+
+            return mv;
+        }
+
         //  장바구니가 비어있으면 장바구니로 리디렉트되도록 함.
-        List<CartBookInfoRequestDto> rawCartList = List.of(
-            new CartBookInfoRequestDto(1L, 2), new CartBookInfoRequestDto(3L, 1)
-        );
+//        List<CartBookInfoRequestDto> rawCartList = List.of(
+//            new CartBookInfoRequestDto(1L, 2), new CartBookInfoRequestDto(3L, 1)
+//        );
 
-        purchaseSheet
-            .pushCartList(rawCartList)
-            .join();
-        purchaseSheet.pushToModel(mv);
 
-        return mv;
     }
 }
