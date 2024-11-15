@@ -25,6 +25,7 @@ import shop.s5g.front.dto.member.PasswordChangeRequestDto;
 import shop.s5g.front.exception.auth.UnauthorizedException;
 import shop.s5g.front.service.address.AddressService;
 import shop.s5g.front.service.auth.AuthService;
+import shop.s5g.front.service.cart.CartService;
 import shop.s5g.front.service.member.MemberService;
 
 @Controller
@@ -36,6 +37,7 @@ public class MyPageController {
     private final MemberService memberService;
     private final AddressService addressService;
     private final AuthService authService;
+    private final CartService cartService;
 
     @PostMapping("/mypage/addAddress")
     public String registerAddress(@Valid @ModelAttribute AddressRequestDto addressRequestDto,
@@ -107,6 +109,7 @@ public class MyPageController {
 
     @PostMapping("/mypage/deleteAccount")
     public String deleteAccount(HttpServletRequest request, HttpServletResponse response) {
+        cartService.removeAccount();
         memberService.deleteMember();
         authService.logoutMember(request, response);
         return "redirect:/";
