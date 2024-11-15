@@ -197,7 +197,7 @@
         <p>배송비: ₩<span id="shipping-cost" th:text="${feeInfo.totalPrice >= feeInfo.freeShippingThreshold} ? 0 : ${feeInfo.deliveryFee}">0</span></p>
         <hr>
         <p class="fw-bold">총 결제 금액: ₩<span id="final-price" th:text="${feeInfo.totalPrice >= feeInfo.freeShippingThreshold} ? ${feeInfo.totalPrice} : ${feeInfo.totalPrice + feeInfo.deliveryFee}">0</span></p>
-        <button class="btn btn-primary w-100 mt-3">결제하기</button>
+        <button class="btn btn-primary w-100 mt-3" onclick="purchase()">결제하기</button>
       </div>
     </div>
   </div>
@@ -219,6 +219,18 @@
     console.log('즉시 로그인여부 확인',isLogged);
   })();
 
+  function purchase(){
+    const count = parseInt(localStorage.getItem('cartCount'));
+
+    if (count <= 0){
+      alert('상품을 담고 주문해주세요');
+      return;
+    }
+
+    if (isLogged){
+      window.location.href = "/purchase";
+    }
+  }
 
   // 카트에 들어있는 개수 초기화
   function updateCartCountWhenRemoved() {
