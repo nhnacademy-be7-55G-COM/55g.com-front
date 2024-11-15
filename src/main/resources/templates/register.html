@@ -125,6 +125,7 @@
       </div>
       <div id="idError" class="error-message">아이디는 4~30자의 영문자와 숫자만 사용할 수 있습니다.</div>
       <div id="idDuplicateError" class="error-message">아이디가 이미 존재합니다.</div>
+      <div id="idAvailable" class="error-message" style="color: green; display: none;">사용 가능한 아이디입니다.</div>
     </div>
 
     <div class="form-group">
@@ -169,19 +170,30 @@
 
 <script>
   let isIdValid = false;
+  let isIdDuplicateChecked = false;
   let isPasswordMatch = false;
+  let isNameValid = false;
+  let isEmailValid = false;
 
   function validateLoginId() {
     const loginId = document.getElementById("loginId").value;
     const idPattern = /^[a-zA-Z0-9]{4,30}$/;
     const idError = document.getElementById("idError");
+    const idDuplicateError = document.getElementById("idDuplicateError");
+    const idAvailable = document.getElementById("idAvailable");
+
+    // 입력이 바뀔 때 메시지 초기화
+    idDuplicateError.style.display = "none";
+    idAvailable.style.display = "none";
 
     if (!idPattern.test(loginId)) {
       idError.style.display = "block";
       isIdValid = false;
+      isIdDuplicateChecked = false;
     } else {
       idError.style.display = "none";
       isIdValid = true;
+      isIdDuplicateChecked = false;  // 입력이 바뀌면 중복 확인 다시 요구
     }
     toggleSubmitButton();
   }
@@ -189,6 +201,11 @@
   function checkId() {
     const loginId = document.getElementById("loginId").value;
     const idDuplicateError = document.getElementById("idDuplicateError");
+    const idAvailable = document.getElementById("idAvailable");
+
+    // 메시지 초기화
+    idDuplicateError.style.display = "none";
+    idAvailable.style.display = "none";
 
     if (!isIdValid) return; // 유효하지 않으면 중복 확인 진행하지 않음
 
@@ -199,10 +216,10 @@
     .then(data => {
       if (data) {
         idDuplicateError.style.display = "block";
-        isIdValid = false;
+        isIdDuplicateChecked = false;
       } else {
-        idDuplicateError.style.display = "none";
-        isIdValid = true;
+        idAvailable.style.display = "block";
+        isIdDuplicateChecked = true;
       }
       toggleSubmitButton();
     })
@@ -231,8 +248,11 @@
   // 회원가입 버튼 상태 변경 함수
   function toggleSubmitButton() {
     const submitBtn = document.getElementById("submitBtn");
-    submitBtn.disabled = !(isIdValid && isPasswordMatch && isNameValid && isEmailValid);
+    submitBtn.disabled = !(isIdValid && isIdDuplicateChecked && isPasswordMatch && isNameValid && isEmailValid);
   }
+
+  // 아이디 입력이 변경될 때마다 validateLoginId 호출
+  document.getElementById("loginId").addEventListener("input", validateLoginId);
 
   function formatPhoneNumber() {
     const phoneInput = document.getElementById("phoneNumber");
