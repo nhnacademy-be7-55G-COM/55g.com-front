@@ -39,8 +39,8 @@ import shop.s5g.front.service.wrappingpaper.WrappingPaperService;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-//@AdminOnly
-//@RedirectWithAlert(redirect = "/", title = "권한 없음", exceptions = UnauthorizedException.class)
+@AdminOnly
+@RedirectWithAlert(redirect = "/", title = "권한 없음", exceptions = UnauthorizedException.class)
 public class AdminController {
 
     private final CouponPolicyService couponPolicyService;
@@ -75,6 +75,23 @@ public class AdminController {
 
         mv.addObject("couponTemplate", couponTemplate);
         mv.addObject("couponTemplateId", templateId);
+
+        return mv;
+    }
+
+    /**
+     * 관리자 - 쿠폰 템플릿 생성 페이지
+     * @param policyId
+     * @return ModelAndView
+     */
+    @GetMapping("/admin/coupons/templates/create/policyId={policyId}")
+    public ModelAndView getAdminTemplateCreatePage(@PathVariable("policyId") Long policyId) {
+
+        ModelAndView mv = new ModelAndView("admin/coupon-template");
+
+        CouponPolicyInquiryResponseDto couponPolicy = couponPolicyService.findCouponPolicy(policyId);
+
+        mv.addObject("couponPolicy", couponPolicy);
 
         return mv;
     }
@@ -122,7 +139,7 @@ public class AdminController {
     }
 
     /**
-     * 관리자 - 쿠폰 템플릿 조회
+     * 관리자 - 사용되지 않은 쿠폰 템플릿 조회
      * @param page
      * @return ModelAndView
      */
@@ -162,7 +179,7 @@ public class AdminController {
     }
 
     /**
-     * 관리자 - 카테고리 조회
+     * 관리자 - 모든 카테고리 조회
      * @param page
      * @return ModelAndView
      */
@@ -183,7 +200,7 @@ public class AdminController {
     }
 
     /**
-     * 관리자 - 사용자 쿠폰 조회 - API
+     * 관리자 - 쿠폰 조회
      * @param pageable
      * @return ModelAndView
      */
@@ -193,7 +210,7 @@ public class AdminController {
     }
 
     /**
-     * 관리자 - 카테고리 쿠폰 조회 - API
+     * 관리자 - 카테고리 쿠폰 조회
      * @param page
      * @return ModelAndView
      */
@@ -213,7 +230,7 @@ public class AdminController {
     }
 
     /**
-     * 관리자 - Book 쿠폰 조회 - API
+     * 관리자 - Book 쿠폰 조회
      * @param page
      * @return ModelAndView
      */
@@ -232,7 +249,7 @@ public class AdminController {
     }
 
     /**
-     * 관리자 - Book 쿠폰 생성 - API
+     * 관리자 - Book 쿠폰 생성 요청
      * @param couponBookRequestDto
      * @return String
      */
@@ -245,7 +262,7 @@ public class AdminController {
     }
 
     /**
-     * 관리자 - 카테고리 쿠폰 생성
+     * 관리자 - 카테고리 쿠폰 생성 요청
      * @param couponCategoryRequestDto
      * @return String
      */
@@ -258,18 +275,18 @@ public class AdminController {
     }
 
     /**
-     * 관리자 - 쿠폰 템플릿 생성
+     * 관리자 - 쿠폰 템플릿 생성 요청
      * @param couponTemplateRegisterRequestDto
      * @return String
      */
     @PostMapping("/admin/coupons/template/create")
     public String adminCouponTemplateCreate(@ModelAttribute CouponTemplateRegisterRequestDto couponTemplateRegisterRequestDto) {
         couponTemplateService.createCouponTemplate(couponTemplateRegisterRequestDto);
-        return "redirect:/admin";
+        return "redirect:/templates/list";
     }
 
     /**
-     * 관리자 - 쿠폰 정책 생성
+     * 관리자 - 쿠폰 정책 생성 요청
      * @param couponPolicyRegisterRequestDto
      * @return String
      */
@@ -280,7 +297,7 @@ public class AdminController {
     }
 
     /**
-     * 관리자 - 쿠폰 생성
+     * 관리자 - 쿠폰 생성 요청
      * @param couponRegisterRequestDto
      * @return String
      */

@@ -9,4 +9,5 @@ import shop.s5g.front.dto.coupon.CouponPolicyRegisterRequestDto;
 public interface CouponPolicyService {
     MessageDto createCouponPolicy(CouponPolicyRegisterRequestDto couponPolicyRegisterRequestDto);
     Page<CouponPolicyInquiryResponseDto> findCouponPolices(Pageable pageable);
+    CouponPolicyInquiryResponseDto findCouponPolicy(Long couponPolicyId);
 }
