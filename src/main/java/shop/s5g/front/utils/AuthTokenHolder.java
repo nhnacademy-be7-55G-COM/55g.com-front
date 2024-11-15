@@ -1,7 +1,7 @@
 package shop.s5g.front.utils;
 
 public final class AuthTokenHolder {
-    private static final ThreadLocal<String> tokenHolder = new ThreadLocal<>();
+    private static final ThreadLocal<String> tokenHolder = new InheritableThreadLocal<>();
 
     private AuthTokenHolder() {}
 

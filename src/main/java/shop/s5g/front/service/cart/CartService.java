@@ -1,7 +1,11 @@
 package shop.s5g.front.service.cart;
 
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import shop.s5g.front.dto.MessageDto;
+import shop.s5g.front.dto.book.BookPurchaseView;
+import shop.s5g.front.dto.cart.request.CartBookInfoRequestDto;
 import shop.s5g.front.dto.cart.request.CartLoginRequestDto;
 import shop.s5g.front.dto.cart.request.CartPutRequestDto;
 import shop.s5g.front.dto.cart.request.CartRemoveBookRequestDto;
@@ -20,4 +24,6 @@ public interface CartService {
     void updateQuantity(CartUpdateQuantityRequestDto cartUpdateQuantityRequestDto);
 
     void removeBook(CartRemoveBookRequestDto cartRemoveBookRequestDto);
+
+    CompletableFuture<List<BookPurchaseView>> convertCartToView(List<CartBookInfoRequestDto> cartList);
 }

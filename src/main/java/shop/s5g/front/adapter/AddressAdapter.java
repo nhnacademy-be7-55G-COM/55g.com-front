@@ -15,7 +15,7 @@ import shop.s5g.front.dto.address.AddressRequestDto;
 import shop.s5g.front.dto.address.AddressResponseDto;
 import shop.s5g.front.dto.address.AddressUpdateRequestDto;
 
-@FeignClient(name = "address", url = "${gateway.url}", configuration = FeignGatewayAuthorizationConfig.class)
+@FeignClient(name = "address1", url = "${gateway.url}", configuration = FeignGatewayAuthorizationConfig.class)
 public interface AddressAdapter {
     @GetMapping("/api/shop/address")
     ResponseEntity<List<AddressResponseDto>> getAddresses();
