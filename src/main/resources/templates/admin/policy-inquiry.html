@@ -38,7 +38,7 @@
     <tbody>
     <tr th:each="policy, iterStat : ${couponPolicyList}">
       <td style="padding: 10px;">
-        <a th:href="@{/admin/coupons/policy/details/{policyId}(policyId=${policy.policyId()})}"
+        <a th:href="@{/admin/coupons/templates/create/policyId={policyId}(policyId=${policy.couponPolicyId()})}"
            th:text="${iterStat.index + 1 + (currentPage * couponPolicyList.size)}">순번</a>
       </td>
       <td style="padding: 10px;" th:text="${policy.condition() + '원'}">조건</td>
@@ -55,13 +55,13 @@
 
   <div class="pagination">
     <span th:if="${currentPage > 0}">
-      <a th:href="@{/admin/coupons/policies?page=${currentPage - 1}}">이전</a>
+      <a th:href="@{/admin/coupons/policy-inquiry(page=${currentPage - 1})}">이전</a>
     </span>
 
     <span>현재 페이지: <span th:text="${currentPage + 1}"></span></span>
 
-    <span th:if="${currentPage < totalPages - 1}">
-      <a th:href="@{/admin/coupons/policies?page=${currentPage + 1}}">다음</a>
+    <span th:if="${currentPage < 999}">
+      <a th:href="@{/admin/coupons/policy-inquiry(page=${currentPage + 1})}">다음</a>
     </span>
   </div>
 
