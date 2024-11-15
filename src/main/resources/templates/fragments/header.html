@@ -1,3 +1,16 @@
+<!--<head>-->
+<!--  <style>-->
+<!--    .scrollable-category {-->
+<!--      max-height: 300px; /* 최대 높이 */-->
+<!--      overflow-y: auto; /* 세로 방향 스크롤바 */-->
+<!--      overflow-x: hidden; /* 가로 방향 스크롤 제거 */-->
+<!--      border: 1px solid #ccc; /* 선택사항: 테두리 */-->
+<!--      padding: 10px; /* 선택사항: 내부 여백 */-->
+<!--      margin: 10px 0; /* 선택사항: 외부 여백 */-->
+<!--    }-->
+<!--  </style>-->
+<!--</head>-->
+
 <div id="header-wrap">
 
   <div class="top-content">
@@ -23,10 +36,26 @@
         </div>
         <div class="col-md-6">
           <div class="right-element">
-            <a href="#" class="user-account for-buy"><i
-                class="icon icon-user"></i><span>Account</span></a>
-            <a href="#" class="cart for-buy"><i class="icon icon-clipboard"></i><span>Cart:(0
-									$)</span></a>
+            <a href="/login" th:unless="${isLoggedIn}" id="account-button" class="user-account for-buy">
+              <i class="icon icon-user"></i><span id="account-text1">Login</span>
+            </a>
+
+            <a href="#" th:if="${isLoggedIn}" class="user-account for-buy" onclick="document.getElementById('logout-form').submit();">
+              <i class="icon icon-user"></i><span id="account-text2">Logout</span>
+            </a>
+            <!-- 마이 페이지 링크 (로그인 상태일 때만 표시) -->
+            <a href="/mypage" th:if="${isLoggedIn}" class="user-account for-buy">
+              <i class="icon icon-user"></i><span>My Page</span>
+            </a>
+
+            <!-- 로그아웃을 위한 POST 폼 -->
+            <form id="logout-form" action="/logout" method="POST" style="display:none;">
+              <button type="submit">Logout</button>
+            </form>
+            <button class="cart for-buy" onclick="loadCartPage()">
+              <span class="cart-text">Cart</span>
+              <span class="cart-count-badge" id="cart-count">0</span>
+            </button>
 
             <div class="action-menu">
 
@@ -65,22 +94,16 @@
             <div class="main-menu stellarnav">
               <ul class="menu-list">
                 <li class="menu-item active"><a href="#home">Home</a></li>
+
+
+
                 <li class="menu-item has-sub">
-                  <a href="#pages" class="nav-link">Pages</a>
-
-                  <ul>
-                    <li class="active"><a href="index.html">Home</a></li>
-                    <li><a href="about.html">About <span class="badge bg-dark">PRO</span></a></li>
-                    <li><a href="styles.html">Styles <span class="badge bg-dark">PRO</span></a></li>
-                    <li><a href="blog.html">Blog <span class="badge bg-dark">PRO</span></a></li>
-                    <li><a href="single-post.html">Post Single <span class="badge bg-dark">PRO</span></a></li>
-                    <li><a href="shop.html">Our Store <span class="badge bg-dark">PRO</span></a></li>
-                    <li><a href="single-product.html">Product Single <span class="badge bg-dark">PRO</span></a></li>
-                    <li><a href="contact.html">Contact <span class="badge bg-dark">PRO</span></a></li>
-                    <li><a href="thank-you.html">Thank You <span class="badge bg-dark">PRO</span></a></li>
+                  <a href="#pages" class="nav-link">Category</a>
+                  <ul id="category-list"  class="scrollable-category">
+                    <!-- JavaScript로 카테고리를 동적으로 추가 -->
                   </ul>
-
                 </li>
+
                 <li class="menu-item"><a href="#featured-books" class="nav-link">Featured</a></li>
                 <li class="menu-item"><a href="#popular-books" class="nav-link">Popular</a></li>
                 <li class="menu-item"><a href="#special-offer" class="nav-link">Offer</a></li>
@@ -102,6 +125,100 @@
 
       </div>
     </div>
+
+    <script>
+
+
+
+      async function loadCartPage() {
+
+        const loggedIn = await isLoggedIn();
+        console.log('cartPage load')
+
+        if (loggedIn) {
+          window.location.href = "/cart/detailPage";
+          return;
+        }
+        if (!localStorage.getItem('cart')){
+          localStorage.setItem('cart', JSON.stringify({ cartBookInfoList: [] }));
+          localStorage.setItem('cartCount',0);
+
+        }
+        const books = localStorage.getItem('cart');
+        const encodedBooks = encodeURIComponent(btoa(books));
+        window.location.href = `/cart/detailPage?cartBookInfoList=${encodedBooks}`;
+
+      }
+
+      async function updateCartCount() {
+        console.log('update Cart Count start in header.html');
+        const loggedIn = await isLoggedIn();
+
+        if (!loggedIn){
+          // 비로그인 상태에서는 localStorage 에서 항목 수 확인
+          if (!localStorage.getItem('cart')){
+            localStorage.setItem('cart', JSON.stringify({ cartBookInfoList: [] }));
+            localStorage.setItem('cartCount',0);
+          }
+        }
+
+        // DOM 업데이트
+        const cartCountElement = document.getElementById('cart-count');
+        cartCountElement.textContent = localStorage.getItem('cartCount');
+
+      }
+
+      // 쿠키를 이용해 로그인 여부 확인인데 http only 라서 자바스크립트에서는 쿠키를 직접 확인할 수 없고 서버에 요청을 해야한다.
+      async function isLoggedIn() {
+        const response = await fetch("/cart/loginCheck",{method:'GET',credentials:"include"});
+        const data = await response.json();
+        return  data.isLoggedIn;
+      }
+
+
+      window.addEventListener('DOMContentLoaded', async () => await updateCartCount());
+
+      //국내도서 데이터 가져오기
+      async function categoryInfo() {
+        try {
+          // fetch로 서버에서 데이터 가져오기
+          const response = await fetch("/category", { method: 'GET' });
+
+          // 응답 데이터를 JSON으로 변환
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const categories = await response.json(); // 서버에서 받은 JSON 데이터
+
+          // category-list 요소 선택
+          const categoryList = document.getElementById("category-list");
+
+          // 기존 항목 비우기 (필요한 경우)
+          categoryList.innerHTML = "";
+
+          // 각 카테고리를 HTML 요소로 추가
+          categories.forEach(category => {
+            const listItem = document.createElement("li");
+            const link = document.createElement("a");
+
+            // a 태그의 href와 텍스트 설정
+            link.href = `/category/${category.categoryId}`; // 카테고리별 상세 페이지로 연결
+            link.textContent = category.categoryName; // 카테고리 이름 표시
+
+            // li에 a 태그 추가
+            listItem.appendChild(link);
+
+            // ul에 li 추가
+            categoryList.appendChild(listItem);
+          });
+        } catch (error) {
+          console.error("Error fetching categories:", error);
+        }
+      }
+      // 페이지 로드 시 실행
+      document.addEventListener("DOMContentLoaded", categoryInfo);
+
+    </script>
   </header>
 
 </div><!--header-wrap-->

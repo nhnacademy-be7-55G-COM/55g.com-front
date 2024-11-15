@@ -1,0 +1,201 @@
+body, main{
+  font-family: 'Pretendard', sans-serif;
+}
+main {
+  padding-left: 1.5rem; /* 사이드바와 메인 콘텐츠 간의 간격을 패딩으로 확보 */
+  padding-right: 1rem;  /* 오른쪽 여백 */
+}
+.toggle-icon {
+  transition: transform 0.3s ease; /* 회전 애니메이션 */
+}
+
+.nav-link:not(.collapsed) .toggle-icon {
+  transform: rotate(90deg); /* 펼쳐질 때 회전 */
+}
+/* 접힐 때 아이콘 기본 위치로 복귀 */
+.nav-link.collapsed .toggle-icon {
+  transform: rotate(0deg);
+}
+/* 사이드바 배경색 설정 */
+#sidebar {
+  background-color: #f3f2ec; /* 페이지와 어울리는 색상으로 설정 */
+  padding: 1rem;
+  min-height: 100vh; /* 사이드바 높이를 전체 화면 높이로 설정 */
+  border-right: 1px solid #ddd; /* 사이드바와 메인 콘텐츠 구분선 */
+}
+
+/* 공통 폰트 및 카드 스타일 */
+.info-card {
+  font-family: 'Pretendard', sans-serif;
+  background-color: #f9f6f1;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* 모달 제목 스타일 */
+.info-title {
+  text-align: center;
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: #333;
+}
+
+/* 입력 필드 스타일 */
+.form-input {
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 0.75rem;
+  font-size: 1rem;
+  color: #333;
+}
+
+.form-input:focus {
+  border-color: #aaa;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+  outline: none;
+}
+
+/* 버튼 스타일 */
+.btn-custom {
+  background-color: #e0d7c6;
+  color: #5a5a5a;
+  font-weight: bold;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-custom:hover {
+  background-color: #d2c6b2;
+  color: #3d3d3d;
+  transform: translateY(-2px);
+}
+/* 정보 아이템 스타일 */
+.info-item {
+  display: flex;
+  align-items: center;
+  font-size: 1.1rem;
+  color: #333; /* 짙은 색 텍스트 */
+  margin: 1.5rem 0; /* 정보 아이템 간 간격을 더 넓게 조정 */
+}
+
+.info-item i {
+  color: #7d7d7d; /* 아이콘 색상 */
+  margin-right: 1rem; /* 아이콘과 텍스트 간격 */
+  font-size: 1.4rem; /* 아이콘 크기 */
+}
+
+.info-item strong {
+  margin-right: 0.5rem;
+  color: #555; /* 레이블 색상 */
+}
+/* 회원 등급 탭 스타일 */
+.current-grade, .grade-period {
+  font-family: 'Pretendard', sans-serif;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  color: #333;
+}
+.bronze-icon { color: #cd7f32; }
+.silver-icon { color: #c0c0c0; }
+.gold-icon { color: #ffd700;}
+.platinum-icon { color: #e5e4e2; }
+
+/* 주소 카드 스타일 */
+.address-card {
+  background-color: #f5f2e9; /* 부드러운 베이지 톤 */
+
+  border: 1px solid #d1d8e0;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.8rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  justify-content: space-between; /* 글은 왼쪽, 버튼은 오른쪽 */
+  align-items: center;
+}
+
+.address-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 내부 제목 스타일 */
+.address-title {
+  font-family: 'Pretendard', sans-serif;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #34495e;
+  margin-bottom: 0.5rem;
+}
+
+/* 미니 카드 안의 텍스트 스타일 */
+.address-details {
+  font-size: 0.9rem;
+  color: #566573;
+}
+
+/* 기본 배송지 배지 스타일 */
+.address-title .badge {
+  background-color: #6c757d;
+  color: #fff;
+  font-size: 0.75rem;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+}
+
+/* 삭제 버튼 스타일 */
+.address-card .btn-danger {
+  font-size: 0.8rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  align-self: flex-start;
+  transition: background-color 0.2s ease;
+}
+
+.address-card .btn-danger:hover {
+  background-color: #b52a1c;
+}
+/* 등록된 주소 제목 스타일 */
+.info-card h5 {
+  font-size: 1.2rem;
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+/* 수정 버튼 스타일 */
+.btn-edit {
+  background-color: #6c757d; /* 차분한 회색 배경 */
+  color: #fff;
+  border: none;
+  padding: 0.4rem 1rem;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-edit:hover {
+  background-color: #5a6268; /* 호버 시 약간 더 짙은 회색 */
+}
+
+/* 삭제 버튼 스타일 */
+.btn-delete {
+  background-color: #dc3545; /* 강렬한 빨간색 */
+  color: #fff;
+  border: none;
+  padding: 0.4rem 1rem;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-delete:hover {
+  background-color: #c82333; /* 호버 시 약간 더 짙은 빨간색 */
+}
+
+/* 버튼 정렬 및 간격 조정 */
+.d-flex.justify-content-between.align-items-center {
+  gap: 0.5rem; /* 버튼 간의 간격 */
+}

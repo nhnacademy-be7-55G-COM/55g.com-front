@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>관리자 대시보드</title>
+  <link rel="stylesheet" href="style.css">
+  <div th:replace="~{fragments/head}"></div>
+  <style>
+    /* 기본 모달 스타일 */
+    .modal {
+      display: none; /* 초기 상태는 숨김 */
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5); /* 반투명 배경 */
+      z-index: 1000; /* 다른 요소보다 앞에 나오도록 설정 */
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      width: 80%;
+      max-width: 600px;
+      text-align: center;
+    }
+
+    /* 닫기 버튼 스타일 */
+    .close-btn {
+      cursor: pointer;
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .close-btn:hover {
+      color: #000;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    .sidebar {
+      margin-top: 15px;
+      border-right: 1px solid #E0E0E0;
+    }
+    .small-input {
+      width: 350px; /* 원하는 너비로 설정 */
+      max-width: 100%; /* 부모 요소의 크기에 맞게 반응형으로 설정 */
+    }
+    .styled-button {
+      background-color: #8B4513; /* 갈색 배경색 */
+      color: white; /* 텍스트 색상 */
+      padding: 8px 16px; /* 버튼 안쪽 여백 */
+      font-size: 16px; /* 텍스트 크기 */
+      border: none; /* 기본 테두리 제거 */
+      border-radius: 8px; /* 모서리 둥글기 */
+      cursor: pointer; /* 마우스 포인터 변경 */
+      transition: background-color 0.3s, transform 0.2s; /* 효과 추가 */
+      margin-top: 8px; /* 버튼 위쪽 여백 */
+      margin-bottom: 0; /* 버튼 아래 여백 없애기 */
+      width: 100%; /* 버튼 가로 길이 폼 너비만큼 */
+      max-width: 150px; /* 최대 길이 설정 */
+    }
+
+    .styled-button:hover {
+      background-color: #A0522D; /* 호버 시 배경색 변경 */
+      transform: scale(1.05); /* 살짝 확대 */
+    }
+
+    .styled-button:active {
+      background-color: #5C4033; /* 클릭 시 배경색 */
+      transform: scale(0.98); /* 클릭 시 살짝 축소 */
+    }
+
+    /* 노멀라이즈 시작 */
+    body, ul, li {
+      margin: 0;
+      padding: 0;
+      list-style: none;   /* 해당 태그의 list-style을 none으로 하는 것으로 ●을 제거한다 */
+    }
+
+    a {
+      color: inherit;   /* 부모 엘리먼트의 값을 물려받는다 */
+      text-decoration: none;    /* 해당 태그의 text-decoration 속성을 none 값으로 하는 것으로 밑줄을 제거한다 */
+    }
+    /* 노멀라이즈 끝 */
+
+    /* 커스텀 시작 */
+    .side-bar > ul ul {
+      display: none;
+    }
+
+    /* 사이트의 높이를 5000px로 만들어 스크롤 생성 */
+    body {
+      height: 5000px;
+      background-color: #444;
+    }
+
+    /* 사이드바 시작 */
+
+    /* 사이드바의 너비와 높이를 변수를 통해 통제 */
+    :root {
+      --side-bar-width: 270px;
+      --side-bar-height: 90vh;
+    }
+
+    .side-bar {
+      position: fixed;    /* 스크롤을 따라오도록 지정 */
+      background-color: black;
+      width: var(--side-bar-width);
+      min-height: var(--side-bar-height);   /* 사이드바의 높이를 전체 화면 높이의 90%로 지정 */
+      margin-top: calc((100vh - var(--side-bar-height)) / 2);    /* 사이드바 위와 아래의 마진을 동일하게 지정 */
+      transition: transform 0.5s; /* 사이드바 애니메이션 제거 */
+    }
+
+    /* 아이콘 시작 */
+    .side-bar__icon-box {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .side-bar__icon-1 {
+      position: relative;
+      width: 23px;
+      height: 17px;
+      margin: 15px;
+      margin-top: 20px;
+      transition: .5s;
+    }
+
+    :root {
+      --side-bar__icon: .5s;
+    }
+
+    .side-bar__icon-1 > div {
+      position: absolute;
+      width: 100%;
+      height: 20%;
+      background-color: white;
+      transition: all var(--side-bar__icon);
+    }
+
+    .side-bar__icon-1 > div:nth-of-type(1) {
+      top: 0;
+      width: auto;
+      left: 0;
+      right: 0;
+      transition: all var(--side-bar__icon), left calc(var(--side-bar__icon) / 2) calc(var(--side-bar__icon) / 2), right calc(var(--side-bar__icon) / 2) calc(var(--side-bar__icon) / 2), height calc(var(--side-bar__icon) / 2) 0s;
+    }
+
+    .side-bar__icon-1 > div:nth-of-type(2) {
+      top: 40%;
+      transform-origin: bottom left;
+    }
+
+    .side-bar__icon-1 > div:nth-of-type(3) {
+      top: 80%;
+      left: auto;
+      right: 0;
+      transform-origin: bottom right;
+    }
+
+    .side-bar:hover .side-bar__icon-1 {
+      transform: translate(-198px, 0);
+    }
+
+    .side-bar:hover .side-bar__icon-1 > div:nth-of-type(2) {
+      transform: rotate(45deg);
+      width: 70.5%;
+      height: 25%;
+    }
+
+    .side-bar:hover .side-bar__icon-1 > div:nth-of-type(3) {
+      top: 40%;
+      transform: rotate(-45deg);
+      width: 70.5%;
+      height: 25%;
+    }
+
+    .side-bar:hover .side-bar__icon-1 > div:nth-of-type(1) {
+      left: 41%;
+      right: 41%;
+      height: 100%;
+      transition: all var(--side-bar__icon), left calc(var(--side-bar__icon) / 2) 0s, right calc(var(--side-bar__icon) / 2) 0s, height calc(var(--side-bar__icon) / 2) calc(var(--side-bar__icon) / 2);
+    }
+    /* 아이콘 끝 */
+
+    /* 모든 메뉴의 a에 속성값 부여 */
+    .side-bar ul > li > a {
+      display: block;
+      color: white;
+      font-size: 1.4rem;
+      font-weight: bold;
+      padding-top: 20px;
+      padding-bottom: 20px;
+      padding-left: 50px;
+      transition: .5s;
+    }
+
+    /* 자식의 position이 absolute일 때 자식을 영역 안에 가두어 준다 */
+    .side-bar > ul > li {
+      position: relative;
+    }
+
+    /* 모든 메뉴가 마우스 인식 시 반응 */
+    .side-bar ul > li:hover > a {
+      background-color: #555;
+      border-bottom: 1px solid #999;
+    }
+
+    /* 1차 메뉴의 항목이 마우스 인식 시에 2차 메뉴 등장 */
+    .side-bar > ul > li:hover > ul {
+      display: block;
+      position: absolute;
+      background-color: #888;
+      top: 0;         /* 2차 메뉴의 상단을 1차 메뉴의 상단에 고정 */
+      left: 100%;     /* 2차 메뉴를 1차 메뉴의 너비만큼 이동 */
+      width: 100%;    /* 1차 메뉴의 너비를 상속 */
+    }
+
+    /* 사이드바 너비의 80%만큼 왼쪽으로 이동 */
+    .side-bar {
+      border-radius: 20px;
+      /* transform: translate(calc(var(--side-bar-width) * -0.8), 0); */ /* 이 줄을 주석처리하여 숨겨지는 효과를 제거 */
+      /* transition: .5s; */ /* 애니메이션을 제거합니다. */
+    }
+
+    /* 마우스 인식 시 원래의 위치로 이동 */
+    .side-bar:hover {
+      /* transform: translate(-20px, 0); */ /* 이 줄도 주석처리하여 이동하지 않도록 합니다. */
+    }
+    /* 사이드바 끝 */
+
+    /* 커스텀 끝 */
+  </style>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body style="background-color: var(--light-color); font-family: var(--body-font), serif; color: var(--body-text-color);">
+<!-- 관리자 헤더 -->
+<div th:replace="~{fragments/header}"></div>
+<div class="container-fluid">
+  <div class="row">
+    <!-- 사이드바 -->
+    <nav class="col-md-3 col-lg-2 d-md-block sidebar">
+      <div class="position-sticky">
+        <h3 class="sidebar-heading p-3">관리자 메뉴</h3>
+        <ul class="nav flex-column">
+          <li class="nav-item border-bottom">
+            <a class="nav-link active" aria-current="page" href="#" data-url="/admin/dashboard">포인트</a>
+          </li>
+          <li class="nav-item border-bottom">
+            <a>쿠폰</a>
+            <ul>
+              <li>
+                <a>쿠폰 정책</a>
+                <ul>
+                  <a class="nav-link" href="#" data-url="/admin/coupons/policy/create">정책 생성</a>
+                  <a class="nav-link" href="/admin/coupons/policy-inquiry" data-url="/admin/coupons/policy/inquiry">정책 조회</a>
+                </ul>
+              </li>
+
+              <li>
+                <a>쿠폰 템플릿</a>
+                <ul>
+                  <a class="nav-link" href="/admin/coupons/policy-inquiry">템플릿 생성</a>
+                  <a class="nav-link" href="templates/list">템플릿 조회</a>
+                </ul>
+              </li>
+
+              <li>
+                <a>쿠폰</a>
+                <ul>
+                  <li>
+                    <a class="nav-link">쿠폰 생성</a>
+                    <ul>
+                      <li><a class="nav-link" href="/templates/list">사용자 쿠폰 생성</a></li>
+                      <li><a class="nav-link" href="/books/list">도서 쿠폰 생성</a></li>
+                      <li><a class="nav-link" href="/category/list">카테고리 쿠폰 생성</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a class="nav-link">쿠폰 조회</a>
+                    <ul>
+                      <li><a class="nav-link" href="/admin/users/coupons">사용자 쿠폰 조회</a></li>
+                      <li><a class="nav-link" href="/admin/books/coupons">도서 쿠폰 조회</a></li>
+                      <li><a class="nav-link" href="/admin/categories/coupons">카테고리 쿠폰 조회</a></li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+
+            </ul>
+          </li>
+          <li class="nav-item border-bottom">
+            <a class="nav-link" href="#" data-url="/admin/delivery-fee">배송비 설정</a>
+          </li>
+          <li class="nav-item border-bottom">
+            <a class="nav-link" href="#" data-url="/admin/reports">주문 내역</a>
+          </li>
+          <li class="nav-item border-bottom">
+            <a class="nav-link" href="#" data-url="/admin/wrappingpaper">포장지 설정</a>
+          </li>
+          <li class="nav-item border-bottom">
+            <a class="nav-link" href="#" data-url="/category/register">카테고리 등록</a>
+          </li>
+<!---->
+          <li class="nav-item border-bottom">
+            <a>출판사</a>
+            <ul>
+              <li>
+                <a class="nav-link" href="#" data-url="/admin/publisher/list">출판사 목록</a>
+              </li>
+              <li>
+                <a class="nav-link" href="#" data-url="/admin/publisher/register">출판사 등록</a>
+              </li>
+            </ul>
+          </li>
+<!---->
+          <li class="nav-item border-bottom">
+            <a class="nav-link" href="#" data-url="/admin/settings">설정</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <!-- 메인 콘텐츠 영역 -->
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+      <div id="content-area">
+        <!-- 기본 콘텐츠 또는 로딩 스피너 여기에 -->
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+          <h1 class="h2">대시보드</h1>
+          <div class="btn-toolbar mb-2 mb-md-0">
+            <div class="btn-group me-2">
+              <button type="button" class="btn btn-sm btn-outline-secondary">내보내기</button>
+              <button type="button" class="btn btn-sm btn-outline-secondary">공유</button>
+            </div>
+            <button type="button" class="btn btn-sm btn-primary">새로운 보고서</button>
+          </div>
+        </div>
+        <!-- 대시보드 카드 섹션 -->
+        <div class="row">
+          <div class="col-md-4">
+            <div class="card mb-4 shadow-sm">
+              <div class="card-body">
+                <h5 class="card-title">사용자 수</h5>
+                <p class="card-text">현재 등록된 사용자: 123명</p>
+                <a href="/admin/users" class="btn btn-primary btn-sm">자세히 보기</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card mb-4 shadow-sm">
+              <div class="card-body">
+                <h5 class="card-title">문의 건수</h5>
+                <p class="card-text">이번 달 접수된 문의: 45건</p>
+                <a href="/admin/inquiries" class="btn btn-primary btn-sm">자세히 보기</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card mb-4 shadow-sm">
+              <div class="card-body">
+                <h5 class="card-title">보고서</h5>
+                <p class="card-text">생성된 보고서 수: 8개</p>
+                <a href="/admin/reports" class="btn btn-primary btn-sm">자세히 보기</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div id="coupon-policy-form" style="display:none; text-align: center;">
+        <h2>쿠폰 정책 생성</h2>
+        <form id="coupon-form" action="/admin/coupons/policy/create" method="POST" style="display: inline-block; width: 100%; max-width: 400px;">
+          <div class="mb-3">
+            <label for="condition" class="form-label" style="text-align: left; display: block; margin-bottom: 2px; margin-left: 25px;">조건</label>
+            <input type="text" class="form-control small-input" id="condition" name="condition" placeholder="예: 20000원" style="margin: 0 auto; text-align: left; padding-left: 10px;" required>
+            <small style="display: block; text-align: left; margin-left: 25px; color: #6c757d;">최소 만원, 최대 50만원까지 가능합니다.</small>
+          </div>
+          <div class="mb-3">
+            <label for="discount-value" class="form-label" style="text-align: left; display: block; margin-bottom: 2px; margin-left: 25px;">할인</label>
+            <input type="text" class="form-control small-input" id="discount-value" name="discountPrice" placeholder="예: 0.05" style="margin: 0 auto; text-align: left; padding-left: 10px;" required>
+            <small style="display: block; text-align: left; margin-left: 25px; color: #6c757d;">ex) 0.05 = 5%, 0.5 = 50%, 1000 = 1000원 할인 적용 / 최대 조건의 80% 적용 가능</small>
+          </div>
+          <div class="mb-3">
+            <label for="max-discount" class="form-label" style="text-align: left; display: block; margin-bottom: 2px; margin-left: 25px;">최대 할인</label>
+            <input type="text" class="form-control small-input" id="max-discount" name="maxPrice" placeholder="예: 2000원" style="margin: 0 auto; text-align: left; padding-left: 10px;" required>
+            <small style="display: block; text-align: left; margin-left: 25px; color: #6c757d;">최대할인은 (조건/할인) 까지 가능합니다.</small>
+          </div>
+          <div class="mb-3">
+            <label for="duration" class="form-label" style="text-align: left; display: block; margin-bottom: 2px; margin-left: 25px;">기간</label>
+            <input type="text" class="form-control small-input" id="duration" name="duration" placeholder="예: 30일" style="margin: 0 auto; text-align: left; padding-left: 10px;" required>
+            <small style="display: block; text-align: left; margin-left: 25px; color: #6c757d;">1 ~ 365일까지 가능합니다.</small>
+          </div>
+          <button type="submit" class="styled-button" style="display: block; margin: 0 auto;">생성</button>
+        </form>
+      </div>
+    </main>
+  </div>
+</div>
+<div th:replace="~{fragments/admin-footer}"></div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  $(document).ready(function() {
+    $('.nav-link').on('click', function(e) {
+      //e.preventDefault();
+      var url = $(this).data('url');
+      if (url) {
+        if (url === '/admin/coupons/policy/create') {
+          e.preventDefault();
+          $('#content-area').hide();
+          $('#coupon-policy-form').show();
+        }
+        else {
+          $('#coupon-policy-form').hide();
+          $('#content-area').load(url).show();
+        }
+      }
+    });
+  });
+
+  // 요소 선택
+  const couponPolicyBtn = document.getElementById("couponPolicyBtn");
+  const couponModal = document.getElementById("couponModal");
+  const closeModalBtn = document.getElementById("closeModalBtn");
+
+  // 버튼 클릭 시 모달 표시
+  couponPolicyBtn.addEventListener("click", () => {
+    couponModal.style.display = "flex"; // 모달을 화면에 보이도록 설정
+  });
+
+  // 닫기 버튼 클릭 시 모달 숨김
+  closeModalBtn.addEventListener("click", () => {
+    couponModal.style.display = "none";
+  });
+
+  // 모달 외부 클릭 시 모달 숨김
+  window.addEventListener("click", (event) => {
+    if (event.target === couponModal) {
+      couponModal.style.display = "none";
+    }
+  });
+
+  // 쿠폰 정책 선택 시 동적으로 폼 표시
+  function selectCouponPolicy(policyId, condition) {
+    // 선택된 정책의 ID를 숨겨진 입력 필드에 설정
+    document.getElementById("couponPolicyId").value = policyId;
+
+    // 쿠폰 이름과 설명 입력 폼을 표시
+    document.getElementById("couponForm").style.display = "block";
+
+    // 쿠폰 정책 모달 닫기
+    document.getElementById("couponModal").style.display = "none";
+
+    // 선택된 정책의 조건을 표시하거나 다른 작업을 추가할 수 있습니다.
+    alert(`선택된 쿠폰 정책: ${condition} (ID: ${policyId})`);
+  }
+
+  // 모달 열기
+  document.getElementById("couponPolicyBtn").addEventListener("click", function() {
+    document.getElementById("couponModal").style.display = "flex";
+  });
+
+  // 모달 닫기
+  document.getElementById("closeModalBtn").addEventListener("click", function() {
+    document.getElementById("couponModal").style.display = "none";
+  });
+
+  window.addEventListener("click", function(event) {
+    if (event.target === document.getElementById("couponModal")) {
+      document.getElementById("couponModal").style.display = "none";
+    }
+  });
+
+  document.getElementById("coupon-form").addEventListener("submit", function(event) {
+    event.preventDefault();
+    const form = document.getElementById('coupon-form');
+
+    const conditionValue = document.getElementById('condition').value;
+    const discountValue = document.getElementById("discount-value").value;
+    const maxPriceValue = document.getElementById('max-discount').value;
+    const durationValue = document.getElementById('duration').value;
+
+    const numericPattern = /^\d+(\.\d{1,2})?$/;
+    if (!numericPattern.test(discountValue) || !numericPattern.test(conditionValue) ||
+        (maxPriceValue && !numericPattern.test(maxPriceValue)) || !/^\d+$/.test(durationValue)) {
+      alert("입력된 값은 숫자 형식만 허용됩니다. 소수점 이하 2자리까지만 가능합니다.");
+      form.reset();
+      return;
+    }
+
+    const condition = parseFloat(conditionValue);
+    const discountPrice = parseFloat(discountValue);
+    const maxPrice = maxPriceValue ? parseFloat(maxPriceValue) : null;
+    const duration = parseInt(durationValue);
+
+    if (isNaN(condition) || condition < 10000 || condition > 500000) {
+      alert("조건은 10000원 에서 500000원 사이의 값이어야 합니다.");
+      form.reset();
+      return;
+    }
+
+    if (discountPrice < 1) {
+      if (discountPrice > 0.8) {
+        alert("할인은 최대 80%까지 가능합니다.");
+        form.reset();
+        return;
+      }
+    } else {
+      if (discountPrice < 1000 || discountPrice > condition * 0.8) {
+        alert(`할인은 최소 1000원, 최대 조건의 80%까지 가능합니다.`);
+        form.reset();
+        return;
+      }
+    }
+
+    if (maxPrice !== null) {
+      if (maxPrice < 0 || maxPrice > condition / 2) {
+        alert("최대 할인은 조건보다 작아야 하며 음수가 될 수 없습니다.");
+        form.reset();
+        return;
+      }
+    }
+
+    if (isNaN(duration) || duration < 1 || duration > 365) {
+      alert("기간은 1일에서 365일 사이의 값이어야 합니다.");
+      form.reset();
+      return;
+    }
+
+    form.submit();
+    form.reset();
+  });
+
+</script>
+
+</body>
+</html>

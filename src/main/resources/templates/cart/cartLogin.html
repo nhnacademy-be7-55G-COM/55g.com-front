@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>processing Login</title>
+  <th:block th:replace="~{fragments/head :: headTemplate}"></th:block>
+</head>
+<body>
+<script>
+
+  function cartLogin() {
+    console.log('cartLogin start')
+    const cart = JSON.parse(localStorage.getItem('cart'));
+
+    fetch("/cart/login", {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        cartBookInfoList: cart.cartBookInfoList
+      })
+    })
+    .then(response => {
+
+      if (response.ok) {
+        console.log('convert cart to redis success when login');
+        return response.json();
+      } else {
+        alert("장바구니를 초기화하는데 실패했습니다.")
+        return {cartCount: 0};
+
+      }
+    })
+    .then(data =>{
+      localStorage.removeItem('cart');
+      localStorage.setItem('cartCount',data.cartCount);
+      window.location.href = "/";
+    })
+    .catch(error => console.log('fetch error : ', error));
+  }
+
+  window.onload = cartLogin();
+
+</script>
+</body>
+</html>

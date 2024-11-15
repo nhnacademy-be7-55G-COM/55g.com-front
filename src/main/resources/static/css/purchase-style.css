@@ -1,0 +1,104 @@
+#section {
+  min-height: calc(100vh - 5rem);
+}
+footer {
+  height: 5rem;
+  border-top: 2px solid black;
+  padding: 0.4rem 3rem;
+}
+#payment-background {
+  position: absolute;
+  display: none;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+#payment-modal {
+  position: absolute;
+  min-width: 600px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+#paymentInfo {
+  width: 30%;
+  border: 1px solid black;
+}
+/*#priceForm div {*/
+/*  font-size: 2rem;*/
+/*}*/
+
+.price-delimiter {
+  margin: auto 0.9rem;
+}
+
+.price-detail {
+  font-size: 0.85rem !important;
+  text-align: center;
+  transform: translateY(20px);
+}
+
+.price-display {
+  margin-top: 0 !important;
+  font-size: 2rem;
+}
+
+.price-wrapper {
+  transform: translateY(-20px);
+  margin: 0 12px;
+}
+#zipInput {
+  width: 8rem;
+}
+#findAddress {
+  margin: 0;
+  height: 2.6rem;
+  padding: 0 24px;
+}
+
+#addressInput {
+  width: 30rem;
+}
+
+#addressDetailInput {
+  width: 16rem;
+}
+
+#customerInformation > .card-info-contents > div {
+  padding: 0 0.9rem !important;
+}
+
+#deliveryInformation> .card-info-contents > div {
+  padding: 0 0.9rem !important;
+}
+.card-top {
+  background-color: white;
+}
+.card-top > .card-title {
+  padding: 0.4rem;
+  font-size: 2rem;
+  background-color: lightskyblue;
+  color: white;
+}
+.card-top > .card-info-contents {
+  padding: 0.8rem;
+
+}
+
+hr {
+  border: 0.05rem solid green;
+  margin: 1rem 0;
+}
+
+button.payment-selected {
+  border: 2px solid cornflowerblue;
+  background-color: peachpuff;
+  color: rgba(18,0,141,0.61);
+}
+
+#paymentButtons > button {
+  margin: 0 0.3rem;
+}

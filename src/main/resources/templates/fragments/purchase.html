@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+
+<div class="d-flex flex-column price-wrapper" th:fragment="displayPrice(detail, priceId)">
+  <div class="price-detail" th:text="${detail}"></div>
+  <div class="price-display" th:id="${priceId}"></div>
+</div>
+
+<div th:fragment="inputWithLabel(id, label, type, default)">
+  <label th:for="${id}" class="form-label" th:text="${label}"></label>
+  <input th:id="${id}" class="form-control" th:type="${type}" th:value="${default}" required/>
+</div>
+
+<!--<div th:fragment="inputWithLabel(id, label, type, default)">-->
+<!--  <label th:for="${id}" class="form-label" th:text="${label}"></label>-->
+<!--  <input th:id="${id}" class="form-control" th:type="${type}" th:value="${default}" required/>-->
+<!--</div>-->
+<div th:fragment="disabledInputWithLabel(id, label, type)">
+  <label th:for="${id}" class="form-label" th:text="${label}"></label>
+  <input th:id="${id}" class="form-control" th:type="${type}" disabled/>
+</div>
+
+</body>
+</html>

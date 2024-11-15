@@ -4,83 +4,255 @@
   <title>회원가입</title>
   <meta charset="utf-8">
   <th:block th:replace="~{fragments/head :: headTemplate}"></th:block>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    /* 전체 폼 디자인 */
+    .form-label {
+      color: var(--dark-color);
+      font-weight: 600;
+    }
+
+    .form-control {
+      border-radius: 0.25rem;
+      box-shadow: none;
+    }
+
+    /* 아이디 중복확인 버튼 */
+    #checkIdBtn {
+      background-color: var(--accent-color);
+      border: none;
+      color: #fff;
+      padding: 8px 16px;
+      cursor: pointer;
+      border-radius: 0.25rem;
+    }
+
+    #checkIdBtn:hover {
+      background-color: var(--dark-color);
+    }
+
+    /* 에러 메시지 */
+    .error-message {
+      color: red;
+      font-size: 0.9rem;
+      display: none;
+    }
+
+    /* 비밀번호 확인 에러 */
+    #passwordError {
+      color: red;
+      font-size: 0.9rem;
+      display: none;
+    }
+
+    /* 회원가입 버튼 활성화 시 디자인 */
+    #submitBtn:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+    /* 폼 버튼 디자인 */
+    .btn-primary {
+      background-color: var(--accent-color);
+      color: white;
+      border-radius: 0.25rem;
+      padding: 10px;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--dark-color);
+    }
+
+    /* 전화번호 필드 */
+    .phone-input {
+      width: 100%;
+      padding-left: 12px;
+    }
+
+    /* 아이디 입력칸 디자인 */
+    #loginId {
+      height: 38px;
+      font-size: 0.9rem;
+    }
+
+    .input-group {
+      display: flex;
+      align-items: center;
+    }
+
+    /* 아이디 입력란과 버튼 간격 조정 */
+    .input-group input {
+      border-radius: 0.25rem 0 0 0.25rem;
+      height: 38px;
+    }
+
+    .input-group button {
+      height: 38px;
+      border-radius: 0 0.25rem 0.25rem 0;
+      padding: 8px 16px;
+    }
+
+    /* 회원가입 전체 폼 디자인 */
+    main {
+      background-color: var(--light-color);  /* 페이지의 배경색에 맞춘 색상 */
+      border-radius: 8px;
+      padding: 30px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 카드 그림자 */
+    }
+
+    /* 회원가입 카드 배경색 */
+    .container {
+      background-color: var(--light-color); /* 페이지 배경색과 비슷한 색상 */
+    }
+  </style>
 </head>
 
-<body
-    style="background-color: var(--light-color); font-family: var(--body-font),serif; color: var(--body-text-color);">
-
+<body style="background-color: var(--light-color); font-family: var(--body-font),serif; color: var(--body-text-color);">
 <div th:replace="~{fragments/header}"></div>
 
 <main class="container my-5 mx-auto" style="max-width: 500px;">
-  <h2 class="text-center mb-4"
-      style="color: var(--dark-color); font-family: var(--heading-font),serif;">Sign Up</h2>
+  <h2 class="text-center mb-4" style="color: var(--dark-color); font-family: var(--heading-font),serif;">회원가입</h2>
+
+  <!-- Error Alert Section -->
+  <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
+
   <form action="/register" method="post">
-    <div class="mb-3">
-      <label for="loginId" class="form-label" style="color: var(--dark-color); font-weight: 600;">아이디</label>
-      <input type="text" class="form-control" id="loginId" name="loginId" required>
-    </div>
-    <div class="mb-3">
-      <label for="password" class="form-label" style="color: var(--dark-color); font-weight: 600;">비밀번호</label>
-      <input type="password" class="form-control" id="password" name="password" required
-             oninput="checkPasswordMatch()">
-    </div>
-    <div class="mb-3">
-      <label for="confirmPassword" class="form-label"
-             style="color: var(--dark-color); font-weight: 600;">비밀번호 확인</label>
-      <input type="password" class="form-control" id="confirmPassword" name="confirmPassword"
-             required oninput="checkPasswordMatch()">
-      <div id="passwordError" style="color: red; font-size: 0.9rem; display: none;">비밀번호가 일치하지
-        않습니다.
+    <div class="form-group">
+      <label for="loginId" class="form-label">아이디</label>
+      <div class="input-group">
+        <input type="text" class="form-control" id="loginId" style="margin-right: 20px" name="loginId" placeholder="아이디 (4-30자)" required oninput="validateLoginId()">
+        <button type="button" class="btn btn-outline-secondary" style="margin-top: -6px" id="checkIdBtn" onclick="checkId()">중복확인</button>
       </div>
+      <div id="idError" class="error-message">아이디는 4~30자의 영문자와 숫자만 사용할 수 있습니다.</div>
+      <div id="idDuplicateError" class="error-message">아이디가 이미 존재합니다.</div>
+      <div id="idAvailable" class="error-message" style="color: green; display: none;">사용 가능한 아이디입니다.</div>
     </div>
-    <div class="mb-3">
-      <label for="name" class="form-label"
-             style="color: var(--dark-color); font-weight: 600;">이름</label>
-      <input type="text" class="form-control" id="name" name="name" required>
+
+    <div class="form-group">
+      <label for="password" class="form-label">비밀번호</label>
+      <input type="password" class="form-control" id="password" name="password" placeholder="비밀번호 (4-30자)" required oninput="checkPasswordMatch()">
     </div>
-    <div class="mb-3">
-      <label for="email" class="form-label"
-             style="color: var(--dark-color); font-weight: 600;">이메일</label>
-      <input type="email" class="form-control" id="email" name="email" required>
+
+    <div class="form-group">
+      <label for="confirmPassword" class="form-label">비밀번호 확인</label>
+      <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required oninput="checkPasswordMatch()">
+      <div id="passwordError" class="error-message">비밀번호가 일치하지 않습니다.</div>
     </div>
-    <div class="mb-3">
-      <label for="phoneNumber" class="form-label" style="color: var(--dark-color); font-weight: 600;">핸드폰
-        번호</label>
-      <input type="tel" class="form-control" id="phoneNumber" name="phoneNumber" placeholder="010-0000-0000"
-             required oninput="formatPhoneNumber()">
-      <div id="phoneError" style="color: red; font-size: 0.9rem; display: none;">핸드폰 번호는
-        '010-0000-0000' 형식으로 입력해야 합니다.
-      </div>
+
+    <div class="form-group">
+      <label for="name" class="form-label">이름</label>
+      <input type="text" class="form-control" id="name" name="name" placeholder="이름 (1-30자)" minlength="1" maxlength="30" required oninput="validateName()">
+      <div id="nameError" class="error-message">이름은 1자 이상, 30자 이하여야 합니다.</div>
     </div>
-    <div class="mb-3">
-      <label for="birthDate" class="form-label" style="color: var(--dark-color); font-weight: 600;">생일</label>
+
+    <div class="form-group">
+      <label for="email" class="form-label">이메일</label>
+      <input type="email" class="form-control" id="email" name="email" placeholder="이메일 (최소 8자)" minlength="8" maxlength="300" required oninput="validateEmail()">
+      <div id="emailError" class="error-message">이메일은 8자 이상 입력해야 합니다.</div>
+    </div>
+
+    <div class="form-group">
+      <label for="phoneNumber" class="form-label">핸드폰 번호</label>
+      <input type="tel" class="form-control phone-input" id="phoneNumber" name="phoneNumber" placeholder="010-0000-0000" required oninput="formatPhoneNumber()">
+      <div id="phoneError" class="error-message">핸드폰 번호는 '010-0000-0000' 형식으로 입력해야 합니다.</div>
+    </div>
+
+    <div class="form-group">
+      <label for="birthDate" class="form-label">생일</label>
       <input type="date" class="form-control" id="birthDate" name="birthDate" required min="1900-01-01" max="2024-12-31">
     </div>
-    <button type="submit" id="submitBtn" class="btn btn-primary w-100"
-            style="--bs-btn-bg: var(--accent-color); --bs-btn-hover-bg: var(--dark-color);"
-            disabled>회원가입
-    </button>
 
+    <button type="submit" id="submitBtn" class="btn btn-primary w-100" style="--bs-btn-bg: var(--accent-color); --bs-btn-hover-bg: var(--dark-color);" disabled>회원가입</button>
   </form>
 </main>
 
 <div th:replace="~{fragments/footer}"></div>
 
 <script>
+  let isIdValid = false;
+  let isIdDuplicateChecked = false;
+  let isPasswordMatch = false;
+  let isNameValid = false;
+  let isEmailValid = false;
+
+  function validateLoginId() {
+    const loginId = document.getElementById("loginId").value;
+    const idPattern = /^[a-zA-Z0-9]{4,30}$/;
+    const idError = document.getElementById("idError");
+    const idDuplicateError = document.getElementById("idDuplicateError");
+    const idAvailable = document.getElementById("idAvailable");
+
+    // 입력이 바뀔 때 메시지 초기화
+    idDuplicateError.style.display = "none";
+    idAvailable.style.display = "none";
+
+    if (!idPattern.test(loginId)) {
+      idError.style.display = "block";
+      isIdValid = false;
+      isIdDuplicateChecked = false;
+    } else {
+      idError.style.display = "none";
+      isIdValid = true;
+      isIdDuplicateChecked = false;  // 입력이 바뀌면 중복 확인 다시 요구
+    }
+    toggleSubmitButton();
+  }
+
+  function checkId() {
+    const loginId = document.getElementById("loginId").value;
+    const idDuplicateError = document.getElementById("idDuplicateError");
+    const idAvailable = document.getElementById("idAvailable");
+
+    // 메시지 초기화
+    idDuplicateError.style.display = "none";
+    idAvailable.style.display = "none";
+
+    if (!isIdValid) return; // 유효하지 않으면 중복 확인 진행하지 않음
+
+    fetch(`/mypage/checkId/${loginId}`, {
+      method: 'POST',
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data) {
+        idDuplicateError.style.display = "block";
+        isIdDuplicateChecked = false;
+      } else {
+        idAvailable.style.display = "block";
+        isIdDuplicateChecked = true;
+      }
+      toggleSubmitButton();
+    })
+    .catch(error => console.error('Error:', error));
+  }
+
   function checkPasswordMatch() {
     const password = document.getElementById("password").value;
     const confirmPassword = document.getElementById("confirmPassword").value;
     const passwordError = document.getElementById("passwordError");
-    const submitBtn = document.getElementById("submitBtn");
 
-    if (password !== confirmPassword || password === "" || confirmPassword === "") {
+    if (password.length < 4 || password.length > 30) {
+      passwordError.textContent = "비밀번호는 4자 이상, 30자 이하여야 합니다.";
       passwordError.style.display = "block";
-      submitBtn.disabled = true;
+      isPasswordMatch = false;
+    } else if (password !== confirmPassword) {
+      passwordError.textContent = "비밀번호가 일치하지 않습니다.";
+      passwordError.style.display = "block";
+      isPasswordMatch = false;
     } else {
       passwordError.style.display = "none";
-      submitBtn.disabled = false;
+      isPasswordMatch = true;
     }
+    toggleSubmitButton();
   }
+  // 회원가입 버튼 상태 변경 함수
+  function toggleSubmitButton() {
+    const submitBtn = document.getElementById("submitBtn");
+    submitBtn.disabled = !(isIdValid && isIdDuplicateChecked && isPasswordMatch && isNameValid && isEmailValid);
+  }
+
+  // 아이디 입력이 변경될 때마다 validateLoginId 호출
+  document.getElementById("loginId").addEventListener("input", validateLoginId);
 
   function formatPhoneNumber() {
     const phoneInput = document.getElementById("phoneNumber");
@@ -94,8 +266,7 @@
       } else if (phoneValue.length <= 7) {
         phoneInput.value = `${phoneValue.slice(0, 3)}-${phoneValue.slice(3)}`;
       } else if (phoneValue.length <= 11) {
-        phoneInput.value = `${phoneValue.slice(0, 3)}-${phoneValue.slice(3, 7)}-${phoneValue.slice(
-            7, 11)}`;
+        phoneInput.value = `${phoneValue.slice(0, 3)}-${phoneValue.slice(3, 7)}-${phoneValue.slice(7, 11)}`;
       }
     } else {
       phoneError.style.display = "block";
@@ -108,6 +279,39 @@
   const today = new Date().toISOString().split("T")[0];
   document.getElementById("birthDate").setAttribute("max", today);
 
+  function validateName() {
+    const name = document.getElementById("name").value;
+    const nameError = document.getElementById("nameError");
+
+    if (name.length < 1 || name.length > 30) {
+      nameError.style.display = "block";
+      isNameValid = false;
+    } else {
+      nameError.style.display = "none";
+      isNameValid = true;
+    }
+    toggleSubmitButton();
+  }
+
+  function validateEmail() {
+    const email = document.getElementById("email").value;
+    const emailError = document.getElementById("emailError");
+
+    if (email.length < 8) {
+      emailError.style.display = "block";
+      isEmailValid = false;
+    } else {
+      emailError.style.display = "none";
+      isEmailValid = true;
+    }
+    toggleSubmitButton();
+  }
 </script>
+
+
+<script src="/static/js/jquery-1.11.0.min.js"></script>
+<script src="/static/js/plugins.js"></script>
+<script src="/static/js/script.js"></script>
+
 </body>
 </html>

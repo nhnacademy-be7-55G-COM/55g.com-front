@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>쿠폰 정책 조회</title>
+  <link rel="stylesheet" href="style.css">
+  <div th:replace="~{fragments/head}"></div>
+  <style>
+    .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: transparent;
+      border: none;
+      font-size: 24px;
+      color: #333;
+      cursor: pointer;
+      z-index: 10;
+    }
+  </style>
+</head>
+<body>
+<div class="container" style="position: relative;">
+  <button class="close-btn" onclick="window.location.href='/admin'">&times;</button>
+
+  <h2>쿠폰 정책 조회</h2>
+  <table border="1" style="width: 100%; margin-top: 20px; border-collapse: collapse;">
+    <thead>
+    <tr>
+      <th style="padding: 10px; background-color: #f0f0f0;">순번</th>
+      <th style="padding: 10px; background-color: #f0f0f0;">조건(이상)</th>
+      <th style="padding: 10px; background-color: #f0f0f0;">할인(률)</th>
+      <th style="padding: 10px; background-color: #f0f0f0;">최대 할인 금액</th>
+      <th style="padding: 10px; background-color: #f0f0f0;">기간</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="policy, iterStat : ${couponPolicyList}">
+      <td style="padding: 10px;">
+        <a th:href="@{/admin/coupons/templates/create/policyId={policyId}(policyId=${policy.couponPolicyId()})}"
+           th:text="${iterStat.index + 1 + (currentPage * couponPolicyList.size)}">순번</a>
+      </td>
+      <td style="padding: 10px;" th:text="${policy.condition() + '원'}">조건</td>
+      <td style="padding: 10px;"
+          th:text="${policy.discountPrice() < 1 ? policy.discountPrice().multiply(100).stripTrailingZeros().toPlainString() + '%'
+                   : policy.discountPrice().stripTrailingZeros().toPlainString() + '원'}">
+        할인(률)
+      </td>
+      <td style="padding: 10px;" th:text="${policy.maxPrice() + '원'}">최대 할인 금액</td>
+      <td style="padding: 10px;" th:text="${policy.duration() + '일'}">기간</td>
+    </tr>
+    </tbody>
+  </table>
+
+  <div class="pagination">
+    <span th:if="${currentPage > 0}">
+      <a th:href="@{/admin/coupons/policy-inquiry(page=${currentPage - 1})}">이전</a>
+    </span>
+
+    <span>현재 페이지: <span th:text="${currentPage + 1}"></span></span>
+
+    <span th:if="${currentPage < 999}">
+      <a th:href="@{/admin/coupons/policy-inquiry(page=${currentPage + 1})}">다음</a>
+    </span>
+  </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>카테고리 등록</title>
+    <style>
+        /*!* 기본 스타일 *!*/
+        body {
+            font-family: Arial, sans-serif;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        /*!* 폼 컨테이너 *!*/
+        form {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 25px 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        input[type="checkbox"] {
+            margin-right: 8px;
+            transform: scale(1.2);
+        }
+
+    </style>
+
+
+</head>
+<body>
+
+<form action="/category/register" method="post">
+    <h1>카테고리 등록</h1>
+
+    <!-- 카테고리 이름 입력 -->
+    <label for="name">카테고리 이름</label>
+    <input type="text" id="name" name="categoryName" placeholder="카테고리 이름 입력" required />
+
+    <!-- 상위 카테고리 선택 -->
+    <label for="parentCategoryId">상위 카테고리</label>
+    <select id="parentCategoryId" name="parentCategoryId" onchange="handleCatgorySelection(this)">
+        <option th:value="0" disabled selected>없음 (루트 카테고리)</option>
+        <option th:each="parentCategory : ${parentCategories}"
+                th:value="${parentCategory.categoryId}"
+                th:text="${parentCategory.categoryName}">
+        </option>
+    </select>
+
+    <div id="selectContainer"></div>
+
+    <!-- 등록 버튼 -->
+    <button type="submit">카테고리 등록</button>
+<!--    <button>카테고리 등록</button>-->
+</form>
+
+<div th:replace="~{fragments/footer}"></div>
+<script>
+
+    function handleCatgorySelection(selectElement) {
+        if (selectElement.value == "0") {
+            selectElement.value = "";
+        } else {
+            selectElement.name = "parentCategoryId";
+        }
+    }
+
+</script>
+</body>
+</html>
