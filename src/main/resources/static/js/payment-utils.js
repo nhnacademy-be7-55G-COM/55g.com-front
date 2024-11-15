@@ -160,3 +160,19 @@ const convertCartToRequest = ({
 const onPaymentFail = (orderDataId) => {
   return axios.delete(`/payment/support/order`);
 }
+
+const getCopyOfPriceInfo = () => {
+  return { originPrice: 0, discountPrice: 0, totalPrice: new Decimal(0) };
+}
+
+const calcFromCart = (priceInfo, cart) => {
+  let origin = 0;
+  let discount = 0;
+  cart.forEach(book => {
+    origin += book.price * book.quantity;
+    discount += book.discountPrice * book.quantity;
+  });
+  priceInfo.originPrice = origin;
+  priceInfo.discountPrice = discount;
+  priceInfo.totalPrice = new Decimal(origin - discount);
+}

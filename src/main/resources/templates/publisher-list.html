@@ -2,16 +2,62 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-  <th:block th:replace="~{fragments/head :: headTemplate}"></th:block>
-    <title>츌판사 목록</title>
+    <title>출판사 목록</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            /*color: #4CAF50;*/
+        }
+
+        .publisher-list {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .publisher-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .publisher-item:last-child {
+            border-bottom: none;
+        }
+
+        .publisher-item div {
+            font-size: 18px;
+        }
+
+        .publisher-item a {
+            text-decoration: none;
+            /*color: #4CAF50;*/
+            font-weight: bold;
+        }
+
+        .publisher-item a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-<div th:replace="~{fragments/header}"></div>
-<h1>출판사 목록</h1>
-<div th:each="publisher : ${allPublisher}">
-    <div th:text="${publisher.name()}"></div>
-    <a th:href="@{/publisher/modify/{id}(id = ${publisher.id})}">수정</a>
+<div class="publisher-list" th:each="publisher : ${allPublisher}">
+    <div class="publisher-item">
+        <div th:text="${publisher.name()}"></div>
+        <a th:href="@{/admin/publisher/modify/{id}(id = ${publisher.id})}">수정</a>
+    </div>
 </div>
-<div th:replace="~{fragments/footer}"></div>
 </body>
 </html>

@@ -10,6 +10,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 import shop.s5g.front.adapter.WrappingPaperAdapter;
@@ -20,8 +21,6 @@ import shop.s5g.front.dto.wrappingpaper.WrappingPaperResponseDto;
 import shop.s5g.front.dto.wrappingpaper.WrappingPaperView;
 import shop.s5g.front.service.image.ImageService;
 import shop.s5g.front.service.wrappingpaper.WrappingPaperService;
-import shop.s5g.front.utils.AuthTokenHolder;
-import shop.s5g.front.utils.FunctionalWithAuthToken;
 
 @RequiredArgsConstructor
 @Service
@@ -45,12 +44,9 @@ public class WrappingPaperServiceImpl implements WrappingPaperService {
     public static final String SCOPE_ALL = "all";
 
     @Override
+    @Async("purchaseRequest")
     public CompletableFuture<List<WrappingPaperResponseDto>> fetchActivePapersAsync() {
-        return CompletableFuture.supplyAsync(
-            FunctionalWithAuthToken.supply(AuthTokenHolder.getToken(),
-                this::fetchActivePapers
-            )
-        );
+        return CompletableFuture.completedFuture(fetchActivePapers());
     }
 
     @Override
@@ -70,9 +66,7 @@ public class WrappingPaperServiceImpl implements WrappingPaperService {
     @Override
     public CompletableFuture<WrappingPaperResponseDto> fetchPaperAsync(long id) {
         return CompletableFuture.supplyAsync(
-            FunctionalWithAuthToken.supply(AuthTokenHolder.getToken(),
                 () ->wrappingPaperAdapter.fetchPaper(id)
-            )
         );
     }
 
