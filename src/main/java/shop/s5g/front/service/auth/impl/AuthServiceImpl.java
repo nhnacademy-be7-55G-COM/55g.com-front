@@ -119,8 +119,11 @@ public class AuthServiceImpl implements AuthService {
     public String getRole(String accessToken) {
         try {
             ResponseEntity<RoleResponseDto> responseEntity = authAdapter.getRole("Bearer " + accessToken);
-            if (responseEntity.getStatusCode().is2xxSuccessful() && responseEntity.getBody() != null){
-                return responseEntity.getBody().role();
+            if (responseEntity.getStatusCode().is2xxSuccessful()){
+                RoleResponseDto responseDto = responseEntity.getBody();
+                if (responseDto != null) {
+                    return responseDto.role();
+                }
             }
             throw new RoleGetInfoFailedException("get role failed");
 
