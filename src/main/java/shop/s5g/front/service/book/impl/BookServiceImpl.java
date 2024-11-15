@@ -2,6 +2,7 @@ package shop.s5g.front.service.book.impl;
 
 import feign.FeignException;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,9 @@ import shop.s5g.front.dto.BookDetailResponseDto;
 import shop.s5g.front.dto.book.BookPageableResponseDto;
 import shop.s5g.front.exception.BadRequestException;
 import shop.s5g.front.exception.BookNotFoundException;
+import shop.s5g.front.dto.book.BookSimpleResponseDto;
+import shop.s5g.front.dto.cart.request.CartBookInfoRequestDto;
+import shop.s5g.front.exception.book.BookGetFailedException;
 import shop.s5g.front.service.book.BookService;
 
 @Service
@@ -48,5 +52,15 @@ public class BookServiceImpl implements BookService {
         }
 
         throw new RuntimeException();
+    }
+    @Override
+    public List<BookSimpleResponseDto> getSimpleBooks(List<Long> bookIds) {
+        return bookAdapter.getSimpleBooks(bookIds);
+    }
+
+    @Override
+    public List<BookSimpleResponseDto> getSimpleBooksFromCart(List<CartBookInfoRequestDto> cart) {
+        List<Long> ids = cart.stream().map(CartBookInfoRequestDto::bookId).toList();
+        return getSimpleBooks(ids);
     }
 }

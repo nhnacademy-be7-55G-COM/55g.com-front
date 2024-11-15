@@ -24,6 +24,48 @@
   </style>
   <script>
     const defaultSize = 10;
+    const hash = window.location.hash;
+    const getHashFromHref = (href) => {
+      return href.substring(href.search('#'));
+    }
+
+    const findParentSideBarNode = (element) => {
+      const parent = element.parentElement;
+      if (parent.tagName === 'BODY')
+        throw 'Cannot find parent Div';
+      if (parent.tagName === 'DIV' && parent.className.includes('collapse'))
+        return parent;
+      return findParentSideBarNode(parent);
+    }
+
+    const hashHandler = async (hash) => {
+      if (hash.includes('#orders')) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const startDate = urlParams.get('startDate');
+        const endDate = urlParams.get('endDate');
+        const startDateInput = document.querySelector('#startDateInput');
+        const endDateInput = document.querySelector('#endDateInput');
+        startDateInput.value = startDate;
+        endDateInput.value = endDate;
+        const fetchButton = document.querySelector('#orderSearchButton');
+        fetchButton.click();
+        window.scrollTo({top: 0, left: 0});
+      }
+    };
+
+    if (hash !== '') {
+      document.addEventListener('DOMContentLoaded', () => {
+        const tabs = document.querySelectorAll('nav#sidebar li.nav-item > a');
+        for (let i = 0; i<tabs.length; i++) {
+          const hrefHash = getHashFromHref(tabs[i].href);
+          if (hrefHash === hash) {
+            findParentSideBarNode(tabs[i]).classList.add('show');
+            hashHandler(hash).then(resolve => tabs[i].click());
+            return;
+          }
+        }
+      });
+    }
   </script>
 </head>
 

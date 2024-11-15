@@ -6,8 +6,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import shop.s5g.front.adapter.coupon.CouponBookAdapter;
-import shop.s5g.front.dto.coupon.CouponBookDetailsBookResponseDto;
+import shop.s5g.front.dto.MessageDto;
+import shop.s5g.front.dto.coupon.BookDetailsBookResponseDto;
 import shop.s5g.front.dto.coupon.CouponBookDetailsBookTitleResponseDto;
+import shop.s5g.front.dto.coupon.CouponBookRequestDto;
 import shop.s5g.front.dto.coupon.CouponBookResponseDto;
 import shop.s5g.front.dto.coupon.CouponTemplateInquiryResponseDto;
 import shop.s5g.front.exception.coupon.CouponBookNotFoundException;
@@ -19,10 +21,15 @@ public class CouponBookServiceImpl implements CouponBookService {
 
     private final CouponBookAdapter couponBookAdapter;
 
+    /**
+     * 책 상세 페이지 조회
+     * @param bookId
+     * @return ResponseEntity<BookDetailsBookResponseDto>
+     */
     @Override
-    public CouponBookDetailsBookResponseDto getBook(Long bookId) {
+    public BookDetailsBookResponseDto getBook(Long bookId) {
         try {
-            ResponseEntity<CouponBookDetailsBookResponseDto> response = couponBookAdapter.findBook(bookId);
+            ResponseEntity<BookDetailsBookResponseDto> response = couponBookAdapter.findBook(bookId);
 
             if (response.getStatusCode().is2xxSuccessful()) {
                 return response.getBody();
@@ -39,10 +46,10 @@ public class CouponBookServiceImpl implements CouponBookService {
      * @return Page<CouponBookDetailsBookResponseDto>
      */
     @Override
-    public Page<CouponBookDetailsBookResponseDto> getAllBooks(Pageable pageable) {
+    public Page<BookDetailsBookResponseDto> getAllBooks(Pageable pageable) {
 
         try {
-            ResponseEntity<Page<CouponBookDetailsBookResponseDto>> response = couponBookAdapter.findAllBooks(pageable);
+            ResponseEntity<Page<BookDetailsBookResponseDto>> response = couponBookAdapter.findAllBooks(pageable);
 
             if (response.getStatusCode().is2xxSuccessful()) {
                 return response.getBody();
@@ -55,14 +62,13 @@ public class CouponBookServiceImpl implements CouponBookService {
 
     /**
      * 쿠폰이 적용된 모든 책 정보 조회
-     * @param page
-     * @param size
+     * @param pageable
      * @return Page<CouponBookResponseDto>
      */
     @Override
-    public Page<CouponBookResponseDto> getAllCouponBooks(int page, int size) {
+    public Page<CouponBookResponseDto> getAllCouponBooks(Pageable pageable) {
         try {
-            ResponseEntity<Page<CouponBookResponseDto>> response = couponBookAdapter.findAllCouponBooks(page, size);
+            ResponseEntity<Page<CouponBookResponseDto>> response = couponBookAdapter.findAllCouponBooks(pageable);
 
             if (response.getStatusCode().is2xxSuccessful()) {
                 return response.getBody();
@@ -76,16 +82,15 @@ public class CouponBookServiceImpl implements CouponBookService {
     /**
      * 책에 적용된 모든 쿠폰 템플릿 조회
      * @param bookId
-     * @param page
-     * @param size
+     * @param pageable
      * @return Page<CouponTemplateInquiryResponseDto>
      */
     @Override
     public Page<CouponTemplateInquiryResponseDto> getAllCouponBooksForCouponTemplate(Long bookId,
-        int page, int size) {
+        Pageable pageable) {
 
         try {
-            ResponseEntity<Page<CouponTemplateInquiryResponseDto>> response = couponBookAdapter.findAllCouponBooksCouponTemplate(bookId, page, size);
+            ResponseEntity<Page<CouponTemplateInquiryResponseDto>> response = couponBookAdapter.findAllCouponBooksCouponTemplate(bookId, pageable);
 
             if (response.getStatusCode().is2xxSuccessful()) {
                 return response.getBody();
@@ -99,21 +104,39 @@ public class CouponBookServiceImpl implements CouponBookService {
     /**
      * 쿠폰 템플릿이 적용된 모든 책 조회
      * @param templateId
-     * @param page
-     * @param size
+     * @param pageable
      * @return Page<CouponBookDetailsBookTitleResponseDto>
      */
     @Override
     public Page<CouponBookDetailsBookTitleResponseDto> getAllCouponBooksForBook(Long templateId,
-        int page, int size) {
+        Pageable pageable) {
 
         try {
-            ResponseEntity<Page<CouponBookDetailsBookTitleResponseDto>> response = couponBookAdapter.findAllCouponBooksTitle(templateId, page, size);
+            ResponseEntity<Page<CouponBookDetailsBookTitleResponseDto>> response = couponBookAdapter.findAllCouponBooksTitle(templateId, pageable);
 
             if (response.getStatusCode().is2xxSuccessful()) {
                 return response.getBody();
             }
             throw new CouponBookNotFoundException("CouponBook Not Found...!");
+        } catch (RuntimeException e) {
+            throw new CouponBookNotFoundException(e.getMessage());
+        }
+    }
+
+    /**
+     * 책 쿠폰 생성
+     * @param couponBookRequestDto
+     * @return MessageDto
+     */
+    @Override
+    public MessageDto createCouponBook(CouponBookRequestDto couponBookRequestDto) {
+        try {
+            ResponseEntity<MessageDto> response = couponBookAdapter.createCouponBooks(couponBookRequestDto);
+
+            if (response.getStatusCode().is2xxSuccessful()) {
+                return response.getBody();
+            }
+            throw new CouponBookNotFoundException("CouponBook Create Failed...!");
         } catch (RuntimeException e) {
             throw new CouponBookNotFoundException(e.getMessage());
         }

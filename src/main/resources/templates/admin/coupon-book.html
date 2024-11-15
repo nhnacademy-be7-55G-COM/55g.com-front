@@ -11,23 +11,15 @@
 <div class="container">
   <h2>쿠폰 상세 정보</h2>
 
-  <!-- 책 정보 표시 -->
   <div>
     <p><strong>책 이름:</strong> <span th:text="${book.title}"></span></p>
     <p><strong>출판사:</strong> <span th:text="${book.publisherName}"></span></p>
   </div>
 
-  <!-- 쿠폰 선택 버튼 -->
-  <button onclick="openModal()">쿠폰 템플릿 선택</button>
-</div>
+  <form id="couponForm" action="/admin/coupons/book/create" method="POST">
 
-<!-- 모달 창 -->
-<div id="couponModal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeModal()">&times;</span>
-    <h3>쿠폰 템플릿 선택</h3>
+    <input type="hidden" name="bookId" th:value="${book.bookId()}">
 
-    <!-- 쿠폰 템플릿 목록 -->
     <table border="1" style="width: 100%; margin-top: 20px; border-collapse: collapse;">
       <thead>
       <tr>
@@ -38,87 +30,44 @@
         <th style="padding: 10px; background-color: #f0f0f0;">최대 할인 금액</th>
         <th style="padding: 10px; background-color: #f0f0f0;">기간</th>
         <th style="padding: 10px; background-color: #f0f0f0;">설명</th>
+        <th style="padding: 10px; background-color: #f0f0f0;">선택</th>
       </tr>
       </thead>
-      <tbody id="couponTableBody">
-      <!-- JavaScript로 데이터를 채울 영역 -->
+      <tbody>
+      <tr th:each="template, iterStat : ${templateList}">
+        <td th:text="${iterStat.index + 1}"></td>
+        <td th:text="${template.couponName}"></td>
+        <td th:text="${template.discountPrice() < 1 ? template.discountPrice().multiply(100).stripTrailingZeros().toPlainString() + '%'
+                   : template.discountPrice().stripTrailingZeros().toPlainString() + '원'}"></td>
+        <td th:text="${template.condition} + '원'"></td>
+        <td th:text="${template.maxPrice} + '원'"></td>
+        <td th:text="${template.duration} + '일'"></td>
+        <td th:text="${template.couponDescription}"></td>
+        <td>
+          <input type="radio" name="couponTemplateId" th:value="${template.couponTemplateId}"
+                 th:id="'template-' + ${template.couponTemplateId}" />
+          <label th:for="'template-' + ${template.couponTemplateId}">선택</label>
+        </td>
+      </tr>
       </tbody>
     </table>
 
-    <!-- 페이지네이션 -->
-    <div id="couponPagination" style="margin-top: 20px; text-align: center;">
-      <button onclick="previousPage()">이전</button>
-      <span id="currentPage">1</span>
-      <button onclick="nextPage()">다음</button>
-    </div>
-  </div>
+    <button type="submit">책에 쿠폰 추가</button>
+  </form>
 </div>
 
-<!-- 모달 CSS -->
-<style>
-  .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); }
-  .modal-content { background-color: white; margin: 10% auto; padding: 20px; border: 1px solid #888; width: 80%; }
-  .close { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
-  .close:hover, .close:focus { color: black; text-decoration: none; cursor: pointer; }
-</style>
+</div>
 
-<!-- 모달 및 페이지네이션 JavaScript -->
 <script>
-  let currentPage = 1;
-
-  function openModal() {
-    document.getElementById('couponModal').style.display = 'block';
-    fetchCoupons(currentPage); // 모달을 열 때 첫 페이지 데이터 가져오기
-  }
-
-  function closeModal() {
-    document.getElementById('couponModal').style.display = 'none';
-  }
-
-  function fetchCoupons(page) {
-    fetch(`/admin/coupons/templates?page=${page}`)
-    .then(response => response.json())
-    .then(data => {
-      renderCoupons(data.content); // 쿠폰 목록 표시
-      document.getElementById("currentPage").innerText = page; // 현재 페이지 표시
-    })
-    .catch(error => console.error('에러:', error));
-  }
-
-  function renderCoupons(coupons) {
-    const tbody = document.getElementById("couponTableBody");
-    tbody.innerHTML = "";  // 기존 내용 삭제
-    coupons.forEach((template, index) => {
-      const row = document.createElement("tr");
-      row.innerHTML = `
-        <td>${index + 1}</td>
-        <td><a href="#" onclick="selectTemplate(${template.templateId})">${template.couponName}</a></td>
-        <td>${template.discountPrice < 1 ? (template.discountPrice * 100) + '%' : template.discountPrice + '원'}</td>
-        <td>${template.condition}원</td>
-        <td>${template.maxPrice}원</td>
-        <td>${template.duration}일</td>
-        <td>${template.couponDescription}</td>
-      `;
-      tbody.appendChild(row);
-    });
-  }
-
-  function nextPage() {
-    currentPage++;
-    fetchCoupons(currentPage);
-  }
-
-  function previousPage() {
-    if (currentPage > 1) {
-      currentPage--;
-      fetchCoupons(currentPage);
+  // 선택된 템플릿을 POST 방식으로 전송
+  document.getElementById('couponForm').addEventListener('submit', function(event) {
+    // 선택된 쿠폰 템플릿이 없으면 경고 메시지를 표시하고 폼 제출을 막음
+    const selectedTemplate = document.querySelector('input[name="couponTemplateId"]:checked');
+    if (!selectedTemplate) {
+      alert('쿠폰 템플릿을 선택해 주세요!');
+      event.preventDefault();
     }
-  }
-
-  function selectTemplate(templateId) {
-    document.querySelector('input[name="couponTemplateId"]').value = templateId; // 선택한 쿠폰 ID 저장
-    closeModal();
-  }
+  });
 </script>
 </body>
 </html>

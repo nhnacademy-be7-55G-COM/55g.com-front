@@ -1,7 +1,9 @@
 package shop.s5g.front.service.member.impl;
 
+import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -53,6 +55,12 @@ public class MemberServiceImpl implements MemberService {
         catch (HttpClientErrorException | HttpServerErrorException e) {
             throw new MemberGetInfoFailedException("get member info failed");
         }
+    }
+
+    @Override
+    @Async("purchaseRequest")
+    public CompletableFuture<MemberInfoResponseDto> getMemberInfoAsync() {
+        return CompletableFuture.completedFuture(getMemberInfo());
     }
 
     @Override
