@@ -11,7 +11,6 @@
 <div class="container">
   <h2>쿠폰 상세 정보</h2>
 
-  <!-- 쿠폰 정보 표시 -->
   <div>
     <p><strong>쿠폰 이름:</strong> <span th:text="${couponTemplate.couponName()}"></span></p>
     <p><strong>할인 금액:</strong> <span th:text="${couponTemplate.discountPrice() < 1 ? couponTemplate.discountPrice().multiply(100).stripTrailingZeros().toPlainString() + '%'
@@ -22,8 +21,7 @@
     <p><strong>설명:</strong> <span th:text="${couponTemplate.couponDescription()}"></span></p>
   </div>
 
-  <!-- 만료일 입력 폼 -->
-  <form action="#" th:action="@{/admin/coupons/create}" method="post">
+  <form action="#" th:action="@{/admin/coupons/create}" method="post" onsubmit="return validateExpirationDate(event)">
     <input type="hidden" name="couponTemplateId" th:value="${couponTemplateId}">
     <label for="expiredAt">만료일:</label>
     <input type="datetime-local" id="expiredAt" name="expiredAt" required="required">
@@ -31,4 +29,31 @@
   </form>
 </div>
 </body>
+
+<script>
+  function validateExpirationDate(event) {
+    const expiredAt = document.getElementById("expiredAt").value;
+    const currentDate = new Date();
+    currentDate.setDate(currentDate.getDate() + 1);
+
+    const expiredDate = new Date(expiredAt);
+
+    if (expiredDate < currentDate) {
+      alert("만료일은 24시간이 지난 이후여야 합니다.");
+      event.preventDefault();
+      return false;
+    }
+
+    return true;
+  }
+
+  document.addEventListener("DOMContentLoaded", function() {
+    const form = document.querySelector("form");
+    form.addEventListener("submit", function(event) {
+      if (!validateExpirationDate(event)) {
+        event.preventDefault();
+      }
+    });
+  });
+</script>
 </html>

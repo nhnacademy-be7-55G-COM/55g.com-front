@@ -8,7 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import shop.s5g.front.adapter.coupon.CouponCategoryAdapter;
 import shop.s5g.front.dto.MessageDto;
+import shop.s5g.front.dto.coupon.CouponCategoryDetailsCategoryNameDto;
 import shop.s5g.front.dto.coupon.CouponCategoryRequestDto;
+import shop.s5g.front.dto.coupon.CategoryResponseDto;
 import shop.s5g.front.dto.coupon.CouponCategoryResponseDto;
 import shop.s5g.front.exception.coupon.CouponCategoryNotFoundException;
 import shop.s5g.front.service.coupon.category.CouponCategoryService;
@@ -43,13 +45,58 @@ public class CouponCategoryServiceImpl implements CouponCategoryService {
 
     /**
      * 카테고리 조회
-     * @return List<CouponCategoryResponseDto>
+     * @return Page<CategoryResponseDto>
      */
     @Override
-    public Page<CouponCategoryResponseDto> getAllCategories(Pageable pageable) {
+    public Page<CategoryResponseDto> getAllCategories(Pageable pageable) {
 
         try {
-            ResponseEntity<Page<CouponCategoryResponseDto>> categoryList = couponCategoryAdapter.findAllCategories(pageable);
+            ResponseEntity<Page<CategoryResponseDto>> categoryList = couponCategoryAdapter.findAllCategories(pageable);
+
+            if (categoryList.getStatusCode().is2xxSuccessful()) {
+                return categoryList.getBody();
+            }
+
+            throw new CouponCategoryNotFoundException("Not Found Category List");
+        } catch (RuntimeException e) {
+            throw new CouponCategoryNotFoundException(e.getMessage());
+        }
+    }
+
+    /**
+     * 쿠폰 카테고리 조회
+     * @param pageable
+     * @return Page<CouponCategoryResponseDto>
+     */
+    @Override
+    public Page<CouponCategoryResponseDto> getAllCouponCategories(Pageable pageable) {
+
+        try {
+            ResponseEntity<Page<CouponCategoryResponseDto>> categoryList = couponCategoryAdapter.findAllCouponCategories(pageable);
+
+            if (categoryList.getStatusCode().is2xxSuccessful()) {
+                return categoryList.getBody();
+            }
+
+            throw new CouponCategoryNotFoundException("Not Found Category List");
+        } catch (RuntimeException e) {
+            throw new CouponCategoryNotFoundException(e.getMessage());
+        }
+
+    }
+
+    /**
+     * 쿠폰 적용된 카테고리 조회
+     * @param couponTemplateId
+     * @param pageable
+     * @return Page<CouponCategoryDetailsCategoryNameDto>
+     */
+    @Override
+    public Page<CouponCategoryDetailsCategoryNameDto> getCategoryNamesForAppliedCouponTemplates(
+        Long couponTemplateId, Pageable pageable) {
+
+        try {
+            ResponseEntity<Page<CouponCategoryDetailsCategoryNameDto>> categoryList = couponCategoryAdapter.findCategoryNameByTemplateId(couponTemplateId, pageable);
 
             if (categoryList.getStatusCode().is2xxSuccessful()) {
                 return categoryList.getBody();
@@ -67,11 +114,11 @@ public class CouponCategoryServiceImpl implements CouponCategoryService {
      * @return CouponCategoryResponseDto
      */
     @Override
-    public CouponCategoryResponseDto getCategory(Long categoryId) {
+    public CategoryResponseDto getCategory(Long categoryId) {
 
         try {
 
-            ResponseEntity<CouponCategoryResponseDto> category = couponCategoryAdapter.findCouponCategory(categoryId);
+            ResponseEntity<CategoryResponseDto> category = couponCategoryAdapter.findCouponCategory(categoryId);
 
             if (category.getStatusCode().is2xxSuccessful()) {
                 return category.getBody();

@@ -2,6 +2,8 @@ package shop.s5g.front.service.coupon.template.impl;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -50,7 +52,7 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
      * @return List<CouponTemplateInquiryResponseDto>
      */
     @Override
-    public List<CouponTemplateInquiryResponseDto> findCouponTemplates(int page, int size) {
+    public List<CouponTemplateInquiryResponseDto> getCouponTemplates(int page, int size) {
 
         try {
             ResponseEntity<List<CouponTemplateInquiryResponseDto>> response = couponTemplateAdapter.findCouponTemplates(page, size);
@@ -63,6 +65,27 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
          catch (HttpClientErrorException | HttpServerErrorException e) {
             throw new CouponTemplateRegisterFailedException(e.getMessage());
          }
+    }
+
+    /**
+     * 사용되지 않은 쿠폰 템플릿 조회
+     * @param pageable
+     * @return Page<CouponTemplateInquiryResponseDto>
+     */
+    @Override
+    public Page<CouponTemplateInquiryResponseDto> getCouponTemplatesUnused(Pageable pageable) {
+
+        try {
+            ResponseEntity<Page<CouponTemplateInquiryResponseDto>> response = couponTemplateAdapter.findCouponTemplatesUnused(pageable);
+
+            if (response.getStatusCode().is2xxSuccessful()) {
+                return response.getBody();
+            }
+            throw new CouponTemplateNotFoundException("CouponTemplate Not Found...!");
+        }
+        catch (HttpClientErrorException | HttpServerErrorException e) {
+            throw new CouponTemplateRegisterFailedException(e.getMessage());
+        }
     }
 
     @Override

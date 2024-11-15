@@ -282,7 +282,7 @@
               <li>
                 <a>쿠폰 템플릿</a>
                 <ul>
-                  <a class="nav-link" href="#" data-url="/admin/coupons/template/create">템플릿 생성</a>
+                  <a class="nav-link" href="/admin/coupons/policy-inquiry">템플릿 생성</a>
                   <a class="nav-link" href="templates/list">템플릿 조회</a>
                 </ul>
               </li>
@@ -291,7 +291,7 @@
                 <a>쿠폰</a>
                 <ul>
                   <li>
-                    <a class="nav-link" data-url="/admin/coupons">쿠폰 생성</a>
+                    <a class="nav-link">쿠폰 생성</a>
                     <ul>
                       <li><a class="nav-link" href="/templates/list">사용자 쿠폰 생성</a></li>
                       <li><a class="nav-link" href="/books/list">도서 쿠폰 생성</a></li>
@@ -299,7 +299,12 @@
                     </ul>
                   </li>
                   <li>
-                    <a class="nav-link" href="/api/shop/admin/coupons">쿠폰 조회</a>
+                    <a class="nav-link">쿠폰 조회</a>
+                    <ul>
+                      <li><a class="nav-link" href="/admin/users/coupons">사용자 쿠폰 조회</a></li>
+                      <li><a class="nav-link" href="/admin/books/coupons">도서 쿠폰 조회</a></li>
+                      <li><a class="nav-link" href="/admin/categories/coupons">카테고리 쿠폰 조회</a></li>
+                    </ul>
                   </li>
                 </ul>
               </li>
@@ -389,11 +394,7 @@
             </div>
           </div>
         </div>
-        <!-- 차트 섹션 -->
-        <div class="my-5">
-          <h4>사용자 활동 차트</h4>
-          <canvas id="userActivityChart" width="400" height="200"></canvas>
-        </div>
+
       </div>
       <div id="coupon-policy-form" style="display:none; text-align: center;">
         <h2>쿠폰 정책 생성</h2>
@@ -401,85 +402,26 @@
           <div class="mb-3">
             <label for="condition" class="form-label" style="text-align: left; display: block; margin-bottom: 2px; margin-left: 25px;">조건</label>
             <input type="text" class="form-control small-input" id="condition" name="condition" placeholder="예: 20000원" style="margin: 0 auto; text-align: left; padding-left: 10px;" required>
+            <small style="display: block; text-align: left; margin-left: 25px; color: #6c757d;">최소 만원, 최대 50만원까지 가능합니다.</small>
           </div>
           <div class="mb-3">
             <label for="discount-value" class="form-label" style="text-align: left; display: block; margin-bottom: 2px; margin-left: 25px;">할인</label>
             <input type="text" class="form-control small-input" id="discount-value" name="discountPrice" placeholder="예: 0.05" style="margin: 0 auto; text-align: left; padding-left: 10px;" required>
-            <small style="display: block; text-align: left; margin-left: 25px; color: #6c757d;">ex) 0.05 = 5%, 0.5 = 50%, 1000 = 1000원 할인 적용</small>
+            <small style="display: block; text-align: left; margin-left: 25px; color: #6c757d;">ex) 0.05 = 5%, 0.5 = 50%, 1000 = 1000원 할인 적용 / 최대 조건의 80% 적용 가능</small>
           </div>
           <div class="mb-3">
             <label for="max-discount" class="form-label" style="text-align: left; display: block; margin-bottom: 2px; margin-left: 25px;">최대 할인</label>
             <input type="text" class="form-control small-input" id="max-discount" name="maxPrice" placeholder="예: 2000원" style="margin: 0 auto; text-align: left; padding-left: 10px;" required>
+            <small style="display: block; text-align: left; margin-left: 25px; color: #6c757d;">최대할인은 (조건/할인) 까지 가능합니다.</small>
           </div>
           <div class="mb-3">
             <label for="duration" class="form-label" style="text-align: left; display: block; margin-bottom: 2px; margin-left: 25px;">기간</label>
             <input type="text" class="form-control small-input" id="duration" name="duration" placeholder="예: 30일" style="margin: 0 auto; text-align: left; padding-left: 10px;" required>
+            <small style="display: block; text-align: left; margin-left: 25px; color: #6c757d;">1 ~ 365일까지 가능합니다.</small>
           </div>
           <button type="submit" class="styled-button" style="display: block; margin: 0 auto;">생성</button>
         </form>
       </div>
-
-      <div id="coupon-template-form" style="display:none; text-align: center;">
-        <h2>쿠폰 템플릿 생성</h2>
-        <!-- 쿠폰 정책 선택 버튼 -->
-        <button id="couponPolicyBtn">쿠폰 정책 선택</button>
-
-        <!-- 모달 창 -->
-        <div id="couponModal" class="modal">
-          <div class="modal-content">
-            <span class="close-btn" id="closeModalBtn">&times;</span>
-            <h2>쿠폰 정책 선택</h2>
-            <table>
-              <thead>
-              <tr>
-                <th>순번</th>
-                <th>조건(원 이상)</th>
-                <th>할인 금액</th>
-                <th>기간</th>
-                <th>최대 할인 금액</th>
-                <th>선택</th>
-              </tr>
-              </thead>
-              <tbody>
-              <!-- 쿠폰 정책 리스트 반복 -->
-              <tr th:each="policy, stat : ${couponPolicyList}">
-                <td th:text="${stat.index + 1}">순번</td>
-                <td th:text="${policy.condition + '원'}">조건</td>
-                <td th:text="${policy.discountPrice() < 1 ? policy.discountPrice().multiply(100).stripTrailingZeros().toPlainString() + '%'
-                   : policy.discountPrice().stripTrailingZeros().toPlainString() + '원'}">
-                  할인(률)
-                </td>
-                <td th:text="${policy.duration + '일'}">기간</td>
-                <td th:text="${policy.maxPrice + '원'}">최대 할인 금액</td>
-                <td>
-                  <!-- 각 정책 선택 버튼 -->
-                  <button th:onclick="|selectCouponPolicy(${stat.index + 1},'${policy.condition}')|">선택</button>
-                </td>
-              </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- 쿠폰 폼 (동적으로 표시됨) -->
-        <div id="couponForm" style="display:none;">
-          <h3>쿠폰 이름과 설명을 입력하세요</h3>
-          <form id="couponTemplateForm" method="post" action="/admin/coupons/template/create">
-            <label for="couponPolicyId">쿠폰 정책 ID:</label>
-            <input id="couponPolicyId" name="couponPolicyId" value="couponPolicyId" />
-            <label for="couponName">쿠폰 이름:</label>
-            <input type="text" id="couponName" name="couponName" required /><br>
-            <label for="couponDescription">쿠폰 설명:</label>
-            <textarea id="couponDescription" name="couponDescription" required></textarea><br>
-            <button type="submit">제출</button>
-          </form>
-        </div>
-      </div>
-
-      <div id="">
-
-      </div>
-
     </main>
   </div>
 </div>
@@ -495,24 +437,14 @@
           e.preventDefault();
           $('#content-area').hide();
           $('#coupon-policy-form').show();
-          $('#coupon-template-form').hide();
-
-        } else if (url === '/admin/coupons/template/create') {
-          e.preventDefault();
-          $('#content-area').hide();
-          $('#coupon-policy-form').hide();
-          $('#coupon-template-form').show();
         }
-
         else {
           $('#coupon-policy-form').hide();
           $('#content-area').load(url).show();
-          $('#coupon-template-form').hide();
         }
       }
     });
   });
-
 
   // 요소 선택
   const couponPolicyBtn = document.getElementById("couponPolicyBtn");
@@ -561,26 +493,73 @@
     document.getElementById("couponModal").style.display = "none";
   });
 
-  // 모달 외부 클릭 시 모달 닫기
   window.addEventListener("click", function(event) {
     if (event.target === document.getElementById("couponModal")) {
       document.getElementById("couponModal").style.display = "none";
     }
   });
 
-  document.getElementById("coupon-form").onsubmit = function(event) {
+  document.getElementById("coupon-form").addEventListener("submit", function(event) {
+    event.preventDefault();
+    const form = document.getElementById('coupon-form');
+
+    const conditionValue = document.getElementById('condition').value;
     const discountValue = document.getElementById("discount-value").value;
-    const isInteger = /^\d+$/.test(discountValue); // 정수인지 확인
-    const isDecimalBelowOne = /^0(\.\d+)?$/.test(discountValue); // 1 미만의 소수인지 확인
+    const maxPriceValue = document.getElementById('max-discount').value;
+    const durationValue = document.getElementById('duration').value;
 
-    if (!isInteger && !isDecimalBelowOne) {
-      // 유효하지 않은 입력인 경우 경고 메시지를 띄우고 제출을 막음
-      alert("할인 필드는 정수(예: 1000) 또는 1 미만의 소수(예: 0.5, 0.05)만 입력 가능합니다.");
-      event.preventDefault();
+    const numericPattern = /^\d+(\.\d{1,2})?$/;
+    if (!numericPattern.test(discountValue) || !numericPattern.test(conditionValue) ||
+        (maxPriceValue && !numericPattern.test(maxPriceValue)) || !/^\d+$/.test(durationValue)) {
+      alert("입력된 값은 숫자 형식만 허용됩니다. 소수점 이하 2자리까지만 가능합니다.");
+      form.reset();
+      return;
     }
-  };
-</script>
 
+    const condition = parseFloat(conditionValue);
+    const discountPrice = parseFloat(discountValue);
+    const maxPrice = maxPriceValue ? parseFloat(maxPriceValue) : null;
+    const duration = parseInt(durationValue);
+
+    if (isNaN(condition) || condition < 10000 || condition > 500000) {
+      alert("조건은 10000원 에서 500000원 사이의 값이어야 합니다.");
+      form.reset();
+      return;
+    }
+
+    if (discountPrice < 1) {
+      if (discountPrice > 0.8) {
+        alert("할인은 최대 80%까지 가능합니다.");
+        form.reset();
+        return;
+      }
+    } else {
+      if (discountPrice < 1000 || discountPrice > condition * 0.8) {
+        alert(`할인은 최소 1000원, 최대 조건의 80%까지 가능합니다.`);
+        form.reset();
+        return;
+      }
+    }
+
+    if (maxPrice !== null) {
+      if (maxPrice < 0 || maxPrice > condition / 2) {
+        alert("최대 할인은 조건보다 작아야 하며 음수가 될 수 없습니다.");
+        form.reset();
+        return;
+      }
+    }
+
+    if (isNaN(duration) || duration < 1 || duration > 365) {
+      alert("기간은 1일에서 365일 사이의 값이어야 합니다.");
+      form.reset();
+      return;
+    }
+
+    form.submit();
+    form.reset();
+  });
+
+</script>
 
 </body>
 </html>

@@ -6,7 +6,8 @@
   <th:block th:replace="~{fragments/head :: headTemplate}"></th:block>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script src="https://js.tosspayments.com/v2/standard"></script>
-  <script src="http://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+  <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/decimal.js-light@2.5.1/decimal.min.js"></script>
   <script src="/static/js/payment-utils.js"></script>
   <script th:inline="javascript">
     const addressSelectors = {
@@ -20,16 +21,25 @@
     let deliveryFeeId = 1;
     // TODO: netPrice를 가져오도록 해야함.
     let netPrice=0;
-    // let totalPrice=0;
-    const originPrice = [[${originPrice}]];
-    const discountPrice = [[${discountPrice}]];
-    const totalPrice = [[${summation}]];
     const cartList = [];
+
+    const accRate = new Decimal([[${accRate}]]);
 
     [# th:each="cart: ${cartList}"]
     cartList.push([[${cart}]]);
     [/]
     let wrappingPaperId = 1;
+    cartList.forEach(cart => cart['wrap'] = {
+      id: -1,
+      cost: 0
+    });
+    // let totalPrice=0;
+    // let originPrice = 0;
+    // let discountPrice = 0;
+    const priceInfo = getCopyOfPriceInfo();
+
+    calcFromCart(priceInfo, cartList);
+    // let totalPrice = new Decimal([[${summation}]]);
 
     const paymentInfo = {
       orderId: '',
@@ -38,11 +48,21 @@
       method: '',
       amount: {
         currency: 'KRW',
-        value: totalPrice
+        value: parseInt(priceInfo.totalPrice.toString())
       },
       successUrl: window.location.origin + "/payment/success",
       failUrl: window.location.origin + "/payment/fail"
     };
+    const appendValue = (val) => {
+      priceInfo.totalPrice = priceInfo.totalPrice.plus(val);
+      paymentInfo.amount.value += val;
+      initPrices();
+    }
+    const subtractValue = (val) => {
+      priceInfo.discountPrice += (-val);
+      paymentInfo.amount.value -= val;
+      initPrices();
+    }
 
     const fetchCustomerInfoPromise = axios.get('/payment/support/customer')
       .then(response => {
@@ -57,15 +77,22 @@
         alert(`사용자 정보를 가져오는데 실패했습니다: ${err}`);
         returnToIndex();
       });
+    const switchWrap = (index, bookId, { id, cost }) => {
+      cartList[index]['wrap'] = {id, cost};
+      const purchaseButton = document.querySelector('#purchaseButton');
+      purchaseButton.disabled = true;
+      axios.put('payment/support/wrap', {
+        index, bookId, wrapId: id
+      }).then(res => {
+        purchaseButton.disabled = false;
+        initPrices();
+      });
+    }
     const switchPayment = (element, method) => {
       paymentInfo.method = method;
       const paymentButtons = document.querySelectorAll('#paymentButtons > button');
       paymentButtons.forEach(btn => btn.classList.remove('payment-selected'));
       element.classList.add('payment-selected');
-    };
-
-    const addAmount = (value) => {
-      paymentInfo.amount.value+= value;
     };
 
     // document.addEventListener('DOMContentLoaded', () => {
@@ -85,6 +112,9 @@
           customerNameInput.value = paymentInfo.customer.name;
           customerEmailInput.value = paymentInfo.customer.email;
         });
+
+      const acc = document.querySelector('#accSumSpan');
+      acc.textContent = Math.floor(priceInfo.totalPrice.mul(accRate)).toString();
     });
   </script>
   <script>
@@ -96,6 +126,7 @@
     // totalPrice = 5000;
   </script>
   <link href="/static/css/purchase-style.css" rel="stylesheet" />
+  <script src="../static/js/payment-utils.js"></script>
 </head>
 
 <body
@@ -131,10 +162,11 @@
         <tr>
           <th class="w-50" scope="col">상품명</th>
           <th scope="col">정가</th>
-          <th scope="col">수량</th>
           <th scope="col">할인금액</th>
+          <th scope="col">수량</th>
           <th scope="col">합계</th>
           <th scope="col"><a id="wrap-info" href="#">포장여부*</a></th>
+          <th scope="col">포장가격</th>
           <script>
             const wrapInfo = document.querySelector('#wrap-info');
 
@@ -143,25 +175,47 @@
         </tr>
         </thead>
         <tbody id="shoppingCart">
-        <th:block th:each="cart: ${cartList}">
+        <th:block th:each="cart, i: ${cartList}">
         <tr th:id="|cart-row-${cart.id}|" th:data-book-id="${cart.id}">
           <td th:text="${cart.title}"></td>
           <td th:text="${cart.price}"></td>
-          <td th:text="${cart.quantity}"></td>
           <td th:text="${cart.discountPrice}"></td>
-          <td th:text="${cart.totalPrice}"></td>
+          <td th:text="${cart.quantity}"></td>
+          <td th:text="${cart.totalPrice * cart.quantity}"></td>
           <td>
             <div>
-              <select class="form-control-sm" th:id="|paper-select-${cart.id}|">
+              <select th:data-book-id="${cart.id}" th:data-index="${i.index}" data-old-cost="0" onchange="selectWrapHandler(this)" class="form-control-sm" th:id="|paper-select-${cart.id}|">
                 <option value="-1" data-cost="0" selected>포장안함</option>
-                <th:block th:each="paper: ${wrappingPapaerList}">
-                <option th:value="${paper.id}" th:text="${paper.name}" th:data-cost="${paper.price}"></option>
+                <th:block th:each="paper: ${wrappingPaperList}">
+                <option
+                    th:value="${paper.id}"
+                    th:text="${paper.name}"
+                    th:data-cost="${paper.price}"
+                ></option>
                 </th:block>
               </select>
             </div>
           </td>
+          <td th:id="|wrap-${i.index}|">0</td>
         </tr>
         </th:block>
+        <script>
+          const selectWrapHandler = (select) => {
+            const opt = select.selectedOptions[0];
+            const id = parseInt(select.value);
+            const index = select.getAttribute('data-index');
+            const oldCost = parseInt(select.getAttribute("data-old-cost"));
+            const cost = parseInt(opt.getAttribute("data-cost"));
+            const bookId = parseInt(select.getAttribute("data-book-id"));
+            const wrapView = document.querySelector(`#wrap-${index}`);
+            wrapView.textContent = `${cost}`;
+
+            appendValue(-oldCost);
+            appendValue(cost);
+            switchWrap(index, bookId, {id, cost});
+            select.setAttribute('data-old-cost', cost);
+          };
+        </script>
         </tbody>
       </table>
 <!--      주문인 정보-->
@@ -174,6 +228,11 @@
           </div>
           <div class="flex-grow-1">
             <div th:replace="~{fragments/purchase :: disabledInputWithLabel('customerEmailInput', '이메일', 'text')}"></div>
+          </div>
+          <div class="flex-grow-1">
+            <div>회원 적립률: <span th:text="${#numbers.formatPercent(memberInfo.grade.point*0.01, 0, 1)}"></span></div>
+            <div>기본 적립률: <span th:text="|${#numbers.formatPercent(purchasePointPolicy.value, 0, 1)}|"></span></div>
+            <div>예상 적립 포인트: <span id="accSumSpan" style="color:red;"></span></div>
           </div>
         </div>
       </div>
@@ -224,13 +283,17 @@
   </div>
   <footer class="d-flex flex-row">
     <div class="d-flex justify-content-center flex-grow-1">
-      <div id="descriptionForm" class="me-auto">책 어쩌고 저쩌고 몇권 외..</div>
+<!--      <div id="descriptionForm" class="me-auto">책 어쩌고 저쩌고 몇권 외..</div>-->
       <div id="priceForm" class="d-flex flex-row ms-3">
         <div th:replace="~{fragments/purchase :: displayPrice('원 가격', 'originPrice')}"></div>
 <!--        <div>₩5000</div>-->
         <div class="price-delimiter align-items-center">-</div>
         <div th:replace="~{fragments/purchase :: displayPrice('할인 가격', 'discountPrice')}"></div>
 <!--        <div>₩0</div>-->
+        <div class="price-delimiter align-items-center">+</div>
+        <div th:replace="~{fragments/purchase :: displayPrice('배송비', 'deliveryPrice')}"></div>
+        <div class="price-delimiter align-items-center">+</div>
+        <div th:replace="~{fragments/purchase :: displayPrice('포장 가격', 'wrappingPrice')}"></div>
         <div class="price-delimiter align-items-center">=</div>
         <div th:replace="~{fragments/purchase :: displayPrice('결제 가격', 'payPrice')}"></div>
 <!--        <div>₩5000</div>-->
@@ -240,13 +303,24 @@
       </div>
     </div>
     <script>
-      const origin = document.querySelector('#originPrice');
-      const discount = document.querySelector('#discountPrice');
-      const pay = document.querySelector('#payPrice');
+      const initPrices = () => {
+        const origin = document.querySelector('#originPrice');
+        const discount = document.querySelector('#discountPrice');
+        const pay = document.querySelector('#payPrice');
+        const wrap = document.querySelector('#wrappingPrice');
+        const acc = document.querySelector('#accSumSpan');
+        acc.textContent = Math.floor(priceInfo.totalPrice.mul(accRate)).toString();
 
-      origin.innerHTML = `₩ ${originPrice}`;
-      discount.innerHTML = `₩ ${discountPrice}`;
-      pay.innerHTML = `₩ ${totalPrice}`;
+        origin.innerHTML = `₩ ${priceInfo.originPrice}`;
+        discount.innerHTML = `₩ ${priceInfo.discountPrice}`;
+        pay.innerHTML = `₩ ${priceInfo.totalPrice.toString()}`;
+        let wrapPrice = 0;
+        cartList.forEach(cart => {
+          wrapPrice += cart['wrap'].cost;
+        });
+        wrap.innerHTML = `₩ ${wrapPrice}`;
+      };
+      initPrices();
     </script>
   </footer>
 </body>
@@ -285,11 +359,11 @@
             totalPrice: cart.totalPrice
           })),
           netPrice: netPrice,
-          totalPrice: totalPrice
+          totalPrice: parseInt(priceInfo.totalPrice.toString())
         };
         console.log(`purchaseInfo`);
         console.log(purchaseInfo);
-        createNewOrder(purchaseInfo)  // TODO: OrderCreateRequestDto로 바꿀 예정.
+        createNewOrder(purchaseInfo)
           .then(response => {
             return axios.get(`/payment/support/generate-order?orderId=${response.data.orderId}`);
           })
@@ -303,6 +377,7 @@
             return tossPaymentReady(paymentInfo, clientKeyResponse.data);
           })
           .catch(err => {
+            console.log(err);
             if (err.response.status === 408) {
               alert('주문 세션이 종료되었습니다. 다시 시도해 주세요.');
               window.location.reload();

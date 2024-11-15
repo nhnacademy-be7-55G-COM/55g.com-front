@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>쿠폰 템플릿 등록</title>
+  <link rel="stylesheet" href="style.css">
+  <div th:replace="~{fragments/head}"></div>
+</head>
+<body>
+<div class="container">
+  <button class="close-btn" onclick="window.location.href='/admin'">&times;</button>
+  <h2>쿠폰 템플릿 등록</h2>
+
+  <div>
+    <h3>선택된 쿠폰 정책</h3>
+    <p><strong>할인 금액:</strong>
+      <span th:text="${couponPolicy.discountPrice() < 1 ? couponPolicy.discountPrice().multiply(100).stripTrailingZeros().toPlainString() + '%' : couponPolicy.discountPrice().stripTrailingZeros().toPlainString() + '원'}"></span>
+    </p>
+    <p><strong>조건(이상):</strong> <span th:text="${couponPolicy.condition()}"></span> 원</p>
+    <p><strong>최대 할인 금액:</strong> <span th:text="${couponPolicy.maxPrice()}"></span> 원</p>
+    <p><strong>기간:</strong> <span th:text="${couponPolicy.duration()}"></span> 일</p>
+  </div>
+
+  <form action="#" th:action="@{/admin/coupons/template/create}" method="post">
+    <input type="hidden" name="couponPolicyId" th:value="${couponPolicy.couponPolicyId}">
+
+    <label for="couponName">쿠폰 이름:</label>
+    <input type="text" id="couponName" name="couponName" minlength="2" maxlength="50" required>
+    <br>
+
+    <label for="couponDescription">쿠폰 설명:</label>
+    <textarea id="couponDescription" name="couponDescription" minlength="1" maxlength="200" required></textarea>
+    <br>
+
+    <button type="submit">쿠폰 템플릿 등록</button>
+  </form>
+</div>
+</body>
+</html>
