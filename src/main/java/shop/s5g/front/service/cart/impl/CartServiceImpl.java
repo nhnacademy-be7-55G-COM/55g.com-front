@@ -13,11 +13,13 @@ import shop.s5g.front.dto.cart.request.CartLoginRequestDto;
 import shop.s5g.front.dto.cart.request.CartPutRequestDto;
 import shop.s5g.front.dto.cart.request.CartRemoveBookRequestDto;
 import shop.s5g.front.dto.cart.request.CartUpdateQuantityRequestDto;
+import shop.s5g.front.exception.AuthenticationException;
 import shop.s5g.front.exception.BadRequestException;
 import shop.s5g.front.exception.ResourceNotFoundException;
 import shop.s5g.front.exception.cart.CartConvertException;
 import shop.s5g.front.exception.cart.CartDetailPageException;
 import shop.s5g.front.exception.cart.CartPutException;
+import shop.s5g.front.exception.cart.CartRemoveAccountException;
 import shop.s5g.front.service.cart.CartService;
 
 @Service
@@ -87,6 +89,18 @@ public class CartServiceImpl implements CartService {
 
         } catch (Exception e) {
             throw new CartConvertException("장바구니 초기화에 실패했습니다");
+        }
+    }
+    @Override
+    public void removeAccount() {
+        try {
+            cartAdapter.removeAccount();
+
+        } catch (AuthenticationException e) {
+            throw new CartRemoveAccountException("인증오류가 발생해 장바구니 정보삭제에 실패했습니다.");
+
+        } catch (Exception e){
+            throw new CartRemoveAccountException("장바구니 정보삭제에 실패했습니다.");
         }
     }
 

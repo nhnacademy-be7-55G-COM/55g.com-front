@@ -18,7 +18,7 @@ public interface CartService {
     Map<String, Integer> convertCartToRedis(CartLoginRequestDto cartLoginRequestDto);
 
     void redisToDbWhenLogout();
-
+    void removeAccount();
     void updateQuantity(CartUpdateQuantityRequestDto cartUpdateQuantityRequestDto);
 
     void removeBook(CartRemoveBookRequestDto cartRemoveBookRequestDto);

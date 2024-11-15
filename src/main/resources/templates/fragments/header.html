@@ -133,7 +133,7 @@
       async function loadCartPage() {
 
         const loggedIn = await isLoggedIn();
-        console.log('cartPageLoad')
+        console.log('cartPage load')
 
         if (loggedIn) {
           window.location.href = "/cart/detailPage";
@@ -142,7 +142,7 @@
         if (!localStorage.getItem('cart')){
           localStorage.setItem('cart', JSON.stringify({ cartBookInfoList: [] }));
           localStorage.setItem('cartCount',0);
-          console.log('loadcartPage')
+
         }
         const books = localStorage.getItem('cart');
         const encodedBooks = encodeURIComponent(btoa(books));
@@ -168,9 +168,6 @@
 
       }
 
-
-
-
       // 쿠키를 이용해 로그인 여부 확인인데 http only 라서 자바스크립트에서는 쿠키를 직접 확인할 수 없고 서버에 요청을 해야한다.
       async function isLoggedIn() {
         const response = await fetch("/cart/loginCheck",{method:'GET',credentials:"include"});
@@ -178,9 +175,8 @@
         return  data.isLoggedIn;
       }
 
-      window.onload = async function(){
-        await updateCartCount();
-      }
+
+      window.addEventListener('DOMContentLoaded', async () => await updateCartCount());
 
       //국내도서 데이터 가져오기
       async function categoryInfo() {

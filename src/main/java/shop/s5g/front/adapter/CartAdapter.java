@@ -38,6 +38,9 @@ public interface CartAdapter {
     @PostMapping("/api/shop/cart/logout")
     ResponseEntity<Void> redisToDbWhenLogout();
 
+    @PostMapping("/api/shop/cart/removeAccount")
+    ResponseEntity<Void> removeAccount();
+
     @PostMapping("/api/shop/cart/controlQuantity")
     ResponseEntity<Void> updateQuantity(
         @RequestBody CartUpdateQuantityRequestDto cartUpdateQuantityRequestDto);

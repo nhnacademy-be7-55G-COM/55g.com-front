@@ -17,6 +17,7 @@ public class AuthController {
 
     private final AuthService authService;
     private final CartService cartService;
+
     @GetMapping("/login")
     public String login() {
         return "login";
@@ -26,7 +27,7 @@ public class AuthController {
     public String login(@ModelAttribute LoginRequestDto requestDto, HttpServletResponse response) {
         authService.loginMember(requestDto, response);
 
-        return "redirect:/cart/loginProcess";
+        return "cart/cartLogin";
     }
 
     @PostMapping("/logout")

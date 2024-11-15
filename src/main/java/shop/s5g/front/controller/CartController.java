@@ -34,11 +34,6 @@ public class CartController {
 
     private final CartService cartService;
 
-    @GetMapping("/cart/loginProcess")
-    public String cartLoginProcessing() {
-        return "cart/cartLogin";
-    }
-
     @GetMapping("/cart/loginCheck")
     public ResponseEntity<Map<String,Boolean>> cartLoginCheck(@CookieValue(value = "accessJwt",required = false) String isLoggedIn) {
 
@@ -159,6 +154,8 @@ public class CartController {
         }
 
     }
+
+
 
     private void cartDetailPageWhenLogin(HttpServletResponse response, Model model) {
         Map<String, Object> cartDetailPageInfo = cartService.getCartDetailPageInfo(); // 로그인 상태라면 api 에 가서 장바구니 정보를 가져와야한다.

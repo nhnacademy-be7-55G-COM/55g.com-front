@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="en" th:attr="data-page-id=${pageId}">
-<head th:replace="~{fragments/head}">
+<head>
   <meta charset="UTF-8" http-equiv="Cache-Control" content="no-cache">
   <title>장바구니 상세 페이지</title>
   <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
   <link rel="stylesheet" th:href="@{/themes/smoothness/jquery-ui.css}">
+  <th:block th:replace="~{fragments/head :: headTemplate}" />
+
   <style>
+
     #cartTable {
       table-layout: fixed !important;; /* 셀 크기 고정 */
       width: 100% !important;; /* 테이블 전체 너비 */
@@ -36,20 +39,16 @@
       padding: 0;
     }
 
-    .quantity-input {
-      width: 50px;
-      text-align: center;
+
+    .quantity-container input,
+    .quantity-container button {
+      height: 38px; /* 버튼과 input의 동일한 높이 설정 */
+      line-height: 38px; /* 수직 중앙 정렬 */
+      margin: 0; /* 여백 초기화 */
     }
 
-    /* 텍스트 스타일 */
 
-    .cart-item-title {
-      font-size: 14px;
-      white-space: nowrap; /* 텍스트 한 줄 유지 */
-      overflow: hidden; /* 넘치는 텍스트 숨김 */
-      text-overflow: ellipsis; /* 넘칠 경우 '...' */
-    }
-    .quantity-btn, .delete-btn {
+    .quantity-btn {
       background-color: #c49a6c; /* CART 버튼 색상 */
       color: white; /* 텍스트 색상 */
       border: 1px solid #c49a6c; /* 테두리 색상 */
@@ -58,7 +57,7 @@
       transition: background-color 0.3s ease, transform 0.2s ease; /* 호버 효과 */
     }
 
-    .quantity-btn:hover, .delete-btn:hover {
+    .quantity-btn:hover {
       background-color: #a97b4c; /* 호버 시 더 진한 색상 */
       transform: scale(1.1); /* 호버 시 약간 확대 */
     }
@@ -71,7 +70,7 @@
 <div th:replace="~{fragments/header}"></div>
 
 <script>
-  console.log('test');
+
   const [navigationEntry] = performance.getEntriesByType("navigation");
   (async () => {
     if (navigationEntry && navigationEntry.type === "reload") {
@@ -83,15 +82,11 @@
         const encodedBooks = encodeURIComponent(btoa(books));
 
         window.location.href = `/cart/detailPage?cartBookInfoList=${encodedBooks}`;
-      }else if (loggedIn){  //TODO 테스트후 삭제예정
+      }else{
         console.log("Page was refreshed...");
         document.body.style.display = "block";
-
-        // window.location.href = "/cart/detailPage";
-      } else{
-        document.body.style.display = "block";
-
       }
+
     }else if (navigationEntry && navigationEntry.type === "back_forward"){
       const loggedIn = await isLoggedIn();
       if (!loggedIn) {
@@ -101,15 +96,10 @@
         const encodedBooks = encodeURIComponent(btoa(books));
 
         window.location.href = `/cart/detailPage?cartBookInfoList=${encodedBooks}`;
-      }else if (loggedIn){  //TODO 테스트후 삭제예정
+      }else{
         console.log("back_forward...");
 
-        // window.location.href = "/cart/detailPage";
         document.body.style.display = "block";
-
-      }else{
-        document.body.style.display = "block";
-
       }
     } else {
       // 리디렉션이 필요하지 않을 때만 페이지 표시
@@ -168,12 +158,17 @@
               <button  class="btn btn-outline-secondary quantity-btn" style="height: 30px; width: 30px; padding: 0;" th:attr="onclick='updateQuantity(1, ' + ${book.bookId} + ', ' + ${book.discountedPrice} +', ' + ${book.stock}+ ')'">+</button>
             </div>
           </td>
-          <td class="text-center">
+
+          <td class="text-center" th:if="${book.price != book.discountedPrice}">
             <p style="text-decoration: line-through; color: red;">₩<span th:text="${book.price}">1000</span></p>
             <p style="color: green;">할인가: ₩<span th:text="${book.discountedPrice}">500</span></p>
           </td>
+          <td class="text-center" th:if="${book.price == book.discountedPrice}">
+            <span style="color: black;">₩<span th:text="${book.price}">1000</span></span>
+          </td>
+
           <td class="text-center">
-            ₩<span th:id="'total-price-' + ${book.bookId}" th:text="${book.discountedPrice * book.quantity}">500</span>
+            ₩<span th:id="'total-price-' + ${book.bookId}" th:text="${#numbers.formatDecimal(book.discountedPrice * book.quantity,0,0)}">500</span>
           </td>
           <td class="text-center">
             <!-- 삭제 버튼 추가 -->
@@ -216,15 +211,20 @@
   let totalPrice = parseFloat(document.getElementById('total-price').innerText) || 0;
   const freeShippingThreshold = /*[[${feeInfo.freeShippingThreshold}]]*/ 0;
   let shippingCost = parseFloat(document.getElementById('shipping-cost').innerText) || 0;
-  // TODO 로그인 체크를 수량변동이나 삭제마다 하는 것이 아니라 페이지 로드될 때 한번하고 이용하는 걸로 테스트후 변경예정
+  let isLogged;
 
+  // 페이지가 로드될 때 로그인 여부 확인
+  (async () =>{
+    isLogged = await isLoggedIn();
+    console.log('즉시 로그인여부 확인',isLogged);
+  })();
 
 
   // 카트에 들어있는 개수 초기화
   function updateCartCountWhenRemoved() {
-
+    console.log('updateCartCountWhenRemoved');
     let cartCountElement = document.getElementById('cart-count');
-    let currentCount = parseInt(cartCountElement.innerText,10) - 1;
+    let currentCount = parseInt(localStorage.getItem('cartCount')) - 1;
     currentCount = currentCount >= 0 ? currentCount : 0;
     cartCountElement.innerText = currentCount;
     localStorage.setItem('cartCount', currentCount);
@@ -302,11 +302,10 @@
       return;
     }
 
-    const loggedIn = await isLoggedIn();
-    console.log('cart update loggedIn:', loggedIn);
-    if (loggedIn){
-      //레디스에 반영
 
+    if (isLogged){
+      //레디스에 반영
+      console.log('회원 수량 업데이트');
       fetch('/cart/updateQuantity', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -317,6 +316,7 @@
       })
       .then(response =>{
         if (response.ok){
+          console.log('수량 업데이트');
           updateQuantityViewReflection(change, bookId, discountedPrice, stock);
         }else {
           alert("수량 업데이트에 실패했습니다.");
@@ -333,6 +333,8 @@
       const existingBook = cartData.cartBookInfoList.find(book => book.bookId === bookId);
 
       if (existingBook){
+        console.log('수량 업데이트');
+
         existingBook.quantity += change;
         localStorage.setItem('cart',JSON.stringify(cartData));
 
@@ -352,8 +354,8 @@
       totalPrice -= discountedPrice * quantity;
     }
 
-    const loggedIn = await isLoggedIn();
-    if (loggedIn){
+
+    if (isLogged){
       // 레디스에 반영
       fetch(`/cart/removeBook`, {
         method: 'DELETE',
@@ -364,6 +366,7 @@
       })
       .then(response => {
         if (response.ok){
+          console.log('장바구니 목록에서 삭제');
           document.getElementById('item-row-' + bookId).remove();
           updateCartCountWhenRemoved();
           updateFinalPriceAndShipping();
@@ -381,6 +384,8 @@
       const existingBookIndex = bookData.cartBookInfoList.findIndex(book => book.bookId === bookId);
 
       if (existingBookIndex !== -1){
+        console.log('장바구니 목록에서 삭제');
+
         bookData.cartBookInfoList.splice(existingBookIndex,1);
         document.getElementById('item-row-' + bookId).remove();
         updateCartCountWhenRemoved();
@@ -422,16 +427,9 @@
     // 최종 결제 금액 및 배송비 업데이트
     updateFinalPriceAndShipping();
   }
-  function updateCartCountOnLoad(){
-    console.log('update cartCount onLoad');
-    const cartCountElement = document.getElementById('cart-count');
-    cartCountElement.textContent = localStorage.getItem('cartCount');
-  }
 
-  window.onload = function(){
-    initializeCart();
-    updateCartCountOnLoad();
-  };
+  window.addEventListener('DOMContentLoaded', initializeCart);
+
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
