@@ -37,6 +37,7 @@ public class MyPageSupportController {
         return orderDetailService.getOrderDetailAllInfos(orderId);
     }
 
+    // TODO: 멱등키를 프론트에서 발급하여 넣어야함.
     @PutMapping("/orders/cancel/{detailId}")
     public ResponseEntity<HttpStatus> cancelOrderDetail(
         @PathVariable long detailId,
