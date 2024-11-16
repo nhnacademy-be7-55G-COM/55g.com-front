@@ -11,7 +11,7 @@ public record MemberRegistrationRequestDto(
     String name,
 
     @NotBlank
-    @Length(min = 4, max = 300)
+    @Length(min = 8, max = 300)
     @Email
     String email,
 
@@ -23,7 +23,7 @@ public record MemberRegistrationRequestDto(
     @Length(min = 4, max = 30)
     String password,
 
-    @NotNull
+    @NotBlank
     @Length(min = 11, max = 11)
     String phoneNumber,
 
