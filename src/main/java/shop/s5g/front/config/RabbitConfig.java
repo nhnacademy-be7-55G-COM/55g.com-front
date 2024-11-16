@@ -11,10 +11,6 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitConfig {
-    public static final String orderExchange = "55g.orders.exchange";
-    private static final String orderPaymentQueue = "55g.orders.payment.queue";
-    private static final String tossRoutingKey = "55g.orders.payment.toss";
-
     @Value("${spring.rabbitmq.host}")
     private String host;
 
@@ -47,7 +43,7 @@ public class RabbitConfig {
     public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
         RabbitTemplate template = new RabbitTemplate(connectionFactory);
         template.setMessageConverter(messageConverter());
-        template.setReplyTimeout(5000L);    // 기본 5초임!
+        template.setReplyTimeout(20000L);    // 기본 5초 -> 20초
 
         return template;
     }
