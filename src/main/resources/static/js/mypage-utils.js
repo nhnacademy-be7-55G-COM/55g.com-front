@@ -1,3 +1,16 @@
+const deliveryMap = {
+  PREPARING: '배송준비중',
+  SHIPPING: '배송중',
+  DELIVERED: '배송 완료'
+};
+
+const detailMap = {
+  COMPLETE: '주문 완료',
+  CONFIRM: '주문 확정',
+  RETURN: '반품',
+  CANCEL: '주문 취소'
+};
+
 const callPointHistoryPage = async (tableSelector, {size, page}) => {
   let totalPage = -1;
   let totalElements = -1;
@@ -38,15 +51,45 @@ const callPointHistoryPage = async (tableSelector, {size, page}) => {
   return {totalPage, totalElements};
 }
 
+const cancelDetail = (id) => {
+  axios.delete(`/mypage/support/orders/cancel/${id}`)
+    .then(response => {
+      alert("주문이 취소되었습니다. 환불에 시간이 걸릴 수 있습니다...");
+    })
+    .catch(err => {
+      console.log(err);
+      alert("주문 취소에 실패했습니다. 다시 시도해 주세요.");
+    });
+}
+
+
+const refundDetail= (id) => {
+  axios.delete(`/mypage/support/orders/refund/${id}`)
+  .then(response => {
+    alert("반품이 신청되었습니다. 반품한 책에 결제한 만큼 포인트로 환불됩니다.");
+  })
+  .catch(err => {
+    console.log(err);
+    alert("반품에 실패했습니다. 다시 시도해 주세요.");
+  });
+}
 const applyOrderDetailTemplate = (tr) => {
   const myModal = detailModalInstance;
   tr.addEventListener('click', async () => {
     myModal.show();
     const orderId = tr.getAttribute('data-order-id');
     const info = (await axios.get('/mypage/support/orders/info', {params: {orderId}})).data;
+    const delivery = info['delivery'];
     const tbody = detailModalBody.querySelector('#detail-table-books > tbody');
     // 주문상세 삽입
     info.details.forEach(detail => {
+      let dangerButton = '';
+      if (detail.orderDetailType === 'COMPLETE') {
+        if (delivery.status === 'PREPARING')
+          dangerButton = `<button onclick="cancelDetail(${detail.orderDetailId})" class="btn btn-outline-danger button-cancel">주문취소</button>`;
+        else
+          dangerButton = `<button onclick="refundDetail(${detail.orderDetailId})" class="btn btn-outline-danger button-cancel">반품하기</button>`;
+      }
       tbody.innerHTML += `
         <tr>
         <td>${detail.bookTitle}</td>
@@ -54,6 +97,7 @@ const applyOrderDetailTemplate = (tr) => {
         <td>${detail.totalPrice}</td>
         <td>${detail.accumulationPrice}</td>
         <td>${detail.wrappingPaperName}</td>
+        <td>${dangerButton}</td>
         </tr>
       `;
     });
@@ -125,6 +169,7 @@ const orderDetailModalTemplate = `
           <th scope="col">가격</th>
           <th scope="col">적립</th>
           <th scope="col">포장지</th>
+          <th scope="col">주문취소</th>
         </tr>
         </thead>
         <tbody></tbody>

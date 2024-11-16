@@ -36,4 +36,7 @@ public interface OrderAdapter {
 
     @DeleteMapping("/{orderId}")
     ResponseEntity<HttpStatus> deleteOrder(@PathVariable long orderId);
+
+//    @DeleteMapping("{detailId}")
+//    ResponseEntity<HttpStatus>
 }

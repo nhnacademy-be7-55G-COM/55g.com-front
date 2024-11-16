@@ -70,7 +70,7 @@ class OrderServiceImplTest {
             .doesNotThrowAnyException();
 
         verify(adapter, times(1))
-            .fetchOrderListsBetweenDates(eq("2022-02-02"), eq("2022-02-02"));
+            .fetchOrderListsBetweenDates("2022-02-02", "2022-02-02");
     }
 
     @ParameterizedTest

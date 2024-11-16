@@ -2,7 +2,12 @@ package shop.s5g.front.controller;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,7 +26,6 @@ public class MyPageSupportController {
     private final OrderService orderService;
     private final OrderDetailService orderDetailService;
 
-    // TODO: 현재 INACTIVE 인 주문도 같이 나오는중. API 단에서 수정필요.
     @GetMapping("/orders")
     public List<OrderWithDetailResponseDto> fetchOrders(OrderQueryRequestDto request) {
         return orderService.queryOrdersBetweenDates(request);
@@ -30,5 +34,15 @@ public class MyPageSupportController {
     @GetMapping("/orders/info")
     public OrderDetailInfoDto fetchOrderInfo(@RequestParam long orderId) {
         return orderDetailService.getOrderDetailAllInfos(orderId);
+    }
+
+    @DeleteMapping("/orders/cancel/{detailId}")
+    public ResponseEntity<HttpStatus> cancelOrderDetail(@PathVariable long detailId) {
+
+        return ResponseEntity.ok().build();
+    }
+    @DeleteMapping("/orders/refund/{detailId}")
+    public ResponseEntity<HttpStatus> refundOrderDetail(@PathVariable long detailId) {
+        return ResponseEntity.ok().build();
     }
 }

@@ -31,6 +31,14 @@ management:
       exposure:
         include: refresh,busrefresh
 
+rabbit:
+  exchange:
+    orders: 55g.orders.exchange
+  route:
+    orders:
+      payment:
+        toss: 55g.orders.payment.toss
+
 ---
 # on profile 'live'
 spring:
