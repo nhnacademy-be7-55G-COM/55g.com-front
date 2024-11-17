@@ -2,6 +2,7 @@ package shop.s5g.front.service.wrappingpaper.impl;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,7 @@ import shop.s5g.front.dto.wrappingpaper.WrappingPaperCreateRequestDto;
 import shop.s5g.front.dto.wrappingpaper.WrappingPaperRequestDto;
 import shop.s5g.front.dto.wrappingpaper.WrappingPaperResponseDto;
 import shop.s5g.front.dto.wrappingpaper.WrappingPaperView;
+import shop.s5g.front.exception.PrototypeBeanCreationFailedException;
 import shop.s5g.front.service.image.ImageService;
 import shop.s5g.front.service.wrappingpaper.WrappingPaperService;
 
@@ -104,6 +106,10 @@ public class WrappingPaperServiceImpl implements WrappingPaperService {
     @Override
     public WrappingPaperView convertToView(WrappingPaperResponseDto response) {
         UriComponentsBuilder builder = builderProvider.getIfAvailable();
+        if (builder == null) {
+            log.error("URI 컴포넌트 생성 실패");
+            throw new PrototypeBeanCreationFailedException();
+        }
         String imageUri = builder.path("/" + response.imageName()).build().toUriString();
 
         return new WrappingPaperView(

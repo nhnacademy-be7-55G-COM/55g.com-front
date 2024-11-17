@@ -23,6 +23,7 @@ import shop.s5g.front.exception.AuthenticationException;
 import shop.s5g.front.exception.ResourceNotFoundException;
 import shop.s5g.front.exception.cart.CartConvertException;
 import shop.s5g.front.exception.cart.CartDetailPageException;
+import shop.s5g.front.exception.cart.CartPurchaseException;
 import shop.s5g.front.exception.cart.CartPutException;
 import shop.s5g.front.exception.cart.CartRemoveAccountException;
 import shop.s5g.front.service.book.BookService;
@@ -132,6 +133,19 @@ public class CartServiceImpl implements CartService {
 
         } catch (Exception e) {
             throw new CartDetailPageException("해당 도서 삭제에 실패했습니다");
+        }
+    }
+
+    public List<CartBookInfoRequestDto> getBooksWhenPurchase() {
+        try {
+            ResponseEntity<List<CartBookInfoRequestDto>> booksInfoList = cartAdapter.getBooksWhenPurchase();
+
+            return booksInfoList.getBody();
+
+        } catch (Exception e){
+
+            throw new CartPurchaseException("정보를 가져오는데 실패했습니다 다시 시도해주세요");
+
         }
     }
 
