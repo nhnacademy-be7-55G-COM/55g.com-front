@@ -37,24 +37,22 @@
     <div class="row">
       <div class="products-grid d-flex flex-wrap" style="justify-content: flex-start; margin-top: 28px"> <!-- flexbox 컨테이너 설정 -->
         <div class="col-md-3" th:each="book : ${books}" style="margin-bottom: 20px;"> <!-- 추가된 스타일 -->
-          <div class="product-item" style="margin: 0 10px;"> <!-- 좌우 간격 추가 -->
-            <figure class="product-style" style="margin: 0; padding: 0; height: 100%; width: 100%; position: relative; overflow: hidden;">
+          <a th:href="'/book/' + ${book.bookId}" class="caption-link">
+            <div class="product-item" style="margin: 0 10px;"> <!-- 좌우 간격 추가 -->
               <img th:src="@{/static/images/noImage.jpg}"
-                   alt="Thumbnail"
-                   class="product-image"
-                   style="height: 100%; width: 100%; object-fit: cover; display: block;">
-              <button type="button" class="add-to-cart">Add to Cart</button>
-            </figure>
-            <a th:href="'/book/' + ${book.bookId}" class="caption-link">
-              <section>
-                <h3 th:text="${book.title}">Book Title</h3>
-                <span th:text="${book.chapter}">Chapter Info</span>
-                <span th:text="${book.description}">Description</span>
-                <span th:text="${#temporals.format(book.publishedDate, 'yyyy-MM-dd')}">Published Date</span>
-                <div class="item-price" th:text="${book.price} + '원'"></div>
-              </section>
-            </a>
-          </div>
+                     alt="Thumbnail"
+                     class="product-image"
+                     style="height: 100%; width: 100%; object-fit: cover; display: block;">
+
+                <section>
+                  <h3 th:text="${book.title}">Book Title</h3>
+                  <span th:text="${book.chapter}">Chapter Info</span>
+                  <span th:text="${book.description}">Description</span>
+                  <span th:text="${#temporals.format(book.publishedDate, 'yyyy-MM-dd')}">Published Date</span>
+                  <div class="item-price" th:text="${book.price} + '원'"></div>
+                </section>
+            </div>
+          </a>
         </div>
       </div>
     </div>
