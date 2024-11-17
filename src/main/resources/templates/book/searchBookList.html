@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <th:block th:replace="~{fragments/head :: headTemplate}"></th:block>
+  <title>Book List</title>
+  <meta charset="utf-8" />
+</head>
+<body
+    style="background-color: var(--light-color); font-family: var(--body-font),serif; color: var(--body-text-color);">
+<div th:replace="~{fragments/header}"></div>
+<section id="book-list" class="padding-medium">
+  <div class="container">
+    <div class="section-header align-center">
+      <div class="title">
+        <span>Explore Our Collection</span>
+      </div>
+      <h2 class="section-title">Book List</h2>
+    </div>
+
+    <!-- Search Form -->
+    <form th:action="@{/book/search}" method="get" class="search-form">
+      <div class="row justify-content-center mb-5">
+        <div class="col-md-8">
+          <div class="input-group d-flex align-items-center" style="gap: 10px; height: 40px;">
+            <!-- 검색창 -->
+            <input type="text" style="margin: 0; height: 66px" class="form-control search-input" name="keyword" placeholder="Search for books..."
+                 th:value="${keyword ?: ''}">
+
+            <!-- 검색 버튼 -->
+            <button class="btn btn-accent search-btn" type="submit">Search</button>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <!-- Book List -->
+    <div class="row">
+      <div class="products-grid d-flex flex-wrap" style="justify-content: flex-start; margin-top: 28px"> <!-- flexbox 컨테이너 설정 -->
+        <div class="col-md-3" th:each="book : ${books}" style="margin-bottom: 20px;"> <!-- 추가된 스타일 -->
+          <div class="product-item" style="margin: 0 10px;"> <!-- 좌우 간격 추가 -->
+            <figure class="product-style" style="margin: 0; padding: 0; height: 100%; width: 100%; position: relative; overflow: hidden;">
+              <img th:src="@{/static/images/noImage.jpg}"
+                   alt="Thumbnail"
+                   class="product-image"
+                   style="height: 100%; width: 100%; object-fit: cover; display: block;">
+              <button type="button" class="add-to-cart">Add to Cart</button>
+            </figure>
+            <figcaption>
+              <h3 th:text="${book.title}">Book Title</h3>
+              <span th:text="${book.chapter}">Chapter Info</span>
+              <span th:text="${book.description}">Description</span>
+              <span th:text="${#temporals.format(book.publishedDate, 'yyyy-MM-dd')}">Published Date</span>
+              <div class="item-price" th:text="${book.price} + '원'"></div>
+            </figcaption>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="row justify-content-center mt-5">
+      <nav class="d-flex justify-content-center"> <!-- 가운데 정렬 클래스 추가 -->
+        <ul class="pagination">
+          <!-- Previous Button -->
+          <li class="page-item" th:classappend="${page <= 0} ? 'disabled' : ''">
+            <a class="page-link" th:href="@{/book/search(page=${page > 0 ? page - 1 : 0})}"
+               th:attr="aria-disabled=${page <= 0}"> < </a>
+          </li>
+
+          <!-- Page Numbers -->
+          <th:block th:if="${totalPage > 0}">
+            <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPage - 1)}"
+                th:classappend="${page == i} ? 'active' : ''">
+              <a class="page-link" th:href="@{/book/search(page=${i})}" th:text="${i + 1}"></a>
+            </li>
+          </th:block>
+
+          <!-- Next Button -->
+          <li class="page-item" th:classappend="${page >= totalPage - 1} ? 'disabled' : ''">
+            <a class="page-link" th:href="@{/book/search(page=${page < totalPage - 1 ? page + 1 : totalPage - 1})}"
+               th:attr="aria-disabled=${page >= totalPage - 1}"> > </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+  </div>
+</section>
+<div th:replace="~{fragments/footer}"></div>
+</body>
+</html>
