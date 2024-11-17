@@ -55,6 +55,7 @@ const cancelDetail = (id) => {
   axios.put(`/mypage/support/orders/cancel/${id}`, { cancelReason: "이런저런사유" })
     .then(response => {
       alert("주문이 취소되었습니다. 환불에 시간이 걸릴 수 있습니다...");
+      window.location.reload();
     })
     .catch(err => {
       console.log(err);
