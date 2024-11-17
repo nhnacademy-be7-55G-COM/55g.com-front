@@ -1,5 +1,6 @@
 package shop.s5g.front.service.amqp;
 
+import jakarta.annotation.Nullable;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -20,8 +21,9 @@ public class RabbitService {
     @Value("${rabbit.route.orders.payment.toss}")
     private String tossRouteKey;
 
+    @Nullable
     public MessageDto sendPaymentRequest(Map<String, Object> body) {
-        // TODO: 응답을 받지 못했을 경우 예외처리를 해야함.
+        // 타임아웃이 발생되어 응답을 받지 못했을 경우 null.
         return rabbitTemplate.convertSendAndReceiveAsType(orderExchange, tossRouteKey, body, messageType);
     }
 }

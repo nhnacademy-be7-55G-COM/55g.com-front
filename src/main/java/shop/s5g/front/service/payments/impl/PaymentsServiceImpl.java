@@ -1,5 +1,6 @@
 package shop.s5g.front.service.payments.impl;
 
+import jakarta.annotation.Nullable;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,8 +19,14 @@ public class PaymentsServiceImpl implements PaymentsService {
 
     @Override
     public MessageDto confirmPayment(Map<String, Object> paymentBody) {
+        @Nullable
         MessageDto response = rabbitService.sendPaymentRequest(paymentBody);
-        log.debug("Rabbit Message from consumer: {}", response.message());
+        // 처리가 지연되어 타임아웃이 발생했을 시,
+        if (response == null) {
+            log.warn("[RabbitMQ] payment process was delayed. Check message queue.");
+        } else {
+            log.debug("[RabbitMQ] Message from consumer: {}", response.message());
+        }
         return response;
 //        return adapter.confirmPayment(paymentBody);
     }

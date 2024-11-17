@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>결제가 지연되고 있습니다</title>
+  <th:block th:replace="~{fragments/head :: headTemplate}" />
+</head>
+<body>
+<div th:replace="~{fragments/header :: #header-wrap}"></div>
+<div class="container d-flex p-4">
+  <div class="p-5 mx-auto" style="border: 2px solid gray;">
+    <h4>결제가 지연되고 있습니다. </h4>
+    <p>현재 대기열에 밀려 결제가 지연되고 있습니다. 결제가 완료될 때 까지 수 분이 걸릴 수 있습니다. 자세한 내용은 주문 리스트를 참조해 주세요.</p>
+    <a type="button" class="btn btn-primary" href="/">마이페이지로 돌아가기</a>
+  </div>
+</div>
+</body>
+</html>
