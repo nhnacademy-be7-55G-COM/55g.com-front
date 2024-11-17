@@ -22,7 +22,7 @@ public class DeliveryFeeServiceImpl implements DeliveryFeeService {
     }
 
     @Override
-    @Async("purchaseRequest")
+    @Async("purchaseExecutor")
     public CompletableFuture<List<DeliveryFeeResponseDto>> getAllFeesAsync() {
         return CompletableFuture.completedFuture(getAllFees());
     }
