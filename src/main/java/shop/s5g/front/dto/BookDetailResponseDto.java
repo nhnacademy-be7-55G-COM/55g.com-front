@@ -3,7 +3,8 @@ package shop.s5g.front.dto;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import lombok.Builder;
+
+import shop.s5g.front.dto.bookcategory.BookCategoryResponseDto;
 
 //@Builder
 public record BookDetailResponseDto(
