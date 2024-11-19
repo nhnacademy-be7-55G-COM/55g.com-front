@@ -8,6 +8,7 @@ import shop.s5g.front.dto.book.BookPurchaseView;
 import shop.s5g.front.dto.cart.request.CartBookInfoRequestDto;
 import shop.s5g.front.dto.cart.request.CartLoginRequestDto;
 import shop.s5g.front.dto.cart.request.CartPutRequestDto;
+import shop.s5g.front.dto.cart.request.CartBookSelectRequestDto;
 import shop.s5g.front.dto.cart.request.CartRemoveBookRequestDto;
 import shop.s5g.front.dto.cart.request.CartUpdateQuantityRequestDto;
 
@@ -32,4 +33,6 @@ public interface CartService {
     List<CartBookInfoRequestDto> getBooksWhenPurchase();
 
     CompletableFuture<List<BookPurchaseView>> convertCartToView(List<CartBookInfoRequestDto> cartList);
+
+    void changeBookStatusInCart(CartBookSelectRequestDto cartBookSelectRequestDto);
 }
