@@ -2463,3 +2463,13 @@ footer#footer {
   padding: 10px; /* 선택사항: 내부 여백 */
   margin: 10px 0; /* 선택사항: 외부 여백 */
 }
+
+
+/**
+ * searchBookList.html 파일에서 사용하는 css
+ */
+.caption-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
