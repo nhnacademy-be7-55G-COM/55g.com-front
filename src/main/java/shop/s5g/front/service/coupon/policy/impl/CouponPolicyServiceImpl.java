@@ -21,6 +21,11 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 
     private final CouponPolicyAdapter couponPolicyAdapter;
 
+    /**
+     * 쿠폰 정책 생성
+     * @param couponPolicyRegisterRequestDto
+     * @return MessageDto
+     */
     @Override
     public MessageDto createCouponPolicy(
         CouponPolicyRegisterRequestDto couponPolicyRegisterRequestDto) {
@@ -37,6 +42,11 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
         }
     }
 
+    /**
+     * 쿠폰 정책 조회 - Pageable
+     * @param pageable
+     * @return Page<CouponPolicyInquiryResponseDto>
+     */
     @Override
     public Page<CouponPolicyInquiryResponseDto> findCouponPolices(Pageable pageable) {
         try {
@@ -49,5 +59,26 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
         } catch (HttpClientErrorException | HttpServerErrorException e) {
             throw new CouponPolicyNotFoundException(e.getMessage());
         }
+    }
+
+    /**
+     * 특정 쿠폰 조회
+     * @param couponPolicyId
+     * @return CouponPolicyInquiryResponseDto
+     */
+    @Override
+    public CouponPolicyInquiryResponseDto findCouponPolicy(Long couponPolicyId) {
+
+        try {
+            ResponseEntity<CouponPolicyInquiryResponseDto> response = couponPolicyAdapter.findCouponPolicy(couponPolicyId);
+
+            if (response.getStatusCode().is2xxSuccessful()) {
+                return response.getBody();
+            }
+            throw new CouponPolicyNotFoundException("Not Exists Coupon Policy");
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
+            throw new CouponPolicyNotFoundException(e.getMessage());
+        }
+
     }
 }

@@ -29,6 +29,18 @@ Version: 1.1
   }
 }
 
+.close-btn {
+ position: absolute;
+ top: 5px;
+ right: 20px;
+ background-color: transparent;
+ border: none;
+ font-size: 24px;
+ color: #333;
+ cursor: pointer;
+ z-index: 10;
+}
+
 /* Theme Colors */
 :root {
   --accent-color: #C5A992;
