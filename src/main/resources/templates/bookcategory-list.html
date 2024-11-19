@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <th:block th:replace="~{fragments/head :: headTemplate}"></th:block>
+    <title>카테고리 도서 조회</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+        }
+
+        .book-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .book-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .book-item:last-child {
+            border-bottom: none;
+        }
+
+        .book-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .book-price {
+            font-size: 16px;
+        }
+
+        .book-discount {
+            font-size: 14px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{fragments/header}"></div>
+<div class="book-container" th:each="book : ${books}">
+    <a th:href = "'/book/'+${book.bookId}">
+    <div class="book-item">
+        <div class="book-title" th:text="${book.title}"></div>
+        <div class="book-price" th:text="'₩' + ${book.price}"></div>
+        <div class="book-discount" th:text="'할인율: ' + ${book.discountRate} + '%'"></div>
+    </div>
+</div>
+<div th:replace="~{fragments/footer}"></div>
+<script src="/static/js/jquery-1.11.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+        crossorigin="anonymous"></script>
+<script src="/static/js/plugins.js"></script>
+<script src="/static/js/script.js"></script>
+</body>
+</html>

@@ -58,7 +58,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    @Async("purchaseRequest")
+    @Async("purchaseExecutor")
     public CompletableFuture<MemberInfoResponseDto> getMemberInfoAsync() {
         return CompletableFuture.completedFuture(getMemberInfo());
     }

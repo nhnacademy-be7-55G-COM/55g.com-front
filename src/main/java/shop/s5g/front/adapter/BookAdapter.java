@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 //import shop.s5g.front.dto.BookRequestDto;
 //import shop.s5g.front.dto.BookResponseDto;
-import shop.s5g.front.dto.MessageDto;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import shop.s5g.front.config.FeignGatewayAuthorizationConfig;

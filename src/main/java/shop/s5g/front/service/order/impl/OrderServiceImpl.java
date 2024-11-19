@@ -5,8 +5,10 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import shop.s5g.front.adapter.OrderAdapter;
+import shop.s5g.front.dto.order.OrderAdminTableView;
 import shop.s5g.front.dto.order.OrderCreateRequestDto;
 import shop.s5g.front.dto.order.OrderCreateResponseDto;
+import shop.s5g.front.dto.order.OrderQueryFilterDto;
 import shop.s5g.front.dto.order.OrderQueryRequestDto;
 import shop.s5g.front.dto.order.OrderWithDetailResponseDto;
 import shop.s5g.front.exception.order.OrderCreationFailedException;
@@ -41,5 +43,10 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void deleteOrder(long orderId) {
         orderAdapter.deleteOrder(orderId);
+    }
+
+    @Override
+    public List<OrderAdminTableView> adminQueryWithFilter(OrderQueryFilterDto filter) {
+        return orderAdapter.fetchOrdersForAdmin(filter);
     }
 }
