@@ -149,7 +149,7 @@ public class CartServiceImpl implements CartService {
         }
     }
 
-    @Async("purchaseRequest")
+    @Async("purchaseExecutor")
     @Override
     public CompletableFuture<List<BookPurchaseView>> convertCartToView(List<CartBookInfoRequestDto> cartList) {
         List<BookSimpleResponseDto> bookList = bookService.getSimpleBooksFromCart(cartList);

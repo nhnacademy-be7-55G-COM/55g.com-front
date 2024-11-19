@@ -25,7 +25,7 @@ public class PointPolicyServiceImpl implements PointPolicyService {
     }
 
     @Override
-    @Async("purchaseRequest")
+    @Async("purchaseExecutor")
     public CompletableFuture<PointPolicyView> getPurchasePointPolicyAsync() {
         return CompletableFuture.completedFuture(getPurchasePointPolicy());
     }

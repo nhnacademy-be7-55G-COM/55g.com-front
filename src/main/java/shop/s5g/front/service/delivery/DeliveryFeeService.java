@@ -1,5 +1,6 @@
 package shop.s5g.front.service.delivery;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import shop.s5g.front.dto.delivery.DeliveryFeeCreateRequestDto;
@@ -10,7 +11,7 @@ public interface DeliveryFeeService {
 
     List<DeliveryFeeResponseDto> getAllFees();
 
-    CompletableFuture<List<DeliveryFeeResponseDto>> getAllFeesAsync();
+    CompletableFuture<LinkedList<DeliveryFeeResponseDto>> getAllFeesAsync();
 
     DeliveryFeeResponseDto updateFee(DeliveryFeeUpdateRequestDto updateRequest);
 

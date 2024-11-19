@@ -1,6 +1,7 @@
 package shop.s5g.front.domain.purchase;
 
 import jakarta.annotation.PostConstruct;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,16 +39,16 @@ import shop.s5g.front.utils.RandomStringProvider;
 @SessionScope                   // 세션에 종속적임
 @RequiredArgsConstructor
 @Slf4j
-public class PurchaseSheet {    // 주문서 빈!
-    private final MemberService memberService;
-    private final PointPolicyService pointPolicyService;
-    private final DeliveryFeeService deliveryFeeService;
-    private final WrappingPaperService wrappingPaperService;
-    private final CartService cartService;
-    private final RandomStringProvider randomStringProvider;
+public class PurchaseSheet implements Serializable {    // 주문서 빈!
+    private final transient MemberService memberService;
+    private final transient PointPolicyService pointPolicyService;
+    private final transient DeliveryFeeService deliveryFeeService;
+    private final transient WrappingPaperService wrappingPaperService;
+    private final transient CartService cartService;
+    private final transient RandomStringProvider randomStringProvider;
 
     // 비동기 작업을 관리하는 리스트
-    private List<CompletableFuture<?>> futures;
+    private transient List<CompletableFuture<?>> futures;
 
     private List<BookPurchaseView> cartList;        // 카트에서 가져온 책들
     private List<WrappingPaperResponseDto> wraps;   // 사용 가능한 포장지들
@@ -55,7 +56,7 @@ public class PurchaseSheet {    // 주문서 빈!
     @Getter
     private MemberInfoResponseDto memberInfo;       // 주문서를 작성하는 회원 정보
     // TODO: 아직 배송비가 포함되지 않음.
-    private List<DeliveryFeeResponseDto> fee;       // 배송비 리스트
+    private LinkedList<DeliveryFeeResponseDto> fee;       // 배송비 리스트
 
     @Getter @Setter(AccessLevel.PRIVATE)
     private BigDecimal accRateSum;          // 포인트 적립 비율 합산
@@ -68,8 +69,9 @@ public class PurchaseSheet {    // 주문서 빈!
 
     private boolean cartReady;              // 카트에 책정보를 다 가져왔는지?
     private boolean joined;                 // futures 의 작업이 다 끝났는지?
-    private Map<Long, WrappingPaperView> wrapMap;   // 각 책마다 포장지 선택을 저장함.
+    private HashMap<Long, WrappingPaperView> wrapMap;   // 각 책마다 포장지 선택을 저장함.
 
+    @Getter
     private OrderInformation orderInfo;     // 주문 정보
     // ------------------------------
 

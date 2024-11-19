@@ -11,10 +11,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import shop.s5g.front.config.FeignGatewayAuthorizationConfig;
+import shop.s5g.front.dto.order.OrderAdminTableView;
 import shop.s5g.front.dto.order.OrderCreateRequestDto;
 import shop.s5g.front.dto.order.OrderCreateResponseDto;
 import shop.s5g.front.dto.order.OrderDetailInfoDto;
 import shop.s5g.front.dto.order.OrderDetailWithBookResponseDto;
+import shop.s5g.front.dto.order.OrderQueryFilterDto;
 import shop.s5g.front.dto.order.OrderWithDetailResponseDto;
 
 @FeignClient(value = "order", url = "${gateway.url}", path = "/api/shop/orders", configuration = FeignGatewayAuthorizationConfig.class)
@@ -36,4 +38,21 @@ public interface OrderAdapter {
 
     @DeleteMapping("/{orderId}")
     ResponseEntity<HttpStatus> deleteOrder(@PathVariable long orderId);
+
+    @GetMapping("/admin")
+    List<OrderAdminTableView> fetchOrdersForAdmin(
+        @RequestParam(required = false) Long orderId,
+        @RequestParam(required = false) Long customerId,
+        @RequestParam(required = false) Boolean active,
+        @RequestParam(required = false) Integer page ,
+        @RequestParam(required = false) Integer size,
+        @RequestParam(required = false) String deliveryStatus
+    );
+
+    default List<OrderAdminTableView> fetchOrdersForAdmin(OrderQueryFilterDto filter) {
+        return fetchOrdersForAdmin(filter.orderId(), filter.customerId(), filter.active(), filter.page(), filter.size(), filter.deliveryStatus());
+    }
+
+//    @DeleteMapping("{detailId}")
+//    ResponseEntity<HttpStatus>
 }
