@@ -2,7 +2,6 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <th:block th:replace="~{fragments/head :: headTemplate}"></th:block>
     <title>카테고리 리스트</title>
     <style>
         /* 전체 페이지 스타일 */
@@ -51,15 +50,12 @@
     </style>
 </head>
 <body>
-<div th:replace="~{fragments/header}"></div>
-<h1>국내도서 카테고리 목록</h1>
 
 <div class="category-container">
-    <div class="category-card" th:each="category : ${allCategories}">
+    <div class="category-card" th:each="category : ${parentCategories}">
         <div th:text="${category.categoryName}"></div>
     </div>
 </div>
 
-<div th:replace="~{fragments/footer}"></div>
 </body>
 </html>

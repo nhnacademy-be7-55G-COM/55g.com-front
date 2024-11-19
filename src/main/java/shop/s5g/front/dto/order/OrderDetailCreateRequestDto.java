@@ -2,6 +2,7 @@ package shop.s5g.front.dto.order;
 
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Min;
+import java.io.Serializable;
 
 public record OrderDetailCreateRequestDto(
     @Min(1)
@@ -14,4 +15,4 @@ public record OrderDetailCreateRequestDto(
     long totalPrice,
     @Min(0)
     int accumulationPrice
-) {}
+) implements Serializable {}

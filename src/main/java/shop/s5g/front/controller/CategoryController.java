@@ -40,6 +40,12 @@ public class CategoryController {
         return koreaCategories;
     }
 
+    @GetMapping("/admin/category")
+    public String adminCategoryForm(Model model) {
+        model.addAttribute("parentCategories", categoryService.getKoreaCategories());
+        return "category";
+    }
+
     //하위 카테고리 조회
     @GetMapping("/category/child/{categoryId}")
     @ResponseBody

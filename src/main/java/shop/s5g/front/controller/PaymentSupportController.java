@@ -94,6 +94,7 @@ public class PaymentSupportController {
 
     @PutMapping("/wrap")
     public ResponseEntity<HttpStatus> modifyWraps(@RequestBody WrapModifyRequestDo wrapModify) {
+        log.trace("Modifying wraps...: {}", wrapModify);
         purchaseSheet.changeWrappingPaper(wrapModify);
         return ResponseEntity.ok().build();
     }

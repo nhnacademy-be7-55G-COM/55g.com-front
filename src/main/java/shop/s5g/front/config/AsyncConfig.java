@@ -9,13 +9,13 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 @EnableAsync
 @Configuration
 public class AsyncConfig {
-    @Bean("purchaseRequest")
+    @Bean("purchaseExecutor")
     public Executor purchaseRequestAsyncExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(10);
         executor.setMaxPoolSize(10);
         executor.setQueueCapacity(300);
-        executor.setThreadNamePrefix("PurchaseReq-");
+        executor.setThreadNamePrefix("PurchaseExec-");
         executor.initialize();
         return executor;
     }

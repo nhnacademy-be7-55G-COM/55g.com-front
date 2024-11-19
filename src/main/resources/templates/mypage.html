@@ -21,6 +21,10 @@
       width: 5rem;
       height: 5rem;
     }
+    .button-cancel {
+      margin: 0;
+      height: 2.3rem;
+    }
   </style>
   <script>
     const defaultSize = 10;
@@ -174,7 +178,7 @@
                         console.log(`call page: ${index}`);
                         pointHistoryCaller(defaultSize, parseInt(index));
                       });
-                    })
+                    });
                   };
                   pointButton.addEventListener('click', () => pointHistoryCaller(defaultSize, 0));
                 </script>

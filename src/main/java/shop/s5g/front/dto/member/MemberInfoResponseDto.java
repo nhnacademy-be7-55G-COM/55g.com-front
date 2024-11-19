@@ -1,5 +1,6 @@
 package shop.s5g.front.dto.member;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 public record MemberInfoResponseDto(
@@ -15,7 +16,7 @@ public record MemberInfoResponseDto(
     LocalDateTime createdAt,
     LocalDateTime latestLoginAt,
     Long point
-) {
+) implements Serializable {
 
 }
 
