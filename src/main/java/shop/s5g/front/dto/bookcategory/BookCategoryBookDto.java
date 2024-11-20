@@ -7,6 +7,7 @@ import shop.s5g.front.dto.BookAuthorResponseDto;
 import shop.s5g.front.dto.book.BookDetailCategoryResponseDto;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -17,7 +18,7 @@ public record BookCategoryBookDto(
         String title,
         String chapter,
         String description,
-        LocalDateTime publishedDate,
+        LocalDate publishedDate,
         String isbn,
         long price,
         BigDecimal discountRate,

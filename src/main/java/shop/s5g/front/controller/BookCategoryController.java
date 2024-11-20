@@ -19,10 +19,10 @@ public class BookCategoryController {
     private final CategoryService categoryService;
 
     //선택한 카테고리의 도서 목록 조회
-    @GetMapping("/category/{categoryId}")
-    public String BookByCategoryId(@PathVariable("categoryId") Long categoryId, Model model) {
-        List<BookPageableResponseDto> books = bookCategoryService.getBookByCategoryId(categoryId);
-        model.addAttribute("books", books);
-        return "bookcategory-list";
-    }
+//    @GetMapping("/category/{categoryId}")
+//    public String BookByCategoryId(@PathVariable("categoryId") Long categoryId, Model model) {
+//        List<BookPageableResponseDto> books = bookCategoryService.getBookByCategoryId(categoryId);
+//        model.addAttribute("books", books);
+//        return "bookcategory-list";
+//    }
 }
