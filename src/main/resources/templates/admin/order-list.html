@@ -1,46 +1,78 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<html lang="ko"
+      xmlns:th="https://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}"
+      layout:fragment="content"
+>
 <head>
   <meta charset="UTF-8">
   <title>주문 상태 업데이트</title>
-  <th:block th:replace="~{fragments/head :: headTemplate}" />
 </head>
 <body>
 
-<div class="container d-flex flex-column">
+<div class="container d-flex flex-column" >
   <form class="d-flex flex-column">
     <div class="d-flex flex-row">
-      <input id="search" name="search" placeholder="고객 ID..." th:value="${customerId}" required/>
-      <button type="submit" style="height: 4rem;">고객 ID로 검색</button>
+      <input id="search" name="customerId" placeholder="고객 ID..." th:value="${customerId}" required/>
+      <input name="orderId" placeholder="orderId" />
+      <select name="deliveryStatus">
+        <option value="">모두</option>
+        <option value="PREPARING">배송준비중</option>
+        <option value="SHIPPING">배송중</option>
+        <option value="DELIVERED">배송완료</option>
+      </select>
+      <select name="active">
+        <option value="">모두</option>
+        <option value="true">활성</option>
+        <option value="false">삭제</option>
+      </select>
+      <input name="size" value="10" hidden />
+      <input name="page" value="1" hidden />
+      <button type="submit" style="height: 4rem;">검색</button>
     </div>
-    <div class="d-flex">
-      <div class="ms-auto">
-        <input name="startDate" type="date" th:value="${#dates.format(startDate, 'yyyy-MM-dd')}" />
-        <input name="endDate" type="date" th:value="${#dates.format(endDate, 'yyyy-MM-dd')}" />
-      </div>
-    </div>
+<!--    <div class="d-flex">-->
+<!--      <div class="ms-auto">-->
+<!--        <input name="startDate" type="date" th:value="${#dates.format(startDate, 'yyyy-MM-dd')}" />-->
+<!--        <input name="endDate" type="date" th:value="${#dates.format(endDate, 'yyyy-MM-dd')}" />-->
+<!--      </div>-->
+<!--    </div>-->
   </form>
 
   <div>
-    <table id="orderTable" class="table">
+    <table id="orderTable" class="table table-hover">
       <thead>
       <tr>
         <th scope="col">ID</th>
-        <th scope="col">주문 이름</th>
-        <th scope="col">Total Price</th>
-        <th scope="col">Net Price</th>
-        <th scope="col">주문 시각</th>
+        <th scope="col">가격</th>
+        <th scope="col">지불가격</th>
+        <th scope="col">배송상태</th>
+        <th scope="col">주문일시</th>
+        <th scope="col">활성화</th>
       </tr>
       </thead>
       <tbody>
       <th:block th:each="order: ${orderList}">
-      <tr th:data-order-id="${order.orderId}">
+      <tr th:id="|tr-${order.orderId}|" th:data-order-id="${order.orderId}">
         <td th:text="${order.orderId}"></td>
-        <td th:text="${order.representTitle}"></td>
         <td th:text="${order.totalPrice}"></td>
-        <td th:text="${order.netPrice}"></td>
+        <td th:text="${order.payAmount}"></td>
+        <td th:text="${order.deliveryStatus}"></td>
         <td th:text="${order.orderedAt}"></td>
+        <td th:text="${order.active}"></td>
       </tr>
+      <script th:inline="javascript">
+        var isDelivered = [[${order.deliveryStatus}]];
+        var isActive = [[${order.active}]];
+        var orderId = [[${order.orderId}]];
+        var target = document.querySelector(`#tr-${orderId}`);
+        if (!isActive) {
+          target.classList.add('table-danger');
+        }
+        else if (isDelivered === 'PREPARING') {
+          target.classList.add('table-warning');
+        }
+      </script>
       </th:block>
       </tbody>
     </table>

@@ -1,6 +1,6 @@
 package shop.s5g.front.service.delivery.impl;
 
-import java.util.List;
+import java.util.LinkedList;
 import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
@@ -17,13 +17,13 @@ public class DeliveryFeeServiceImpl implements DeliveryFeeService {
     private final DeliveryFeeAdapter deliveryFeeAdapter;
 
     @Override
-    public List<DeliveryFeeResponseDto> getAllFees() {
+    public LinkedList<DeliveryFeeResponseDto> getAllFees() {
         return deliveryFeeAdapter.fetchDeliveryFees();
     }
 
     @Override
-    @Async("purchaseRequest")
-    public CompletableFuture<List<DeliveryFeeResponseDto>> getAllFeesAsync() {
+    @Async("purchaseExecutor")
+    public CompletableFuture<LinkedList<DeliveryFeeResponseDto>> getAllFeesAsync() {
         return CompletableFuture.completedFuture(getAllFees());
     }
 

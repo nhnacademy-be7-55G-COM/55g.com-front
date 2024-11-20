@@ -2,13 +2,10 @@ package shop.s5g.front.service.book.impl;
 
 import feign.FeignException;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import shop.s5g.front.adapter.BookAdapter;
-//import shop.s5g.front.dto.BookResponseDto;
-//import shop.s5g.front.dto.MessageDto;
 import shop.s5g.front.dto.PageResponseDto;
 import shop.s5g.front.dto.BookDetailResponseDto;
 import shop.s5g.front.dto.book.BookPageableResponseDto;
@@ -16,7 +13,6 @@ import shop.s5g.front.exception.BadRequestException;
 import shop.s5g.front.exception.BookNotFoundException;
 import shop.s5g.front.dto.book.BookSimpleResponseDto;
 import shop.s5g.front.dto.cart.request.CartBookInfoRequestDto;
-import shop.s5g.front.exception.book.BookGetFailedException;
 import shop.s5g.front.service.book.BookService;
 
 @Service
@@ -28,15 +24,15 @@ public class BookServiceImpl implements BookService {
         this.bookAdapter = bookAdapter;
     }
 
-    @Override
-    public PageResponseDto<BookPageableResponseDto> getAllBooks(Pageable pageable) {
-        try{
-            ResponseEntity<PageResponseDto<BookPageableResponseDto>> allBooks = bookAdapter.getAllBooksPageable(pageable);
-            return allBooks.getBody();
-        }catch (FeignException e) {
-            throw new BookNotFoundException(e.getMessage());
-        }
-    }
+//    @Override
+//    public PageResponseDto<BookPageableResponseDto> getAllBooks(Pageable pageable) {
+//        try{
+//            ResponseEntity<PageResponseDto<BookPageableResponseDto>> allBooks = bookAdapter.getAllBooksPageable(pageable);
+//            return allBooks.getBody();
+//        }catch (FeignException e) {
+//            throw new BookNotFoundException(e.getMessage());
+//        }
+//    }
 
     @Override
     public BookDetailResponseDto getBookDetail(long bookId) {

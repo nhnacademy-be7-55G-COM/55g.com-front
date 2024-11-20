@@ -17,16 +17,25 @@
       addressExtraSelector: '#addressExtraInput'
     };
 
+    let addressSelection = 1;   // 주소 선택 타입
     // TODO: Fee id를 가져오도록 해야함.
     let deliveryFeeId = 1;
     // TODO: netPrice를 가져오도록 해야함.
     let netPrice=0;
+    let selectedAddress = '';
+    let selectAddressType = '';
     const cartList = [];
+    const savedAddressList = {};
 
     const accRate = new Decimal([[${accRate}]]);
 
     [# th:each="cart: ${cartList}"]
     cartList.push([[${cart}]]);
+    [/]
+
+    [# th:each="address: ${memberInfo.addresses}"]
+    var id = [[${address.addressId}]];
+    savedAddressList[id.toString()] = [[${address.toString()}]];
     [/]
     let wrappingPaperId = 1;
     cartList.forEach(cart => cart['wrap'] = {
@@ -94,6 +103,10 @@
       paymentButtons.forEach(btn => btn.classList.remove('payment-selected'));
       element.classList.add('payment-selected');
     };
+
+    const switchAddress = (address) => {
+      selectedAddress = address;
+    }
 
     // document.addEventListener('DOMContentLoaded', () => {
     //   const cartTable =  document.querySelector('#shoppingCart');
@@ -255,7 +268,50 @@
       <hr />
 
       <h4 class="mb-2">배송주소</h4>
-      <div id="receiverInfo">
+      <div id="addressTypeSelection" class="btn-group btn-group-toggle" role="group" aria-label="Address Selection Group">
+        <input th:if="${not #lists.isEmpty(memberInfo.addresses)}" id="savedAddressRadio" name="addType" type="radio" class="form-check-input" autocomplete="off" value="saved" checked />
+        <input th:if="${#lists.isEmpty(memberInfo.addresses)}" id="savedAddressRadio" name="addType" type="radio" class="form-check-input" autocomplete="off" value="saved" disabled/>
+        <label for="savedAddressRadio" class="form-check-label">저장된 주소에서 가져오기</label>
+
+        <input th:if="${not #lists.isEmpty(memberInfo.addresses)}" id="customizeAddressRadio" name="addType" type="radio" class="form-check-input" autocomplete="off" value="custom" />
+        <input th:if="${#lists.isEmpty(memberInfo.addresses)}" id="customizeAddressRadio" name="addType" type="radio" class="form-check-input" autocomplete="off" value="custom" checked />
+        <label for="customizeAddressRadio" class="form-check-label">직접 입력하기</label>
+      </div>
+
+      <div id="addressSelection">
+        <div class="row">
+        <th:block th:each="address: ${memberInfo.addresses}">
+          <div class="mini-address-card d-flex flex-row col-sm-3" style="padding: 0.05rem">
+            <div class="d-flex flex-column">
+              <h4 th:if="${not address.isDefault}" th:text="${address.alias}"></h4>
+              <h4 th:if="${address.isDefault}" th:text="|${address.alias}(기본 배송지)|"></h4>
+              <p th:text="${address.toString()}"></p>
+            </div>
+            <th:block th:if="${address.isDefault}">
+              <script th:inline="javascript">
+                switchAddress([[${address.toString()}]]);
+              </script>
+              <button onclick="switchAddressByButton(this)" th:data-index="${address.addressId}" class="btn btn-primary" disabled >선택</button>
+            </th:block>
+            <button onclick="switchAddressByButton(this)" th:data-index="${address.addressId}" th:if="${not address.isDefault}" class="btn btn-primary">선택</button>
+          </div>
+        </th:block>
+        <script>
+          const switchAddressByButton = (btn) => {
+            const aid = btn.getAttribute('data-index');
+            switchAddress(savedAddressList[aid]);
+            document.querySelectorAll('#addressSelection button').forEach(b => b.disabled=false);
+            btn.disabled = true;
+          }
+        </script>
+        </div>
+
+        <input class="form-control" id="selectedAddressInput" disabled/>
+      </div>
+      <script>
+
+      </script>
+      <div id="customAddress" style="display: none;">
         <div>
           <div class="d-flex flex-row">
             <input class="me-2" type="text" id="zipInput" placeholder="우편번호" />
@@ -270,6 +326,26 @@
           </div>
         </div>
       </div>
+      <script>
+        const savedAdd = document.querySelector('#addressSelection');
+        const customAdd = document.querySelector('#customAddress');
+        const radioSaved = document.querySelector('#savedAddressRadio');
+        const radioCustom = document.querySelector('#customizeAddressRadio');
+        const changeHandler = () => {
+          console.log("changed!");
+          if (radioSaved.checked) {
+            selectAddressType = 'saved';
+            savedAdd.style.display = 'block';
+            customAdd.style.display = 'none';
+          } else if (radioCustom.checked) {
+            selectAddressType = 'custom';
+            savedAdd.style.display = 'none';
+            customAdd.style.display = 'block';
+          }
+        };
+        changeHandler();
+        document.querySelector('#addressTypeSelection').addEventListener('change', changeHandler);
+      </script>
       <hr />
 
       <div id="paymentInformation" class="card-top">
@@ -336,8 +412,17 @@
         alert('결제 수단을 선택해 주세요');
         return;
       }
-      // TODO: 수신자 이름 및 번호 체크
-      const deliveryInfo = getDeliveryInformation(addressSelectors, deliveryFeeId, '#receiveDate', '#receiverNameInput');
+      let deliveryInfo = null;
+      if (selectAddressType === 'saved')
+        deliveryInfo = getDeliveryInfoFromSaved(selectedAddress, deliveryFeeId, '#receiveDate', '#receiverNameInput');
+      // TODO: 회원의 주소 가져오기.
+      else if(selectAddressType === 'custom')
+        deliveryInfo = getDeliveryInformation(addressSelectors, deliveryFeeId, '#receiveDate', '#receiverNameInput');
+      else {
+        console.log(`address type : ${selectedAddress}`);
+        alert("주소 지정에 오류가 생겼습니다. 다시 시도해 주세요.");
+        window.location.reload();
+      }
 
       const clientKeyResponse = await axios.get('/payment/support/toss/clientKey');
       if (clientKeyResponse.status !== 200) {
@@ -389,6 +474,7 @@
           });
       }
     }catch (err) {
+      console.log(err);
       alert(err);
     }
   }

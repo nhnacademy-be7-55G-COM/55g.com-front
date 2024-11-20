@@ -1,5 +1,7 @@
 package shop.s5g.front.dto.member;
 
+import java.io.Serializable;
+
 public record MemberGradeResponseDto(
     Long memberGradeId,
 
@@ -8,6 +10,6 @@ public record MemberGradeResponseDto(
     int gradeCondition,
 
     int point
-) {
+) implements Serializable {
 
 }

@@ -58,7 +58,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    @Async("purchaseRequest")
+    @Async("purchaseExecutor")
     public CompletableFuture<MemberInfoResponseDto> getMemberInfoAsync() {
         return CompletableFuture.completedFuture(getMemberInfo());
     }
@@ -97,7 +97,10 @@ public class MemberServiceImpl implements MemberService {
             ResponseEntity<IdCheckResponseDto> response = memberAdapter.checkId(loginId);
 
             if (response.getStatusCode().is2xxSuccessful()) {
-                return response.getBody().isExists();
+                IdCheckResponseDto responseDto = response.getBody();
+                if (responseDto != null) {
+                    return responseDto.isExists();
+                }
             }
             return true;
         }

@@ -10,12 +10,14 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import shop.s5g.front.annotation.RedirectWithAlert;
 import shop.s5g.front.annotation.SessionRequired;
 import shop.s5g.front.domain.purchase.PurchaseSheet;
+import shop.s5g.front.dto.MessageDto;
 import shop.s5g.front.dto.payment.TossPaymentInfo;
 import shop.s5g.front.exception.order.OrderSessionNotAvailableException;
 import shop.s5g.front.service.order.OrderService;
@@ -72,7 +74,11 @@ public class PaymentController {
         body.put("orderDataId", purchaseSheet.getOrderId());
 //        body.put("orderDataId", session.getAttribute("orderDataId"));
 
-        paymentsService.confirmPayment(body);
+        MessageDto message = paymentsService.confirmPayment(body);
+        if (message == null) {
+            log.trace("payment request was delayed.. pending view was sent");
+            return "payments/pending";
+        }
         log.trace("Toss Payment request success");
 
         HttpSession session = request.getSession(false);
@@ -86,12 +92,13 @@ public class PaymentController {
 
     @GetMapping("/fail")
     public String requestFail(
-        @RequestParam long orderDataId,
         @RequestParam String code,
         @RequestParam String message,
         @RequestParam String orderId,
+        Model model,
         HttpServletRequest request
     ) {
+        final long orderDataId = purchaseSheet.getOrderId();
         log.warn("Payment failed!: [orderDataId={}, code={}, message={}, orderId={}", orderDataId, code, message, orderId);
 
         HttpSession session = request.getSession(false);
@@ -99,6 +106,9 @@ public class PaymentController {
             session.invalidate();
         }
         orderService.deleteOrder(orderDataId);
-        return "payments/toss-fail";
+        model.addAttribute("title", "결제에 실패했어요.");
+        model.addAttribute("message", message);
+        model.addAttribute("redirect", "/");
+        return "error/redirect";
     }
 }

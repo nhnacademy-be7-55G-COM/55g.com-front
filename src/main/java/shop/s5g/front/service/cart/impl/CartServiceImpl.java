@@ -17,12 +17,14 @@ import shop.s5g.front.dto.book.BookSimpleResponseDto;
 import shop.s5g.front.dto.cart.request.CartBookInfoRequestDto;
 import shop.s5g.front.dto.cart.request.CartLoginRequestDto;
 import shop.s5g.front.dto.cart.request.CartPutRequestDto;
+import shop.s5g.front.dto.cart.request.CartBookSelectRequestDto;
 import shop.s5g.front.dto.cart.request.CartRemoveBookRequestDto;
 import shop.s5g.front.dto.cart.request.CartUpdateQuantityRequestDto;
 import shop.s5g.front.exception.AuthenticationException;
 import shop.s5g.front.exception.ResourceNotFoundException;
 import shop.s5g.front.exception.cart.CartConvertException;
 import shop.s5g.front.exception.cart.CartDetailPageException;
+import shop.s5g.front.exception.cart.CartPurchaseException;
 import shop.s5g.front.exception.cart.CartPutException;
 import shop.s5g.front.exception.cart.CartRemoveAccountException;
 import shop.s5g.front.service.book.BookService;
@@ -135,7 +137,32 @@ public class CartServiceImpl implements CartService {
         }
     }
 
-    @Async("purchaseRequest")
+    @Override
+    public List<CartBookInfoRequestDto> getBooksWhenPurchase() {
+        try {
+            ResponseEntity<List<CartBookInfoRequestDto>> booksInfoList = cartAdapter.getBooksWhenPurchase();
+
+            return booksInfoList.getBody();
+
+        } catch (Exception e){
+
+            throw new CartPurchaseException("정보를 가져오는데 실패했습니다 다시 시도해주세요");
+
+        }
+    }
+
+    @Override
+    public void changeBookStatusInCart(CartBookSelectRequestDto cartBookSelectRequestDto) {
+        try {
+            cartAdapter.changeBookStatusInCart(cartBookSelectRequestDto);
+        } catch (Exception e){
+
+            throw new CartDetailPageException("선택사항 반영 실패");
+
+        }
+    }
+
+    @Async("purchaseExecutor")
     @Override
     public CompletableFuture<List<BookPurchaseView>> convertCartToView(List<CartBookInfoRequestDto> cartList) {
         List<BookSimpleResponseDto> bookList = bookService.getSimpleBooksFromCart(cartList);

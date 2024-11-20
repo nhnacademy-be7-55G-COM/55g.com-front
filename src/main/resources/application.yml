@@ -31,6 +31,17 @@ management:
       exposure:
         include: refresh,busrefresh
 
+rabbit:
+  exchange:
+    orders: 55g.orders.exchange
+  route:
+    orders:
+      payment:
+        toss: 55g.orders.payment.toss
+redis:
+  host: localhost
+  port: 6379
+  password: ''
 ---
 # on profile 'live'
 spring:

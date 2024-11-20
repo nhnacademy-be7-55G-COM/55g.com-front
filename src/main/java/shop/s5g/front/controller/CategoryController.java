@@ -40,6 +40,13 @@ public class CategoryController {
         return koreaCategories;
     }
 
+    //부모 카테고리 조회
+    @GetMapping("/admin/category")
+    public String adminCategoryForm(Model model) {
+        model.addAttribute("parentCategories", categoryService.getKoreaCategories());
+        return "category";
+    }
+
     //하위 카테고리 조회
     @GetMapping("/category/child/{categoryId}")
     @ResponseBody
@@ -47,5 +54,20 @@ public class CategoryController {
         List<CategoryResponseDto> childCategories = categoryService.getChildCategories(categoryId);
 //        model.addAttribute("childCategories", childCategories);
         return childCategories;
+    }
+
+    //카테고리 상세
+    @PostMapping("/admin/category/detail/{categoryId}")
+    public String categoryDetail(@PathVariable("categoryId") long categoryId, Model model) {
+        List<CategoryResponseDto> childCategories = categoryService.getChildCategories(categoryId);
+        model.addAttribute("childCategories", childCategories);
+        return "category-modify";
+    }
+
+    //카테고리 수정
+    @PutMapping("/admin/category/update/{categoryId}")
+    public String categoryUpdate(@PathVariable("categoryId") Long categoryId, @ModelAttribute CategoryRequestDto requestDto) {
+        categoryService.updateCategory(categoryId, requestDto);
+        return "redirect:/admin";
     }
 }

@@ -20,6 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import shop.s5g.front.dto.MessageDto;
 import shop.s5g.front.dto.cart.request.CartLoginRequestDto;
 import shop.s5g.front.dto.cart.request.CartPutRequestDto;
+import shop.s5g.front.dto.cart.request.CartBookSelectRequestDto;
 import shop.s5g.front.dto.cart.request.CartRemoveBookRequestDto;
 import shop.s5g.front.dto.cart.request.CartUpdateQuantityRequestDto;
 import shop.s5g.front.exception.cart.CartConvertException;
@@ -30,7 +31,6 @@ import shop.s5g.front.service.cart.CartService;
 @Controller
 @RequiredArgsConstructor
 public class CartController {
-
 
     private final CartService cartService;
 
@@ -155,6 +155,24 @@ public class CartController {
 
     }
 
+    @PostMapping("/cart/changeBookStatus")
+    public ResponseEntity<Void> changeBookStatus(
+        @RequestBody CartBookSelectRequestDto cartBookSelectRequestDto,
+        BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
+        try {
+            cartService.changeBookStatusInCart(cartBookSelectRequestDto);
+
+            return ResponseEntity.status(HttpStatus.OK).build();
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
 
 
     private void cartDetailPageWhenLogin(HttpServletResponse response, Model model) {

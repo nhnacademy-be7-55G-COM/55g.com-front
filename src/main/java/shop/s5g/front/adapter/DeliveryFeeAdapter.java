@@ -1,6 +1,6 @@
 package shop.s5g.front.adapter;
 
-import java.util.List;
+import java.util.LinkedList;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,7 +14,7 @@ import shop.s5g.front.dto.delivery.DeliveryFeeUpdateRequestDto;
 @FeignClient(name = "deliveryFee", url = "${gateway.url}", path = "/api/shop/delivery/fee", configuration = FeignGatewayAuthorizationConfig.class)
 public interface DeliveryFeeAdapter {
     @GetMapping
-    List<DeliveryFeeResponseDto> fetchDeliveryFees();
+    LinkedList<DeliveryFeeResponseDto> fetchDeliveryFees();
 
     @PutMapping
     DeliveryFeeResponseDto updateDeliveryFee(@RequestBody DeliveryFeeUpdateRequestDto updateRequest);

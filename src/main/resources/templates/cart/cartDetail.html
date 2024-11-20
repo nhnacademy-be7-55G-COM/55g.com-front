@@ -136,7 +136,7 @@
         <tr th:id="'item-row-' + ${book.bookId}" class="text-center">
           <td class="text-center">
             <!-- 체크박스 추가 -->
-            <input type="checkbox" th:id="'select-' + ${book.bookId}" checked
+            <input type="checkbox" th:id="'select-' + ${book.bookId}" th:checked = "${book.status ?: false}"
                    th:attr="onclick='updateSelectedTotal(' + ${book.bookId} + ', ' + ${book.discountedPrice} + ')'"
                    th:attrappend="disabled=${book.quantity > book.stock ? 'disabled' : ''}">
           </td>
@@ -197,7 +197,7 @@
         <p>배송비: ₩<span id="shipping-cost" th:text="${feeInfo.totalPrice >= feeInfo.freeShippingThreshold} ? 0 : ${feeInfo.deliveryFee}">0</span></p>
         <hr>
         <p class="fw-bold">총 결제 금액: ₩<span id="final-price" th:text="${feeInfo.totalPrice >= feeInfo.freeShippingThreshold} ? ${feeInfo.totalPrice} : ${feeInfo.totalPrice + feeInfo.deliveryFee}">0</span></p>
-        <button class="btn btn-primary w-100 mt-3">결제하기</button>
+        <button class="btn btn-primary w-100 mt-3" onclick="purchase()">결제하기</button>
       </div>
     </div>
   </div>
@@ -219,6 +219,18 @@
     console.log('즉시 로그인여부 확인',isLogged);
   })();
 
+  function purchase(){
+    const count = parseInt(localStorage.getItem('cartCount'));
+
+    if (count <= 0){
+      alert('상품을 담고 주문해주세요');
+      return;
+    }
+
+    if (isLogged){
+      window.location.href = "/purchase";
+    }
+  }
 
   // 카트에 들어있는 개수 초기화
   function updateCartCountWhenRemoved() {
@@ -420,12 +432,41 @@
     // 체크박스 상태에 따라 금액을 추가하거나 차감
     if (isSelected) {
       totalPrice += itemTotal;
+
     } else {
       totalPrice = totalPrice-itemTotal > 0 ? totalPrice-itemTotal : 0;
     }
-
     // 최종 결제 금액 및 배송비 업데이트
     updateFinalPriceAndShipping();
+
+    if (isLogged) {
+      fetch("/cart/changeBookStatus", {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          bookId: bookId,
+          status: isSelected
+        })
+      })
+      .then(response => {
+        if (!response.ok) {
+          if (isSelected) {
+            totalPrice -= itemTotal;
+
+          } else {
+            totalPrice = totalPrice + itemTotal;
+          }
+          // 최종 결제 금액 및 배송비 업데이트
+          updateFinalPriceAndShipping();
+
+          document.getElementById('select-' + bookId).checked = !isSelected;
+
+          alert('선택 변동에 실패했습니다 다시 시도해주세요');
+        }
+      })
+    }
+
+
   }
 
   window.addEventListener('DOMContentLoaded', initializeCart);

@@ -12,6 +12,10 @@ main {
 .nav-link:not(.collapsed) .toggle-icon {
   transform: rotate(90deg); /* 펼쳐질 때 회전 */
 }
+/* 접힐 때 아이콘 기본 위치로 복귀 */
+.nav-link.collapsed .toggle-icon {
+  transform: rotate(0deg);
+}
 /* 사이드바 배경색 설정 */
 #sidebar {
   background-color: #f3f2ec; /* 페이지와 어울리는 색상으로 설정 */

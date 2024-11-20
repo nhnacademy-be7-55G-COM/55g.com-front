@@ -19,6 +19,8 @@ import shop.s5g.front.dto.wrappingpaper.WrappingPaperCreateRequestDto;
 import shop.s5g.front.dto.wrappingpaper.WrappingPaperRequestDto;
 import shop.s5g.front.dto.wrappingpaper.WrappingPaperResponseDto;
 import shop.s5g.front.dto.wrappingpaper.WrappingPaperView;
+import shop.s5g.front.exception.ApplicationException;
+import shop.s5g.front.exception.PrototypeBeanCreationFailedException;
 import shop.s5g.front.service.image.ImageService;
 import shop.s5g.front.service.wrappingpaper.WrappingPaperService;
 
@@ -44,7 +46,7 @@ public class WrappingPaperServiceImpl implements WrappingPaperService {
     public static final String SCOPE_ALL = "all";
 
     @Override
-    @Async("purchaseRequest")
+    @Async("purchaseExecutor")
     public CompletableFuture<List<WrappingPaperResponseDto>> fetchActivePapersAsync() {
         return CompletableFuture.completedFuture(fetchActivePapers());
     }
@@ -64,10 +66,9 @@ public class WrappingPaperServiceImpl implements WrappingPaperService {
     }
 
     @Override
+    @Async("purchaseExecutor")
     public CompletableFuture<WrappingPaperResponseDto> fetchPaperAsync(long id) {
-        return CompletableFuture.supplyAsync(
-                () ->wrappingPaperAdapter.fetchPaper(id)
-        );
+        return CompletableFuture.completedFuture(wrappingPaperAdapter.fetchPaper(id));
     }
 
     @Override
@@ -84,8 +85,8 @@ public class WrappingPaperServiceImpl implements WrappingPaperService {
             // 40x, 50x가 나면 어차피 예외가 발생됨..
             return wrappingPaperAdapter.createPaper(requestDto).getBody();
         } catch (IOException e) {
-            // TODO: 다른 예외로 바꾸기
-            throw new RuntimeException(e);
+            log.error("IO Exception during uploading image", e);
+            throw new ApplicationException(e);
         }
     }
 
@@ -104,6 +105,10 @@ public class WrappingPaperServiceImpl implements WrappingPaperService {
     @Override
     public WrappingPaperView convertToView(WrappingPaperResponseDto response) {
         UriComponentsBuilder builder = builderProvider.getIfAvailable();
+        if (builder == null) {
+            log.error("URI 컴포넌트 생성 실패");
+            throw new PrototypeBeanCreationFailedException();
+        }
         String imageUri = builder.path("/" + response.imageName()).build().toUriString();
 
         return new WrappingPaperView(
