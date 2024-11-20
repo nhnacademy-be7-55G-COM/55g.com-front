@@ -8,9 +8,11 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import shop.s5g.front.adapter.CategoryAdapter;
 import shop.s5g.front.dto.MessageDto;
+import shop.s5g.front.dto.category.CategoryDetailResponseDto;
 import shop.s5g.front.dto.category.CategoryRequestDto;
 import shop.s5g.front.dto.category.CategoryResponseDto;
 import shop.s5g.front.exception.category.CategoryRegisterFailedException;
+import shop.s5g.front.exception.category.CategoryResourceNotFoundException;
 import shop.s5g.front.service.category.CategoryService;
 
 @Service
@@ -84,6 +86,23 @@ public class CategoryServiceImpl implements CategoryService {
         }
         catch (HttpClientErrorException | HttpServerErrorException e) {
             throw new CategoryRegisterFailedException(e.getMessage());
+        }
+    }
+
+    /**
+     * 카테고리 수정
+     */
+    @Override
+    public MessageDto updateCategory(Long categoryId, CategoryRequestDto requestDto) {
+        try {
+            ResponseEntity<MessageDto> response = categoryAdapter.updateCategory(categoryId, requestDto);
+            if (response.getStatusCode().is2xxSuccessful()) {
+                return response.getBody();
+            }
+            throw new CategoryResourceNotFoundException("카테고리가 존재하지 않습니다.");
+        }
+        catch (HttpClientErrorException | HttpServerErrorException e) {
+            throw new CategoryResourceNotFoundException(e.getMessage());
         }
     }
 }

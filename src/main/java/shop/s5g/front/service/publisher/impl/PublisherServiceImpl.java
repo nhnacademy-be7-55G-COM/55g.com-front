@@ -1,20 +1,21 @@
 package shop.s5g.front.service.publisher.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import shop.s5g.front.adapter.PublisherAdapter;
 import shop.s5g.front.dto.MessageDto;
+import shop.s5g.front.dto.PageResponseDto;
 import shop.s5g.front.dto.publisher.PublisherRequestDto;
 import shop.s5g.front.dto.publisher.PublisherResponseDto;
 import shop.s5g.front.exception.publisher.PublisherGetFailedException;
 import shop.s5g.front.exception.publisher.PublisherRegisterFailedException;
 import shop.s5g.front.service.publisher.PublisherService;
 
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -36,10 +37,13 @@ public class PublisherServiceImpl implements PublisherService {
         }
     }
 
+    //출판사 전제 조회
+
+
     @Override
-    public List<PublisherResponseDto> getPublisherList() {
+    public PageResponseDto<PublisherResponseDto> getPublisherList(Pageable pageable) {
         try {
-            ResponseEntity<List<PublisherResponseDto>> allPublisher = publisherAdapter.getAllPublisher();
+            ResponseEntity<PageResponseDto<PublisherResponseDto>> allPublisher = publisherAdapter.getAllPublisher(pageable);
             if (allPublisher.getStatusCode().is2xxSuccessful()) {
                 return allPublisher.getBody();
             }
@@ -74,6 +78,20 @@ public class PublisherServiceImpl implements PublisherService {
             throw new PublisherGetFailedException("출판사 수정에 실패했습니다.");
         }
         catch (HttpClientErrorException | HttpServerErrorException e) {
+            throw new PublisherGetFailedException(e.getMessage());
+        }
+    }
+
+    //출판사 삭제(비활성화)
+    @Override
+    public MessageDto delete(Long id) {
+        try{
+            ResponseEntity<MessageDto> response = publisherAdapter.deletePublisher(id);
+            if (response.getStatusCode().is2xxSuccessful()) {
+                return response.getBody();
+            }
+            throw new PublisherGetFailedException("해당 출판사는 없습니다.");
+        }catch (HttpClientErrorException | HttpServerErrorException e) {
             throw new PublisherGetFailedException(e.getMessage());
         }
     }

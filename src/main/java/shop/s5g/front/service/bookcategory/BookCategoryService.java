@@ -13,5 +13,5 @@ public interface BookCategoryService {
 
 //    List<BookCategoryResponseDto> getAllBookCategory();
 
-    List<BookPageableResponseDto> getBookByCategoryId(Long categoryId);
+//    List<BookPageableResponseDto> getBookByCategoryId(Long categoryId);
 }
