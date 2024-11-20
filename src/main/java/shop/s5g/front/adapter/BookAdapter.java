@@ -18,6 +18,7 @@ import shop.s5g.front.dto.book.BookSimpleResponseDto;
 @FeignClient(value = "shop-service", url = "${gateway.url}", configuration = FeignGatewayAuthorizationConfig.class)
 public interface BookAdapter {
 
+    // 도서 상세 조회
     @GetMapping("/api/shop/book/{bookId}")
     ResponseEntity<BookDetailResponseDto> getBook(@PathVariable long bookId);
 

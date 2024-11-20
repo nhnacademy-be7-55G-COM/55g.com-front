@@ -10,6 +10,7 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -91,12 +92,13 @@ public class PaymentController {
 
     @GetMapping("/fail")
     public String requestFail(
-        @RequestParam long orderDataId,
         @RequestParam String code,
         @RequestParam String message,
         @RequestParam String orderId,
+        Model model,
         HttpServletRequest request
     ) {
+        final long orderDataId = purchaseSheet.getOrderId();
         log.warn("Payment failed!: [orderDataId={}, code={}, message={}, orderId={}", orderDataId, code, message, orderId);
 
         HttpSession session = request.getSession(false);
@@ -104,6 +106,9 @@ public class PaymentController {
             session.invalidate();
         }
         orderService.deleteOrder(orderDataId);
-        return "payments/toss-fail";
+        model.addAttribute("title", "결제에 실패했어요.");
+        model.addAttribute("message", message);
+        model.addAttribute("redirect", "/");
+        return "error/redirect";
     }
 }
