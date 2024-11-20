@@ -4,6 +4,18 @@
   <th:block th:replace="~{fragments/head :: headTemplate}"></th:block>
   <title>로그인</title>
   <meta charset="utf-8" />
+  <style>
+    .payco-login-btn {
+      display: block;
+      margin: 15px auto 0;
+      text-align: center;
+      max-width: 250px; /* 적절한 버튼 크기 */
+    }
+    .payco-login-btn img {
+      width: 100%; /* 이미지가 버튼 크기에 맞게 조정됨 */
+      height: auto; /* 비율 유지 */
+    }
+  </style>
 </head>
 
 <body
@@ -23,6 +35,13 @@
     </div>
     <button type="submit" class="btn btn-common w-100">Login</button>
   </form>
+  <!-- 페이코 로그인 버튼 -->
+  <div class="text-center mt-4">
+    <a href="/payco/login" class="payco-login-btn">
+      <img src="/static/images/payco-login.png" alt="페이코로 로그인">
+    </a>
+  </div>
+
   <div class="text-center mt-3">
     <a href="/register" class="btn btn-outline-primary btn-sm mt-2">회원가입</a>
     <a href="/forgot-password" class="btn btn-outline-secondary btn-sm mt-2">비밀번호 찾기</a>
