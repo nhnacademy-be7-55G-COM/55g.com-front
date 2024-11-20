@@ -27,13 +27,13 @@ public interface PublisherAdapter {
 
     //id로 출판사 객체 조회
     @GetMapping("/api/shop/publisher/{publisherId}")
-    ResponseEntity<PublisherResponseDto> findPublisher(@Valid @PathVariable("publisherId") Long publisherId);
+    ResponseEntity<PublisherResponseDto> findPublisher(@PathVariable("publisherId") Long publisherId);
 
     //출판사 수정
     @PutMapping("/api/shop/publisher/{publisherId}")
-    ResponseEntity<MessageDto> updatePublisher(@Valid @PathVariable("publisherId") Long publisherId, @Valid @RequestBody PublisherRequestDto publisherRequestDto);
+    ResponseEntity<MessageDto> updatePublisher(@PathVariable("publisherId") Long publisherId, @RequestBody PublisherRequestDto publisherRequestDto);
 
     //출판사 삭제(비활성화)
     @DeleteMapping("/api/shop/publisher/{publisherId}")
-    ResponseEntity<MessageDto> deletePublisher(@Valid @PathVariable("publisherId") Long publisherId);
+    ResponseEntity<MessageDto> deletePublisher(@PathVariable("publisherId") Long publisherId);
 }

@@ -29,7 +29,7 @@ public interface CategoryAdapter {
 
     //자식 카테고리 조회
     @GetMapping("/api/shop/category/childCategory/{categoryId}")
-    ResponseEntity<List<CategoryResponseDto>> getChildCategories(@Valid @PathVariable("categoryId") long categoryId);
+    ResponseEntity<List<CategoryResponseDto>> getChildCategories(@PathVariable("categoryId") long categoryId);
 
     //카테고리 id로 카테고리 조회
     @GetMapping("/admin/coupons/category/{categoryId}")
@@ -37,5 +37,5 @@ public interface CategoryAdapter {
 
     //카테고리 수정
     @PutMapping("/api/shop/category/{categoryId}")
-    ResponseEntity<MessageDto> updateCategory(@Valid @PathVariable("categoryId") Long categoryId, @Valid @RequestBody CategoryRequestDto requestDto);
+    ResponseEntity<MessageDto> updateCategory(@PathVariable("categoryId") Long categoryId, @RequestBody CategoryRequestDto requestDto);
 }
