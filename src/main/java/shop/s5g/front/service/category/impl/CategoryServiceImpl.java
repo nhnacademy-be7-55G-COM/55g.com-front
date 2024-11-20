@@ -11,6 +11,7 @@ import shop.s5g.front.dto.MessageDto;
 import shop.s5g.front.dto.category.CategoryDetailResponseDto;
 import shop.s5g.front.dto.category.CategoryRequestDto;
 import shop.s5g.front.dto.category.CategoryResponseDto;
+import shop.s5g.front.exception.BadRequestException;
 import shop.s5g.front.exception.category.CategoryRegisterFailedException;
 import shop.s5g.front.exception.category.CategoryResourceNotFoundException;
 import shop.s5g.front.service.category.CategoryService;
@@ -96,12 +97,9 @@ public class CategoryServiceImpl implements CategoryService {
     public MessageDto updateCategory(Long categoryId, CategoryRequestDto requestDto) {
         try {
             ResponseEntity<MessageDto> response = categoryAdapter.updateCategory(categoryId, requestDto);
-            if (response.getStatusCode().is2xxSuccessful()) {
-                return response.getBody();
-            }
-            throw new CategoryResourceNotFoundException("카테고리가 존재하지 않습니다.");
+            return response.getBody();
         }
-        catch (HttpClientErrorException | HttpServerErrorException e) {
+        catch (BadRequestException e) {
             throw new CategoryResourceNotFoundException(e.getMessage());
         }
     }
