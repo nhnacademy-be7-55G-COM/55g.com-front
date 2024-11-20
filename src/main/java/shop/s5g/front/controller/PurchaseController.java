@@ -1,6 +1,5 @@
 package shop.s5g.front.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +30,7 @@ public class PurchaseController {
      */
     @GetMapping("/purchase")
     @SessionRequired
-    public ModelAndView getPurchaseView(/* User Auth */ HttpServletRequest request) {
+    public ModelAndView getPurchaseView() {
 
         ModelAndView mv = new ModelAndView("create-order");
 
@@ -60,7 +59,6 @@ public class PurchaseController {
 //            new CartBookInfoRequestDto(1L, 2), new CartBookInfoRequestDto(3L, 1)
 //        );
     }
-
 
     @GetMapping("/purchase/test")
     @ResponseBody

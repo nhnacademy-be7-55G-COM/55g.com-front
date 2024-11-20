@@ -102,3 +102,15 @@ button.payment-selected {
 #paymentButtons > button {
   margin: 0 0.3rem;
 }
+.mini-address-card {
+  padding: 0.05rem;
+  background-color: white;
+  border: 1px solid black;
+
+}
+.mini-address-card p {
+  margin: 0;
+}
+.mini-address-card button {
+  height: 2.6rem;
+}
