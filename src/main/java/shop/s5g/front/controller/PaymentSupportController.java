@@ -22,6 +22,7 @@ import shop.s5g.front.dto.order.OrderCreateRequestDto;
 import shop.s5g.front.dto.order.OrderCreateResponseDto;
 import shop.s5g.front.dto.order.PurchaseRequestDto;
 import shop.s5g.front.dto.order.WrapModifyRequestDo;
+import shop.s5g.front.dto.point.PointUseDto;
 import shop.s5g.front.service.order.OrderService;
 import shop.s5g.front.utils.PaymentUtils;
 
@@ -107,5 +108,16 @@ public class PaymentSupportController {
         orderService.deleteOrder(purchaseSheet.getOrderId());
         session.invalidate();
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @PutMapping("/point")
+    @SessionRequired
+    public ResponseEntity<HttpStatus> updateUsingPoint(@RequestBody PointUseDto use) {
+        try {
+            purchaseSheet.updateUsingPoint(use.point());
+        }catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+        return ResponseEntity.ok().build();
     }
 }

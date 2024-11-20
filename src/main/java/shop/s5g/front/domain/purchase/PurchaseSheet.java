@@ -179,6 +179,10 @@ public class PurchaseSheet implements Serializable {    // 주문서 빈!
         return orderInfo.totalPrice;
     }
 
+    public long getUsedPoint() {
+        return orderInfo.usingPoint;
+    }
+
     public long getNetPrice() {     // netPrice가 뭐였더라...
         return orderInfo.netPrice;
     }
@@ -200,13 +204,14 @@ public class PurchaseSheet implements Serializable {    // 주문서 빈!
         long totalPrice = 0;
         long netPrice = 0;
         long accumulationPrice = 0;
+        final long usePoint = orderInfo.usingPoint;
         List<OrderDetailCreateRequestDto> details = new ArrayList<>(cartList.size());
         for (PurchaseCell cell: orderInfo.purchaseMap.values()) {
             BookPurchaseView book = cell.book;
             // TODO: 쿠폰 적용, 한 권만 적용
             long wrapCost = cell.wrappingPaper != null ? cell.wrappingPaper.price() : 0;
             long subTotalPrice = book.totalPrice() - 0 + (book.totalPrice() * (book.quantity()-1)) + wrapCost;
-            int subAccPrice = BigDecimal.valueOf(subTotalPrice).multiply(accRateSum).intValue();
+            int subAccPrice = usePoint == 0 ? BigDecimal.valueOf(subTotalPrice).multiply(accRateSum).intValue() : 0;
             // netPrice...
             totalPrice += subTotalPrice;
             accumulationPrice += subAccPrice;
@@ -220,11 +225,11 @@ public class PurchaseSheet implements Serializable {    // 주문서 빈!
             ));
         }
 
-        orderInfo.totalPrice = totalPrice;
+        orderInfo.totalPrice = totalPrice - usePoint;
         orderInfo.netPrice = netPrice;
 
         orderInfo.order = new OrderCreateRequestDto(
-            memberInfo.customerId(), delivery, details, netPrice, totalPrice
+            memberInfo.customerId(), delivery, details, orderInfo.netPrice, orderInfo.totalPrice, usePoint
         );
 
         return orderInfo.order;
@@ -241,6 +246,18 @@ public class PurchaseSheet implements Serializable {    // 주문서 빈!
        } else {
            cell.wrappingPaper = wrapMap.get(wrapModify.wrapId());
        }
+    }
 
+    public long updateUsingPoint(long point) {
+        if (point < 0) {
+            // TODO: 적절한 예외로 바꾸기
+            throw new RuntimeException("포인트는 음수가 될 수 없어요.");
+        }
+        if (memberInfo.point() < point) {
+            // TODO: 적절한 예외로 바꾸기
+            throw new RuntimeException("포인트는 가지고 있는것보다 클 수 없어요.");
+        }
+        orderInfo.usingPoint = point;
+        return point;
     }
 }
