@@ -139,6 +139,21 @@ const getDeliveryInformation = ({
   };
 };
 
+
+const getDeliveryInfoFromSaved = (selectedAddress, feeId, receiveDateSelector, receiverNameSelector) => {
+  const receiveDate = document.querySelector(receiveDateSelector).value;
+  const receiverName = document.querySelector(receiverNameSelector).value;
+
+  if (selectedAddress === null || selectedAddress === '') {
+    throw "주소가 비어있음";
+  }
+  return {
+    address: selectedAddress,
+    deliveryFeeId: feeId,
+    receivedDate: receiveDate,
+    receiverName: receiverName
+  };
+};
 // 적립률을 여기서 계산하지 말고 컨트롤러에서 계산하도록 하자.
 // 아니아니 적립률을 보여줘야 할거 아니냐..
 // 근데 그러면 여기서 계산하는게 아니라 미리 계산해서 보여줘야 하는게 아닌지?

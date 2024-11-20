@@ -14,7 +14,7 @@ import shop.s5g.front.dto.cart.request.CartBookInfoRequestDto;
 
 public interface BookService {
 
-    PageResponseDto<BookPageableResponseDto> getAllBooks(Pageable pageable);
+//    PageResponseDto<BookPageableResponseDto> getAllBooks(Pageable pageable);
 
     List<BookSimpleResponseDto> getSimpleBooks(List<Long> bookIds);
 

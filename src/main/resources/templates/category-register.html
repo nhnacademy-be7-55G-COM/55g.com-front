@@ -84,12 +84,11 @@
 <!--    <button>카테고리 등록</button>-->
 </form>
 
-<div th:replace="~{fragments/footer}"></div>
 <script>
 
     function handleCatgorySelection(selectElement) {
         if (selectElement.value == "0") {
-            selectElement.value = "";
+            selectElement.value = NULL;
         } else {
             selectElement.name = "parentCategoryId";
         }

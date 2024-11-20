@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import shop.s5g.front.config.FeignImageProviderAuthorizationConfig;
 
+// TODO: Overwrite false
 @FeignClient(
     name = "imageProvider",
     url = "https://api-image.nhncloudservice.com/image/v2.0/appkeys/${image.appkey}",

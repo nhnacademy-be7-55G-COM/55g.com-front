@@ -27,6 +27,6 @@ public interface BookCategoryAdapter {
 //    ResponseEntity<List<BookCategoryResponseDto>> getAllBookCategory();
 
     //categoryId로 book_List 조회
-    @GetMapping("/api/shop/books/{categoryId}")
-    ResponseEntity<List<BookPageableResponseDto>> getBookByCategory(@PathVariable("categoryId") Long categoryId);
+//    @GetMapping("/api/shop/books/{categoryId}")
+//    ResponseEntity<List<BookPageableResponseDto>> getBookByCategory(@PathVariable("categoryId") Long categoryId);
 }
