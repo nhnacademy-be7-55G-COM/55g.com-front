@@ -120,7 +120,7 @@ public class CartController {
 
     @PostMapping("/cart/updateQuantity")
     public ResponseEntity<Void> updateQuantity(
-        @RequestBody CartUpdateQuantityRequestDto cartUpdateQuantityReq,
+        @RequestBody @Validated CartUpdateQuantityRequestDto cartUpdateQuantityReq,
         BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
@@ -137,7 +137,7 @@ public class CartController {
     }
 
     @DeleteMapping("/cart/removeBook")
-    public ResponseEntity<Void> removeBook(@RequestBody CartRemoveBookRequestDto cartRemoveBookReq,
+    public ResponseEntity<Void> removeBook(@RequestBody @Validated CartRemoveBookRequestDto cartRemoveBookReq,
         BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
@@ -157,7 +157,7 @@ public class CartController {
 
     @PostMapping("/cart/changeBookStatus")
     public ResponseEntity<Void> changeBookStatus(
-        @RequestBody CartBookSelectRequestDto cartBookSelectRequestDto,
+        @RequestBody @Validated CartBookSelectRequestDto cartBookSelectRequestDto,
         BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
@@ -171,6 +171,21 @@ public class CartController {
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    @PostMapping("/cart/removePurchasedBooks")
+    public ResponseEntity<Void> removePurchasedBooks() {
+        try {
+
+            cartService.removePurchasedBooks();
+
+            return ResponseEntity.status(HttpStatus.OK).build();
+
+        }catch (Exception e){
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+
         }
     }
 

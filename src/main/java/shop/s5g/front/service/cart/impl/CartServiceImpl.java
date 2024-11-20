@@ -152,6 +152,20 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
+    public void removePurchasedBooks() {
+
+        try {
+
+            cartAdapter.removePurchasedBooks();
+
+        } catch (Exception e){
+
+            throw new CartPurchaseException("구매한 물품의 장바구니 업데이트를 실패했습니다.");
+
+        }
+    }
+
+    @Override
     public void changeBookStatusInCart(CartBookSelectRequestDto cartBookSelectRequestDto) {
         try {
             cartAdapter.changeBookStatusInCart(cartBookSelectRequestDto);

@@ -35,4 +35,6 @@ public interface CartService {
     CompletableFuture<List<BookPurchaseView>> convertCartToView(List<CartBookInfoRequestDto> cartList);
 
     void changeBookStatusInCart(CartBookSelectRequestDto cartBookSelectRequestDto);
+
+    void removePurchasedBooks();
 }

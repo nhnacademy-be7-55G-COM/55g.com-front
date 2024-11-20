@@ -54,6 +54,9 @@ public interface CartAdapter {
     @GetMapping("/api/shop/cart/cartWhenPurchase")
     ResponseEntity<List<CartBookInfoRequestDto>> getBooksWhenPurchase();
 
+    @PostMapping("/api/shop/cart/removePurchasedBooks")
+    ResponseEntity<Void> removePurchasedBooks();
+
     @PostMapping("/api/shop/cart/changeBookStatus")
     ResponseEntity<Void> changeBookStatusInCart(@RequestBody CartBookSelectRequestDto cartBookSelectRequestDto);
 }
