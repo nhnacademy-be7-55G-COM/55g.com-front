@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="https://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+>
+<head>
+  <meta charset="UTF-8">
+  <title>55g Book Store</title>
+  <th:block th:replace="~{fragments/head :: headTemplate}" />
+</head>
+<body>
+<div th:replace="~{fragments/header :: #header-wrap}"></div>
+<div layout:fragment="content" class="container"></div>
+<div th:replace="~{fragments/footer :: #footer-bottom}"></div>
+</body>
+</html>

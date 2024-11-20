@@ -23,6 +23,8 @@ public record BookDetailResponseDto(
     int stock,
     long views,
     LocalDateTime createdAt,
+    LocalDateTime updatedAt,
+    String imagePath,
     List<BookAuthorResponseDto> authorList,
     List<BookCategoryResponseDto> categoryList
 ) {

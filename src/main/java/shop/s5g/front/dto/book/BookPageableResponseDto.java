@@ -18,7 +18,7 @@ public record BookPageableResponseDto(
         String chapter,
         String description,
         @NotNull
-//        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+        @JsonFormat(pattern = "yyyy-MM-dd")
         LocalDate publishedDate,
         String isbn,
         Long price,
@@ -33,6 +33,7 @@ public record BookPageableResponseDto(
         @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
         @NotNull
         LocalDateTime createdAt,
+        LocalDateTime updatedAt,
         String imageName
 ) {
 }
