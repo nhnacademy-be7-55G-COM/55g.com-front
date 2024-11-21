@@ -28,7 +28,7 @@ public class BookAddController {
     @GetMapping("/book/add")
     public ModelAndView bookAddForm(@PageableDefault(page = 0, size = 9999) Pageable pageable) {
         ModelAndView model = new ModelAndView();
-        model.addObject("categoryList", categoryService.getKoreaCategories());
+        model.addObject("categoryList", categoryService.getKoreaCategories(pageable).content());
         model.addObject("publisherList", publisherService.getPublisherList(pageable).content());
         model.setViewName("book/add");
         return model;
