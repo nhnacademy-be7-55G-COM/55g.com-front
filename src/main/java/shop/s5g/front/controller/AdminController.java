@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,9 +24,12 @@ import shop.s5g.front.dto.coupon.CategoryResponseDto;
 import shop.s5g.front.dto.coupon.CouponCategoryResponseDto;
 import shop.s5g.front.dto.coupon.CouponPolicyInquiryResponseDto;
 import shop.s5g.front.dto.coupon.CouponPolicyRegisterRequestDto;
+import shop.s5g.front.dto.coupon.CouponPolicyUpdateRequestDto;
 import shop.s5g.front.dto.coupon.CouponRegisterRequestDto;
+import shop.s5g.front.dto.coupon.CouponResponseDto;
 import shop.s5g.front.dto.coupon.CouponTemplateInquiryResponseDto;
 import shop.s5g.front.dto.coupon.CouponTemplateRegisterRequestDto;
+import shop.s5g.front.dto.coupon.CouponTemplateUpdateRequestDto;
 import shop.s5g.front.dto.wrappingpaper.WrappingPaperView;
 import shop.s5g.front.exception.auth.UnauthorizedException;
 import shop.s5g.front.service.coupon.book.CouponBookService;
@@ -80,6 +84,62 @@ public class AdminController {
     }
 
     /**
+     * 관리자 - 쿠폰 템플릿 수정을 위한 페이지 이동
+     * @param templateId
+     * @return ModelAndView
+     */
+    @GetMapping("/admin/coupons/template/update/{templateId}")
+    public ModelAndView getUpdateCouponTemplatePage(@PathVariable("templateId") Long templateId) {
+
+        ModelAndView mv = new ModelAndView("admin/template-update");
+
+        CouponTemplateInquiryResponseDto couponTemplate = couponTemplateService.findCouponTemplateById(templateId);
+
+        mv.addObject("couponTemplate", couponTemplate);
+
+        return mv;
+    }
+
+    @PostMapping("/admin/coupons/template/update")
+    public String updateCouponTemplate(@ModelAttribute CouponTemplateUpdateRequestDto couponTemplateUpdateRequestDto) {
+
+        couponTemplateService.updateCouponTemplate(couponTemplateUpdateRequestDto.couponTemplateId(), couponTemplateUpdateRequestDto);
+
+        return "redirect:/templates/list";
+    }
+
+    /**
+     * 관리자 - 쿠폰 템플릿 삭제
+     * @param templateId
+     * @return String
+     */
+    @DeleteMapping("/admin/coupons/template/delete/{templateId}")
+    public String deleteCouponTemplate(@PathVariable("templateId") Long templateId) {
+
+        couponTemplateService.deleteCouponTemplate(templateId);
+
+        return "redirect:/templates/list";
+    }
+
+    /**
+     * 관리자 - 쿠폰 발급에 쓰인 템플릿 조회
+     * @param templateId
+     * @return ModelAndView
+     */
+    @GetMapping("/admin/coupons/use/template/{templateId}")
+    public ModelAndView getUseCouponTemplate(@PathVariable("templateId") Long templateId) {
+
+        CouponTemplateInquiryResponseDto couponTemplate = couponTemplateService.findCouponTemplateById(templateId);
+
+        ModelAndView mv =  new ModelAndView("admin/use-template");
+
+        mv.addObject("couponTemplate", couponTemplate);
+        mv.addObject("couponTemplateId", templateId);
+
+        return mv;
+    }
+
+    /**
      * 관리자 - 쿠폰 템플릿 생성 페이지
      * @param policyId
      * @return ModelAndView
@@ -92,6 +152,25 @@ public class AdminController {
         CouponPolicyInquiryResponseDto couponPolicy = couponPolicyService.findCouponPolicy(policyId);
 
         mv.addObject("couponPolicy", couponPolicy);
+
+        return mv;
+    }
+
+    /**
+     * 관리자 - 사용되지 않은 쿠폰 템플릿 조회
+     * @param page
+     * @return ModelAndView
+     */
+    @GetMapping("/templates/list")
+    public ModelAndView getAdminCouponTemplatePage(@RequestParam(defaultValue = "0") int page) {
+
+        Pageable pageable = PageRequest.of(page, 15);
+        Page<CouponTemplateInquiryResponseDto> couponTemplateList = couponTemplateService.getCouponTemplatesUnused(pageable);
+
+        ModelAndView mv = new ModelAndView("admin/template-inquiry");
+
+        mv.addObject("couponTemplate", couponTemplateList);
+        mv.addObject("currentPage", (page + 1));
 
         return mv;
     }
@@ -139,25 +218,6 @@ public class AdminController {
     }
 
     /**
-     * 관리자 - 사용되지 않은 쿠폰 템플릿 조회
-     * @param page
-     * @return ModelAndView
-     */
-    @GetMapping("/templates/list")
-    public ModelAndView getAdminCouponTemplatePage(@RequestParam(defaultValue = "0") int page) {
-
-        Pageable pageable = PageRequest.of(page, 15);
-        Page<CouponTemplateInquiryResponseDto> couponTemplateList = couponTemplateService.getCouponTemplatesUnused(pageable);
-
-        ModelAndView mv = new ModelAndView("admin/template-inquiry");
-
-        mv.addObject("couponTemplate", couponTemplateList);
-        mv.addObject("currentPage", (page + 1));
-
-        return mv;
-    }
-
-    /**
      * 관리자 - 책 조회
      * @param page
      * @return ModelAndView
@@ -201,12 +261,22 @@ public class AdminController {
 
     /**
      * 관리자 - 쿠폰 조회
-     * @param pageable
+     * @param page
      * @return ModelAndView
      */
     @GetMapping("/admin/users/coupons")
-    public ModelAndView getUserCoupons(Pageable pageable) {
-        return new ModelAndView("admin/coupon-user");
+    public ModelAndView getUserCoupons(@RequestParam(defaultValue = "0") int page) {
+
+        ModelAndView mv = new ModelAndView("admin/coupon-user");
+
+        Pageable pageable = PageRequest.of(page, 15);
+
+        Page<CouponResponseDto> couponList = couponService.getAllCoupons(pageable);
+
+        mv.addObject("couponList", couponList);
+        mv.addObject("currentPage", page);
+
+        return mv;
     }
 
     /**
@@ -286,17 +356,6 @@ public class AdminController {
     }
 
     /**
-     * 관리자 - 쿠폰 정책 생성 요청
-     * @param couponPolicyRegisterRequestDto
-     * @return String
-     */
-    @PostMapping("/admin/coupons/policy/create")
-    public String adminCouponPolicyCreate(@ModelAttribute CouponPolicyRegisterRequestDto couponPolicyRegisterRequestDto) {
-        couponPolicyService.createCouponPolicy(couponPolicyRegisterRequestDto);
-        return "redirect:/admin/coupons/policy-inquiry";
-    }
-
-    /**
      * 관리자 - 쿠폰 생성 요청
      * @param couponRegisterRequestDto
      * @return String
@@ -305,6 +364,17 @@ public class AdminController {
     public String adminCouponCreate(@ModelAttribute CouponRegisterRequestDto couponRegisterRequestDto) {
         couponService.createCoupon(couponRegisterRequestDto);
         return "redirect:/admin";
+    }
+
+    /**
+     * 관리자 - 쿠폰 정책 생성 요청
+     * @param couponPolicyRegisterRequestDto
+     * @return String
+     */
+    @PostMapping("/admin/coupons/policy/create")
+    public String adminCouponPolicyCreate(@ModelAttribute CouponPolicyRegisterRequestDto couponPolicyRegisterRequestDto) {
+        couponPolicyService.createCouponPolicy(couponPolicyRegisterRequestDto);
+        return "redirect:/admin/coupons/policy-inquiry";
     }
 
     /**
@@ -323,6 +393,45 @@ public class AdminController {
 
         return mv;
     }
+
+    /**
+     * 관리자 - 정책 수정 페이지
+     * @param policyId
+     * @return ModelAndView
+     */
+    @GetMapping("/admin/coupons/policy/update/{policyId}")
+    public ModelAndView couponPolicyUpdatePage(@PathVariable("policyId") Long policyId) {
+
+        CouponPolicyInquiryResponseDto policy = couponPolicyService.findCouponPolicy(policyId);
+
+        ModelAndView mv = new ModelAndView("admin/policy-update");
+
+        mv.addObject("policyId", policyId);
+        mv.addObject("policyInfo", policy);
+
+        return mv;
+    }
+
+    /**
+     * 관리자 - 정책 수정 요청
+     * @param couponPolicyUpdateRequestDto
+     * @return String
+     */
+    @PostMapping("/admin/coupons/policy/update")
+    public String adminCouponPolicyUpdate(@ModelAttribute CouponPolicyUpdateRequestDto couponPolicyUpdateRequestDto) {
+
+        CouponPolicyRegisterRequestDto updateDto = new CouponPolicyRegisterRequestDto(
+            couponPolicyUpdateRequestDto.discountPrice(),
+            couponPolicyUpdateRequestDto.condition(),
+            couponPolicyUpdateRequestDto.maxPrice(),
+            couponPolicyUpdateRequestDto.duration()
+        );
+
+        couponPolicyService.updateCouponPolicy(couponPolicyUpdateRequestDto.couponPolicyId(),updateDto);
+
+        return "redirect:/admin";
+    }
+
 
     @GetMapping("/admin/delivery-fee")
     public ModelAndView adminDeliveryFeePage() {

@@ -10,4 +10,5 @@ public interface CouponPolicyService {
     MessageDto createCouponPolicy(CouponPolicyRegisterRequestDto couponPolicyRegisterRequestDto);
     Page<CouponPolicyInquiryResponseDto> findCouponPolices(Pageable pageable);
     CouponPolicyInquiryResponseDto findCouponPolicy(Long couponPolicyId);
+    MessageDto updateCouponPolicy(Long couponPolicyId, CouponPolicyRegisterRequestDto couponPolicyRegisterRequestDto);
 }

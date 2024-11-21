@@ -6,6 +6,49 @@
   <title>쿠폰 템플릿 등록</title>
   <link rel="stylesheet" href="style.css">
   <div th:replace="~{fragments/head}"></div>
+
+  <script>
+    function toggleCustomCouponName() {
+      const couponNameSelect = document.getElementById("couponName");
+      const customCouponNameInput = document.getElementById("customCouponName");
+
+      if (couponNameSelect.value === "custom") {
+        customCouponNameInput.style.display = "inline";
+        customCouponNameInput.required = true;
+        customCouponNameInput.value = ""; // 사용자 입력을 지운 상태로 초기화
+      } else {
+        customCouponNameInput.style.display = "none";
+        customCouponNameInput.required = false;
+        customCouponNameInput.value = "";
+      }
+    }
+
+    function syncCouponNameWithInput() {
+      const couponNameSelect = document.getElementById("couponName");
+      const customCouponNameInput = document.getElementById("customCouponName");
+
+      // 입력이 있을 때, select 값을 'custom'으로 설정하고 input 값을 couponName으로 복사
+      if (customCouponNameInput.value.trim() !== "") {
+        couponNameSelect.value = "custom"; // '직접 입력하기' 선택 상태로 설정
+        couponNameSelect.setAttribute("value", customCouponNameInput.value); // input 값을 data-value에 저장
+      } else {
+        couponNameSelect.value = ""; // 입력이 없으면 select는 빈 상태로
+        couponNameSelect.removeAttribute("value"); // 저장된 값 제거
+      }
+    }
+
+    // 폼 제출 시 커스텀 값이 있을 경우 데이터로 보내기
+    function beforeSubmit() {
+      const couponNameSelect = document.getElementById("couponName");
+      const customCouponNameInput = document.getElementById("customCouponName");
+
+      if (couponNameSelect.value === "custom" && customCouponNameInput.value.trim() !== "") {
+        // select 값이 custom일 경우 input 값을 couponName에 전달
+        couponNameSelect.value = customCouponNameInput.value;
+      }
+    }
+  </script>
+
 </head>
 <body>
 <div class="container">
@@ -18,15 +61,26 @@
       <span th:text="${couponPolicy.discountPrice() < 1 ? couponPolicy.discountPrice().multiply(100).stripTrailingZeros().toPlainString() + '%' : couponPolicy.discountPrice().stripTrailingZeros().toPlainString() + '원'}"></span>
     </p>
     <p><strong>조건(이상):</strong> <span th:text="${couponPolicy.condition()}"></span> 원</p>
-    <p><strong>최대 할인 금액:</strong> <span th:text="${couponPolicy.maxPrice()}"></span> 원</p>
+    <p><strong>최대 할인 금액:</strong>
+      <span th:text="${couponPolicy.maxPrice() != null ? (couponPolicy.maxPrice() == 0 ? '-' : (couponPolicy.maxPrice() * 100) + '%') + '원' : '-'}"></span>
+    </p>
     <p><strong>기간:</strong> <span th:text="${couponPolicy.duration()}"></span> 일</p>
   </div>
 
-  <form action="#" th:action="@{/admin/coupons/template/create}" method="post">
+  <form th:action="@{/admin/coupons/template/create}" method="post" onsubmit="beforeSubmit()">
     <input type="hidden" name="couponPolicyId" th:value="${couponPolicy.couponPolicyId}">
 
     <label for="couponName">쿠폰 이름:</label>
-    <input type="text" id="couponName" name="couponName" minlength="2" maxlength="50" required>
+    <select id="couponName" name="couponName" onchange="toggleCustomCouponName()" required>
+      <option value="">쿠폰을 선택하세요</option>
+      <option value="Birth Coupon">Birth Coupon</option>
+      <option value="Welcome Coupon">Welcome Coupon</option>
+      <option value="Free Coupon">Free Coupon</option>
+      <option value="custom">직접 입력하기</option>
+    </select>
+    <br>
+
+    <input type="text" id="customCouponName" name="couponName" placeholder="쿠폰 이름을 입력하세요" oninput="syncCouponNameWithInput()" style="display: none;">
     <br>
 
     <label for="couponDescription">쿠폰 설명:</label>
