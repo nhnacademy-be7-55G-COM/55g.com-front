@@ -1,5 +1,22 @@
 <!DOCTYPE html>
 <html>
+<head>
+  <style>
+    .btn-coupon {
+      text-align: left;
+      width: 60%;
+      height: 100%;
+    }
+
+    .btn-coupon > span {
+      white-space: normal;
+    }
+
+    .btn-purchase {
+      margin: 15px 10px 15px 0px;
+    }
+  </style>
+</head>
 <div th:replace="~{fragments/head}"></div>
 <body>
 <div th:replace="~{fragments/header}"></div>
@@ -8,32 +25,38 @@
   <div class="container mt-5">
     <div class="row">
       <div class="col-lg-4">
-        <img th:src="'https://image.toast.com/aaaacko/55gshop/book/thumbnails/'+${book.imagePath}" class="img-fluid" alt="Product Image">
+        <img th:src="'https://image.toast.com/aaaacko/55gshop/book/thumbnails/'+${book.imagePath}"
+             class="img-fluid" alt="Product Image">
       </div>
       <div class="col-lg-8">
         <h1 class="product-title" th:text="${book.title}"></h1>
-        <p class="product-details"><span th:each="author,stat:${book.authorList}"><span th:text="${author.authorName}"></span>(<span th:text="${author.typeName}"></span>)<span th:if="${!stat.last}">,</span></span>
-        | <span th:text="${book.publisherName}"></span></p>
+        <p class="product-details"><span th:each="author,stat:${book.authorList}"><span
+            th:text="${author.authorName}"></span>(<span th:text="${author.typeName}"></span>)<span
+            th:if="${!stat.last}">,</span></span>
+          | <span th:text="${book.publisherName}"></span></p>
         <div>
           <span class="ratings" th:each="category,stat:${book.categoryList}">
-            <a th:href="${'/category/'+category.categoryId}"><span th:text="${category.categoryName}"></span></a>
+            <a th:href="@{/book/list/category(name=${category.categoryName})}"><span th:text="${category.categoryName}"></span></a>
             <span th:if="${!stat.last}">></span>
           </span>
         </div>
         <div class="product-price mt-3">
-          정가: <span class="original-price" th:text="${#numbers.formatDecimal(book.price, 0, 'COMMA', 0, 'COMMA')}"></span>원
+          정가: <span class="original-price"
+                    th:text="${#numbers.formatDecimal(book.price, 0, 'COMMA', 0, 'COMMA')}"></span>원
           <!-- TODO: 실제 판매가 계산 후 반영하기 -->
-<!--          <h3 class="sale-price text-danger">판매가: 8,100원</h3>-->
+          <!--          <h3 class="sale-price text-danger">판매가: 8,100원</h3>-->
+        </div>
+        <div th:if="${book.countCoupons>0}" style="width:100%;">
+          <button class="btn btn-success btn-coupon"><strong>받을 수 있는 쿠폰이 존재합니다!</strong><br/>
+            쿠폰 받기<br/>
+          </button>
         </div>
         <div class="btn-group mt-3">
-          <button class="btn btn-primary" onclick="putTOCart()">카트에 넣기</button>
-          <button class="btn btn-success">바로 구매</button>
+          <button class="btn btn-primary btn-purchase" onclick="putTOCart()">카트에 넣기</button>
+          <button class="btn btn-success btn-purchase">바로 구매</button>
         </div>
-<!--        <ul class="mt-4 list-unstyled">-->
-<!--          <li>배송지: 서울특별시 영등포구 여의도동</li>-->
-<!--          <li>배송비: 무료 (5만원 이상 구매 시)</li>-->
-<!--        </ul>-->
-      </div><hr>
+      </div>
+      <hr>
 
       <div>
         <ul>
@@ -48,56 +71,55 @@
 <div th:replace="~{fragments/footer}"></div>
 
 <script>
-  async function putTOCart(){
+  async function putTOCart() {
     console.log('putting start');
     const isloggedIn = await isLoggedIn();
 
-    if (isloggedIn){
-      fetch("/cart",{
-        method:'POST',
-        headers: {'Content-Type':'application/json'},
+    if (isloggedIn) {
+      fetch("/cart", {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
           bookId: [[${book.bookId}]],
           quantity: 1
         })
       })
-      .then(response =>{
-        if (response.ok){
+      .then(response => {
+        if (response.ok) {
           updateCartCountWhenPutting();
           alert("장바구니 담기에 성공했습니다.");
 
-        }else {
+        } else {
           alert("장바구니 담는데 실패했습니다.");
         }
       })
       .catch(error => {
         console.error('Error putting item:', error);
       })
-    }else {
+    } else {
       try {
         console.log('비회원 장바구니 담기')
 
-        if (!localStorage.getItem('cart')){
-          localStorage.setItem('cart', JSON.stringify({ cartBookInfoList: [] }));
-          localStorage.setItem('cartCount',0);
+        if (!localStorage.getItem('cart')) {
+          localStorage.setItem('cart', JSON.stringify({cartBookInfoList: []}));
+          localStorage.setItem('cartCount', 0);
         }
 
         let cartData = JSON.parse(localStorage.getItem('cart'));
         let book = cartData.cartBookInfoList.find(book => book.bookId === [[${book.bookId}]]);
 
-        if (book){
+        if (book) {
           book.quantity += 1;
-        }else {
-          cartData.cartBookInfoList.push({bookId:[[${book.bookId}]],quantity:1});
+        } else {
+          cartData.cartBookInfoList.push({bookId: [[${book.bookId}]], quantity: 1});
           updateCartCountWhenPutting();
 
         }
 
-        localStorage.setItem('cart',JSON.stringify(cartData));
+        localStorage.setItem('cart', JSON.stringify(cartData));
         alert('장바구니에 담겼습니다.');
 
-
-      }catch (error){
+      } catch (error) {
         alert("장바구니에 담는데 실패했습니다. 다시 시도해주세요");
       }
 
@@ -106,7 +128,6 @@
 
   function updateCartCountWhenPutting() {
     const cartCountElement = document.getElementById('cart-count');
-
 
     let newCount = parseInt(localStorage.getItem('cartCount')) + 1;
 
