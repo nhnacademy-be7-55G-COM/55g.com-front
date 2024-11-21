@@ -25,6 +25,9 @@
 <section id="book-list" class="padding-medium">
   <div class="container">
     <div class="section-header align-center">
+      <div class="title">
+        <span>category name</span>
+      </div>
       <h2 class="section-title">Book List</h2>
     </div>
 
@@ -108,7 +111,7 @@
         <ul class="pagination">
           <!-- Previous Button -->
           <li class="page-item" th:classappend="${page <= 0} ? 'disabled' : ''">
-            <a class="page-link" th:href="@{/book/list(page=${page > 0 ? page - 1 : 0})}"
+            <a class="page-link" th:href="@{/book/search(page=${page > 0 ? page - 1 : 0})}"
                th:attr="aria-disabled=${page <= 0}"> < </a>
           </li>
 
@@ -116,13 +119,13 @@
           <th:block th:if="${totalPage > 0}">
             <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPage - 1)}"
                 th:classappend="${page == i} ? 'active' : ''">
-              <a class="page-link" th:href="@{/book/list(page=${i})}" th:text="${i + 1}"></a>
+              <a class="page-link" th:href="@{/book/search(page=${i})}" th:text="${i + 1}"></a>
             </li>
           </th:block>
 
           <!-- Next Button -->
           <li class="page-item" th:classappend="${page >= totalPage - 1} ? 'disabled' : ''">
-            <a class="page-link" th:href="@{/book/list(page=${page < totalPage - 1 ? page + 1 : totalPage - 1})}"
+            <a class="page-link" th:href="@{/book/search(page=${page < totalPage - 1 ? page + 1 : totalPage - 1})}"
                th:attr="aria-disabled=${page >= totalPage - 1}"> > </a>
           </li>
         </ul>
