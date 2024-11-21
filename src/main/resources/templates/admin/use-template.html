@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>쿠폰 상세</title>
+  <title>쿠폰 템플릿 조회</title>
   <link rel="stylesheet" href="style.css">
   <div th:replace="~{fragments/head}"></div>
 </head>
 <body>
 <div class="container">
-  <h2>쿠폰 상세 정보</h2>
+  <button class="close-btn" onclick="window.location.href='/admin'">&times;</button>
+  <h2>쿠폰 템플릿 상세 정보</h2>
 
   <div>
     <p><strong>쿠폰 이름:</strong> <span th:text="${couponTemplate.couponName()}"></span></p>
@@ -20,15 +21,6 @@
     <p><strong>기간:</strong> <span th:text="${couponTemplate.duration() + '일'}"></span></p>
     <p><strong>설명:</strong> <span th:text="${couponTemplate.couponDescription()}"></span></p>
   </div>
-
-    <form action="#" th:action="@{/admin/coupons/create}" method="post">
-      <div class="mb-3">
-        <label for="quantity" class="form-label">수량</label>
-        <input type="hidden" name="couponTemplateId" th:value="${couponTemplateId}">
-        <input type="number" id="quantity" name="quantity" class="form-control" min="1" max="100" required style="width: 100px;">
-      </div>
-      <button type="submit" class="btn btn-primary">쿠폰 생성</button>
-    </form>
-  </div>
-  </body>
-  </html>
+</div>
+</body>
+</html>
