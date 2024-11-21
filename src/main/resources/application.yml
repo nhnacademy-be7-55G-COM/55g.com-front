@@ -47,8 +47,8 @@ oauth:
   payco:
     auth-url: https://id.payco.com/oauth2.0/authorize
     client-id: 3RDZzEkOENyj7mThJCsfZ1i
-    redirect-url: http://www.55g.shop:8080/payco/callback
-
+    login-redirect-url: https://www.55g.shop/payco/callback
+    link-redirect-url: https://www.55g.shop/payco/link
 ---
 # on profile 'live'
 spring:
