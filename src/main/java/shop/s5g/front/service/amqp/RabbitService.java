@@ -7,13 +7,13 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
-import shop.s5g.front.dto.MessageDto;
+import shop.s5g.front.dto.order.OrderRabbitResponseDto;
 
 @Service
 @RequiredArgsConstructor
 public class RabbitService {
     private final RabbitTemplate rabbitTemplate;
-    private final ParameterizedTypeReference<MessageDto> messageType = new ParameterizedTypeReference<MessageDto>() {};
+    private final ParameterizedTypeReference<OrderRabbitResponseDto> messageType = new ParameterizedTypeReference<OrderRabbitResponseDto>() {};
 
     @Value("${rabbit.exchange.orders}")
     private String orderExchange;
@@ -22,7 +22,7 @@ public class RabbitService {
     private String tossRouteKey;
 
     @Nullable
-    public MessageDto sendPaymentRequest(Map<String, Object> body) {
+    public OrderRabbitResponseDto sendPaymentRequest(Map<String, Object> body) {
         // 타임아웃이 발생되어 응답을 받지 못했을 경우 null.
         return rabbitTemplate.convertSendAndReceiveAsType(orderExchange, tossRouteKey, body, messageType);
     }

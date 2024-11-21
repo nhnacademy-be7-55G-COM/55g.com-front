@@ -18,11 +18,11 @@
   <header id="header" style="padding: 0">
     <div class="container-fluid">
 <!--      <div class="row">-->
-      <div class="d-flex justify-content-between">
+      <div class="d-flex justify-content-between align-items-center">
 
         <div class="d-flex" id="headerLeftSide">
-          <div class="main-logo d-flex">
-            <a href="/" class="my-auto"><img class="my-auto" src="../static/images/main-logo.png" alt="logo"></a>
+          <div class="main-logo d-flex" style="margin: 8px 0">
+            <a href="/" class="my-auto"><img class="my-auto" src="../static/images/main-logo.png" alt="logo" style="width: 100px;"></a>
           </div>
 
         </div>
@@ -32,9 +32,9 @@
           <nav id="navbar" class="my-auto">
             <div class="main-menu stellarnav">
               <ul class="menu-list">
-                <li class="menu-item active"><a href="#home">Home</a></li>
+<!--                <li class="menu-item active"><a href="#home">Home</a></li>-->
 
-
+                <li class="menu-item active"><a href="/book/list">Book</a></li>
 
                 <li class="menu-item has-sub">
                   <a href="#pages" class="nav-link">Category</a>
@@ -43,8 +43,8 @@
                   </ul>
                 </li>
 
-                <li class="menu-item"><a href="#featured-books" class="nav-link">Featured</a></li>
-                <li class="menu-item"><a href="#popular-books" class="nav-link">Popular</a></li>
+<!--                <li class="menu-item"><a href="#featured-books" class="nav-link">Featured</a></li>-->
+<!--                <li class="menu-item"><a href="#popular-books" class="nav-link">Popular</a></li>-->
               </ul>
               <div class="hamburger">
                 <span class="bar"></span>
@@ -88,51 +88,50 @@
     <script>
       async function loadCartPage() {
 
-        const loggedIn = await isLoggedIn();
-        console.log('cartPage load')
+                const loggedIn = await isLoggedIn();
+                console.log('cartPage load')
 
-        if (loggedIn) {
-          window.location.href = "/cart/detailPage";
-          return;
-        }
-        if (!localStorage.getItem('cart')){
-          localStorage.setItem('cart', JSON.stringify({ cartBookInfoList: [] }));
-          localStorage.setItem('cartCount',0);
+                if (loggedIn) {
+                    window.location.href = "/cart/detailPage";
+                    return;
+                }
+                if (!localStorage.getItem('cart')) {
+                    localStorage.setItem('cart', JSON.stringify({cartBookInfoList: []}));
+                    localStorage.setItem('cartCount', 0);
 
-        }
-        const books = localStorage.getItem('cart');
-        const encodedBooks = encodeURIComponent(btoa(books));
-        window.location.href = `/cart/detailPage?cartBookInfoList=${encodedBooks}`;
+                }
+                const books = localStorage.getItem('cart');
+                const encodedBooks = encodeURIComponent(btoa(books));
+                window.location.href = `/cart/detailPage?cartBookInfoList=${encodedBooks}`;
 
-      }
+            }
 
-      async function updateCartCount() {
-        console.log('update Cart Count start in header.html');
-        const loggedIn = await isLoggedIn();
+            async function updateCartCount() {
+                console.log('update Cart Count start in header.html');
+                const loggedIn = await isLoggedIn();
 
-        if (!loggedIn){
-          // 비로그인 상태에서는 localStorage 에서 항목 수 확인
-          if (!localStorage.getItem('cart')){
-            localStorage.setItem('cart', JSON.stringify({ cartBookInfoList: [] }));
-            localStorage.setItem('cartCount',0);
-          }
-        }
+                if (!loggedIn) {
+                    // 비로그인 상태에서는 localStorage 에서 항목 수 확인
+                    if (!localStorage.getItem('cart')) {
+                        localStorage.setItem('cart', JSON.stringify({cartBookInfoList: []}));
+                        localStorage.setItem('cartCount', 0);
+                    }
+                }
 
-        // DOM 업데이트
-        const cartCountElement = document.getElementById('cart-count');
-        cartCountElement.textContent = localStorage.getItem('cartCount');
+                // DOM 업데이트
+                const cartCountElement = document.getElementById('cart-count');
+                cartCountElement.textContent = localStorage.getItem('cartCount');
 
-      }
+            }
 
-      // 쿠키를 이용해 로그인 여부 확인인데 http only 라서 자바스크립트에서는 쿠키를 직접 확인할 수 없고 서버에 요청을 해야한다.
-      async function isLoggedIn() {
-        const response = await fetch("/cart/loginCheck",{method:'GET',credentials:"include"});
-        const data = await response.json();
-        return  data.isLoggedIn;
-      }
+            // 쿠키를 이용해 로그인 여부 확인인데 http only 라서 자바스크립트에서는 쿠키를 직접 확인할 수 없고 서버에 요청을 해야한다.
+            async function isLoggedIn() {
+                const response = await fetch("/cart/loginCheck", {method: 'GET', credentials: "include"});
+                const data = await response.json();
+                return data.isLoggedIn;
+            }
 
-
-      window.addEventListener('DOMContentLoaded', async () => await updateCartCount());
+            window.addEventListener('DOMContentLoaded', async () => await updateCartCount());
 
       //국내도서 데이터 가져오기
       async function categoryInfo() {
@@ -141,53 +140,43 @@
           // fetch로 서버에서 데이터 가져오기
           const response = await fetch("/category", { method: 'GET' });
 
-          // 응답 데이터를 JSON으로 변환
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          const categories = await response.json(); // 서버에서 받은 JSON 데이터
+                    // 응답 데이터를 JSON으로 변환
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const categories = await response.json(); // 서버에서 받은 JSON 데이터
 
-          // category-list 요소 선택
-          const categoryList = document.getElementById("category-list");
+                    // category-list 요소 선택
+                    const categoryList = document.getElementById("category-list");
 
-          // 기존 항목 비우기 (필요한 경우)
-          categoryList.innerHTML = "";
+                    // 기존 항목 비우기 (필요한 경우)
+                    categoryList.innerHTML = "";
 
-          // 각 카테고리를 HTML 요소로 추가
-          categories.forEach(category => {
-            const listItem = document.createElement("li");
-            const link = document.createElement("a");
+                    // 각 카테고리를 HTML 요소로 추가
+                    categories.forEach(category => {
+                        const listItem = document.createElement("li");
+                        const link = document.createElement("a");
 
-            // a 태그의 href와 텍스트 설정
-            link.href = `/category/${category.categoryId}`; // 카테고리별 상세 페이지로 연결
-            link.textContent = category.categoryName; // 카테고리 이름 표시
+                        // a 태그의 href와 텍스트 설정
+                        link.href = `/category/${category.categoryId}`; // 카테고리별 상세 페이지로 연결
+                        link.textContent = category.categoryName; // 카테고리 이름 표시
 
-            // li에 a 태그 추가
-            listItem.appendChild(link);
+                        // li에 a 태그 추가
+                        listItem.appendChild(link);
 
-            // ul에 li 추가
-            categoryList.appendChild(listItem);
-          });
-        } catch (error) {
-          console.error("Error fetching categories:", error);
-        }
-      }
-      // 페이지 로드 시 실행
-      document.addEventListener("DOMContentLoaded", categoryInfo);
+                        // ul에 li 추가
+                        categoryList.appendChild(listItem);
+                    });
+                } catch (error) {
+                    console.error("Error fetching categories:", error);
+                }
+            }
+
+            // 페이지 로드 시 실행
+            document.addEventListener("DOMContentLoaded", categoryInfo);
 
     </script>
   </header>
-  <div class="d-flex justify-content-center flex-row w-100 mt-3">
-
-    <div class="search-bar d-flex justify-content-center flex-row">
-      <a href="#" class="search-button search-toggle" data-selector="#header-wrap">
-        <i class="icon icon-search"></i>
-      </a>
-      <form role="search" method="get" class="search-box">
-        <input style="width: 30rem;" class="search-field text search-input" placeholder="Search"
-               type="search">
-      </form>
-  </div>
 
 </div><!--header-wrap-->
 <script src="/static/js/jquery-1.11.0.min.js"></script>

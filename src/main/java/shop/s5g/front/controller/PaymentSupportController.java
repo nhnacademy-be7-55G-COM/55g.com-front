@@ -83,7 +83,6 @@ public class PaymentSupportController {
 
     @PostMapping("/create-order")
     @SessionRequired
-    // TODO: OrderCreateResponseDto
     public ResponseEntity<OrderCreateResponseDto> createNewOrder(HttpServletRequest request, @RequestBody PurchaseRequestDto purchase) {
         purchaseSheet.generateOrder();
         OrderCreateRequestDto order = purchaseSheet.createOrderRequest(purchase.delivery());
@@ -106,7 +105,7 @@ public class PaymentSupportController {
         HttpSession session = request.getSession(false);
         // 주문 세션에서 주문 ID를 가져와서 삭제 요청을 날림.
         orderService.deleteOrder(purchaseSheet.getOrderId());
-        session.invalidate();
+//        session.invalidate();
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 

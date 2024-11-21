@@ -1,9 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko"
+      xmlns:th="https://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}"
+>
 <head>
   <th:block th:replace="~{fragments/head :: headTemplate}"></th:block>
   <title>Book List</title>
   <meta charset="utf-8" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     /* book-info 영역 스타일 */
     .book-info {
@@ -35,11 +40,50 @@
       -webkit-line-clamp: 4; /* 최대 줄 수 */
       box-sizing: border-box;
     }
+
+    /* 기본 버튼 스타일 */
+    .reset-btn {
+      height: 40px;
+      border-radius: 2px;
+      background-color: #D2B48C; /* 탠(Tan) 색상 */
+      color: #8B4513; /* 새들 브라운(Saddle Brown) 색상 */
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    /* 아이콘 색상 */
+    .reset-btn i {
+      color: #8B4513; /* 아이콘 색상 */
+      transition: color 0.3s;
+    }
+
+    /* 호버 시 스타일 */
+    .reset-btn:hover {
+      background-color: #000000; /* 배경색을 검정색으로 변경 */
+      color: #FFFFFF; /* 텍스트 색상을 흰색으로 변경 */
+    }
+
+    .reset-btn:hover i {
+      color: #FFFFFF; /* 아이콘 색상을 흰색으로 변경 */
+    }
   </style>
+
+  <script>
+    function resetSearch() {
+      const searchInput = document.getElementById('searchInput');
+      searchInput.value = '';
+      searchInput.disabled = true;
+      searchInput.form.submit();
+    }
+  </script>
 </head>
 <body
-    style="background-color: var(--light-color); font-family: var(--body-font),serif; color: var(--body-text-color);">
-<div th:replace="~{fragments/header}"></div>
+
+    layout:fragment="content"
+    style="background-color: var(--light-color); font-family: var(--body-font),serif; color: var(--body-text-color); height: 100vh">
 <section id="book-list" class="padding-medium">
   <div class="container">
     <div class="section-header align-center">
@@ -49,18 +93,35 @@
       <h2 class="section-title">Book List</h2>
     </div>
 
-    <!-- Search Form -->
-    <form th:action="@{/book/search}" method="get" class="search-form">
-      <div class="row justify-content-center mb-5">
-        <div class="col-md-8">
-          <div class="input-group d-flex align-items-center" style="gap: 10px; height: 40px;">
-            <!-- 검색창 -->
-            <input type="text" style="margin: 0; height: 66px" class="form-control search-input" name="keyword" placeholder="Search for books..."
-                 th:value="${keyword ?: ''}">
+    <form th:action="@{/book/list}" method="get" class="search-form">
+      <div class="d-flex justify-content-center flex-row w-100 mt-3">
+        <div class="search-bar d-flex justify-content-center flex-row align-items-center" style="gap: 10px; width: 100%; max-width: 40rem;">
 
-            <!-- 검색 버튼 -->
-            <button class="btn btn-accent search-btn" type="submit">Search</button>
-          </div>
+          <!-- 검색창 -->
+          <input type="text"
+                 id="searchInput"
+                 class="search-field text search-input"
+                 name="keyword"
+                 placeholder="검색어를 입력하세요."
+                 th:value="${keyword ?: ''}"
+                 style="height: 40px; flex-grow: 1; padding: 0 10px; margin: 0">
+
+          <!-- 검색 버튼 -->
+          <button id="searchButton"
+                  class="btn btn-accent search-btn"
+                  type="submit"
+                  style="height: 40px; border-radius: 2px">
+            <i class="icon icon-search"></i> <!-- 돋보기 아이콘 -->
+          </button>
+
+          <!-- 초기화 버튼 -->
+          <button id="resetButton"
+                  class="btn reset-btn"
+                  type="button"
+                  onclick="resetSearch()">
+            <i class="fa-solid fa-rotate"></i> <!-- 초기화 관련 아이콘 -->
+          </button>
+
         </div>
       </div>
     </form>
@@ -70,7 +131,7 @@
       <div class="products-grid d-flex flex-wrap" style="justify-content: flex-start; margin-top: 28px"> <!-- flexbox 컨테이너 설정 -->
         <div class="col-md-3" th:each="book : ${books}" style="margin-bottom: 20px;"> <!-- 추가된 스타일 -->
           <a th:href="'/book/' + ${book.bookId}" class="caption-link">
-            <div class="product-item" style="margin: 0 10px;"> <!-- 좌우 간격 추가 -->
+            <div class="product-item" style="margin: 0 16px;"> <!-- 좌우 간격 추가 -->
               <div class="product-image-container" style="height: 400px; width: 300px; display: block;">
                 <!-- 책 이미지가 있는 경우 -->
                 <img th:if="${book.imagePaths != null and book.imagePaths.length > 0}"
@@ -100,8 +161,14 @@
       </div>
     </div>
 
+    <!-- 책 리스트가 없을 때 -->
+    <div class="col-12 text-center" th:if="${#lists.isEmpty(books)}" style="margin-top: 20px;">
+      <p>검색된 책이 없습니다.</p>
+    </div>
+
+
     <!-- Pagination -->
-    <div class="row justify-content-center mt-5">
+    <div class="row justify-content-center mt-5" th:if="${!#lists.isEmpty(books)}">
       <nav class="d-flex justify-content-center"> <!-- 가운데 정렬 클래스 추가 -->
         <ul class="pagination">
           <!-- Previous Button -->
@@ -129,6 +196,5 @@
 
   </div>
 </section>
-<div th:replace="~{fragments/footer}"></div>
 </body>
 </html>
