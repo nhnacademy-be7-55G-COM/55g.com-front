@@ -52,15 +52,14 @@ public class BookCategoryServiceImpl implements BookCategoryService {
 //    }
 
     //카테고리Id로 도서 조회
-
-    @Override
-    public List<BookPageableResponseDto> getBookByCategoryId(Long categoryId) {
-        try{
-            ResponseEntity<List<BookPageableResponseDto>> bookByCategory = bookCategoryAdapter.getBookByCategory(categoryId);
-            return bookByCategory.getBody();
-        }
-        catch (FeignException e){
-            throw new BookCategoryNotFoundException(e.getMessage());
-        }
-    }
+//    @Override
+//    public List<BookPageableResponseDto> getBookByCategoryId(Long categoryId) {
+//        try{
+//            ResponseEntity<List<BookPageableResponseDto>> bookByCategory = bookCategoryAdapter.getBookByCategory(categoryId);
+//            return bookByCategory.getBody();
+//        }
+//        catch (FeignException e){
+//            throw new BookCategoryNotFoundException(e.getMessage());
+//        }
+//    }
 }

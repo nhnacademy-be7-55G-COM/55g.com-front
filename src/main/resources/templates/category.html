@@ -53,7 +53,12 @@
 
 <div class="category-container">
     <div class="category-card" th:each="category : ${parentCategories}">
-        <div th:text="${category.categoryName}"></div>
+        <form th:action="@{/admin/category/detail/{id}(id=${category.categoryId})}" method="post">
+            <button type="submit" style="border: none; background: none; color: #111111; cursor: pointer;" name="categoryId"
+                    th:value="${category.categoryId}" th:text="${category.categoryName}">
+            </button>
+        </form>
+<!--        <div th:text="${category.categoryName}"></div>-->
     </div>
 </div>
 

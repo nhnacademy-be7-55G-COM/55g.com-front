@@ -23,8 +23,8 @@ public interface BookAdapter {
     ResponseEntity<BookDetailResponseDto> getBook(@PathVariable long bookId);
 
     //모든 도서 페이저블
-    @GetMapping("/api/shop/books/pageable")
-    ResponseEntity<PageResponseDto<BookPageableResponseDto>> getAllBooksPageable(Pageable pageable);
+//    @GetMapping("/api/shop/books/pageable")
+//    ResponseEntity<PageResponseDto<BookPageableResponseDto>> getAllBooksPageable(Pageable pageable);
 
     @GetMapping("/api/shop/books/query")
     List<BookSimpleResponseDto> getSimpleBooks(@RequestParam List<Long> books);

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>카테고리 수정</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            margin: 20px;
+        }
+
+        .category-form {
+            max-width: 500px;
+            margin: 0 auto 20px;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .category-form input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .category-form button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            /*background-color: #4CAF50;*/
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .category-form button:hover {
+            /*background-color: #45a049;*/
+        }
+    </style>
+</head>
+<body>
+
+<div th:each="category : ${childCategories}" class="category-form">
+    <form th:action="@{/admin/category/update/{categoryId} (categoryId = ${category.categoryId})}" method="post">
+        <input type="hidden" name="_method" value="PUT">
+        <input type="text" id="name" name="categoryName" th:value="${category.categoryName}" placeholder="카테고리 이름">
+        <button type="submit">수정</button>
+    </form>
+</div>
+
+</body>
+</html>

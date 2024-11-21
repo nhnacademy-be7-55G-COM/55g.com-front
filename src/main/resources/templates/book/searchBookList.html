@@ -4,6 +4,38 @@
   <th:block th:replace="~{fragments/head :: headTemplate}"></th:block>
   <title>Book List</title>
   <meta charset="utf-8" />
+  <style>
+    /* book-info 영역 스타일 */
+    .book-info {
+      width: 300px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      box-sizing: border-box;
+    }
+
+    /* 일반 텍스트 요소 스타일 */
+    .truncate-fixed {
+      display: block;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      box-sizing: border-box;
+    }
+
+    /* 다중 줄 텍스트 트렁케이트 */
+    .truncate-multiline {
+      display: -webkit-box; /* Flex 기반의 줄 제한 */
+      -webkit-box-orient: vertical; /* 줄 방향 설정 */
+      overflow: hidden; /* 넘치는 텍스트 숨김 */
+      text-overflow: ellipsis; /* ... 표시 */
+      line-height: 1.5; /* 줄 간격 설정 */
+      max-height: calc(1.5em * 4); /* 최대 4줄 높이로 제한 */
+      -webkit-line-clamp: 4; /* 최대 줄 수 */
+      box-sizing: border-box;
+    }
+  </style>
 </head>
 <body
     style="background-color: var(--light-color); font-family: var(--body-font),serif; color: var(--body-text-color);">
@@ -39,18 +71,29 @@
         <div class="col-md-3" th:each="book : ${books}" style="margin-bottom: 20px;"> <!-- 추가된 스타일 -->
           <a th:href="'/book/' + ${book.bookId}" class="caption-link">
             <div class="product-item" style="margin: 0 10px;"> <!-- 좌우 간격 추가 -->
-              <img th:src="@{/static/images/noImage.jpg}"
+              <div class="product-image-container" style="height: 400px; width: 300px; display: block;">
+                <!-- 책 이미지가 있는 경우 -->
+                <img th:if="${book.imagePaths != null and book.imagePaths.length > 0}"
+                     th:src="'https://image.toast.com/aaaacko/55gshop/book/thumbnails/'+${book.imagePaths[0]}"
                      alt="Thumbnail"
                      class="product-image"
-                     style="height: 100%; width: 100%; object-fit: cover; display: block;">
+                     style="height: 100%; width: 100%; object-fit: contain; display: block;">
 
-                <section>
-                  <h3 th:text="${book.title}">Book Title</h3>
-                  <span th:text="${book.chapter}">Chapter Info</span>
-                  <span th:text="${book.description}">Description</span>
-                  <span th:text="${#temporals.format(book.publishedDate, 'yyyy-MM-dd')}">Published Date</span>
-                  <div class="item-price" th:text="${book.price} + '원'"></div>
-                </section>
+                <!-- 책 이미지가 없는 경우 -->
+                <img th:unless="${book.imagePaths != null and book.imagePaths.length > 0}"
+                     th:src="@{/static/images/noImage.jpg}"
+                     alt="Thumbnail"
+                     class="product-image"
+                     style="height: 100%; width: 100%; object-fit: contain; display: block;">
+              </div>
+
+              <section class="book-info">
+                <h3 th:text="${book.title}" class="truncate-fixed">Book Title</h3>
+                <span th:text="${book.description}" class="truncate-multiline">Description</span>
+                <span th:text="${#temporals.format(book.publishedDate, 'yyyy-MM-dd')}" class="truncate-fixed">Published Date</span>
+                <div class="item-price truncate-fixed" th:text="${book.price} + '원'">Price</div>
+              </section>
+
             </div>
           </a>
         </div>
