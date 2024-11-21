@@ -177,7 +177,7 @@ const onPaymentFail = (orderDataId) => {
 }
 
 const getCopyOfPriceInfo = () => {
-  return { originPrice: 0, discountPrice: 0, totalPrice: new Decimal(0) };
+  return { originPrice: 0, discountPrice: 0, totalPrice: new Decimal(0), pointUse: 0 };
 }
 
 const calcFromCart = (priceInfo, cart) => {

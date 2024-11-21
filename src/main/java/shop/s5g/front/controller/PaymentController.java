@@ -72,6 +72,7 @@ public class PaymentController {
         TossPaymentInfo tossPaymentInfo = new TossPaymentInfo(paymentKey, orderId, amount);
         body.put("payment", tossPaymentInfo);
         body.put("orderDataId", purchaseSheet.getOrderId());
+        body.put("usedPoint", purchaseSheet.getUsedPoint());
 //        body.put("orderDataId", session.getAttribute("orderDataId"));
 
         MessageDto message = paymentsService.confirmPayment(body);
