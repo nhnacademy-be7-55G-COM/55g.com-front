@@ -165,7 +165,11 @@
     layout:fragment="content"
     style="background-color: var(--light-color); font-family: var(--body-font),serif; color: var(--body-text-color); height: 100vh">
 <!--  TODO: Modal을 포장지 설명 띄우는 용도로 쓰자-->
-  <div id="payment-background">
+  <div id="payment-background" class="modal-background">
+
+  </div>
+
+  <div id="wrap-background" class="modal-background">
     <div id="payment-modal">
       <div id="modal-head-payment" class="d-flex flex-row">
         <div class="me-auto">포장지 설명</div>
@@ -267,7 +271,8 @@
         <div class="col-sm-3 cell-title">수신자 정보</div>
         <div class="col-sm-6">
           <div th:replace="~{fragments/purchase :: inputWithLabel('receiverNameInput', '수신자 성명', 'text', '')}"></div>
-          <div th:replace="~{fragments/purchase :: inputWithLabel('receiverPhoneInput', '휴대전화번호', 'text', '')}"></div>
+          <div th:replace="~{fragments/purchase :: inputWithLabel('receiverPhoneInput', '휴대전화번호', 'tel', '')}"></div>
+          <div id="phoneError" class="error-message">핸드폰 번호는 '010-0000-0000' 형식으로 입력해야 합니다.</div>
           <div th:replace="~{fragments/purchase :: inputWithLabel('receiveDate', '배송받기 원하는 날짜', 'date', ${#dates.format(#dates.createToday(), 'yyyy-MM-dd')})}"></div>
         </div>
       </div>
@@ -388,7 +393,7 @@
         <div>
           <div class="d-flex flex-row mt-3">
             <input onchange="pointOnChange(this)" id="usePointInput" type="number" placeholder="포인트 사용" />
-            <button class="ms-auto" style="height:100%" onclick="pointAllIn()">전부</button>
+            <button class="ms-auto" style="font-size: 12px; padding: 0 1rem; height: 1.8rem;" onclick="pointAllIn()">전부</button>
           </div>
           <script>
             const pointAllIn = () => {
@@ -438,7 +443,7 @@
           <div class="ms-auto" id="payPrice"></div>
         </div>
       </div>
-      <button class="w-100" id="purchaseButton" onclick="callPaymentReady()">결제하기</button>
+      <button class="w-100" id="purchaseButton" onclick="doOnceAsync(callPaymentReady)">결제하기</button>
     </aside>
     </div>
   </div>
@@ -471,10 +476,24 @@
   }
 </script>
 <script th:inline="javascript">
+  let done = false;
+  const paymentBackground = document.querySelector('#payment-background');
+  const purchaseButton = document.querySelector('#purchaseButton');
+  const doOnceAsync = (fn) => {
+    console.log('blocking...');
+    paymentBackground.style.display = 'block';
+    callPaymentReady()
+  }
   async function callPaymentReady() {
+    console.log("disabling button...");
+    purchaseButton.disabled = true;
     try {
       if (paymentInfo.method === '') {
         alert('결제 수단을 선택해 주세요');
+        return;
+      }
+      if (!checkPhoneNumberFormat()) {
+        alert('휴대폰 번호를 정확하게 입력해 주세요.');
         return;
       }
       let deliveryInfo = null;
@@ -518,29 +537,68 @@
             return axios.get(`/payment/support/generate-order?orderId=${response.data.orderId}`);
           })
           .then(response => {
+            if (response.status === 202) {
+              console.log(`Request already accepted... please wait`);
+              return;
+            }
             paymentInfo.orderId = response.data;
             console.log(paymentInfo);
             return tossPaymentReady(paymentInfo, clientKeyResponse.data);
           })
           .catch(err => {
             console.log(err);
-            axios.delete('/payment/support/order')
-              .catch(inErr => console.log("주문 삭제에 실패했습니다."));
-            if (err.response.status === 408) {
-              alert('주문 세션이 종료되었습니다. 다시 시도해 주세요.');
-              window.location.reload();
-            } else {
-              onPaymentFail().then(response => {
-                alert(`주문 생성에 실패했습니다. 다시 시도해 주세요: ${err}`);
-              });
-            }
+            onPaymentFail().then(response => {
+              alert(`주문 생성에 실패했습니다. 다시 시도해 주세요: ${err}`);
+            }).catch(inErr => console.log("주문 삭제에 실패했습니다."));
+          })
+          .finally(() => {
+            paymentBackground.style.display = 'none';
+            purchaseButton.disabled = false;
           });
       }
     }catch (err) {
       console.log(err);
       alert(err);
     }
+    // btn.disabled = false;
   }
+</script>
+<script>
+  function formatPhoneNumber() {
+    const phoneInput = document.getElementById("receiverPhoneInput");
+    const phoneError = document.getElementById("phoneError");
+
+    let phoneValue = phoneInput.value.replace(/[^0-9]/g, '');
+
+    if (phoneValue.startsWith("010")) {
+      if (phoneValue.length <= 3) {
+        phoneInput.value = phoneValue;
+      } else if (phoneValue.length <= 7) {
+        phoneInput.value = `${phoneValue.slice(0, 3)}-${phoneValue.slice(3)}`;
+      } else if (phoneValue.length <= 11) {
+        phoneInput.value = `${phoneValue.slice(0, 3)}-${phoneValue.slice(3, 7)}-${phoneValue.slice(7, 11)}`;
+      }
+    } else {
+      phoneError.style.display = "block";
+      return;
+    }
+
+    phoneError.style.display = (phoneValue.length === 11) ? "none" : "block";
+  }
+
+  const phoneRegex = new RegExp(`010-\\d{0,4}-\\d{0,4}`);
+  function checkPhoneNumberFormat() {
+    const phoneInput = document.getElementById("receiverPhoneInput");
+    return phoneRegex.exec(phoneInput.value) !== null;
+  }
+  document.querySelector('#receiverPhoneInput').oninput = formatPhoneNumber;
+
+  const minDate = new Date();
+  minDate.setDate(minDate.getDate() + 1);
+  const minString = minDate.toISOString().split('T')[0];
+  const dateInput = document.querySelector('#receiveDate');
+  dateInput.setAttribute("min", minString);
+  dateInput.value = minString;
 </script>
 </body>
 </html>

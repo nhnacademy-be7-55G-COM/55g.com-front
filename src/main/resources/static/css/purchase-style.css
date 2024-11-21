@@ -11,14 +11,15 @@ footer {
   border-top: 2px solid black;
   padding: 0.4rem 3rem;
 }
-#payment-background {
-  position: absolute;
+.modal-background{
+  position: fixed;
   display: none;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   overflow: hidden;
+  z-index: 100;
   background-color: rgba(0, 0, 0, 0.5);
 }
 #payment-modal {
@@ -185,9 +186,4 @@ input#usePointInput {
   width: 5.5rem;
   font-size: 12px;
   height: 1.8rem;
-}
-#purchaseButton {
-  font-size: 12px;
-  height: 1.8rem;
-  padding: 0 1rem;
 }
