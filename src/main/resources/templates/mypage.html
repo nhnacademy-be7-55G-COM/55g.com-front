@@ -25,6 +25,27 @@
       margin: 0;
       height: 2.3rem;
     }
+    .btn-payco {
+      display: inline-block;
+      background-color: #ffffff;
+      color: #ff2233;
+      font-family: 'Pretendard', sans-serif; /* 깔끔한 폰트 */
+      font-size: 16px;
+      font-weight: bold;
+      text-align: center;
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 5px; /* 모서리를 둥글게 */
+      border: none;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 살짝 그림자 추가 */
+      transition: all 0.3s ease; /* 애니메이션 효과 */
+    }
+
+    .btn-payco:hover {
+      background-color: #ff2233;
+      box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* 그림자 강화 */
+      cursor: pointer;
+    }
   </style>
   <script>
     const defaultSize = 10;
@@ -146,6 +167,7 @@
                   내역</a></li>
                 <li class="nav-item"><a id="points-tab" class="nav-link" data-bs-toggle="tab" href="#points">포인트
                   내역</a></li>
+                <li class="nav-item"><a id="" class="nav-link" data-bs-toggle="tab" href="#coupons">쿠폰 내역</a></li>
                 <script>
                   const pointButton = document.querySelector('a#points-tab');
                   const pointHistoryCaller = async (size, page) => {
@@ -185,7 +207,6 @@
               </ul>
             </div>
           </li>
-
         </ul>
       </div>
     </nav>
@@ -240,6 +261,14 @@
                   data-bs-target="#changePasswordModal">
             비밀번호 변경
           </button>
+
+          <div class="social-integration mt-4">
+            <h5>소셜 연동</h5>
+            <div class="social-buttons">
+              <a href="/linkAccount/payco" class="btn-payco">PAYCO</a>
+            </div>
+          </div>
+
         </div>
 
         <!-- 배송 주소 -->

@@ -4,62 +4,100 @@
     <meta charset="UTF-8">
     <title>카테고리 리스트</title>
     <style>
-        /* 전체 페이지 스타일 */
         body {
             font-family: Arial, sans-serif;
             background-color: #f9f9f9;
             margin: 0;
             padding: 20px;
+            text-align: center;
         }
 
         h1 {
-            text-align: center;
             color: #333;
             margin-bottom: 20px;
         }
 
-        /* 카테고리 컨테이너 */
         .category-container {
             display: flex;
             flex-wrap: wrap;
             gap: 15px;
             justify-content: center;
+            padding: 10px;
         }
 
-        /* 개별 카테고리 카드 */
         .category-card {
-            background-color: #ffffff;
+            background-color: #fff;
+            border: 1px solid #ddd;
             border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 15px 20px;
+            padding: 15px;
+            width: 180px;
             text-align: center;
-            width: 200px;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
         }
 
         .category-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
-        .category-card div {
-            font-size: 1.2rem;
+        .category-card button {
+            border: none;
+            background: none;
             color: #333;
+            font-size: 1rem;
             font-weight: bold;
+            cursor: pointer;
+        }
+
+        .category-card button:hover {
+            color: #555;
+        }
+
+        .pagination {
+            margin-top: 20px;
+        }
+
+        .pagination a, .pagination strong {
+            display: inline-block;
+            margin: 0 5px;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .pagination a:hover {
+            background-color: #f0f0f0;
+        }
+
+        .pagination strong {
+            background-color: #333;
+            color: #fff;
+            border-color: #333;
         }
     </style>
 </head>
 <body>
 
+<h1>카테고리 리스트</h1>
+
 <div class="category-container">
     <div class="category-card" th:each="category : ${parentCategories}">
         <form th:action="@{/admin/category/detail/{id}(id=${category.categoryId})}" method="post">
-            <button type="submit" style="border: none; background: none; color: #111111; cursor: pointer;" name="categoryId"
-                    th:value="${category.categoryId}" th:text="${category.categoryName}">
-            </button>
+            <button type="submit" name="categoryId" th:value="${category.categoryId}" th:text="${category.categoryName}"></button>
         </form>
-<!--        <div th:text="${category.categoryName}"></div>-->
     </div>
+</div>
+
+<a th:href="@{/admin}" class="btn">관리자 페이지로 이동</a>
+
+<div class="pagination">
+    <th:block th:each="page : ${#numbers.sequence(categoryStartPage, categoryEndPage)}">
+        <a th:if="${page != categoryNowPage}" th:href="@{/admin/category(page=${page - 1})}" th:text="${page}"></a>
+        <strong th:if="${page == categoryNowPage}" th:text="${page}"></strong>
+    </th:block>
 </div>
 
 </body>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<script src="/static/js/jquery-1.11.0.min.js">
+</script>
+<div th:replace="~{fragments/head}"></div>
+<body>
+<div th:replace="~{fragments/header}"></div>
+<!-- 본문 시작 -->
+<main>
+  <div class="container mt-5" style="width: 50%;">
+    <div class="form-container">
+      <h2 class="text-center">도서 추가</h2>
+      <form method="post" action="/book/add" enctype="multipart/form-data">
+        <div class="form-group">
+          <label for="title">제목</label>
+          <input type="text" class="form-control" id="title" name="title" placeholder="제목을 입력하세요">
+        </div>
+        <div class="form-group">
+          <label>카테고리</label>
+          <select name="category1" id="category1" class="form-control">
+            <option selected disabled>상위 카테고리 선택</option>
+            <option th:each="category,stat:${categoryList}" th:text="${category.categoryName}" th:value="${category.categoryId}"></option>
+          </select>
+          <select name="category2" id="category2" class="form-control">
+            <option selected disabled>하위 카테고리 선택</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>출판사</label>
+          <select name="publisherId" id="publisherId" class="form-control">
+            <option selected disabled>출판사 선택</option>
+            <option th:each="publisher,stat:${publisherList}" th:text="${publisher.name}" th:value="${publisher.id}"></option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>작가</label>
+          <input type="text" class="form-control" name="author" placeholder="작가를 입력하세요">
+        </div>
+        <div class="form-group">
+          <label>도서 판매 상태</label>
+          <select name="bookStatusId" class="form-control">
+            <option value="1">판매중</option>
+            <option value="2">절판</option>
+            <option value="3">재고 없음</option>
+            <option value="4">판매 중지</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="chapter">목차</label>
+          <textarea class="form-control" id="chapter" name="chapter"></textarea>   <!-- TODO: 별도의 텍스트 편집기 사용 필요 -->
+        </div>
+        <div class="form-group">
+          <label for="description">설명</label>
+          <textarea class="form-control" id="description" name="description"></textarea>   <!-- TODO: 별도의 텍스트 편집기 사용 필요 -->
+        </div>
+        <div class="form-group">
+          <label for="publishedDate">출판일시</label>
+          <input type="date" class="form-control" id="publishedDate" name="publishedDate"/>
+        </div>
+        <div class="form-group">
+          <label for="isbn">ISBN</label>
+          <input type="text" class="form-control" id="isbn" name="isbn" placeholder="ISBN을 입력하세요">
+        </div>
+        <div class="form-group">
+          <label for="price">가격</label>
+          <input type="number" class="form-control" id="price" name="price" placeholder="가격을 입력하세요">
+        </div>
+        <div class="form-group">
+          <label for="discountRate">할인율</label>
+          <input type="number" class="form-control" id="discountRate" name="discountRate" value="0.0" step="0.01" placeholder="할인율을 입력하세요(1=100%)">
+        </div>
+        <div class="form-group">
+          <label>포장 여부</label>
+          <input type="checkbox" id="isPacked" name="isPacked"/> <label for="isPacked" style="display: inline;">포장</label>
+        </div>
+        <div class="form-group">
+          <label for="stock">재고</label>
+          <input type="number" class="form-control" id="stock" name="stock" value="0" min="0"/>
+        </div>
+        <div class="form-group">
+          <label for="thumbnailFile">도서 이미지</label>
+          <input type="file" class="form-control" id="thumbnailFile" name="thumbnailFile">
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">제출</button>
+      </form>
+    </div>
+  </div>
+</main>
+<!-- 본문 끝 -->
+<div th:replace="~{fragments/footer}"></div>
+</body>
+<script>
+  $('#category1').on("change",function(){
+    var selectCategory=$('#category1 option:selected').val();
+    console.log(selectCategory);
+
+    $.ajax({
+      url: '/book/categories/'+selectCategory,
+      method: 'GET',
+      success: function(data){
+        console.log("category success!");
+        var subCategory=$('#category2');
+        subCategory.html('');
+        subCategory.append($('<option selected disabled>').text('하위 카테고리 선택'));
+
+        data.forEach(function(e,i){
+          if(e.active){
+            subCategory.append($('<option>').val(e.categoryId).text(e.categoryName));
+          }
+        });
+      },
+      error: function(a){
+        console.log("error");
+        console.log(a);
+      }
+    });
+  });
+</script>
+</html>

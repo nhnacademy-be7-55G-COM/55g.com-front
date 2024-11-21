@@ -1,7 +1,10 @@
 package shop.s5g.front.service.category;
 
 import java.util.List;
+
+import org.springframework.data.domain.Pageable;
 import shop.s5g.front.dto.MessageDto;
+import shop.s5g.front.dto.PageResponseDto;
 import shop.s5g.front.dto.category.CategoryDetailResponseDto;
 import shop.s5g.front.dto.category.CategoryRequestDto;
 import shop.s5g.front.dto.category.CategoryResponseDto;
@@ -11,7 +14,7 @@ public interface CategoryService {
 
 //    List<CategoryResponseDto> getParentCategories();
 
-    List<CategoryResponseDto> getKoreaCategories();
+    PageResponseDto<CategoryResponseDto> getKoreaCategories(Pageable pageable);
 
     List<CategoryResponseDto> getChildCategories(long categoryId);
 

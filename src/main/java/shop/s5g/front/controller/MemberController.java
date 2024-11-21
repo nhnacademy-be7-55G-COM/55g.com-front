@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import shop.s5g.front.dto.member.MemberRegistrationRequestDto;
 import shop.s5g.front.service.member.MemberService;
 
@@ -51,10 +52,10 @@ public class MemberController {
 
     @PostMapping("/register")
     public String register(@Valid @ModelAttribute MemberRegistrationRequestDto requestDto,
-        BindingResult bindingResult, Model model) {
+        BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
-            model.addAttribute("error", "회원가입 양식에 부합하지 않습니다");
-            return "register";
+            redirectAttributes.addFlashAttribute("error", "회원가입 양식에 부합하지 않습니다");
+            return "redirect:/register";
         }
         memberService.registerMember(requestDto);
         return "redirect:/login";

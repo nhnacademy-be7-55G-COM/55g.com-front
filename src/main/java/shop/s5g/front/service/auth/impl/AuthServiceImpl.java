@@ -18,6 +18,7 @@ import shop.s5g.front.exception.auth.RoleGetInfoFailedException;
 import shop.s5g.front.exception.auth.TokenNotFoundException;
 import shop.s5g.front.exception.member.MemberLoginFailedException;
 import shop.s5g.front.service.auth.AuthService;
+import shop.s5g.front.utils.TokenUtils;
 
 @RequiredArgsConstructor
 @Service
@@ -34,7 +35,7 @@ public class AuthServiceImpl implements AuthService {
                 TokenResponseDto tokenResponseDto = responseEntity.getBody();
 
                 if (tokenResponseDto != null) {
-                    setTokenAtCookie(response, tokenResponseDto.accessToken(), tokenResponseDto.refreshToken(), 600, 1200);
+                    TokenUtils.setTokenAtCookie(response, tokenResponseDto.accessToken(), tokenResponseDto.refreshToken(), 600, 1200);
                 }
                 return;
             }
@@ -54,7 +55,7 @@ public class AuthServiceImpl implements AuthService {
                 TokenResponseDto tokenResponseDto = responseEntity.getBody();
 
                 if (tokenResponseDto != null) {
-                    setTokenAtCookie(response, tokenResponseDto.accessToken(), tokenResponseDto.refreshToken(), 600, 1200);
+                    TokenUtils.setTokenAtCookie(response, tokenResponseDto.accessToken(), tokenResponseDto.refreshToken(), 600, 1200);
                 }
                 return;
             }
@@ -102,7 +103,7 @@ public class AuthServiceImpl implements AuthService {
                     TokenResponseDto tokenResponseDto = responseEntity.getBody();
 
                     if (tokenResponseDto != null) {
-                        setTokenAtCookie(response, tokenResponseDto.accessToken(), tokenResponseDto.refreshToken(), 600, 1200);
+                        TokenUtils.setTokenAtCookie(response, tokenResponseDto.accessToken(), tokenResponseDto.refreshToken(), 600, 1200);
                     }
                     return;
                 }
@@ -110,7 +111,7 @@ public class AuthServiceImpl implements AuthService {
 
         }
         catch (HttpClientErrorException | HttpServerErrorException e) {
-            setTokenAtCookie(response, null, null, 0 ,0);
+            TokenUtils.setTokenAtCookie(response, null, null, 0 ,0);
             throw new MemberLoginFailedException(e.getMessage());
         }
     }
@@ -133,20 +134,4 @@ public class AuthServiceImpl implements AuthService {
         }
     }
 
-    private void setTokenAtCookie(HttpServletResponse response,
-        String accessToken, String refreshToken, int accessTokenExpiredTime, int refreshTokenExpiredTime) {
-
-        Cookie accessJwt = new Cookie("accessJwt", accessToken);
-        accessJwt.setPath("/");
-        accessJwt.setMaxAge(accessTokenExpiredTime);
-        accessJwt.setHttpOnly(true);
-        response.addCookie(accessJwt);
-
-        Cookie refreshJwt = new Cookie("refreshJwt", refreshToken);
-        refreshJwt.setPath("/");
-        refreshJwt.setMaxAge(refreshTokenExpiredTime);
-        refreshJwt.setHttpOnly(true);
-        response.addCookie(refreshJwt);
-
-    }
 }
