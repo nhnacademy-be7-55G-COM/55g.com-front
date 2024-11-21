@@ -17,12 +17,12 @@ public class BookDocumentController {
     private final BookDocumentService bookDocumentService;
 
     @GetMapping("/book/search")
-    public String searchByTitleOrDescription(@RequestParam(required = false) String keyword, @PageableDefault(size = 12) Pageable pageable, Model model) {
+    public String searchByKeyword(@RequestParam(required = false) String keyword, @PageableDefault(size = 12) Pageable pageable, Model model) {
         if (keyword == null) {
             keyword = "";
         }
 
-        PageResponseDto<BookDocumentResponseDto> searchBookList = bookDocumentService.searchByTitleOrDescription(keyword, pageable);
+        PageResponseDto<BookDocumentResponseDto> searchBookList = bookDocumentService.searchByKeyword(keyword, pageable);
         model.addAttribute("books", searchBookList.content());
         model.addAttribute("page", pageable.getPageNumber());
         model.addAttribute("totalPage", searchBookList.totalPage());
