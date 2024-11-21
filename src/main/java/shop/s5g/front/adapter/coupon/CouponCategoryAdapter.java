@@ -30,8 +30,6 @@ public interface CouponCategoryAdapter {
     @GetMapping("/api/shop/admin/coupons/categories")
     ResponseEntity<Page<CouponCategoryResponseDto>> findAllCouponCategories(Pageable pageable);
 
-    @GetMapping("/api/shop/admin/coupons/categories/name/template/{templateId}")
-    ResponseEntity<Page<CouponCategoryDetailsCategoryNameDto>> findCategoryNameByTemplateId(
-        @PathVariable("templateId") Long templateId, Pageable pageable
-    );
+    @GetMapping("/api/shop/admin/coupons/categories/name/templates")
+    ResponseEntity<Page<CouponCategoryDetailsCategoryNameDto>> findCategoryNameByTemplate(Pageable pageable);
 }

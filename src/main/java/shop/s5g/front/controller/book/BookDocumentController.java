@@ -32,4 +32,26 @@ public class BookDocumentController {
 
         return "book/searchBookList";
     }
+
+    @GetMapping("/book/list/category")
+    public String searchByCategoryAndKeyword(@RequestParam("name") String categoryName, @RequestParam(required = false) String keyword, @PageableDefault(size = 12) Pageable pageable, Model model) {
+        if (categoryName == null) {
+            // TODO: 에러 처리
+        }
+
+        if (keyword == null) {
+            keyword = "";
+        }
+
+        PageResponseDto<BookDocumentResponseDto> searchBookList = bookDocumentService.searchByCategoryAndKeyword(categoryName, keyword, pageable);
+        model.addAttribute("categoryName", categoryName);
+        model.addAttribute("books", searchBookList.content());
+        model.addAttribute("page", pageable.getPageNumber());
+        model.addAttribute("totalPage", searchBookList.totalPage());
+        model.addAttribute("pageSize", searchBookList.pageSize());
+        model.addAttribute("totalElements", searchBookList.totalElements());
+        model.addAttribute("keyword", keyword);
+
+        return "book/categorySearchBookList";
+    }
 }

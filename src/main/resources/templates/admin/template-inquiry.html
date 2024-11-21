@@ -18,6 +18,21 @@
       cursor: pointer;
       z-index: 10;
     }
+
+    .action-btn {
+      padding: 10px 20px;
+      color: #C5A992;; /* 기본 글자 색 */
+      border: 1px solid rgba(255, 0, 0, 0); /* 테두리만 색상 */
+      border-radius: 5px;
+      cursor: pointer;
+      text-decoration: none; /* 링크 스타일 제거 */
+      background-color: transparent; /* 배경색 없애기 */
+    }
+
+    .action-btn:hover {
+      color: #2f2f2f; /* hover 시 텍스트 색상 강조 */
+      border-color: rgba(255, 0, 0, 0); /* hover 시 테두리 색상 변경 */
+    }
   </style>
 </head>
 <body>
@@ -36,17 +51,15 @@
       <th style="padding: 10px; background-color: #f0f0f0;">최대 할인 금액</th>
       <th style="padding: 10px; background-color: #f0f0f0;">기간</th>
       <th style="padding: 10px; background-color: #f0f0f0;">설명</th>
+      <th style="padding: 10px; background-color: #f0f0f0;">작업</th>
     </tr>
     </thead>
     <tbody>
-    <!-- 쿠폰 정책 리스트를 반복해서 화면에 표시 -->
     <tr th:each="template, iterStat : ${couponTemplate}">
-      <!-- 순번 표시 -->
       <td style="padding: 10px;" th:text="${iterStat.index + 1}">순번</td>
 
       <td style="padding: 10px;">
-        <!-- 쿠폰 이름을 클릭하면 coupon.html로 이동 -->
-        <a th:href="@{/admin/coupons/template/templateId={templateId}(templateId=${iterStat.index + 1})}" th:text="${template.couponName()}">쿠폰 이름</a>
+        <a th:href="@{/admin/coupons/template/templateId={templateId}(templateId=${template.couponTemplateId()})}" th:text="${template.couponName()}">쿠폰 이름</a>
       </td>
       <td style="padding: 10px;"
           th:text="${template.discountPrice() < 1 ? template.discountPrice().multiply(100).stripTrailingZeros().toPlainString() + '%'
@@ -54,26 +67,32 @@
         할인(률)
       </td>
       <td style="padding: 10px;" th:text="${template.condition() + '원'}">조건</td>
-      <td style="padding: 10px;" th:text="${template.maxPrice() + '원'}">최대 할인 금액</td>
+      <td style="padding: 10px;" th:text="${template.maxPrice() != null ? template.maxPrice() + '원' : '-'}">최대 할인 금액</td>
       <td style="padding: 10px;" th:text="${template.duration() + '일'}">기간</td>
       <td style="padding: 10px;" th:text="${template.couponDescription()}">설명</td>
+      <td style="padding: 10px;">
+        <form th:action="@{/admin/coupons/template/update/{id}(id=${template.couponTemplateId()})}" method="get" style="display:inline;">
+          <button type="submit" class="action-btn">수정</button>
+        </form>
+
+        <form th:action="@{/admin/coupons/template/delete/{id}(id=${template.couponTemplateId()})}" method="post" style="display:inline;">
+          <input type="hidden" name="_method" value="DELETE" />
+          <button type="submit" class="action-btn" onclick="return confirm('정말로 삭제하시겠습니까?');">삭제</button>
+        </form>
+      </td>
     </tr>
     </tbody>
   </table>
 
-  <!-- 페이지 네비게이션 -->
   <div class="pagination">
-    <!-- 이전 페이지 버튼 -->
     <span th:if="${currentPage > 1}">
       <a th:href="@{/api/shop/admin/coupons/templates?page=${currentPage - 1}}">이전</a>
     </span>
 
-    <!-- 현재 페이지 표시 -->
     <span>현재 페이지: <span th:text="${currentPage}"></span></span>
 
-    <!-- 다음 페이지 버튼 -->
     <span th:if="${currentPage < 999}">
-      <a th:href="@{/api/shop/admin/coupons/templates?page=${currentPage + 1}}"> : 다음</a>
+      <a th:href="@{/api/shop/admin/coupons/templates?page=${currentPage + 1}}">다음</a>
     </span>
   </div>
 

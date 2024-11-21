@@ -18,7 +18,7 @@ public interface CouponCategoryService {
 
     Page<CouponCategoryResponseDto> getAllCouponCategories(Pageable pageable);
 
-    Page<CouponCategoryDetailsCategoryNameDto> getCategoryNamesForAppliedCouponTemplates(Long couponTemplateId, Pageable pageable);
+    Page<CouponCategoryDetailsCategoryNameDto> getCategoryNamesForAppliedCouponTemplates(Pageable pageable);
 
     CategoryResponseDto getCategory(Long categoryId);
 }

@@ -25,10 +25,14 @@
 <section id="book-list" class="padding-medium">
   <div class="container">
     <div class="section-header align-center">
+      <div class="title">
+        <span th:text="'국내도서 > ' + ${categoryName}"></span>
+      </div>
       <h2 class="section-title">Book List</h2>
     </div>
 
-    <form th:action="@{/book/list}" method="get" class="search-form">
+    <form th:action="@{/book/list/category}" method="get" class="search-form">
+      <input type="hidden" name="name" th:value="${categoryName ?: ''}">
       <div class="d-flex justify-content-center flex-row w-100 mt-3">
         <div class="search-bar d-flex justify-content-center flex-row align-items-center" style="gap: 10px; width: 100%; max-width: 40rem;">
 
@@ -108,7 +112,7 @@
         <ul class="pagination">
           <!-- Previous Button -->
           <li class="page-item" th:classappend="${page <= 0} ? 'disabled' : ''">
-            <a class="page-link" th:href="@{/book/list(page=${page > 0 ? page - 1 : 0})}"
+            <a class="page-link" th:href="@{/book/list/category(page=${page > 0 ? page - 1 : 0})}"
                th:attr="aria-disabled=${page <= 0}"> < </a>
           </li>
 
@@ -116,7 +120,7 @@
           <th:block th:if="${totalPage > 0}">
             <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPage - 1)}"
                 th:classappend="${page == i} ? 'active' : ''">
-              <a class="page-link" th:href="@{/book/list(page=${i})}" th:text="${i + 1}"></a>
+              <a class="page-link" th:href="@{/book/list/category(page=${i})}" th:text="${i + 1}"></a>
             </li>
           </th:block>
 
