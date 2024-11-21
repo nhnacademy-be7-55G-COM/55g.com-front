@@ -22,6 +22,7 @@ import shop.s5g.front.dto.order.OrderCreateRequestDto;
 import shop.s5g.front.dto.order.OrderCreateResponseDto;
 import shop.s5g.front.dto.order.PurchaseRequestDto;
 import shop.s5g.front.dto.order.WrapModifyRequestDo;
+import shop.s5g.front.dto.point.PointUseDto;
 import shop.s5g.front.service.order.OrderService;
 import shop.s5g.front.utils.PaymentUtils;
 
@@ -82,7 +83,6 @@ public class PaymentSupportController {
 
     @PostMapping("/create-order")
     @SessionRequired
-    // TODO: OrderCreateResponseDto
     public ResponseEntity<OrderCreateResponseDto> createNewOrder(HttpServletRequest request, @RequestBody PurchaseRequestDto purchase) {
         purchaseSheet.generateOrder();
         OrderCreateRequestDto order = purchaseSheet.createOrderRequest(purchase.delivery());
@@ -105,7 +105,18 @@ public class PaymentSupportController {
         HttpSession session = request.getSession(false);
         // 주문 세션에서 주문 ID를 가져와서 삭제 요청을 날림.
         orderService.deleteOrder(purchaseSheet.getOrderId());
-        session.invalidate();
+//        session.invalidate();
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @PutMapping("/point")
+    @SessionRequired
+    public ResponseEntity<HttpStatus> updateUsingPoint(@RequestBody PointUseDto use) {
+        try {
+            purchaseSheet.updateUsingPoint(use.point());
+        }catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+        return ResponseEntity.ok().build();
     }
 }

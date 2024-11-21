@@ -1,14 +1,19 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="https://www.thymeleaf.org">
+<html lang="ko"
+      xmlns:th="https://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}"
+>
 <head>
   <meta charset="UTF-8">
   <title>주문 작성</title>
-  <th:block th:replace="~{fragments/head :: headTemplate}"></th:block>
+<!--  <th:block th:replace="~{fragments/head :: headTemplate}"></th:block>-->
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script src="https://js.tosspayments.com/v2/standard"></script>
   <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/decimal.js-light@2.5.1/decimal.min.js"></script>
   <script src="/static/js/payment-utils.js"></script>
+  <link href="/static/css/purchase-style.css" rel="stylesheet" />
   <script th:inline="javascript">
     const addressSelectors = {
       zipSelector: '#zipInput',
@@ -26,6 +31,7 @@
     let selectAddressType = '';
     const cartList = [];
     const savedAddressList = {};
+    const pointLimit = [[${memberInfo.point}]];
 
     const accRate = new Decimal([[${accRate}]]);
 
@@ -90,7 +96,7 @@
       cartList[index]['wrap'] = {id, cost};
       const purchaseButton = document.querySelector('#purchaseButton');
       purchaseButton.disabled = true;
-      axios.put('payment/support/wrap', {
+      axios.put('/payment/support/wrap', {
         index, bookId, wrapId: id
       }).then(res => {
         purchaseButton.disabled = false;
@@ -107,6 +113,17 @@
     const switchAddress = (address) => {
       selectedAddress = address;
     }
+    const changePointUse = (point) => {
+      const bias = priceInfo.pointUse - point;
+      priceInfo.pointUse = point;
+      appendValue(bias);
+      axios.put('/payment/support/point', {point: point})
+        .catch(err => {
+          console.log(err);
+          alert('포인트 사용 중 에러가 발생했습니다. 다시 시도해 주세요');
+          window.location.reload();
+        });
+    }
 
     // document.addEventListener('DOMContentLoaded', () => {
     //   const cartTable =  document.querySelector('#shoppingCart');
@@ -120,10 +137,12 @@
     document.addEventListener('DOMContentLoaded', async () => {
       const customerNameInput = document.querySelector('#customerNameInput');
       const customerEmailInput = document.querySelector('#customerEmailInput');
+      const customerPNInput = document.querySelector('#customerPNInput');
       Promise.all([fetchCustomerInfoPromise])
         .then(value => {
           customerNameInput.value = paymentInfo.customer.name;
           customerEmailInput.value = paymentInfo.customer.email;
+          customerPNInput.value=[[${memberInfo.phoneNumber}]];
         });
 
       const acc = document.querySelector('#accSumSpan');
@@ -138,14 +157,19 @@
     netPrice = 5000;
     // totalPrice = 5000;
   </script>
-  <link href="/static/css/purchase-style.css" rel="stylesheet" />
-  <script src="../static/js/payment-utils.js"></script>
+
 </head>
 
 <body
+
+    layout:fragment="content"
     style="background-color: var(--light-color); font-family: var(--body-font),serif; color: var(--body-text-color); height: 100vh">
 <!--  TODO: Modal을 포장지 설명 띄우는 용도로 쓰자-->
-  <div id="payment-background">
+  <div id="payment-background" class="modal-background">
+
+  </div>
+
+  <div id="wrap-background" class="modal-background">
     <div id="payment-modal">
       <div id="modal-head-payment" class="d-flex flex-row">
         <div class="me-auto">포장지 설명</div>
@@ -165,11 +189,12 @@
     </div>
   </div>
   <div class="container-sm d-flex flex-row flex-wrap" id="section">
-    <div id="order-page" class="flex-grow-1">
+    <div class="row" style="width: 100%">
+    <div id="order-page" class="col-sm-9">
       <!-- 주문서 -->
-      <h3>주문서</h3>
+      <div class="cell-title mt-3" style="font-size: 1.8rem">주문서</div>
       <hr />
-      <h4 class="mb-2">상품확인</h4>
+      <div class="mb-2 cell-title">상품확인</div>
       <table class="table mb-2">
         <thead>
         <tr>
@@ -233,99 +258,86 @@
       </table>
 <!--      주문인 정보-->
       <hr />
-      <div id="customerInformation" class="card-top">
-        <div class="display-6 info-title card-title">주문인</div>
-        <div class="d-flex flex-row card-info-contents">
-          <div class="flex-grow-1">
-            <div th:replace="~{fragments/purchase :: disabledInputWithLabel('customerNameInput', '성명', 'text')}"></div>
-          </div>
-          <div class="flex-grow-1">
-            <div th:replace="~{fragments/purchase :: disabledInputWithLabel('customerEmailInput', '이메일', 'text')}"></div>
-          </div>
-          <div class="flex-grow-1">
-            <div>회원 적립률: <span th:text="${#numbers.formatPercent(memberInfo.grade.point*0.01, 0, 1)}"></span></div>
-            <div>기본 적립률: <span th:text="|${#numbers.formatPercent(purchasePointPolicy.value, 0, 1)}|"></span></div>
-            <div>예상 적립 포인트: <span id="accSumSpan" style="color:red;"></span></div>
-          </div>
+      <div id="customerInformation" class="row">
+        <div class="col-sm-3 cell-title">주문인 정보</div>
+        <div class="col-sm-6">
+          <div th:replace="~{fragments/purchase :: disabledInputWithLabel('customerNameInput', '성명', 'text')}"></div>
+          <div th:replace="~{fragments/purchase :: disabledInputWithLabel('customerEmailInput', '이메일', 'text')}"></div>
+          <div th:replace="~{fragments/purchase :: disabledInputWithLabel('customerPNInput', '휴대폰번호', 'text')}"></div>
         </div>
       </div>
       <hr />
-
-      <div id="deliveryInformation" class="card-top">
-        <div class="display-6 info-title card-title">배송 정보</div>
-        <div class="d-flex flex-row card-info-contents">
-          <div class="flex-grow-1">
-            <div th:replace="~{fragments/purchase :: inputWithLabel('receiverNameInput', '수신자 성명', 'text', '')}"></div>
-          </div>
-          <div class="flex-grow-1">
-            <div th:replace="~{fragments/purchase :: inputWithLabel('receiverPhoneInput', '휴대전화번호', 'text', '')}"></div>
-          </div>
-          <div>
-            <div th:replace="~{fragments/purchase :: inputWithLabel('receiveDate', '배송받기 원하는 날짜', 'date', ${#dates.format(#dates.createToday(), 'yyyy-MM-dd')})}"></div>
-          </div>
+      <div id="deliveryInformation" class="row">
+        <div class="col-sm-3 cell-title">수신자 정보</div>
+        <div class="col-sm-6">
+          <div th:replace="~{fragments/purchase :: inputWithLabel('receiverNameInput', '수신자 성명', 'text', '')}"></div>
+          <div th:replace="~{fragments/purchase :: inputWithLabel('receiverPhoneInput', '휴대전화번호', 'tel', '')}"></div>
+          <div id="phoneError" class="error-message">핸드폰 번호는 '010-0000-0000' 형식으로 입력해야 합니다.</div>
+          <div th:replace="~{fragments/purchase :: inputWithLabel('receiveDate', '배송받기 원하는 날짜', 'date', ${#dates.format(#dates.createToday(), 'yyyy-MM-dd')})}"></div>
         </div>
       </div>
       <hr />
+      <div class="row">
+        <div class="col-sm-3 cell-title">배송 주소</div>
+        <div class="col-sm-6">
+          <div id="addressTypeSelection" class="btn-group btn-group-toggle" role="group" aria-label="Address Selection Group">
+            <input th:if="${not #lists.isEmpty(memberInfo.addresses)}" id="savedAddressRadio" name="addType" type="radio" class="form-check-input" autocomplete="off" value="saved" checked />
+            <input th:if="${#lists.isEmpty(memberInfo.addresses)}" id="savedAddressRadio" name="addType" type="radio" class="form-check-input" autocomplete="off" value="saved" disabled/>
+            <label for="savedAddressRadio" class="form-check-label me-4">저장된 주소에서 가져오기</label>
 
-      <h4 class="mb-2">배송주소</h4>
-      <div id="addressTypeSelection" class="btn-group btn-group-toggle" role="group" aria-label="Address Selection Group">
-        <input th:if="${not #lists.isEmpty(memberInfo.addresses)}" id="savedAddressRadio" name="addType" type="radio" class="form-check-input" autocomplete="off" value="saved" checked />
-        <input th:if="${#lists.isEmpty(memberInfo.addresses)}" id="savedAddressRadio" name="addType" type="radio" class="form-check-input" autocomplete="off" value="saved" disabled/>
-        <label for="savedAddressRadio" class="form-check-label">저장된 주소에서 가져오기</label>
+            <input th:if="${not #lists.isEmpty(memberInfo.addresses)}" id="customizeAddressRadio" name="addType" type="radio" class="form-check-input" autocomplete="off" value="custom" />
+            <input th:if="${#lists.isEmpty(memberInfo.addresses)}" id="customizeAddressRadio" name="addType" type="radio" class="form-check-input" autocomplete="off" value="custom" checked />
+            <label for="customizeAddressRadio" class="form-check-label">직접 입력하기</label>
+          </div>
 
-        <input th:if="${not #lists.isEmpty(memberInfo.addresses)}" id="customizeAddressRadio" name="addType" type="radio" class="form-check-input" autocomplete="off" value="custom" />
-        <input th:if="${#lists.isEmpty(memberInfo.addresses)}" id="customizeAddressRadio" name="addType" type="radio" class="form-check-input" autocomplete="off" value="custom" checked />
-        <label for="customizeAddressRadio" class="form-check-label">직접 입력하기</label>
-      </div>
-
-      <div id="addressSelection">
-        <div class="row">
-        <th:block th:each="address: ${memberInfo.addresses}">
-          <div class="mini-address-card d-flex flex-row col-sm-3" style="padding: 0.05rem">
-            <div class="d-flex flex-column">
-              <h4 th:if="${not address.isDefault}" th:text="${address.alias}"></h4>
-              <h4 th:if="${address.isDefault}" th:text="|${address.alias}(기본 배송지)|"></h4>
-              <p th:text="${address.toString()}"></p>
-            </div>
-            <th:block th:if="${address.isDefault}">
-              <script th:inline="javascript">
-                switchAddress([[${address.toString()}]]);
+          <div id="addressSelection">
+            <div class="row">
+              <th:block th:each="address: ${memberInfo.addresses}">
+                <div class="mini-address-card d-flex flex-row col-sm-3" style="padding: 0.05rem">
+                  <div class="d-flex flex-column">
+                    <h4 th:if="${not address.isDefault}" th:text="${address.alias}"></h4>
+                    <h4 th:if="${address.isDefault}" th:text="|${address.alias}(기본 배송지)|"></h4>
+                    <p th:text="${address.toString()}"></p>
+                  </div>
+                  <th:block th:if="${address.isDefault}">
+                    <script th:inline="javascript">
+                      switchAddress([[${address.toString()}]]);
+                    </script>
+                    <button onclick="switchAddressByButton(this)" th:data-index="${address.addressId}" class="btn btn-primary" disabled >선택</button>
+                  </th:block>
+                  <button onclick="switchAddressByButton(this)" th:data-index="${address.addressId}" th:if="${not address.isDefault}" class="btn btn-primary">선택</button>
+                </div>
+              </th:block>
+              <script>
+                const switchAddressByButton = (btn) => {
+                  const aid = btn.getAttribute('data-index');
+                  switchAddress(savedAddressList[aid]);
+                  document.querySelectorAll('#addressSelection button').forEach(b => b.disabled=false);
+                  btn.disabled = true;
+                }
               </script>
-              <button onclick="switchAddressByButton(this)" th:data-index="${address.addressId}" class="btn btn-primary" disabled >선택</button>
-            </th:block>
-            <button onclick="switchAddressByButton(this)" th:data-index="${address.addressId}" th:if="${not address.isDefault}" class="btn btn-primary">선택</button>
-          </div>
-        </th:block>
-        <script>
-          const switchAddressByButton = (btn) => {
-            const aid = btn.getAttribute('data-index');
-            switchAddress(savedAddressList[aid]);
-            document.querySelectorAll('#addressSelection button').forEach(b => b.disabled=false);
-            btn.disabled = true;
-          }
-        </script>
-        </div>
+            </div>
 
-        <input class="form-control" id="selectedAddressInput" disabled/>
-      </div>
-      <script>
-
-      </script>
-      <div id="customAddress" style="display: none;">
-        <div>
-          <div class="d-flex flex-row">
-            <input class="me-2" type="text" id="zipInput" placeholder="우편번호" />
-            <button id="findAddress" onclick="execPostCode(addressSelectors)">주소찾기</button>
+            <input class="form-control" id="selectedAddressInput" disabled/>
           </div>
-          <div>
-            <input id="addressInput" type="text" placeholder="주소" />
-          </div>
-          <div>
-            <input id="addressDetailInput" type="text" placeholder="상세주소" />
-            <input id="addressExtraInput" type="text"/>
+          <div id="customAddress" style="display: none;">
+            <div>
+              <div class="d-flex flex-row">
+                <input class="me-2" type="text" id="zipInput" placeholder="우편번호" />
+                <button style="margin: auto 3px" id="findAddress" onclick="execPostCode(addressSelectors)">주소찾기</button>
+              </div>
+              <div>
+                <input id="addressInput" type="text" placeholder="주소" />
+              </div>
+              <div>
+                <input id="addressDetailInput" type="text" placeholder="상세주소" />
+                <input id="addressExtraInput" type="text"/>
+              </div>
+            </div>
           </div>
         </div>
       </div>
+
       <script>
         const savedAdd = document.querySelector('#addressSelection');
         const customAdd = document.querySelector('#customAddress');
@@ -348,36 +360,93 @@
       </script>
       <hr />
 
-      <div id="paymentInformation" class="card-top">
-        <div class="display-6 info-title card-title">결제 정보</div>
-        <div id="paymentButtons" class="d-flex flex-row flex-wrap card-info-contents">
-          <button onclick="switchPayment(this, 'CARD')">카드</button>
-          <button onclick="switchPayment(this, 'CULTURE_LAND')">문화상품권</button>
+      <div class="row">
+        <div class="col-sm-3 cell-title">결제 정보</div>
+        <div class="col-sm-6">
+          <div id="paymentButtons" class="d-flex flex-row flex-wrap card-info-contents">
+            <button onclick="switchPayment(this, 'CARD')">카드</button>
+            <button onclick="switchPayment(this, 'CULTURE_LAND')">문화상품권</button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <footer class="d-flex flex-row">
-    <div class="d-flex justify-content-center flex-grow-1">
-<!--      <div id="descriptionForm" class="me-auto">책 어쩌고 저쩌고 몇권 외..</div>-->
-      <div id="priceForm" class="d-flex flex-row ms-3">
-        <div th:replace="~{fragments/purchase :: displayPrice('원 가격', 'originPrice')}"></div>
-<!--        <div>₩5000</div>-->
-        <div class="price-delimiter align-items-center">-</div>
-        <div th:replace="~{fragments/purchase :: displayPrice('할인 가격', 'discountPrice')}"></div>
-<!--        <div>₩0</div>-->
-        <div class="price-delimiter align-items-center">+</div>
-        <div th:replace="~{fragments/purchase :: displayPrice('배송비', 'deliveryPrice')}"></div>
-        <div class="price-delimiter align-items-center">+</div>
-        <div th:replace="~{fragments/purchase :: displayPrice('포장 가격', 'wrappingPrice')}"></div>
-        <div class="price-delimiter align-items-center">=</div>
-        <div th:replace="~{fragments/purchase :: displayPrice('결제 가격', 'payPrice')}"></div>
-<!--        <div>₩5000</div>-->
+    <aside class="stick col-sm-3">
+      <div class="asideContent d-flex flex-column mb-2">
+        <ul style="margin:0">
+          <li class="d-flex flex-row">
+            <p>현재 포인트</p>
+            <div class="ms-auto mini-price" th:text="${memberInfo.point}"></div>
+          </li>
+          <li class="d-flex flex-row">
+            <p>회원 적립률</p>
+            <div class="ms-auto mini-price" th:text="${#numbers.formatPercent(memberInfo.grade.point*0.01, 0, 1)}"></div>
+          </li>
+          <li class="d-flex flex-row">
+            <p>기본 적립률</p>
+            <div class="ms-auto mini-price" th:text="${#numbers.formatPercent(purchasePointPolicy.value, 0, 1)}"></div>
+          </li>
+          <li class="d-flex flex-row">
+            <p>예상 적립 포인트</p>
+            <div class="ms-auto mini-price text-danger" id="accSumSpan"></div>
+          </li>
+        </ul>
+        <div>
+          <div class="d-flex flex-row mt-3">
+            <input onchange="pointOnChange(this)" id="usePointInput" type="number" placeholder="포인트 사용" />
+            <button class="ms-auto" style="font-size: 12px; padding: 0 1rem; height: 1.8rem;" onclick="pointAllIn()">전부</button>
+          </div>
+          <script>
+            const pointAllIn = () => {
+              document.querySelector('#usePointInput').value = pointLimit;
+              changePointUse(pointLimit);
+            }
+            const pointOnChange = (input) => {
+              if (input.value < 0)
+                input.value = 0
+              else if(input.value > pointLimit) {
+                input.value = pointLimit
+                // axios.put("/payment/support/point", { point: input.value })
+                //   .c
+              }
+              changePointUse(input.value);
+            }
+          </script>
+          <p class="text-danger" style="margin: 0;">포인트를 사용하게 되면 적립 및 환불을 받을 수 없습니다!</p>
+        </div>
       </div>
-      <div class="d-flex ms-4">
-        <button class="m-0" id="purchaseButton" onclick="callPaymentReady()">구매하기</button>
+      <div class="asideContent d-flex flex-column mb-2">
+        <ul style="margin:0">
+          <li class="d-flex flex-row">
+            <p>상품 금액</p>
+            <div class="ms-auto mini-price" id="originPrice"></div>
+          </li>
+          <li class="d-flex flex-row">
+            <p>배송비</p>
+            <div class="ms-auto mini-price" id="deliveryPrice"></div>
+          </li>
+          <li class="d-flex flex-row">
+            <p>할인가격</p>
+            <div class="ms-auto mini-price" id="discountPrice"></div>
+          </li>
+          <li class="d-flex flex-row">
+            <p>포장 가격</p>
+            <div class="ms-auto mini-price" id="wrappingPrice"></div>
+          </li>
+          <li class="d-flex flex-row">
+            <p>포인트 사용</p>
+            <div class="ms-auto mini-price" id="discountByPoint"></div>
+          </li>
+        </ul>
+        <hr/>
+        <div class="d-flex flex-row title-price">
+          <p>결제 가격</p>
+          <div class="ms-auto" id="payPrice"></div>
+        </div>
       </div>
+      <button class="w-100" id="purchaseButton" onclick="doOnceAsync(callPaymentReady)">결제하기</button>
+    </aside>
     </div>
+  </div>
     <script>
       const initPrices = () => {
         const origin = document.querySelector('#originPrice');
@@ -385,10 +454,12 @@
         const pay = document.querySelector('#payPrice');
         const wrap = document.querySelector('#wrappingPrice');
         const acc = document.querySelector('#accSumSpan');
+        const disPt = document.querySelector('#discountByPoint');
         acc.textContent = Math.floor(priceInfo.totalPrice.mul(accRate)).toString();
 
         origin.innerHTML = `₩ ${priceInfo.originPrice}`;
         discount.innerHTML = `₩ ${priceInfo.discountPrice}`;
+        disPt.innerHTML = `₩ ${priceInfo.pointUse === '' ? 0 : priceInfo.pointUse}`;
         pay.innerHTML = `₩ ${priceInfo.totalPrice.toString()}`;
         let wrapPrice = 0;
         cartList.forEach(cart => {
@@ -398,18 +469,31 @@
       };
       initPrices();
     </script>
-  </footer>
-</body>
+<!--  </footer>-->
 <script>
   const purchaseHandler = () => {
     document.querySelector("#payment-background").style.display = 'block';
   }
 </script>
 <script th:inline="javascript">
+  let done = false;
+  const paymentBackground = document.querySelector('#payment-background');
+  const purchaseButton = document.querySelector('#purchaseButton');
+  const doOnceAsync = (fn) => {
+    console.log('blocking...');
+    paymentBackground.style.display = 'block';
+    callPaymentReady()
+  }
   async function callPaymentReady() {
+    console.log("disabling button...");
+    purchaseButton.disabled = true;
     try {
       if (paymentInfo.method === '') {
         alert('결제 수단을 선택해 주세요');
+        return;
+      }
+      if (!checkPhoneNumberFormat()) {
+        alert('휴대폰 번호를 정확하게 입력해 주세요.');
         return;
       }
       let deliveryInfo = null;
@@ -453,30 +537,68 @@
             return axios.get(`/payment/support/generate-order?orderId=${response.data.orderId}`);
           })
           .then(response => {
-            // if (response.status !== 201)
-            //   return Promise.reject('Order Creation failed');
-            // paymentInfo.successUrl = `/payment/success?orderDataId=${response.data.orderId}`;
-            // paymentInfo.failUrl = `/payment/fail?orderDataId=${response.data.orderId}`;
+            if (response.status === 202) {
+              console.log(`Request already accepted... please wait`);
+              return;
+            }
             paymentInfo.orderId = response.data;
             console.log(paymentInfo);
             return tossPaymentReady(paymentInfo, clientKeyResponse.data);
           })
           .catch(err => {
             console.log(err);
-            if (err.response.status === 408) {
-              alert('주문 세션이 종료되었습니다. 다시 시도해 주세요.');
-              window.location.reload();
-            } else {
-              onPaymentFail().then(response => {
-                alert(`주문 생성에 실패했습니다. 다시 시도해 주세요: ${err}`);
-              });
-            }
+            onPaymentFail().then(response => {
+              alert(`주문 생성에 실패했습니다. 다시 시도해 주세요: ${err}`);
+            }).catch(inErr => console.log("주문 삭제에 실패했습니다."));
+          })
+          .finally(() => {
+            paymentBackground.style.display = 'none';
+            purchaseButton.disabled = false;
           });
       }
     }catch (err) {
       console.log(err);
       alert(err);
     }
+    // btn.disabled = false;
   }
 </script>
+<script>
+  function formatPhoneNumber() {
+    const phoneInput = document.getElementById("receiverPhoneInput");
+    const phoneError = document.getElementById("phoneError");
+
+    let phoneValue = phoneInput.value.replace(/[^0-9]/g, '');
+
+    if (phoneValue.startsWith("010")) {
+      if (phoneValue.length <= 3) {
+        phoneInput.value = phoneValue;
+      } else if (phoneValue.length <= 7) {
+        phoneInput.value = `${phoneValue.slice(0, 3)}-${phoneValue.slice(3)}`;
+      } else if (phoneValue.length <= 11) {
+        phoneInput.value = `${phoneValue.slice(0, 3)}-${phoneValue.slice(3, 7)}-${phoneValue.slice(7, 11)}`;
+      }
+    } else {
+      phoneError.style.display = "block";
+      return;
+    }
+
+    phoneError.style.display = (phoneValue.length === 11) ? "none" : "block";
+  }
+
+  const phoneRegex = new RegExp(`010-\\d{0,4}-\\d{0,4}`);
+  function checkPhoneNumberFormat() {
+    const phoneInput = document.getElementById("receiverPhoneInput");
+    return phoneRegex.exec(phoneInput.value) !== null;
+  }
+  document.querySelector('#receiverPhoneInput').oninput = formatPhoneNumber;
+
+  const minDate = new Date();
+  minDate.setDate(minDate.getDate() + 1);
+  const minString = minDate.toISOString().split('T')[0];
+  const dateInput = document.querySelector('#receiveDate');
+  dateInput.setAttribute("min", minString);
+  dateInput.value = minString;
+</script>
+</body>
 </html>

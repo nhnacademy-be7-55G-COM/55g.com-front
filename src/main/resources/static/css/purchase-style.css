@@ -1,19 +1,25 @@
 #section {
   min-height: calc(100vh - 5rem);
 }
+#order-page{
+  padding: 0 1.7rem;
+}
 footer {
+  position: absolute;
+  bottom: 0;
   height: 5rem;
   border-top: 2px solid black;
   padding: 0.4rem 3rem;
 }
-#payment-background {
-  position: absolute;
+.modal-background{
+  position: fixed;
   display: none;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   overflow: hidden;
+  z-index: 100;
   background-color: rgba(0, 0, 0, 0.5);
 }
 #payment-modal {
@@ -64,7 +70,7 @@ footer {
 }
 
 #addressDetailInput {
-  width: 16rem;
+  width: 10rem;
 }
 
 #customerInformation > .card-info-contents > div {
@@ -113,4 +119,71 @@ button.payment-selected {
 }
 .mini-address-card button {
   height: 2.6rem;
+}
+#section {
+  padding-bottom: 5rem;
+}
+.accInfo {
+  border: 1px solid gray;
+  padding: 0.5rem;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+aside.stick {
+  float:right;
+  position: sticky;
+  top: 5rem;
+  height: 770px;
+  margin-top: 2rem;
+}
+aside > div.asideContent {
+  padding: 1.0rem 1.8rem;
+  border-radius: 18px;
+  border: 1px solid #ccc;
+  background-color: white;
+}
+.asideContent .mini-price {
+  font-weight: bold;
+}
+.asideContent li {
+  font-size: 1rem;
+  margin-bottom: 0.8rem;
+}
+.asideContent p {
+  margin: 0;
+}
+.asideContent .title-price {
+  font-size: 1.19rem;
+  font-weight: bold;
+}
+.cell-title {
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+input {
+  margin: 0;
+}
+button {
+  margin : 0;
+}
+#customAddress input {
+  margin:6px 10px;
+}
+label {
+  margin: 0;
+}
+input[type='radio'] {
+  margin:auto 4px;
+}
+input#usePointInput {
+  width: 5.5rem;
+  font-size: 12px;
+  height: 1.8rem;
 }
