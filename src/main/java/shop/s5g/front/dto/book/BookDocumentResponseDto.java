@@ -5,8 +5,6 @@ import java.time.LocalDateTime;
 
 public record BookDocumentResponseDto(
     Long bookId,
-    Long publisherId,
-    Long bookStatusId,
     String title,
     String chapter,
     String description,
@@ -18,7 +16,12 @@ public record BookDocumentResponseDto(
     int stock,
     Long views,
     LocalDateTime createdAt,
-    LocalDateTime updatedAt
+    LocalDateTime updatedAt,
+    String[] authorNames,
+    String[] categoryNames,
+    String publisherName,
+    String[] tagNames,
+    String[] imagePaths
 ) {
 
 }

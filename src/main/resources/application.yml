@@ -87,6 +87,11 @@ spring:
           default:
             logger-level: full
 
+rabbit:
+  route:
+    orders:
+      payment:
+        toss: 55g.dev.orders.payment.toss
 ---
 spring:
   mvc:
