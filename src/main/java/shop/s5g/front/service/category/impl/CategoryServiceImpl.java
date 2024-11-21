@@ -2,12 +2,14 @@ package shop.s5g.front.service.category.impl;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import shop.s5g.front.adapter.CategoryAdapter;
 import shop.s5g.front.dto.MessageDto;
+import shop.s5g.front.dto.PageResponseDto;
 import shop.s5g.front.dto.category.CategoryDetailResponseDto;
 import shop.s5g.front.dto.category.CategoryRequestDto;
 import shop.s5g.front.dto.category.CategoryResponseDto;
@@ -60,9 +62,9 @@ public class CategoryServiceImpl implements CategoryService {
      * 국내도서 하위 카테고리 조회
      */
     @Override
-    public List<CategoryResponseDto> getKoreaCategories() {
+    public PageResponseDto<CategoryResponseDto> getKoreaCategories(Pageable pageable) {
         try{
-            ResponseEntity<List<CategoryResponseDto>> koreaCategories = categoryAdapter.getKoreaCategories();
+            ResponseEntity<PageResponseDto<CategoryResponseDto>> koreaCategories = categoryAdapter.getKoreaCategories(pageable);
             if (koreaCategories.getStatusCode().is2xxSuccessful()) {
                 return koreaCategories.getBody();
             }
