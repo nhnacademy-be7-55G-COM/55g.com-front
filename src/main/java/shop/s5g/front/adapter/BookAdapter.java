@@ -1,6 +1,7 @@
 package shop.s5g.front.adapter;
 
 import java.util.List;
+
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -10,8 +11,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import shop.s5g.front.config.FeignGatewayAuthorizationConfig;
+import shop.s5g.front.dto.MessageDto;
 import shop.s5g.front.dto.PageResponseDto;
 import shop.s5g.front.dto.BookDetailResponseDto;
+import shop.s5g.front.dto.book.BookAddSendDto;
 import shop.s5g.front.dto.book.BookPageableResponseDto;
 import shop.s5g.front.dto.book.BookSimpleResponseDto;
 
@@ -29,4 +32,7 @@ public interface BookAdapter {
     @GetMapping("/api/shop/books/query")
     List<BookSimpleResponseDto> getSimpleBooks(@RequestParam List<Long> books);
 
+    // 도서 등록
+    @PostMapping("/api/shop/book")
+    ResponseEntity<MessageDto> addBook(BookAddSendDto dto);
 }
