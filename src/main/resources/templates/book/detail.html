@@ -149,7 +149,14 @@
     if (bookQuantity.value === '' || parseInt(bookQuantity.value, 10) < min) {
       bookQuantity.value = min;
     }
+
+    const currentValue = parseInt(bookQuantity.value, 10);
+    if (currentValue > stock) {
+      bookQuantity.value = stock;
+      alert(`현재재고는 ${stock}개 입니다.`);
+    }
   });
+
   bookQuantity.addEventListener('keydown', (event) => {
     const currentValue = parseInt(bookQuantity.value, 10);
     const min = 1;
