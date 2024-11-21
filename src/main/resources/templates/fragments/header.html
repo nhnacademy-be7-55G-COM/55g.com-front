@@ -86,9 +86,6 @@
     </div>
 
     <script>
-
-
-
       async function loadCartPage() {
 
         const loggedIn = await isLoggedIn();
@@ -139,6 +136,7 @@
 
       //국내도서 데이터 가져오기
       async function categoryInfo() {
+        console.log("Loading Categories...");
         try {
           // fetch로 서버에서 데이터 가져오기
           const response = await fetch("/category", { method: 'GET' });
@@ -192,4 +190,10 @@
   </div>
 
 </div><!--header-wrap-->
+<script src="/static/js/jquery-1.11.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+        crossorigin="anonymous"></script>
+<script src="/static/js/plugins.js"></script>
+<script src="/static/js/script.js"></script>
 </div>
