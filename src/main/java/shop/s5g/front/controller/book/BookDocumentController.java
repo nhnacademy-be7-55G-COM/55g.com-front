@@ -16,7 +16,7 @@ import shop.s5g.front.service.book.BookDocumentService;
 public class BookDocumentController {
     private final BookDocumentService bookDocumentService;
 
-    @GetMapping("/book/search")
+    @GetMapping("/book/list")
     public String searchByKeyword(@RequestParam(required = false) String keyword, @PageableDefault(size = 12) Pageable pageable, Model model) {
         if (keyword == null) {
             keyword = "";
@@ -28,6 +28,7 @@ public class BookDocumentController {
         model.addAttribute("totalPage", searchBookList.totalPage());
         model.addAttribute("pageSize", searchBookList.pageSize());
         model.addAttribute("totalElements", searchBookList.totalElements());
+        model.addAttribute("keyword", keyword);
 
         return "book/searchBookList";
     }
