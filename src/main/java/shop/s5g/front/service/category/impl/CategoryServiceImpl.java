@@ -11,6 +11,7 @@ import shop.s5g.front.adapter.CategoryAdapter;
 import shop.s5g.front.dto.MessageDto;
 import shop.s5g.front.dto.PageResponseDto;
 import shop.s5g.front.dto.category.CategoryDetailResponseDto;
+import shop.s5g.front.dto.category.CategoryOneResponseDto;
 import shop.s5g.front.dto.category.CategoryRequestDto;
 import shop.s5g.front.dto.category.CategoryResponseDto;
 import shop.s5g.front.exception.BadRequestException;
@@ -102,6 +103,32 @@ public class CategoryServiceImpl implements CategoryService {
             return response.getBody();
         }
         catch (BadRequestException e) {
+            throw new CategoryResourceNotFoundException(e.getMessage());
+        }
+    }
+
+    /**
+     * 카테고리 삭제(비활성화)
+     */
+    @Override
+    public MessageDto delete(Long categoryId) {
+        try {
+            ResponseEntity<MessageDto> response = categoryAdapter.deleteCategory(categoryId);
+            return response.getBody();
+        } catch (BadRequestException e) {
+            throw new CategoryResourceNotFoundException(e.getMessage());
+        }
+    }
+
+    /**
+     * id로 카테고리 조회
+     */
+    @Override
+    public CategoryOneResponseDto getCategoryById(long categoryId) {
+        try {
+            ResponseEntity<CategoryOneResponseDto> category = categoryAdapter.findCategoryById(categoryId);
+            return category.getBody();
+        } catch (BadRequestException e) {
             throw new CategoryResourceNotFoundException(e.getMessage());
         }
     }

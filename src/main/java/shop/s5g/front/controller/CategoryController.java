@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import shop.s5g.front.dto.PageResponseDto;
+import shop.s5g.front.dto.category.CategoryOneResponseDto;
 import shop.s5g.front.dto.category.CategoryRequestDto;
 import shop.s5g.front.dto.category.CategoryResponseDto;
 import shop.s5g.front.service.category.CategoryService;
@@ -73,6 +74,14 @@ public class CategoryController {
     public String categoryDetail(@PathVariable("categoryId") long categoryId, Model model) {
         List<CategoryResponseDto> childCategories = categoryService.getChildCategories(categoryId);
         model.addAttribute("childCategories", childCategories);
+        return "category-list";
+    }
+
+    //카테고리 수정 페이지 이동
+    @GetMapping("/admin/category/modify/{categoryId}")
+    public String categoryModify(@PathVariable("categoryId") long categoryId, Model model) {
+        CategoryOneResponseDto category = categoryService.getCategoryById(categoryId);
+        model.addAttribute("modifyCategory", category);
         return "category-modify";
     }
 
@@ -80,6 +89,13 @@ public class CategoryController {
     @PutMapping("/admin/category/update/{categoryId}")
     public String categoryUpdate(@PathVariable("categoryId") Long categoryId, @ModelAttribute CategoryRequestDto requestDto) {
         categoryService.updateCategory(categoryId, requestDto);
+        return "redirect:/admin";
+    }
+
+    //카테고리 삭제(비활성화)
+    @PostMapping("/admin/category/delete/{categoryId}")
+    public String categoryDelete(@PathVariable("categoryId") Long categoryId) {
+        categoryService.delete(categoryId);
         return "redirect:/admin";
     }
 }
