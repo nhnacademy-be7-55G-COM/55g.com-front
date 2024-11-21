@@ -36,6 +36,14 @@
       box-sizing: border-box;
     }
   </style>
+
+  <script>
+    function resetSearch() {
+      const searchInput = document.getElementById('searchInput');
+      searchInput.value = '';
+      searchInput.form.submit();
+    }
+  </script>
 </head>
 <body
     style="background-color: var(--light-color); font-family: var(--body-font),serif; color: var(--body-text-color);">
@@ -49,17 +57,35 @@
       <h2 class="section-title">Book List</h2>
     </div>
 
-    <!-- Search Form -->
-    <form th:action="@{/book/search}" method="get" class="search-form">
-      <div class="row justify-content-center mb-5">
-        <div class="col-md-8">
+    <form th:action="@{/book/list}" method="get" class="search-form">
+      <div class="row justify-content-center mb-8">
+        <div class="col-md-8" style="width: 40%;">
           <div class="input-group d-flex align-items-center" style="gap: 10px; height: 40px;">
             <!-- 검색창 -->
-            <input type="text" style="margin: 0; height: 66px" class="form-control search-input" name="keyword" placeholder="Search for books..."
-                 th:value="${keyword ?: ''}">
+            <input type="text"
+                   id="searchInput"
+                   class="form-control search-input"
+                   name="keyword"
+                   placeholder="검색어를 입력하세요."
+                   th:value="${keyword ?: ''}"
+                   style="height: 40px; margin: 0;">
 
             <!-- 검색 버튼 -->
-            <button class="btn btn-accent search-btn" type="submit">Search</button>
+            <button id="searchButton"
+                    class="btn btn-accent search-btn"
+                    type="submit"
+                    style="height: 40px;">
+              <i class="icon icon-search"></i>
+            </button>
+
+            <!-- 초기화 버튼 -->
+            <button id="resetButton"
+                    class="btn btn-accent"
+                    type="button"
+                    onclick="resetSearch()"
+                    style="height: 40px;">
+              초기화
+            </button>
           </div>
         </div>
       </div>
@@ -70,7 +96,7 @@
       <div class="products-grid d-flex flex-wrap" style="justify-content: flex-start; margin-top: 28px"> <!-- flexbox 컨테이너 설정 -->
         <div class="col-md-3" th:each="book : ${books}" style="margin-bottom: 20px;"> <!-- 추가된 스타일 -->
           <a th:href="'/book/' + ${book.bookId}" class="caption-link">
-            <div class="product-item" style="margin: 0 10px;"> <!-- 좌우 간격 추가 -->
+            <div class="product-item" style="margin: 0 16px;"> <!-- 좌우 간격 추가 -->
               <div class="product-image-container" style="height: 400px; width: 300px; display: block;">
                 <!-- 책 이미지가 있는 경우 -->
                 <img th:if="${book.imagePaths != null and book.imagePaths.length > 0}"
@@ -100,8 +126,14 @@
       </div>
     </div>
 
+    <!-- 책 리스트가 없을 때 -->
+    <div class="col-12 text-center" th:if="${#lists.isEmpty(books)}" style="margin-top: 20px;">
+      <p>검색된 책이 없습니다.</p>
+    </div>
+
+
     <!-- Pagination -->
-    <div class="row justify-content-center mt-5">
+    <div class="row justify-content-center mt-5" th:if="${!#lists.isEmpty(books)}">
       <nav class="d-flex justify-content-center"> <!-- 가운데 정렬 클래스 추가 -->
         <ul class="pagination">
           <!-- Previous Button -->
