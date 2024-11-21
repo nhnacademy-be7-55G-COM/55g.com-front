@@ -36,8 +36,7 @@
           | <span th:text="${book.publisherName}"></span></p>
         <div>
           <span class="ratings" th:each="category,stat:${book.categoryList}">
-            <a th:href="${'/category/'+category.categoryId}"><span
-                th:text="${category.categoryName}"></span></a>
+            <a th:href="@{/book/list/category(name=${category.categoryName})}"><span th:text="${category.categoryName}"></span></a>
             <span th:if="${!stat.last}">></span>
           </span>
         </div>
