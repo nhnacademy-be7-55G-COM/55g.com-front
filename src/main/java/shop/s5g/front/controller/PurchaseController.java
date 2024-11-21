@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import shop.s5g.front.annotation.SessionRequired;
 import shop.s5g.front.domain.purchase.PurchaseSheet;
@@ -58,14 +57,5 @@ public class PurchaseController {
 //        List<CartBookInfoRequestDto> rawCartList = List.of(
 //            new CartBookInfoRequestDto(1L, 2), new CartBookInfoRequestDto(3L, 1)
 //        );
-    }
-
-    @GetMapping("/purchase/test")
-    @ResponseBody
-    public String infoTest() {
-        log.debug("MemberInfo: {}", purchaseSheet.getMemberInfo());
-        log.debug("orderId: {}", purchaseSheet.getRandomOrderId());
-        log.debug("orderInformation-pmap: {}", purchaseSheet.getOrderInfo().purchaseMap.toString());
-        return "test";
     }
 }

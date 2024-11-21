@@ -14,8 +14,8 @@ public class BookDocumentServiceImpl implements BookDocumentService {
     private final BookDocumentAdapter bookDocumentAdapter;
 
     @Override
-    public PageResponseDto<BookDocumentResponseDto> searchByTitleOrDescription(
+    public PageResponseDto<BookDocumentResponseDto> searchByKeyword(
         String keyword, Pageable pageable) {
-        return bookDocumentAdapter.searchByTitleOrDescription(keyword, pageable);
+        return bookDocumentAdapter.searchByKeyword(keyword, pageable);
     }
 }

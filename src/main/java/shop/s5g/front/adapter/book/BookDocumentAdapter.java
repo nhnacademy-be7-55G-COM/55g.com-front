@@ -10,6 +10,6 @@ import shop.s5g.front.dto.book.BookDocumentResponseDto;
 
 @FeignClient(name = "bookDocument", url = "${gateway.url}", configuration = FeignGatewayAuthorizationConfig.class)
 public interface BookDocumentAdapter {
-    @GetMapping("/api/shop/book/search")
-    PageResponseDto<BookDocumentResponseDto> searchByTitleOrDescription(@RequestParam("keyword") String keyword, Pageable pageable);
+    @GetMapping("/api/shop/book/list")
+    PageResponseDto<BookDocumentResponseDto> searchByKeyword(@RequestParam("keyword") String keyword, Pageable pageable);
 }
