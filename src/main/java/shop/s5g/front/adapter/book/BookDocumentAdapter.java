@@ -12,4 +12,7 @@ import shop.s5g.front.dto.book.BookDocumentResponseDto;
 public interface BookDocumentAdapter {
     @GetMapping("/api/shop/book/list")
     PageResponseDto<BookDocumentResponseDto> searchByKeyword(@RequestParam("keyword") String keyword, Pageable pageable);
+
+    @GetMapping("/api/shop/book/list/category")
+    PageResponseDto<BookDocumentResponseDto> searchByCategoryAndKeyword(@RequestParam("name") String categoryName, @RequestParam("keyword") String keyword, Pageable pageable);
 }
