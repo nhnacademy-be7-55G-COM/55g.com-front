@@ -31,6 +31,7 @@
     let selectAddressType = '';
     const cartList = [];
     const savedAddressList = {};
+    let deliveryFeeList = [];
     const pointLimit = [[${memberInfo.point}]];
 
     const accRate = new Decimal([[${accRate}]]);
@@ -43,6 +44,27 @@
     var id = [[${address.addressId}]];
     savedAddressList[id.toString()] = [[${address.toString()}]];
     [/]
+
+    [# th:each="feeIndex: ${fees}"]
+    var feeObj = {
+      id: [[${feeIndex.id}]],
+      fee: [[${feeIndex.fee}]],
+      condition: [[${feeIndex.condition}]]
+    };
+    deliveryFeeList.push(feeObj);
+    [/]
+    deliveryFeeList = deliveryFeeList.sort((v1, v2) => v2.condition - v1.condition);
+    const selectDeliveryFee =() => {
+      let i=0;
+      for (; i<deliveryFeeList.length; i++) {
+        // condition 0이 있다는 가정!
+        if (priceInfo.beforeDelivery >= deliveryFeeList[i].condition) {
+          deliveryFeeId = deliveryFeeList[i].id;
+          break;
+        }
+      }
+      priceInfo.totalPrice = new Decimal(priceInfo.beforeDelivery + deliveryFeeList[i].fee);
+    }
     let wrappingPaperId = 1;
     cartList.forEach(cart => cart['wrap'] = {
       id: -1,
@@ -53,7 +75,9 @@
     // let discountPrice = 0;
     const priceInfo = getCopyOfPriceInfo();
 
+    // !!! Initiate !!!
     calcFromCart(priceInfo, cartList);
+    selectDeliveryFee();
     // let totalPrice = new Decimal([[${summation}]]);
 
     const paymentInfo = {
@@ -69,11 +93,15 @@
       failUrl: window.location.origin + "/payment/fail"
     };
     const appendValue = (val) => {
-      priceInfo.totalPrice = priceInfo.totalPrice.plus(val);
-      paymentInfo.amount.value += val;
+      priceInfo.beforeDelivery += val;
+      selectDeliveryFee();
+      paymentInfo.amount.value = parseInt(priceInfo.totalPrice.toString());
+      // priceInfo.totalPrice = priceInfo.totalPrice.plus(val);
+      // paymentInfo.amount.value += val;
       initPrices();
     }
     const subtractValue = (val) => {
+      throw 'Not Implemented yet';
       priceInfo.discountPrice += (-val);
       paymentInfo.amount.value -= val;
       initPrices();
@@ -153,7 +181,7 @@
     // TODO: 테스트 코드 삭제
     paymentInfo.orderName = '테스트 주문';
     // paymentInfo.amount.value = 5000;
-    deliveryFeeId = 1;
+    // deliveryFeeId = 1;
     netPrice = 5000;
     // totalPrice = 5000;
   </script>
@@ -455,11 +483,13 @@
         const wrap = document.querySelector('#wrappingPrice');
         const acc = document.querySelector('#accSumSpan');
         const disPt = document.querySelector('#discountByPoint');
+        const delivery = document.querySelector('#deliveryPrice');
         acc.textContent = Math.floor(priceInfo.totalPrice.mul(accRate)).toString();
 
         origin.innerHTML = `₩ ${priceInfo.originPrice}`;
-        discount.innerHTML = `₩ ${priceInfo.discountPrice}`;
-        disPt.innerHTML = `₩ ${priceInfo.pointUse === '' ? 0 : priceInfo.pointUse}`;
+        discount.innerHTML = `- ₩ ${priceInfo.discountPrice}`;
+        disPt.innerHTML = `- ₩ ${priceInfo.pointUse === '' ? 0 : priceInfo.pointUse}`;
+        delivery.innerHTML = `₩ ${deliveryFeeList.filter(d => d.id === deliveryFeeId)[0].fee}`;
         pay.innerHTML = `₩ ${priceInfo.totalPrice.toString()}`;
         let wrapPrice = 0;
         cartList.forEach(cart => {
@@ -586,7 +616,7 @@
     phoneError.style.display = (phoneValue.length === 11) ? "none" : "block";
   }
 
-  const phoneRegex = new RegExp(`010-\\d{0,4}-\\d{0,4}`);
+  const phoneRegex = new RegExp(`010-\\d{4}-\\d{4}`);
   function checkPhoneNumberFormat() {
     const phoneInput = document.getElementById("receiverPhoneInput");
     return phoneRegex.exec(phoneInput.value) !== null;
