@@ -25,6 +25,7 @@
           <!-- TODO: 실제 판매가 계산 후 반영하기 -->
 <!--          <h3 class="sale-price text-danger">판매가: 8,100원</h3>-->
         </div>
+
         <div class="btn-group mt-3">
           <button class="btn btn-primary" onclick="putTOCart()">카트에 넣기</button>
           <button class="btn btn-success">바로 구매</button>
@@ -88,7 +89,7 @@
         if (book){
           book.quantity += 1;
         }else {
-          cartData.cartBookInfoList.push({bookId:[[${book.bookId}]],quantity:1});
+          cartData.cartBookInfoList.push({bookId:[[${book.bookId}]],quantity:1,status:true});
           updateCartCountWhenPutting();
 
         }
