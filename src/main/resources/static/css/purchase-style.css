@@ -182,5 +182,12 @@ input[type='radio'] {
   margin:auto 4px;
 }
 input#usePointInput {
-  width: 8.5rem;
+  width: 5.5rem;
+  font-size: 12px;
+  height: 1.8rem;
+}
+#purchaseButton {
+  font-size: 12px;
+  height: 1.8rem;
+  padding: 0 1rem;
 }
