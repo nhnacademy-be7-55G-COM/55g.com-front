@@ -24,7 +24,7 @@ import shop.s5g.front.dto.cart.request.CartUpdateQuantityRequestDto;
 public interface CartAdapter {
 
     @PostMapping("/api/shop/cart")
-    ResponseEntity<MessageDto> putBook(@RequestBody CartPutRequestDto cartPutRequestDto);
+    ResponseEntity<Map<String, Integer>> putBook(@RequestBody CartPutRequestDto cartPutRequestDto);
 
     @GetMapping("/api/shop/cart")
     ResponseEntity<Map<String, Object>> getCartDetailPageInfo();

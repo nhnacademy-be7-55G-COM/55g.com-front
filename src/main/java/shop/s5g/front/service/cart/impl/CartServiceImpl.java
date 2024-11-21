@@ -38,11 +38,11 @@ public class CartServiceImpl implements CartService {
     private final BookService bookService;
 
     @Override
-    public MessageDto putBook(CartPutRequestDto cartPutRequestDto) {
+    public int putBook(CartPutRequestDto cartPutRequestDto) {
         try {
-            ResponseEntity<MessageDto> response = cartAdapter.putBook(cartPutRequestDto);
+            ResponseEntity<Map<String, Integer>> response = cartAdapter.putBook(cartPutRequestDto);
 
-            return response.getBody();
+            return response.getBody().get("cartCountChange");
 
         } catch (Exception e) {
             throw new CartPutException("물품을 담는데 실패했습니다.");

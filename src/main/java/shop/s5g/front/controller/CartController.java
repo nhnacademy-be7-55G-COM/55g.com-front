@@ -65,7 +65,7 @@ public class CartController {
     }
     //TODO 도서 상세페이지에 스크립트 작성할 때 예외 메시지를 정하는 걸로
     @PostMapping("/cart")
-    public ResponseEntity<Map<String,String>> putBook(
+    public ResponseEntity<Map<String,Integer>> putBook(
         @RequestBody @Validated CartPutRequestDto cartPutRequestDto, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
@@ -73,10 +73,10 @@ public class CartController {
         }
 
         try {
-            MessageDto messageDto = cartService.putBook(cartPutRequestDto);
+            int cartCountChange = cartService.putBook(cartPutRequestDto);
 
             return ResponseEntity.status(HttpStatus.OK)
-                .body(Map.of("message", messageDto.message()));
+                .body(Map.of("cartCountChange", cartCountChange));
 
         } catch (CartPutException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();

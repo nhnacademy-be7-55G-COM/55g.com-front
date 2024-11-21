@@ -14,7 +14,7 @@ import shop.s5g.front.dto.cart.request.CartUpdateQuantityRequestDto;
 
 public interface CartService {
 
-    MessageDto putBook(CartPutRequestDto cartPutRequestDto);
+    int putBook(CartPutRequestDto cartPutRequestDto);
 
     Map<String, Object> getCartDetailPageInfo();
 
