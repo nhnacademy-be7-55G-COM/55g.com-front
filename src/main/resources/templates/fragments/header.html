@@ -22,7 +22,7 @@
 
         <div class="d-flex" id="headerLeftSide">
           <div class="main-logo d-flex" style="margin: 8px 0">
-            <a href="/" class="my-auto"><img class="my-auto" src="../static/images/main-logo.png" alt="logo" style="width: 100px;"></a>
+            <a href="/" class="my-auto"><img class="my-auto" src="/static/images/main-logo.png" alt="logo" style="width: 100px;"></a>
           </div>
 
         </div>
@@ -159,7 +159,7 @@
             const link = document.createElement("a");
 
             // a 태그의 href와 텍스트 설정
-            link.href = `/category/${category.categoryId}`; // 카테고리별 상세 페이지로 연결
+            link.href = `/book/list/category?name=${category.categoryName}`; // 카테고리별 상세 페이지로 연결
             link.textContent = category.categoryName; // 카테고리 이름 표시
 
             // li에 a 태그 추가
