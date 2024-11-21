@@ -12,85 +12,24 @@
 <!--</head>-->
 
 <div id="header-wrap">
-
-  <div class="top-content">
+  <form id="logout-form" action="/logout" method="POST" style="display:none;">
+    <button type="submit">Logout</button>
+  </form>
+  <header id="header" style="padding: 0">
     <div class="container-fluid">
-      <div class="row">
-        <div class="col-md-6">
-          <div class="social-links">
-            <ul>
-              <li>
-                <a href="#"><i class="icon icon-facebook"></i></a>
-              </li>
-              <li>
-                <a href="#"><i class="icon icon-twitter"></i></a>
-              </li>
-              <li>
-                <a href="#"><i class="icon icon-youtube-play"></i></a>
-              </li>
-              <li>
-                <a href="#"><i class="icon icon-behance-square"></i></a>
-              </li>
-            </ul>
-          </div><!--social-links-->
-        </div>
-        <div class="col-md-6">
-          <div class="right-element">
-            <a href="/login" th:unless="${isLoggedIn}" id="account-button" class="user-account for-buy">
-              <i class="icon icon-user"></i><span id="account-text1">Login</span>
-            </a>
+<!--      <div class="row">-->
+      <div class="d-flex justify-content-between">
 
-            <a href="#" th:if="${isLoggedIn}" class="user-account for-buy" onclick="document.getElementById('logout-form').submit();">
-              <i class="icon icon-user"></i><span id="account-text2">Logout</span>
-            </a>
-            <!-- 마이 페이지 링크 (로그인 상태일 때만 표시) -->
-            <a href="/mypage" th:if="${isLoggedIn}" class="user-account for-buy">
-              <i class="icon icon-user"></i><span>My Page</span>
-            </a>
-
-            <!-- 로그아웃을 위한 POST 폼 -->
-            <form id="logout-form" action="/logout" method="POST" style="display:none;">
-              <button type="submit">Logout</button>
-            </form>
-            <button class="cart for-buy" onclick="loadCartPage()">
-              <span class="cart-text">Cart</span>
-              <span class="cart-count-badge" id="cart-count">0</span>
-            </button>
-
-            <div class="action-menu">
-
-              <div class="search-bar">
-                <a href="#" class="search-button search-toggle" data-selector="#header-wrap">
-                  <i class="icon icon-search"></i>
-                </a>
-                <form role="search" method="get" class="search-box">
-                  <input class="search-field text search-input" placeholder="Search"
-                         type="search">
-                </form>
-              </div>
-            </div>
-
-          </div><!--top-right-->
-        </div>
-
-      </div>
-    </div>
-  </div><!--top-content-->
-
-  <header id="header">
-    <div class="container-fluid">
-      <div class="row">
-
-        <div class="col-md-2">
-          <div class="main-logo">
-            <a href="/"><img src="../static/images/main-logo.png" alt="logo"></a>
+        <div class="d-flex" id="headerLeftSide">
+          <div class="main-logo d-flex">
+            <a href="/" class="my-auto"><img class="my-auto" src="../static/images/main-logo.png" alt="logo"></a>
           </div>
 
         </div>
 
-        <div class="col-md-10">
+        <div id="headerCenterSide" class="d-flex">
 
-          <nav id="navbar">
+          <nav id="navbar" class="my-auto">
             <div class="main-menu stellarnav">
               <ul class="menu-list">
                 <li class="menu-item active"><a href="#home">Home</a></li>
@@ -106,30 +45,47 @@
 
                 <li class="menu-item"><a href="#featured-books" class="nav-link">Featured</a></li>
                 <li class="menu-item"><a href="#popular-books" class="nav-link">Popular</a></li>
-                <li class="menu-item"><a href="#special-offer" class="nav-link">Offer</a></li>
-                <li class="menu-item"><a href="#latest-blog" class="nav-link">Articles</a></li>
-                <li class="menu-item"><a href="#download-app" class="nav-link">Download App</a></li>
-                <li class="menu-item"><a href="https://templatesjungle.gumroad.com/l/booksaw-free-html-bookstore-template" class="nav-link btn btn-outline-dark rounded-pill m-0" target="_blank">Get PRO</a></li>
               </ul>
-
               <div class="hamburger">
                 <span class="bar"></span>
                 <span class="bar"></span>
                 <span class="bar"></span>
               </div>
-
             </div>
           </nav>
+        </div>
+        <div class="d-flex">
+          <nav id="navbar2">
+            <div class="main-menu stellarnav">
+              <ul class="menu-list">
 
+                <li>
+                  <a href="#" th:if="${isLoggedIn}" class="user-account for-buy" onclick="document.getElementById('logout-form').submit();">
+                    <i class="icon icon-user"></i><span id="account-text2">Logout</span>
+                  </a>
+                  <a href="/login" th:unless="${isLoggedIn}" id="account-button" class="user-account for-buy">
+                    <i class="icon icon-user"></i><span id="account-text1">Login</span>
+                  </a>
+                </li>
+                <!-- 마이 페이지 링크 (로그인 상태일 때만 표시) -->
+                <li><a href="/mypage" th:if="${isLoggedIn}" class="user-account for-buy">
+                  <i class="icon icon-user"></i><span>My Page</span>
+                </a></li>
+                <li>
+                  <button style="height:2rem; padding: 0 1.4rem" class="cart for-buy" onclick="loadCartPage()">
+                    <span class="cart-text">Cart</span>
+                    <span class="cart-count-badge" id="cart-count">0</span>
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </nav>
         </div>
 
       </div>
     </div>
 
     <script>
-
-
-
       async function loadCartPage() {
 
         const loggedIn = await isLoggedIn();
@@ -180,6 +136,7 @@
 
       //국내도서 데이터 가져오기
       async function categoryInfo() {
+        console.log("Loading Categories...");
         try {
           // fetch로 서버에서 데이터 가져오기
           const response = await fetch("/category", { method: 'GET' });
@@ -220,5 +177,23 @@
 
     </script>
   </header>
+  <div class="d-flex justify-content-center flex-row w-100 mt-3">
+
+    <div class="search-bar d-flex justify-content-center flex-row">
+      <a href="#" class="search-button search-toggle" data-selector="#header-wrap">
+        <i class="icon icon-search"></i>
+      </a>
+      <form role="search" method="get" class="search-box">
+        <input style="width: 30rem;" class="search-field text search-input" placeholder="Search"
+               type="search">
+      </form>
+  </div>
 
 </div><!--header-wrap-->
+<script src="/static/js/jquery-1.11.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+        crossorigin="anonymous"></script>
+<script src="/static/js/plugins.js"></script>
+<script src="/static/js/script.js"></script>
+</div>
