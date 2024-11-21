@@ -70,6 +70,8 @@ public class PurchaseSheet implements Serializable {    // 주문서 빈!
     private boolean cartReady;              // 카트에 책정보를 다 가져왔는지?
     private boolean joined;                 // futures 의 작업이 다 끝났는지?
     private HashMap<Long, WrappingPaperView> wrapMap;   // 각 책마다 포장지 선택을 저장함.
+    @Getter @Setter
+    private boolean isOrdering;
 
     @Getter
     private OrderInformation orderInfo;     // 주문 정보

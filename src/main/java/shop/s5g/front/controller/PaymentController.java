@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import shop.s5g.front.annotation.RedirectWithAlert;
 import shop.s5g.front.annotation.SessionRequired;
 import shop.s5g.front.domain.purchase.PurchaseSheet;
-import shop.s5g.front.dto.MessageDto;
+import shop.s5g.front.dto.order.OrderRabbitResponseDto;
 import shop.s5g.front.dto.payment.TossPaymentInfo;
 import shop.s5g.front.exception.order.OrderSessionNotAvailableException;
 import shop.s5g.front.service.order.OrderService;
@@ -73,12 +73,15 @@ public class PaymentController {
         body.put("payment", tossPaymentInfo);
         body.put("orderDataId", purchaseSheet.getOrderId());
         body.put("usedPoint", purchaseSheet.getUsedPoint());
-//        body.put("orderDataId", session.getAttribute("orderDataId"));
 
-        MessageDto message = paymentsService.confirmPayment(body);
+        OrderRabbitResponseDto message = paymentsService.confirmPayment(body);
         if (message == null) {
             log.trace("payment request was delayed.. pending view was sent");
             return "payments/pending";
+        }
+        if (!message.wellOrdered()) {
+            log.info("주문이 처리되지 않았습니다. :{}", message.message());
+            return "error/order-not-proceed";
         }
         log.trace("Toss Payment request success");
 
