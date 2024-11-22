@@ -112,7 +112,7 @@
             fetch(`/admin/publisher/delete/${publisherId}`, {
                 method: 'DELETE',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json', [_csrf_header]: _csrf
                 }
             })
                 .then(response => {

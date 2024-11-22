@@ -12,7 +12,7 @@
 <!--</head>-->
 
 <div id="header-wrap">
-  <form id="logout-form" action="/logout" method="POST" style="display:none;">
+  <form id="logout-form" th:action="@{/logout}" method="POST" style="display:none;">
     <button type="submit">Logout</button>
   </form>
   <header id="header" style="padding: 0">

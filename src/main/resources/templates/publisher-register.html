@@ -102,7 +102,7 @@
 <body>
 <div class="form-container">
     <h1>출판사 등록</h1>
-    <form method="post" action="/admin/publisher/register">
+    <form method="post" th:action="@{/admin/publisher/register}">
         <label for="name">출판사 이름</label>
         <input type="text" id="name" name="name" placeholder="출판사 이름을 입력하세요" required>
         <button type="submit">등록하기</button>

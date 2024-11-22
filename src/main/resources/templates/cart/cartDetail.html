@@ -320,7 +320,7 @@
       console.log('회원 수량 업데이트');
       fetch('/cart/updateQuantity', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', [_csrf_header]: _csrf },
         body: JSON.stringify({
           bookId: bookId,
           change: change
@@ -371,7 +371,7 @@
       // 레디스에 반영
       fetch(`/cart/removeBook`, {
         method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', [_csrf_header]: _csrf  },
         body: JSON.stringify({
           bookId: bookId,
         })
@@ -442,7 +442,7 @@
     if (isLogged) {
       fetch("/cart/changeBookStatus", {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+        headers: {'Content-Type': 'application/json', [_csrf_header]: _csrf },
         body: JSON.stringify({
           bookId: bookId,
           status: isSelected

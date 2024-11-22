@@ -116,7 +116,7 @@
   <!-- Error Alert Section -->
   <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
 
-  <form action="/register" method="post">
+  <form th:action="@{/register}" method="post">
     <div class="form-group">
       <label for="loginId" class="form-label">아이디</label>
       <div class="input-group">
@@ -211,6 +211,7 @@
 
     fetch(`/mypage/checkId/${loginId}`, {
       method: 'POST',
+      headers: { [_csrf_header]: _csrf }
     })
     .then(response => response.json())
     .then(data => {
