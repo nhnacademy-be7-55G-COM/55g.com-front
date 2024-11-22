@@ -65,7 +65,7 @@ public class CartController {
     }
     //TODO 도서 상세페이지에 스크립트 작성할 때 예외 메시지를 정하는 걸로
     @PostMapping("/cart")
-    public ResponseEntity<Map<String,String>> putBook(
+    public ResponseEntity<Map<String,Integer>> putBook(
         @RequestBody @Validated CartPutRequestDto cartPutRequestDto, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
@@ -73,10 +73,10 @@ public class CartController {
         }
 
         try {
-            MessageDto messageDto = cartService.putBook(cartPutRequestDto);
+            int cartCountChange = cartService.putBook(cartPutRequestDto);
 
             return ResponseEntity.status(HttpStatus.OK)
-                .body(Map.of("message", messageDto.message()));
+                .body(Map.of("cartCountChange", cartCountChange));
 
         } catch (CartPutException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -120,7 +120,7 @@ public class CartController {
 
     @PostMapping("/cart/updateQuantity")
     public ResponseEntity<Void> updateQuantity(
-        @RequestBody CartUpdateQuantityRequestDto cartUpdateQuantityReq,
+        @RequestBody @Validated CartUpdateQuantityRequestDto cartUpdateQuantityReq,
         BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
@@ -137,7 +137,7 @@ public class CartController {
     }
 
     @DeleteMapping("/cart/removeBook")
-    public ResponseEntity<Void> removeBook(@RequestBody CartRemoveBookRequestDto cartRemoveBookReq,
+    public ResponseEntity<Void> removeBook(@RequestBody @Validated CartRemoveBookRequestDto cartRemoveBookReq,
         BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
@@ -157,7 +157,7 @@ public class CartController {
 
     @PostMapping("/cart/changeBookStatus")
     public ResponseEntity<Void> changeBookStatus(
-        @RequestBody CartBookSelectRequestDto cartBookSelectRequestDto,
+        @RequestBody @Validated CartBookSelectRequestDto cartBookSelectRequestDto,
         BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
@@ -171,6 +171,21 @@ public class CartController {
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    @PostMapping("/cart/removePurchasedBooks")
+    public ResponseEntity<Void> removePurchasedBooks() {
+        try {
+
+            cartService.removePurchasedBooks();
+
+            return ResponseEntity.status(HttpStatus.OK).build();
+
+        }catch (Exception e){
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+
         }
     }
 

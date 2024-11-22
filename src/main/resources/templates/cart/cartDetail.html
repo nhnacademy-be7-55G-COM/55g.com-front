@@ -141,7 +141,8 @@
                    th:attrappend="disabled=${book.quantity > book.stock ? 'disabled' : ''}">
           </td>
           <td class="text-center">
-<!--            <img th:src="${book.image}" alt="Book Image" class="img-fluid" style="max-width: 100px;">-->
+            <img th:src="${book.image != null ? 'https://image.toast.com/aaaacko/55gshop/book/thumbnails/' + book.image : '/images/noImage'}"
+                 alt="Book Image" class="img-fluid" style="max-width: 100px;" onerror="this.onerror=null; this.src='/images/noImage'">
           </td>
           <td class="text-center">
             <h5 th:text="${book.title}">Book Name</h5>
@@ -160,15 +161,16 @@
           </td>
 
           <td class="text-center" th:if="${book.price != book.discountedPrice}">
-            <p style="text-decoration: line-through; color: red;">₩<span th:text="${book.price}">1000</span></p>
-            <p style="color: green;">할인가: ₩<span th:text="${book.discountedPrice}">500</span></p>
+            <p style="text-decoration: line-through; color: red;">₩<span th:text="${#numbers.formatInteger(book.price,1,'COMMA')}">1000</span></p>
+            <p style="color: green;">할인가: ₩<span th:text="${#numbers.formatDecimal(book.discountedPrice,1,'COMMA',0,'POINT')}">500</span></p>
           </td>
           <td class="text-center" th:if="${book.price == book.discountedPrice}">
-            <span style="color: black;">₩<span th:text="${book.price}">1000</span></span>
+            <span style="color: black;">₩<span th:text="${#numbers.formatInteger(book.price,1,'COMMA')}">1000</span></span>
           </td>
 
           <td class="text-center">
-            ₩<span th:id="'total-price-' + ${book.bookId}" th:text="${#numbers.formatDecimal(book.discountedPrice * book.quantity,0,0)}">500</span>
+
+            ₩<span th:id="'total-price-' + ${book.bookId}" th:text="${#numbers.formatDecimal(book.discountedPrice * book.quantity,1,'COMMA',0,'POINT')}">500</span>
           </td>
           <td class="text-center">
             <!-- 삭제 버튼 추가 -->
@@ -196,7 +198,7 @@
         </p>
         <p>배송비: ₩<span id="shipping-cost" th:text="${feeInfo.totalPrice >= feeInfo.freeShippingThreshold} ? 0 : ${feeInfo.deliveryFee}">0</span></p>
         <hr>
-        <p class="fw-bold">총 결제 금액: ₩<span id="final-price" th:text="${feeInfo.totalPrice >= feeInfo.freeShippingThreshold} ? ${feeInfo.totalPrice} : ${feeInfo.totalPrice + feeInfo.deliveryFee}">0</span></p>
+        <p class="fw-bold">총 결제 금액: ₩<span id="final-price" th:text="${feeInfo.totalPrice >= feeInfo.freeShippingThreshold} ? ${feeInfo.totalPrice} : ${feeInfo.totalPrice +  feeInfo.deliveryFee}">0</span></p>
         <button class="btn btn-primary w-100 mt-3" onclick="purchase()">결제하기</button>
       </div>
     </div>
@@ -282,7 +284,7 @@
 
     const bookTotalPriceElement = document.getElementById('total-price-' + bookId);
     const newBookTotalPrice = newQuantity * discountedPrice;
-    bookTotalPriceElement.innerText = newBookTotalPrice;  // 수정된 개수를 기반으로 1개의 책의 총가격 수정
+    bookTotalPriceElement.innerText = newBookTotalPrice.toLocaleString();  // 수정된 개수를 기반으로 1개의 책의 총가격 수정
 
     if (newQuantity <= stock) {
       checkBox.disabled = false;
@@ -415,12 +417,12 @@
   function updateFinalPriceAndShipping() {
     // 무료 배송 조건 확인 후 배송비 설정
     shippingCost = totalPrice >= freeShippingThreshold || totalPrice === 0 ? 0 : parseFloat(/*[[${feeInfo.deliveryFee}]]*/ 0);
-    document.getElementById('total-price').innerText = totalPrice;
-    document.getElementById('shipping-cost').innerText = shippingCost;
-    document.getElementById('final-price').innerText = (totalPrice + shippingCost);
+    document.getElementById('total-price').innerText = totalPrice.toLocaleString();
+    document.getElementById('shipping-cost').innerText = shippingCost.toLocaleString();
+    document.getElementById('final-price').innerText = (totalPrice + shippingCost).toLocaleString();
     document.getElementById('free-shipping-message').innerText = totalPrice >= freeShippingThreshold
-        ? `총 금액이 ₩${freeShippingThreshold} 이상이므로 배송비가 무료입니다!`
-        : `총 ₩${freeShippingThreshold} 이상 구매 시 배송비가 무료입니다.`;
+        ? `총 금액이 ₩${freeShippingThreshold.toLocaleString()} 이상이므로 배송비가 무료입니다!`
+        : `총 ₩${freeShippingThreshold.toLocaleString()} 이상 구매 시 배송비가 무료입니다.`;
   }
 
   // 물품 체크박스 선택여부에 따라 가격반영
@@ -464,6 +466,16 @@
           alert('선택 변동에 실패했습니다 다시 시도해주세요');
         }
       })
+    }else{
+      const cartData = JSON.parse(localStorage.getItem('cart'));
+      const existingBook = cartData.cartBookInfoList.find(book => book.bookId === bookId);
+
+      if (existingBook){
+        existingBook.status = isSelected ? true : false;
+
+        localStorage.setItem('cart', JSON.stringify(cartData));
+
+      }
     }
 
 
