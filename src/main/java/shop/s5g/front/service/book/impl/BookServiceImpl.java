@@ -75,7 +75,7 @@ public class BookServiceImpl implements BookService {
         String filePath = null;
 
         try {
-            if (file != null) {
+            if (file != null && !file.isEmpty()) {
                 ImageResponseDto imageDto = imageService.uploadImage(
                     "/55gshop/book/thumnails/" + file.getOriginalFilename(), file.getBytes());
                 filePath = file.getOriginalFilename();

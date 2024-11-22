@@ -1,5 +1,6 @@
 package shop.s5g.front.service.tag.impl;
 
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -53,6 +54,18 @@ public class TagServiceImpl implements TagService {
         }
         catch (BadRequestException e) {
             throw new BadRequestException(e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseEntity<List<TagResponseDto>> searchTags(String keyword){
+        try{
+            return tagAdapter.searchTags(keyword);
+        }catch(FeignException e){
+            if(e.status()==400){
+                throw new BadRequestException(e.getMessage());
+            }
+            throw new RuntimeException(e);
         }
     }
 }

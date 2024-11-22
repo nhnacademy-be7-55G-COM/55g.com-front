@@ -28,4 +28,8 @@ public interface TagAdapter {
     //태그 삭제(비활성화)
     @DeleteMapping("/api/shop/tag/{tagId}")
     ResponseEntity<MessageDto> deleteTag(@PathVariable("tagId") Long tagId);
+
+    // 태그 검색
+    @GetMapping("/api/shop/tags")
+    ResponseEntity<List<TagResponseDto>> searchTags(@RequestParam String keyword);
 }
