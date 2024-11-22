@@ -21,7 +21,6 @@ public class CouponServiceImpl implements CouponService {
 
     private final CouponAdapter couponAdapter;
 
-    //TODO (young ho) - 나중에 에러처리 수정예정
     @Override
     public MessageDto createCoupon(CouponRegisterRequestDto couponRegisterRequestDto) {
         try {
