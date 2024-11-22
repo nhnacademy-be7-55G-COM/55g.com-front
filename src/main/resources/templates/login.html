@@ -4,6 +4,18 @@
   <th:block th:replace="~{fragments/head :: headTemplate}"></th:block>
   <title>로그인</title>
   <meta charset="utf-8" />
+  <style>
+    .payco-login-btn {
+      display: block;
+      margin: 15px auto 0;
+      text-align: center;
+      max-width: 250px; /* 적절한 버튼 크기 */
+    }
+    .payco-login-btn img {
+      width: 100%; /* 이미지가 버튼 크기에 맞게 조정됨 */
+      height: auto; /* 비율 유지 */
+    }
+  </style>
 </head>
 
 <body
@@ -12,6 +24,9 @@
 <main class="container my-5 mx-auto" style="max-width: 400px;">
   <h2 class="text-center" style="color: var(--dark-color); font-family: var(--heading-font),serif;">
     Login</h2>
+  <div th:if="${error}" th:attr="data-error=${error}" style="display:none;"></div>
+  <div th:if="${success}" th:attr="data-success=${success}" style="display:none;"></div>
+
   <form th:action="@{/login}" method="post">
     <div class="mb-3">
       <label for="loginId" class="form-label" style="font-weight: 600;">아이디</label>
@@ -23,11 +38,33 @@
     </div>
     <button type="submit" class="btn btn-common w-100">Login</button>
   </form>
+  <!-- 페이코 로그인 버튼 -->
+  <div class="text-center mt-4">
+    <a href="/payco/login" class="payco-login-btn">
+      <img src="/static/images/payco-login.png" alt="페이코로 로그인">
+    </a>
+  </div>
+
   <div class="text-center mt-3">
     <a href="/register" class="btn btn-outline-primary btn-sm mt-2">회원가입</a>
     <a href="/forgot-password" class="btn btn-outline-secondary btn-sm mt-2">비밀번호 찾기</a>
   </div>
 </main>
 <div th:replace="~{fragments/footer}"></div>
+<script>
+  window.onload = function() {
+    // error 메시지 확인 후 alert
+    var errorMessage = document.querySelector('[data-error]');
+    if (errorMessage) {
+      alert(errorMessage.getAttribute('data-error'));
+    }
+
+    // success 메시지 확인 후 alert
+    var successMessage = document.querySelector('[data-success]');
+    if (successMessage) {
+      alert(successMessage.getAttribute('data-success'));
+    }
+  };
+</script>
 </body>
 </html>

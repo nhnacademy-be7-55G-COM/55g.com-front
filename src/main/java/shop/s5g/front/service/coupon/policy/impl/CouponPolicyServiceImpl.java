@@ -81,4 +81,20 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
         }
 
     }
+
+    @Override
+    public MessageDto updateCouponPolicy(Long couponPolicyId,
+        CouponPolicyRegisterRequestDto couponPolicyRegisterRequestDto) {
+
+        try {
+            ResponseEntity<MessageDto> response = couponPolicyAdapter.updateCouponPolicy(couponPolicyId, couponPolicyRegisterRequestDto);
+
+            if (response.getStatusCode().is2xxSuccessful()) {
+                return response.getBody();
+            }
+            throw new RuntimeException("update failed... to Coupon Policy");
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
 }

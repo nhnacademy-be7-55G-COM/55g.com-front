@@ -6,4 +6,5 @@ import shop.s5g.front.dto.book.BookDocumentResponseDto;
 
 public interface BookDocumentService {
     PageResponseDto<BookDocumentResponseDto> searchByKeyword(String keyword, Pageable pageable);
+    PageResponseDto<BookDocumentResponseDto> searchByCategoryAndKeyword(String categoryName, String keyword, Pageable pageable);
 }

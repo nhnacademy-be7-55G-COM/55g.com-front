@@ -154,6 +154,71 @@
 <!--		}-->
 
 <!--	</style>-->
+
+	<style>
+		#categoryListContainer {
+			display: flex;
+			flex-wrap: wrap;
+			padding: 0;
+		}
+
+		#categoryListContainer li {
+			display: inline-flex;
+			align-items: center;
+			margin-right: 10px;
+		}
+
+		#categoryListContainer li button {
+			margin-left: 5px;
+		}
+	</style>
+
+	<script>
+		document.addEventListener("DOMContentLoaded", function () {
+			// 모달 및 버튼 요소 참조
+			const couponModal = new bootstrap.Modal(document.getElementById('couponModal'), { keyboard: false });
+			const couponButton = document.getElementById('showCouponButton'); // "발급 가능한 쿠폰 보기" 버튼
+			const categoryListContainer = document.getElementById('categoryListContainer'); // 모달 내용 업데이트 대상
+
+			// 쿠폰 버튼 클릭 이벤트
+			couponButton.addEventListener('click', function () {
+				// API 요청
+				fetch('/event/coupon/category', { method: 'GET' })
+				.then(response => {
+					if (!response.ok) {
+						throw new Error('카테고리 정보를 가져오는 데 실패했습니다.');
+					}
+					return response.json();
+				})
+				.then(data => {
+					updateCategoryList(data);
+					couponModal.show();
+				})
+				.catch(error => {
+					alert(error.message);
+				});
+			});
+
+			function updateCategoryList(categories) {
+				categoryListContainer.innerHTML = '';
+				categories.forEach(category => {
+					const listItem = document.createElement('li');
+					listItem.innerHTML = `
+                    <div>
+                        <span>${category.categoryName}</span>
+                        <form action="/event/coupon/category/issue" method="POST">
+                        		<input type="hidden" name="categoryName" value="${category.categoryName}" />
+                            <input type="hidden" name="categoryId" value="${category.categoryId}" />
+                            <button type="submit" class="btn btn-success">발급하기</button>
+                        </form>
+                    </div>
+                `;
+					categoryListContainer.appendChild(listItem);
+				});
+			}
+		});
+	</script>
+
 </head>
 
 <body data-bs-spy="scroll" data-bs-target="#header" tabindex="0">
@@ -289,6 +354,50 @@
 <!--	</section>-->
 
 
+
+	<div class="event-coupon">
+		<form action="/event/coupon/issue" method="POST">
+			<button type="submit">쿠폰 발급받기</button>
+		</form>
+	</div>
+
+	<div th:if="${alertMessage}" th:inline="javascript">
+		<script>
+			alert(/*[[${alertMessage}]]*/);
+		</script>
+	</div>
+
+	<div class="user-create-coupon">
+		<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#couponModal" id="showCouponButton">
+			발급 가능한 쿠폰 보기
+		</button>
+	</div>
+
+	<!-- 모달 -->
+	<div class="modal fade" id="couponModal" tabindex="-1" aria-labelledby="couponModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="couponModalLabel">발급 가능한 쿠폰</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<!-- 카테고리 목록 -->
+					<ul id="categoryListContainer">
+<!--						<li th:each="category : ${categoryList}">-->
+<!--							<div>-->
+<!--								<span th:text="${category.categoryName}">카테고리 이름</span>-->
+<!--								<form th:action="@{/event/coupon/issue}" method="POST">-->
+<!--									<input type="hidden" name="categoryId" th:value="${category.categoryId}" />-->
+<!--									<button type="submit" class="btn btn-success">발급하기</button>-->
+<!--								</form>-->
+<!--							</div>-->
+<!--						</li>-->
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
 
 <!--	<section id="featured-books" class="py-5 my-5">-->
 <!--		<div class="container">-->

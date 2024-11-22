@@ -72,7 +72,7 @@ public class PublisherController {
     }
 
     //출판사 삭제(비활성화)
-    @DeleteMapping("/admin/publisher/delete/{id}")
+    @PostMapping("/admin/publisher/delete/{id}")
     public String publisherDelete(@PathVariable("id") Long id) {
         publisherService.delete(id);
         return "redirect:/admin/publisher/list";

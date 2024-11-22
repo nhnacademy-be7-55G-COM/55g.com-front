@@ -34,14 +34,28 @@ management:
 rabbit:
   exchange:
     orders: 55g.orders.exchange
+    coupon: 55g.coupon.exchange
+    category: 55g.category.coupon.exchange
   route:
     orders:
       payment:
         toss: 55g.orders.payment.toss
+    coupon:
+      create: 55g.coupon.create
+    category:
+      coupon: 55g.category.coupon.create
+
 redis:
   host: localhost
   port: 6379
   password: ''
+
+oauth:
+  payco:
+    auth-url: https://id.payco.com/oauth2.0/authorize
+    client-id: 3RDZzEkOENyj7mThJCsfZ1i
+    login-redirect-url: https://www.55g.shop/payco/callback
+    link-redirect-url: https://www.55g.shop/payco/link
 ---
 # on profile 'live'
 spring:

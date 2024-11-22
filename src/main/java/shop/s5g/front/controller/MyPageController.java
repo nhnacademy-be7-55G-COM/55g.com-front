@@ -77,11 +77,11 @@ public class MyPageController {
         BindingResult bindingResult, Model model) {
 
         if (bindingResult.hasErrors()) {
-            return "redirect:/mypage#memberInfo";
+            return "redirect:/mypage#personalInfo";
         }
         memberService.updateMember(requestDto);
 
-        return "redirect:/mypage#memberInfo";
+        return "redirect:/mypage#personalInfo";
     }
 
     @PostMapping("/mypage/changePassword")
@@ -91,7 +91,7 @@ public class MyPageController {
 
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("error", "비밀번호 형식을 확인해주세요");
-            return "redirect:/mypage#memberInfo";
+            return "redirect:/mypage#personalInfo";
         }
         try{
             MessageDto messageDto = memberService.changePassword(requestDto);
@@ -100,11 +100,11 @@ public class MyPageController {
         }
         catch (Exception e){
             redirectAttributes.addFlashAttribute("error", "비밀번호 변경을 실패했습니다.");
-            return "redirect:/mypage#memberInfo";
+            return "redirect:/mypage#personalInfo";
         }
 
 
-        return "redirect:/mypage#memberInfo";
+        return "redirect:/mypage#personalInfo";
     }
 
     @PostMapping("/mypage/deleteAccount")

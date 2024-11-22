@@ -7,7 +7,7 @@
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
-            background-color: #f9f9f9;
+            background-color: var(--light-color);
             color: #333;
         }
 
@@ -20,7 +20,7 @@
             max-width: 600px;
             margin: 0 auto;
             padding: 20px;
-            background-color: #fff;
+            background-color: var(--light-color);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
         }
@@ -99,6 +99,8 @@
     </div>
 </div>
 
+<a th:href="@{/admin}" class="btn">관리자 페이지로 이동</a>
+
 <div class="pagination">
     <th:block th:each="page : ${#numbers.sequence(startPage1, endPage1)}">
         <a th:if="${page != nowPage1}" th:href="@{/admin/publisher/list(page=${page - 1})}" th:text="${page}"></a>
@@ -110,7 +112,7 @@
     function deletePublisher(publisherId) {
         if (confirm('정말 삭제하시겠습니까?')) {
             fetch(`/admin/publisher/delete/${publisherId}`, {
-                method: 'DELETE',
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json', [_csrf_header]: _csrf
                 }

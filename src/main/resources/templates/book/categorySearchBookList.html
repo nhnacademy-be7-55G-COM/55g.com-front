@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="https://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}"
+>
+<head>
+  <th:block th:replace="~{fragments/head :: headTemplate}"></th:block>
+  <title>Book List</title>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+  <script>
+    function resetSearch() {
+      const searchInput = document.getElementById('searchInput');
+      searchInput.value = '';
+      searchInput.disabled = true;
+      searchInput.form.submit();
+    }
+  </script>
+</head>
+<body
+    layout:fragment="content"
+    style="background-color: var(--light-color); font-family: var(--body-font),serif; color: var(--body-text-color); height: 100vh">
+<section id="book-list" class="padding-medium">
+  <div class="container">
+    <div class="section-header align-center">
+      <div class="title">
+        <span th:text="'국내도서 > ' + ${categoryName}"></span>
+      </div>
+      <h2 class="section-title">Book List</h2>
+    </div>
+
+    <form th:action="@{/book/list/category}" method="get" class="search-form">
+      <input type="hidden" name="name" th:value="${categoryName ?: ''}">
+      <div class="d-flex justify-content-center flex-row w-100 mt-3">
+        <div class="search-bar d-flex justify-content-center flex-row align-items-center" style="gap: 10px; width: 100%; max-width: 40rem;">
+
+          <!-- 검색창 -->
+          <input type="text"
+                 id="searchInput"
+                 class="search-field text search-input"
+                 name="keyword"
+                 placeholder="검색어를 입력하세요."
+                 th:value="${keyword ?: ''}"
+                 style="height: 40px; flex-grow: 1; padding: 0 10px; margin: 0">
+
+          <!-- 검색 버튼 -->
+          <button id="searchButton"
+                  class="btn btn-accent search-btn"
+                  type="submit"
+                  style="height: 40px; border-radius: 2px">
+            <i class="icon icon-search"></i> <!-- 돋보기 아이콘 -->
+          </button>
+
+          <!-- 초기화 버튼 -->
+          <button id="resetButton"
+                  class="btn reset-btn"
+                  type="button"
+                  onclick="resetSearch()">
+            <i class="fa-solid fa-rotate"></i> <!-- 초기화 관련 아이콘 -->
+          </button>
+
+        </div>
+      </div>
+    </form>
+
+    <!-- Book List -->
+    <div class="row">
+      <div class="products-grid d-flex flex-wrap" style="justify-content: flex-start; margin-top: 28px"> <!-- flexbox 컨테이너 설정 -->
+        <div class="col-md-3" th:each="book : ${books}" style="margin-bottom: 20px;"> <!-- 추가된 스타일 -->
+          <a th:href="'/book/' + ${book.bookId}" class="caption-link">
+            <div class="product-item" style="margin: 0 16px;"> <!-- 좌우 간격 추가 -->
+              <div class="product-image-container" style="height: 400px; width: 300px; display: block;">
+                <!-- 책 이미지가 있는 경우 -->
+                <img th:if="${book.imagePaths != null and book.imagePaths.length > 0}"
+                     th:src="'https://image.toast.com/aaaacko/55gshop/book/thumbnails/'+${book.imagePaths[0]}"
+                     alt="Thumbnail"
+                     class="product-image"
+                     style="height: 100%; width: 100%; object-fit: contain; display: block;">
+
+                <!-- 책 이미지가 없는 경우 -->
+                <img th:unless="${book.imagePaths != null and book.imagePaths.length > 0}"
+                     th:src="@{/static/images/noImage.jpg}"
+                     alt="Thumbnail"
+                     class="product-image"
+                     style="height: 100%; width: 100%; object-fit: contain; display: block;">
+              </div>
+
+              <section class="book-info">
+                <h3 th:text="${book.title}" class="truncate-fixed">Book Title</h3>
+                <span th:text="${book.description}" class="truncate-multiline">Description</span>
+                <span th:text="${#temporals.format(book.publishedDate, 'yyyy년 MM월 dd일')}" class="truncate-fixed">Published Date</span>
+                <div class="item-price truncate-fixed" th:text="${#numbers.formatDecimal(book.price, 0, 'COMMA', 0, 'COMMA')} + '원'">Price</div>
+              </section>
+
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 책 리스트가 없을 때 -->
+    <div class="col-12 text-center" th:if="${#lists.isEmpty(books)}" style="margin-top: 20px;">
+      <p>검색된 책이 없습니다.</p>
+    </div>
+
+
+    <!-- Pagination -->
+    <div class="row justify-content-center mt-5" th:if="${!#lists.isEmpty(books)}">
+      <nav class="d-flex justify-content-center"> <!-- 가운데 정렬 클래스 추가 -->
+        <ul class="pagination">
+          <!-- Previous Button -->
+          <li class="page-item" th:classappend="${page <= 0} ? 'disabled' : ''">
+            <a class="page-link" th:href="@{/book/list/category(page=${page > 0 ? page - 1 : 0})}"
+               th:attr="aria-disabled=${page <= 0}"> < </a>
+          </li>
+
+          <!-- Page Numbers -->
+          <th:block th:if="${totalPage > 0}">
+            <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPage - 1)}"
+                th:classappend="${page == i} ? 'active' : ''">
+              <a class="page-link" th:href="@{/book/list/category(page=${i})}" th:text="${i + 1}"></a>
+            </li>
+          </th:block>
+
+          <!-- Next Button -->
+          <li class="page-item" th:classappend="${page >= totalPage - 1} ? 'disabled' : ''">
+            <a class="page-link" th:href="@{/book/list(page=${page < totalPage - 1 ? page + 1 : totalPage - 1})}"
+               th:attr="aria-disabled=${page >= totalPage - 1}"> > </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+  </div>
+</section>
+</body>
+</html>

@@ -17,12 +17,12 @@
   </form>
   <header id="header" style="padding: 0">
     <div class="container-fluid">
-<!--      <div class="row">-->
-      <div class="d-flex justify-content-between">
+      <!--      <div class="row">-->
+      <div class="d-flex justify-content-between align-items-center">
 
         <div class="d-flex" id="headerLeftSide">
-          <div class="main-logo d-flex">
-            <a href="/" class="my-auto"><img class="my-auto" src="../static/images/main-logo.png" alt="logo"></a>
+          <div class="main-logo d-flex" style="margin: 8px 0">
+            <a href="/" class="my-auto"><img class="my-auto" src="/static/images/main-logo.png" alt="logo" style="width: 100px;"></a>
           </div>
 
         </div>
@@ -32,9 +32,9 @@
           <nav id="navbar" class="my-auto">
             <div class="main-menu stellarnav">
               <ul class="menu-list">
-                <li class="menu-item active"><a href="#home">Home</a></li>
+                <!--                <li class="menu-item active"><a href="#home">Home</a></li>-->
 
-
+                <li class="menu-item active"><a href="/book/list">Book</a></li>
 
                 <li class="menu-item has-sub">
                   <a href="#pages" class="nav-link">Category</a>
@@ -43,8 +43,8 @@
                   </ul>
                 </li>
 
-                <li class="menu-item"><a href="#featured-books" class="nav-link">Featured</a></li>
-                <li class="menu-item"><a href="#popular-books" class="nav-link">Popular</a></li>
+                <!--                <li class="menu-item"><a href="#featured-books" class="nav-link">Featured</a></li>-->
+                <!--                <li class="menu-item"><a href="#popular-books" class="nav-link">Popular</a></li>-->
               </ul>
               <div class="hamburger">
                 <span class="bar"></span>
@@ -159,7 +159,7 @@
             const link = document.createElement("a");
 
             // a 태그의 href와 텍스트 설정
-            link.href = `/category/${category.categoryId}`; // 카테고리별 상세 페이지로 연결
+            link.href = `/book/list/category?name=${category.categoryName}`; // 카테고리별 상세 페이지로 연결
             link.textContent = category.categoryName; // 카테고리 이름 표시
 
             // li에 a 태그 추가
@@ -177,23 +177,8 @@
 
     </script>
   </header>
-  <div class="d-flex justify-content-center flex-row w-100 mt-3">
-
-    <div class="search-bar d-flex justify-content-center flex-row">
-      <a href="#" class="search-button search-toggle" data-selector="#header-wrap">
-        <i class="icon icon-search"></i>
-      </a>
-      <form role="search" method="get" class="search-box">
-        <input style="width: 30rem;" class="search-field text search-input" placeholder="Search"
-               type="search">
-      </form>
-  </div>
 
 </div><!--header-wrap-->
 <script src="/static/js/jquery-1.11.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
-        crossorigin="anonymous"></script>
 <script src="/static/js/plugins.js"></script>
 <script src="/static/js/script.js"></script>
-</div>
