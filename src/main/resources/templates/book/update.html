@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+<script src="/static/js/jquery-1.11.0.min.js">
+</script>
+<style>
+  #tag-search-result {
+    border: 1px solid black;
+    padding: 5px;
+  }
+
+  .tag-search-item {
+    margin: 2px;
+  }
+
+  .tag {
+    display: inline-block;
+    background-color: aqua;
+    margin: 2px;
+  }
+</style>
+<div th:replace="~{fragments/head}"></div>
+<body>
+<div th:replace="~{fragments/header}"></div>
+<!-- 본문 시작 -->
+<main>
+  <div class="container mt-5" style="width: 50%;">
+    <div class="form-container">
+      <h2 class="text-center">도서 추가</h2>
+      <form method="post" th:action="'/book/update/'+${bookId}" enctype="multipart/form-data">
+        <div class="form-group">
+          <label for="title">제목</label>
+          <input type="text" class="form-control" id="title" name="title" placeholder="제목을 입력하세요"
+                 required th:value="${book.title}">
+        </div>
+        <div class="form-group">
+          <label>카테고리</label>
+          <select id="category1" class="form-control" required>
+            <option selected disabled>상위 카테고리 선택</option>
+            <option th:each="category,stat:${categoryList}" th:text="${category.categoryName}"
+                    th:value="${category.categoryId}"
+                    th:selected="${category.categoryId == book.categoryList.get(0).categoryId}"></option>
+          </select>
+          <select name="categoryId" id="category2" class="form-control" required>
+            <option selected disabled>하위 카테고리 선택</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>출판사</label>
+          <select name="publisherId" id="publisherId" class="form-control" required>
+            <option selected disabled>출판사 선택</option>
+            <option th:each="publisher,stat:${publisherList}" th:text="${publisher.name}"
+                    th:value="${publisher.id}"
+                    th:selected="${publisher.name==book.publisherName}"></option>
+          </select>
+        </div>
+        <!--        <div class="form-group">-->
+        <!--          <label>작가</label>-->
+        <!--          <input type="text" class="form-control" name="author" placeholder="작가를 입력하세요">-->
+        <!--        </div>-->
+        <div class="form-group">
+          <label>도서 판매 상태</label>
+          <select name="bookStatusId" class="form-control" required>
+            <option value="1" th:selected="${book.typeName == 'ONSALE'}">판매중</option>
+            <option value="2" th:selected="${book.typeName == 'OUTOFPOINT'}">절판</option>
+            <option value="3" th:selected="${book.typeName == 'OUTOFSTOCK'}">재고 없음</option>
+            <option value="4" th:selected="${book.typeName == 'DROP'}">판매 중지</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="chapter">목차</label>
+          <!-- TODO: 별도의 텍스트 편집기 사용 필요 -->
+          <textarea class="form-control" id="chapter" name="chapter"
+                    th:text="${book.chapter}"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="description">설명</label>
+          <!-- TODO: 별도의 텍스트 편집기 사용 필요 -->
+          <textarea class="form-control" id="description" name="description"
+                    th:text="${book.description}"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="publishedDate">출판일시</label>
+          <input type="date" class="form-control" id="publishedDate" name="publishedDate" required
+                 th:value="${book.publishedDate}"/>
+        </div>
+        <div class="form-group">
+          <label for="isbn">ISBN</label>
+          <input type="text" class="form-control" id="isbn" name="isbn" placeholder="ISBN을 입력하세요"
+                 required th:value="${book.isbn}">
+        </div>
+        <div class="form-group">
+          <label for="price">가격</label>
+          <input type="number" class="form-control" id="price" name="price" placeholder="가격을 입력하세요"
+                 th:value="${book.price}">
+        </div>
+        <div class="form-group">
+          <label for="discountRate">할인율</label>
+          <input type="number" class="form-control" id="discountRate" name="discountRate"
+                 value="0.0" step="0.01" placeholder="할인율(또는 가격)을 입력하세요"
+                 th:value="${book.discountRate}">
+        </div>
+        <div class="form-group">
+          <label>포장 여부</label>
+          <input type="checkbox" id="isPacked" name="isPacked"/> <label for="isPacked"
+                                                                        style="display: inline;"
+                                                                        th:checked="${book.isPacked}">포장</label>
+        </div>
+        <div class="form-group">
+          <label for="stock">재고</label>
+          <input type="number" class="form-control" id="stock" name="stock" min="0"
+                 th:value="${book.stock}"/>
+        </div>
+        <div class="form-group">
+          <input type="hidden" id="tag-value" name="tag-value">
+          <label for="tag-input">태그</label>
+          <input type="text" id="tag-input">
+          <button id="btn-tag-search">검색</button>
+          <div id="tag-search-result"></div>
+          <div id="tag-list">
+            <button class="tag" name="tagId" th:each="tag,stat:${book.tagList}" th:value="${tag.tagId}" th:text="${tag.tagName}"></button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="thumbnailFile">도서 이미지</label>
+          <input type="file" class="form-control" id="thumbnailFile" name="thumbnailFile">
+        </div>
+        <button type="submit" id="btn-submit" class="btn btn-primary btn-block">제출</button>
+      </form>
+    </div>
+  </div>
+</main>
+<!-- 본문 끝 -->
+<div th:replace="~{fragments/footer}"></div>
+</body>
+<script>
+  var tagList = [];
+
+  $().ready(function(){
+    var tags=$('.tag');
+    console.log(tags);
+    tags.each(function(i,e){
+      var item=$(e);
+
+      item.on('click',function(e2){
+        clickTagRemove(e2);
+      });
+
+      tagList.push(item.val());
+    });
+  });
+
+  function clickTagSearchItem(e) {
+    e.preventDefault();
+
+    var item = e.target;
+
+    if (tagList.includes(item.value)) {
+      alert('이미 추가된 태그입니다.');
+      return;
+    }
+
+    var button = $('<button class="tag" name="tagId">').val(item.value).text(item.innerText);
+    button.on('click', function (e2) {
+      clickTagRemove(e2);
+    });
+
+    tagList.push(item.value);
+    $('#tag-list').append(button);
+  };
+
+  function clickTagRemove(e) {
+    e.preventDefault();
+
+    var item = e.target;
+    tagList.splice(tagList.indexOf(item.value), 1);
+    item.remove();
+  }
+
+  $('#category1').on("change", function () {
+    var selectCategory = $('#category1 option:selected').val();
+    console.log(selectCategory);
+
+    $.ajax({
+      url: '/book/categories/' + selectCategory,
+      method: 'GET',
+      success: function (data) {
+        console.log("category success!");
+        var subCategory = $('#category2');
+        subCategory.html('');
+        subCategory.append($('<option selected disabled>').text('하위 카테고리 선택'));
+
+        data.forEach(function (e, i) {
+          if (e.active) {
+            subCategory.append($('<option>').val(e.categoryId).text(e.categoryName));
+          }
+        });
+      },
+      error: function (a) {
+        console.log("error");
+        console.log(a);
+      }
+    });
+  });
+
+  $('#btn-tag-search').on('click', function (e) {
+    e.preventDefault();
+    var tagInput = $('#tag-input');
+
+    if (tagInput.val() == '') {
+      alert('검색할 태그를 입력해주세요.');
+      return;
+    }
+
+    $.ajax({
+      url: '/book/tag/search',
+      method: 'GET',
+      data: {
+        'keyword': tagInput.val()
+      },
+      success: function (data) {
+        console.log('tag search success!');
+        var tagSearchResult = $('#tag-search-result');
+        tagSearchResult.html('');
+
+        if (data.length < 1) {
+          tagSearchResult.text('검색 결과가 없습니다.');
+        } else {
+          console.log(data);
+          data.forEach(function (item, index) {
+            if (item.active) {
+              var result = $('<button class="tag-search-item">').text(item.tagName).val(item.tagId);
+              result.on('click', function (e) {
+                clickTagSearchItem(e);
+              });
+              tagSearchResult.append(result);
+            }
+          });
+        }
+      },
+      error: function (a) {
+        console.log(a);
+      }
+    });
+  });
+
+  $('#btn-submit').on('click', function (e) {
+    e.preventDefault();
+
+    $('#tag-list').append($('<input type="hidden" name="tagIdList">').val(tagList));
+    $('form').submit();
+  })
+</script>
+</html>
