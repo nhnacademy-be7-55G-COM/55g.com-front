@@ -166,7 +166,7 @@
       event.preventDefault();
     }
 
-    // 숫자가 아닌 다른 키 입력 방지 (한글 포함)
+    // 숫자가 아닌 다른 키 입력 방지 (한글은 조합문자라서 처리가 안되는듯하다)
     if (
         !/^[0-9]$/.test(event.key) && // 숫자 키 외의 입력 방지
         event.key !== 'Backspace' &&

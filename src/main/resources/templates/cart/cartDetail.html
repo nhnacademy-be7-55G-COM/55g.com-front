@@ -141,11 +141,13 @@
                    th:attrappend="disabled=${book.quantity > book.stock ? 'disabled' : ''}">
           </td>
           <td class="text-center">
-            <img th:src="${book.image != null ? 'https://image.toast.com/aaaacko/55gshop/book/thumbnails/' + book.image : '/images/noImage'}"
-                 alt="Book Image" class="img-fluid" style="max-width: 100px;" onerror="this.onerror=null; this.src='/images/noImage'">
+            <img th:src="${book.image != null ? 'https://image.toast.com/aaaacko/55gshop/book/thumbnails/' + book.image : '/static/images/noImage.jpg'}"
+                 alt="Book Image" class="img-fluid" style="max-width: 100px;" onerror="this.onerror=null; this.src='/static/images/noImage'">
           </td>
           <td class="text-center">
+            <a th:href="@{'/book/' + ${book.bookId}}">
             <h5 th:text="${book.title}">Book Name</h5>
+            </a>
           </td>
           <td class="text-center">
 
