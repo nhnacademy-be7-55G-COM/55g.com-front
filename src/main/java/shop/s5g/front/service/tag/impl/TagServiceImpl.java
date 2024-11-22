@@ -1,5 +1,6 @@
 package shop.s5g.front.service.tag.impl;
 
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,7 +14,10 @@ import shop.s5g.front.dto.PageResponseDto;
 import shop.s5g.front.dto.tag.TagRequestDto;
 import shop.s5g.front.dto.tag.TagResponseDto;
 import shop.s5g.front.exception.BadRequestException;
+import shop.s5g.front.exception.BookNotFoundException;
+import shop.s5g.front.exception.tag.TagBadRequestException;
 import shop.s5g.front.exception.tag.TagRegisterFailedException;
+import shop.s5g.front.exception.tag.TagResourceNotFoundException;
 import shop.s5g.front.service.tag.TagService;
 
 import java.util.List;
@@ -26,13 +30,15 @@ public class TagServiceImpl implements TagService {
     public MessageDto addTag(TagRequestDto tagRequestDto) {
         try {
             ResponseEntity<MessageDto> response = tagAdapter.addTag(tagRequestDto);
-            if (response.getStatusCode().is2xxSuccessful()) {
                 return response.getBody();
+        } catch (FeignException e) {
+            if (e.status() == 404) {
+                throw new BookNotFoundException();
+            } else if (e.status() == 400) {
+                throw new BadRequestException();
             }
-            throw new TagRegisterFailedException("태그 등록에 실패했습니다.");
-        } catch (HttpClientErrorException | HttpServerErrorException e) {
-            throw new TagRegisterFailedException(e.getMessage());
         }
+        throw new RuntimeException();
     }
 
     @Override
@@ -40,9 +46,14 @@ public class TagServiceImpl implements TagService {
         try {
             ResponseEntity<PageResponseDto<TagResponseDto>> tagResponseDtos = tagAdapter.gatAllTags(pageable);
             return tagResponseDtos.getBody();
-        } catch (BadRequestException e) {
-            throw new BadRequestException(e.getMessage());
+        } catch (FeignException e) {
+            if (e.status() == 404) {
+                throw new BookNotFoundException();
+            } else if (e.status() == 400) {
+                throw new BadRequestException();
+            }
         }
+        throw new RuntimeException();
     }
 
     @Override
@@ -51,8 +62,13 @@ public class TagServiceImpl implements TagService {
             ResponseEntity<MessageDto> response = tagAdapter.deleteTag(tagId);
             return response.getBody();
         }
-        catch (BadRequestException e) {
-            throw new BadRequestException(e.getMessage());
+        catch (FeignException e) {
+            if (e.status() == 404) {
+                throw new TagResourceNotFoundException(e.getMessage());
+            } else if (e.status() == 400) {
+                throw new TagBadRequestException(e.getMessage());
+            }
         }
+        throw new RuntimeException();
     }
 }
