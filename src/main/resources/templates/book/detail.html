@@ -117,8 +117,23 @@
         </div>
         <div class="btn-group mt-3">
           <button class="btn btn-primary btn-purchase" onclick="putTOCart()">카트에 넣기</button>
-          <button class="btn btn-success btn-purchase">바로 구매</button>
+          <button class="btn btn-success btn-purchase" onclick="instantPurchase()">바로 구매</button>
         </div>
+        <script th:inline="javascript">
+          const instantPurchase = () => {
+            const quantity = document.querySelector('#quantity').value;
+            const bookId= [[${book.bookId}]];
+            const obj = [
+              {
+                bookId: bookId,
+                quantity: quantity
+              }
+            ];
+            const param = encodeURIComponent(btoa(JSON.stringify(obj)));
+
+            window.location.href = `/purchase/instant?cart=${param}`;
+          }
+        </script>
       </div>
       <hr>
 
