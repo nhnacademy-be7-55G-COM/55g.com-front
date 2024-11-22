@@ -830,6 +830,24 @@
     const phoneInput = document.getElementById("newPhoneNumber");
     phoneInput.value = phoneInput.value.replace(/-/g, ''); // 하이픈 제거
   }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // 모든 collapse 요소를 선택합니다.
+    const collapsibleElements = document.querySelectorAll('.collapse');
+
+    // 각 collapse 요소에 이벤트 리스너를 추가합니다.
+    collapsibleElements.forEach(element => {
+      // 펼쳐질 때 이벤트
+      element.addEventListener('show.bs.collapse', () => {
+        console.log('show');
+      });
+
+      // 접힐 때 이벤트
+      element.addEventListener('hide.bs.collapse', () => {
+        console.log('close');
+      });
+    });
+  });
 </script>
 <script src="/static/js/jquery-1.11.0.min.js"></script>
 <script src="/static/js/plugins.js"></script>
