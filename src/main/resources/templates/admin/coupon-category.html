@@ -16,7 +16,7 @@
     <p><strong>카테고리 이름:</strong> <span th:text="${category.categoryName}"></span></p>
   </div>
 
-  <form id="couponForm" action="/admin/coupons/category/create" method="POST">
+  <form id="couponForm" th:action="@{/admin/coupons/category/create}" method="POST">
     <input type="hidden" name="categoryId" th:value="${category.categoryId}">
 
     <table border="1" style="width: 100%; margin-top: 20px; border-collapse: collapse;">

@@ -19,7 +19,7 @@ public interface TagAdapter {
 
     //태그 등록
     @PostMapping("/api/shop/tag")
-    ResponseEntity<MessageDto> addTag(@Valid @RequestBody TagRequestDto tagDto);
+    ResponseEntity<MessageDto> addTag(@RequestBody TagRequestDto tagDto);
 
     //모든 태그 조회
     @GetMapping("/api/shop/tag")

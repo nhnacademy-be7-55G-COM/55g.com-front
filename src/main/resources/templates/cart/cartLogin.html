@@ -14,7 +14,7 @@
 
     fetch("/cart/login", {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
+      headers: {'Content-Type': 'application/json', [_csrf_header]: _csrf },
       body: JSON.stringify({
         cartBookInfoList: cart.cartBookInfoList
       })

@@ -27,7 +27,7 @@
   <div th:if="${error}" th:attr="data-error=${error}" style="display:none;"></div>
   <div th:if="${success}" th:attr="data-success=${success}" style="display:none;"></div>
 
-  <form action="/login" method="post">
+  <form th:action="@{/login}" method="post">
     <div class="mb-3">
       <label for="loginId" class="form-label" style="font-weight: 600;">아이디</label>
       <input type="text" class="form-control" id="loginId" name="loginId" required>

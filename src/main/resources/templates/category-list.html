@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>카테고리 관리</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #333;
+        }
+
+        .category-form {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fdfdfd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .category-name {
+            flex: 1;
+            font-size: 1rem;
+            color: #333;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .button {
+            padding: 5px 12px;
+            font-size: 0.9rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            color: #111111;
+            transition: background-color 0.3s ease;
+        }
+
+        .button.modify {
+            background-color: #ffffff;
+        }
+
+        .button.modify:hover {
+            background-color: #cccccc;
+        }
+
+        .button.delete {
+            background-color: #ffffff;
+        }
+
+        .button.delete:hover {
+            background-color: #cccccc;
+        }
+
+        /* 반응형 처리 */
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+
+            .category-form {
+                flex-wrap: wrap;
+            }
+
+            .buttons {
+                flex-wrap: wrap;
+                justify-content: flex-end;
+                gap: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="title">카테고리 관리</div>
+    <div th:each="category : ${childCategories}" th:if="${category.active()}" class="category-form">
+        <div class="category-name" th:text="${category.categoryName}"></div>
+        <div class="buttons">
+            <a th:href="@{/admin/category/modify/{categoryId}(categoryId=${category.categoryId()})}" class="button modify">수정</a>
+            <a href="#" class="button delete" th:attr="onclick=|deleteCategory(${category.categoryId()})|">삭제</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    function deleteCategory(categoryId) {
+        if (confirm('정말 삭제하시겠습니까?')) {
+            fetch(`/admin/category/delete/${categoryId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    if (response.ok) {
+                        alert('삭제되었습니다.');
+                        location.href = `/admin`;
+                    } else {
+                        alert('삭제에 실패했습니다.');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    }
+</script>
+</body>
+</html>

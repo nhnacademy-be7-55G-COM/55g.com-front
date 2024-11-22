@@ -23,7 +23,7 @@
 <body>
 <div class="container" style="position: relative;">
   <button class="close-btn" onclick="window.location.href='/admin'">&times;</button>
-  <h2>카테고리 쿠폰 조회</h2>
+  <h2>사용자 쿠폰 조회</h2>
 
   <table border="1" style="width: 100%; margin-top: 20px; border-collapse: collapse;">
     <thead>
@@ -39,7 +39,7 @@
     <tbody>
     <tr th:each="coupon, iterStat : ${couponList}">
       <!-- 순번 표시 -->
-      <td style="padding: 10px;" th:text="${iterStat.index + ((currentPage + 1) * couponList.getContent().size())}">순번</td>
+      <td style="padding: 10px;" th:text="${iterStat.index + 1 + (currentPage * couponList.getContent().size())}">순번</td>
 
       <!-- 쿠폰 코드 표시 -->
       <td style="padding: 10px;" th:text="${coupon.couponCode}">쿠폰 코드</td>
@@ -74,7 +74,7 @@
 
     <span>현재 페이지: <span th:text="${currentPage + 1}"></span></span>
 
-    <span th:if="${currentPage < couponList.totalPages - 1}">
+    <span th:if="${currentPage < 999}">
       <a th:href="@{/admin/users/coupons(page=${currentPage + 1})}">다음</a>
     </span>
   </div>

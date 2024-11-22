@@ -80,7 +80,17 @@ spring:
   config:
     activate:
       on-profile: docker
+---
+spring:
+  config:
+    activate:
+      on-profile: local
 
+rabbit:
+  route:
+    orders:
+      payment:
+        toss: 55g.dev.orders.payment.toss
 ---
 spring:
   config:
@@ -98,7 +108,7 @@ rabbit:
   route:
     orders:
       payment:
-        toss: 55g.dev.orders.payment.toss
+        toss: 55g.dev.f3fort.orders.payment.toss
 ---
 spring:
   mvc:

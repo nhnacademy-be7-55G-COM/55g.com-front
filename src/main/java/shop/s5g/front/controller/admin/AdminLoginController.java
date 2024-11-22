@@ -1,4 +1,4 @@
-package shop.s5g.front.controller;
+package shop.s5g.front.controller.admin;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
