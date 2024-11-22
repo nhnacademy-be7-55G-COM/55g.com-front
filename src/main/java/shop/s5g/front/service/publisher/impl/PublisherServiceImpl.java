@@ -1,19 +1,16 @@
 package shop.s5g.front.service.publisher.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
 import shop.s5g.front.adapter.PublisherAdapter;
 import shop.s5g.front.dto.MessageDto;
 import shop.s5g.front.dto.PageResponseDto;
 import shop.s5g.front.dto.publisher.PublisherRequestDto;
 import shop.s5g.front.dto.publisher.PublisherResponseDto;
+import shop.s5g.front.exception.BadRequestException;
 import shop.s5g.front.exception.publisher.PublisherGetFailedException;
-import shop.s5g.front.exception.publisher.PublisherRegisterFailedException;
 import shop.s5g.front.service.publisher.PublisherService;
 
 
@@ -28,12 +25,9 @@ public class PublisherServiceImpl implements PublisherService {
         try {
             ResponseEntity<MessageDto> response = publisherAdapter.addPublisher(publisherRequestDto);
 
-            if (response.getStatusCode().is2xxSuccessful()) {
                 return response.getBody();
-            }
-            throw new PublisherRegisterFailedException("출판사 등록에 실패했습니다.");
-        } catch (HttpClientErrorException | HttpServerErrorException e) {
-            throw new PublisherRegisterFailedException(e.getMessage());
+        } catch (BadRequestException e) {
+            throw new PublisherGetFailedException(e.getMessage());
         }
     }
 
@@ -44,11 +38,8 @@ public class PublisherServiceImpl implements PublisherService {
     public PageResponseDto<PublisherResponseDto> getPublisherList(Pageable pageable) {
         try {
             ResponseEntity<PageResponseDto<PublisherResponseDto>> allPublisher = publisherAdapter.getAllPublisher(pageable);
-            if (allPublisher.getStatusCode().is2xxSuccessful()) {
                 return allPublisher.getBody();
-            }
-            throw new PublisherGetFailedException("출판사 조회에 실패했습니다.");
-        } catch (HttpClientErrorException | HttpServerErrorException e) {
+        } catch (BadRequestException e) {
             throw new PublisherGetFailedException(e.getMessage());
         }
     }
@@ -58,11 +49,8 @@ public class PublisherServiceImpl implements PublisherService {
     public PublisherResponseDto getPublisherById(Long id) {
         try {
             ResponseEntity<PublisherResponseDto> publisher = publisherAdapter.findPublisher(id);
-            if (publisher.getStatusCode().is2xxSuccessful()) {
                 return publisher.getBody();
-            }
-            throw new PublisherGetFailedException("출판사 조회에 실패했습니다.");
-        } catch (HttpClientErrorException | HttpServerErrorException e) {
+        } catch (BadRequestException e) {
             throw new PublisherGetFailedException(e.getMessage());
         }
     }
@@ -77,7 +65,7 @@ public class PublisherServiceImpl implements PublisherService {
             }
             throw new PublisherGetFailedException("출판사 수정에 실패했습니다.");
         }
-        catch (HttpClientErrorException | HttpServerErrorException e) {
+        catch (BadRequestException e) {
             throw new PublisherGetFailedException(e.getMessage());
         }
     }
@@ -91,7 +79,7 @@ public class PublisherServiceImpl implements PublisherService {
                 return response.getBody();
             }
             throw new PublisherGetFailedException("해당 출판사는 없습니다.");
-        }catch (HttpClientErrorException | HttpServerErrorException e) {
+        }catch (BadRequestException e) {
             throw new PublisherGetFailedException(e.getMessage());
         }
     }

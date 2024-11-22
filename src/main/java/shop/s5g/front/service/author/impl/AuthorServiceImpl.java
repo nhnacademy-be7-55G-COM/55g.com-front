@@ -10,6 +10,7 @@ import shop.s5g.front.dto.PageResponseDto;
 import shop.s5g.front.dto.author.AuthorRequestDto;
 import shop.s5g.front.dto.author.AuthorResponseDto;
 import shop.s5g.front.exception.BadRequestException;
+import shop.s5g.front.exception.author.AuthorResourceNotFoundException;
 import shop.s5g.front.service.author.AuthorService;
 
 @Service
@@ -25,7 +26,7 @@ public class AuthorServiceImpl implements AuthorService {
             ResponseEntity<MessageDto> response = authorAdapter.addAuthor(authorRequestDto);
             return response.getBody();
         } catch (BadRequestException e) {
-            throw new BadRequestException(e.getMessage());
+            throw new AuthorResourceNotFoundException(e.getMessage());
         }
     }
 
@@ -36,7 +37,7 @@ public class AuthorServiceImpl implements AuthorService {
             ResponseEntity<PageResponseDto<AuthorResponseDto>> allAuthors = authorAdapter.getAllAuthors(pageable);
             return allAuthors.getBody();
         } catch (BadRequestException e) {
-            throw new BadRequestException(e.getMessage());
+            throw new AuthorResourceNotFoundException(e.getMessage());
         }
     }
 }
