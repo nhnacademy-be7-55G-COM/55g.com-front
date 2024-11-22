@@ -223,8 +223,11 @@
         if (cartCountChange == 1){
           updateCartCountWhenPutting()
         }
-        alert("장바구니 담기에 성공했습니다.");
-
+        const answer = confirm("장바구니에 담겼습니다. 장바구니 페이지로 이동하시겠습니까?");
+        // alert("장바구니 담기에 성공했습니다.");
+        if (answer){
+          loadCartPage();
+        }
       })
       .catch(error => {
         console.error('Error putting item:', error);
@@ -250,7 +253,12 @@
         }
 
         localStorage.setItem('cart', JSON.stringify(cartData));
-        alert('장바구니에 담겼습니다.');
+        // alert('장바구니에 담겼습니다.');
+        const answer = confirm("장바구니에 담겼습니다. 장바구니 페이지로 이동하시겠습니까?");
+        // alert("장바구니 담기에 성공했습니다.");
+        if (answer){
+          loadCartPage();
+        }
 
       } catch (error) {
         alert("장바구니에 담는데 실패했습니다. 다시 시도해주세요");
