@@ -34,10 +34,17 @@ management:
 rabbit:
   exchange:
     orders: 55g.orders.exchange
+    coupon: 55g.coupon.exchange
+    category: 55g.category.coupon.exchange
   route:
     orders:
       payment:
         toss: 55g.orders.payment.toss
+    coupon:
+      create: 55g.coupon.create
+    category:
+      coupon: 55g.category.coupon.create
+
 redis:
   host: localhost
   port: 6379
@@ -73,7 +80,17 @@ spring:
   config:
     activate:
       on-profile: docker
+---
+spring:
+  config:
+    activate:
+      on-profile: local
 
+rabbit:
+  route:
+    orders:
+      payment:
+        toss: 55g.dev.orders.payment.toss
 ---
 spring:
   config:
@@ -91,7 +108,7 @@ rabbit:
   route:
     orders:
       payment:
-        toss: 55g.dev.orders.payment.toss
+        toss: 55g.dev.f3fort.orders.payment.toss
 ---
 spring:
   mvc:

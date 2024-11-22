@@ -18,4 +18,10 @@ public class BookDocumentServiceImpl implements BookDocumentService {
         String keyword, Pageable pageable) {
         return bookDocumentAdapter.searchByKeyword(keyword, pageable);
     }
+
+    @Override
+    public PageResponseDto<BookDocumentResponseDto> searchByCategoryAndKeyword(String categoryName,
+        String keyword, Pageable pageable) {
+        return bookDocumentAdapter.searchByCategoryAndKeyword(categoryName, keyword, pageable);
+    }
 }

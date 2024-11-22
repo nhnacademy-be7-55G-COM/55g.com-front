@@ -28,6 +28,7 @@ import shop.s5g.front.dto.order.WrapModifyRequestDo;
 import shop.s5g.front.dto.point.PointPolicyView;
 import shop.s5g.front.dto.wrappingpaper.WrappingPaperResponseDto;
 import shop.s5g.front.dto.wrappingpaper.WrappingPaperView;
+import shop.s5g.front.exception.ResourceNotFoundException;
 import shop.s5g.front.service.cart.CartService;
 import shop.s5g.front.service.delivery.DeliveryFeeService;
 import shop.s5g.front.service.member.MemberService;
@@ -227,8 +228,27 @@ public class PurchaseSheet implements Serializable {    // 주문서 빈!
             ));
         }
 
+        // 최종 가격 결정.
         orderInfo.totalPrice = totalPrice - usePoint;
         orderInfo.netPrice = netPrice;
+
+        // 배송비 유효성 체크
+        boolean feeFlag = false;
+        fee.sort((c1, c2) -> Math.toIntExact((int) c2.condition() - c1.condition()));
+        for (DeliveryFeeResponseDto f: fee) {
+            if (orderInfo.totalPrice >= f.condition()) {
+                if (delivery.deliveryFeeId() != f.id()) {
+                    throw new IllegalArgumentException();
+                }
+                orderInfo.totalPrice += f.fee();
+                feeFlag = true;
+                break;
+            }
+        }
+        if (!feeFlag) {
+            log.error("Fatal Error: delivery fee is not available");
+            throw new ResourceNotFoundException("적절한 배송비가 없음");
+        }
 
         orderInfo.order = new OrderCreateRequestDto(
             memberInfo.customerId(), delivery, details, orderInfo.netPrice, orderInfo.totalPrice, usePoint

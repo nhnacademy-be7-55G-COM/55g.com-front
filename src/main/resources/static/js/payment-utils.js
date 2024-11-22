@@ -176,8 +176,15 @@ const onPaymentFail = (orderDataId) => {
   return axios.delete(`/payment/support/order`);
 }
 
+/*
+ * origin: 말 그대로 원가격 [sum(book_price*quantity)]
+ * discount: 할인가격 [sum(book_price*discount_rate - coupon)]
+ * beforeDelivery: 최종 가격에서 배달비를 뺀 가격 [totalPrice-delivery]  -> 이 가격을 기준으로 배달비 책정
+ * totalPrice: 최종 결제 가격
+ * pointUse: 포인트 사용량
+ */
 const getCopyOfPriceInfo = () => {
-  return { originPrice: 0, discountPrice: 0, totalPrice: new Decimal(0), pointUse: 0 };
+  return { originPrice: 0, discountPrice: 0, beforeDelivery: 0, totalPrice: new Decimal(0), pointUse: 0 };
 }
 
 const calcFromCart = (priceInfo, cart) => {
@@ -189,5 +196,6 @@ const calcFromCart = (priceInfo, cart) => {
   });
   priceInfo.originPrice = origin;
   priceInfo.discountPrice = discount;
-  priceInfo.totalPrice = new Decimal(origin - discount);
+  priceInfo.beforeDelivery = origin-discount;
+  priceInfo.totalPrice = new Decimal(priceInfo.beforeDelivery);
 }
