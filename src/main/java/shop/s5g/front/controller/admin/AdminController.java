@@ -1,4 +1,4 @@
-package shop.s5g.front.controller;
+package shop.s5g.front.controller.admin;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -287,7 +287,7 @@ public class AdminController {
     @GetMapping("/admin/categories/coupons")
     public ModelAndView getCategoriesCoupons(@RequestParam(defaultValue = "0") int page) {
 
-        ModelAndView mv = new ModelAndView("admin/coupon-category-inquiry");
+        ModelAndView mv = new ModelAndView("/admin/coupon-category-inquiry");
 
         Pageable pageable = PageRequest.of(page, 15);
 
