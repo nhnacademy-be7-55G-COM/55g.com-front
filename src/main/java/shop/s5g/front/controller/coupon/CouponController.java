@@ -1,4 +1,4 @@
-package shop.s5g.front.controller;
+package shop.s5g.front.controller.coupon;
 
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +34,11 @@ public class CouponController {
     private final MemberService memberService;
     private final CouponCategoryService couponCategoryService;
 
+    /**
+     * 선착순 쿠폰 발급 - MQ
+     * @param redirectAttributes
+     * @return
+     */
     @PostMapping("/issue")
     @MemberAndAdminOnly
     public String getEventCoupon(RedirectAttributes redirectAttributes) {
@@ -51,6 +56,12 @@ public class CouponController {
         return "redirect:/";
     }
 
+    /**
+     * 카테고리 쿠폰 발급 - MQ
+     * @param redirectAttributes
+     * @param couponCategoryDetailsCategoryNameDto
+     * @return
+     */
     @PostMapping("/category/issue")
     public String getCategoryCoupon(
         RedirectAttributes redirectAttributes,
@@ -74,6 +85,11 @@ public class CouponController {
         return "redirect:/";
     }
 
+    /**
+     * 쿠폰 발급이 가능한 카테고리 데이터 조회
+     * @param page
+     * @return
+     */
     @ResponseBody
     @GetMapping("/category")
     public List<CouponCategoryDetailsCategoryNameDto> getCouponCategoryList(

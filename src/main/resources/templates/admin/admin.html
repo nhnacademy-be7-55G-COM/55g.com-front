@@ -293,9 +293,9 @@
                   <li>
                     <a class="nav-link">쿠폰 생성</a>
                     <ul>
-                      <li><a class="nav-link" href="/templates/list">사용자 쿠폰 생성</a></li>
-                      <li><a class="nav-link" href="/books/list">도서 쿠폰 생성</a></li>
-                      <li><a class="nav-link" href="/category/list">카테고리 쿠폰 생성</a></li>
+                      <li><a class="nav-link" href="/admin/templates/list">사용자 쿠폰 생성</a></li>
+                      <li><a class="nav-link" href="/admin/books/list">도서 쿠폰 생성</a></li>
+                      <li><a class="nav-link" href="/admin/category/list">카테고리 쿠폰 생성</a></li>
                     </ul>
                   </li>
                   <li>
@@ -422,7 +422,7 @@
       </div>
       <div id="coupon-policy-form" style="display:none; text-align: center;">
         <h2>쿠폰 정책 생성</h2>
-        <form id="coupon-form" action="/admin/coupons/policy/create" method="POST" style="display: inline-block; width: 100%; max-width: 400px;">
+        <form id="coupon-form" th:action="@{/admin/coupons/policy/create}" method="POST" style="display: inline-block; width: 100%; max-width: 400px;">
           <div class="mb-3">
             <label for="condition" class="form-label" style="text-align: left; display: block; margin-bottom: 2px; margin-left: 25px;">조건</label>
             <input type="text" class="form-control small-input" id="condition" name="condition" placeholder="예: 20000원" style="margin: 0 auto; text-align: left; padding-left: 10px;" required>
@@ -469,59 +469,59 @@
       }
     });
   });
-
-  // 요소 선택
-  const couponPolicyBtn = document.getElementById("couponPolicyBtn");
-  const couponModal = document.getElementById("couponModal");
-  const closeModalBtn = document.getElementById("closeModalBtn");
-
-  // 버튼 클릭 시 모달 표시
-  couponPolicyBtn.addEventListener("click", () => {
-    couponModal.style.display = "flex"; // 모달을 화면에 보이도록 설정
-  });
-
-  // 닫기 버튼 클릭 시 모달 숨김
-  closeModalBtn.addEventListener("click", () => {
-    couponModal.style.display = "none";
-  });
-
-  // 모달 외부 클릭 시 모달 숨김
-  window.addEventListener("click", (event) => {
-    if (event.target === couponModal) {
-      couponModal.style.display = "none";
-    }
-  });
-
-  // 쿠폰 정책 선택 시 동적으로 폼 표시
-  function selectCouponPolicy(policyId, condition) {
-    // 선택된 정책의 ID를 숨겨진 입력 필드에 설정
-    document.getElementById("couponPolicyId").value = policyId;
-
-    // 쿠폰 이름과 설명 입력 폼을 표시
-    document.getElementById("couponForm").style.display = "block";
-
-    // 쿠폰 정책 모달 닫기
-    document.getElementById("couponModal").style.display = "none";
-
-    // 선택된 정책의 조건을 표시하거나 다른 작업을 추가할 수 있습니다.
-    alert(`선택된 쿠폰 정책: ${condition} (ID: ${policyId})`);
-  }
-
-  // 모달 열기
-  document.getElementById("couponPolicyBtn").addEventListener("click", function() {
-    document.getElementById("couponModal").style.display = "flex";
-  });
-
-  // 모달 닫기
-  document.getElementById("closeModalBtn").addEventListener("click", function() {
-    document.getElementById("couponModal").style.display = "none";
-  });
-
-  window.addEventListener("click", function(event) {
-    if (event.target === document.getElementById("couponModal")) {
-      document.getElementById("couponModal").style.display = "none";
-    }
-  });
+  //
+  // // 요소 선택
+  // const couponPolicyBtn = document.getElementById("couponPolicyBtn");
+  // const couponModal = document.getElementById("couponModal");
+  // const closeModalBtn = document.getElementById("closeModalBtn");
+  //
+  // // 버튼 클릭 시 모달 표시
+  // couponPolicyBtn.addEventListener("click", () => {
+  //   couponModal.style.display = "flex"; // 모달을 화면에 보이도록 설정
+  // });
+  //
+  // // 닫기 버튼 클릭 시 모달 숨김
+  // closeModalBtn.addEventListener("click", () => {
+  //   couponModal.style.display = "none";
+  // });
+  //
+  // // 모달 외부 클릭 시 모달 숨김
+  // window.addEventListener("click", (event) => {
+  //   if (event.target === couponModal) {
+  //     couponModal.style.display = "none";
+  //   }
+  // });
+  //
+  // // 쿠폰 정책 선택 시 동적으로 폼 표시
+  // function selectCouponPolicy(policyId, condition) {
+  //   // 선택된 정책의 ID를 숨겨진 입력 필드에 설정
+  //   document.getElementById("couponPolicyId").value = policyId;
+  //
+  //   // 쿠폰 이름과 설명 입력 폼을 표시
+  //   document.getElementById("couponForm").style.display = "block";
+  //
+  //   // 쿠폰 정책 모달 닫기
+  //   document.getElementById("couponModal").style.display = "none";
+  //
+  //   // 선택된 정책의 조건을 표시하거나 다른 작업을 추가할 수 있습니다.
+  //   alert(`선택된 쿠폰 정책: ${condition} (ID: ${policyId})`);
+  // }
+  //
+  // // 모달 열기
+  // document.getElementById("couponPolicyBtn").addEventListener("click", function() {
+  //   document.getElementById("couponModal").style.display = "flex";
+  // });
+  //
+  // // 모달 닫기
+  // document.getElementById("closeModalBtn").addEventListener("click", function() {
+  //   document.getElementById("couponModal").style.display = "none";
+  // });
+  //
+  // window.addEventListener("click", function(event) {
+  //   if (event.target === document.getElementById("couponModal")) {
+  //     document.getElementById("couponModal").style.display = "none";
+  //   }
+  // });
 
   document.getElementById("coupon-form").addEventListener("submit", function(event) {
     event.preventDefault();

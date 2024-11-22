@@ -1,4 +1,4 @@
-package shop.s5g.front.controller;
+package shop.s5g.front.controller.admin;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
