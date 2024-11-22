@@ -202,7 +202,7 @@
     if (isloggedIn){
       fetch("/cart",{
         method:'POST',
-        headers: {'Content-Type':'application/json'},
+        headers: {'Content-Type':'application/json', [_csrf_header]: _csrf },
         body: JSON.stringify({
           bookId: [[${book.bookId}]],
           quantity: parseInt(bookQuantity.value,10)
