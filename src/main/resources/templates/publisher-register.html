@@ -70,7 +70,7 @@
 </head>
 <body layout:fragment="content">
 
-<form method="post" action="/admin/publisher/register">
+<form method="post" th:action="@{/admin/publisher/register}">
     <h1>출판사 등록</h1>
     <input type="text" name="name" placeholder="출판사 이름을 입력하세요" required>
 

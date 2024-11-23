@@ -21,7 +21,6 @@ public class CouponServiceImpl implements CouponService {
 
     private final CouponAdapter couponAdapter;
 
-    //TODO (young ho) - 나중에 에러처리 수정예정
     @Override
     public MessageDto createCoupon(CouponRegisterRequestDto couponRegisterRequestDto) {
         try {
@@ -47,8 +46,23 @@ public class CouponServiceImpl implements CouponService {
         return null;
     }
 
+    /**
+     * 쿠폰 조회하기
+     * @param pageable
+     * @return Page<CouponResponseDto>
+     */
     @Override
     public Page<CouponResponseDto> getAllCoupons(Pageable pageable) {
-        return null;
+
+        try {
+            ResponseEntity<Page<CouponResponseDto>> response = couponAdapter.getAllCoupons(pageable);
+
+            if (response.getStatusCode().is2xxSuccessful()) {
+                return response.getBody();
+            }
+            throw new RuntimeException("쿠폰 조회에 실패했습니다.");
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 }

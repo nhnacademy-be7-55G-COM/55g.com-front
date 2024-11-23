@@ -1,4 +1,4 @@
-package shop.s5g.front.controller;
+package shop.s5g.front.controller.admin;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -105,7 +105,7 @@ public class AdminController {
 
         couponTemplateService.updateCouponTemplate(couponTemplateUpdateRequestDto.couponTemplateId(), couponTemplateUpdateRequestDto);
 
-        return "redirect:/templates/list";
+        return "redirect:/admin/templates/list";
     }
 
     /**
@@ -118,7 +118,7 @@ public class AdminController {
 
         couponTemplateService.deleteCouponTemplate(templateId);
 
-        return "redirect:/templates/list";
+        return "redirect:/admin/templates/list";
     }
 
     /**
@@ -161,7 +161,7 @@ public class AdminController {
      * @param page
      * @return ModelAndView
      */
-    @GetMapping("/templates/list")
+    @GetMapping("/admin/templates/list")
     public ModelAndView getAdminCouponTemplatePage(@RequestParam(defaultValue = "0") int page) {
 
         Pageable pageable = PageRequest.of(page, 15);
@@ -222,7 +222,7 @@ public class AdminController {
      * @param page
      * @return ModelAndView
      */
-    @GetMapping("/books/list")
+    @GetMapping("/admin/books/list")
     public ModelAndView getBookList(
         @RequestParam(defaultValue = "0") int page) {
 
@@ -243,7 +243,7 @@ public class AdminController {
      * @param page
      * @return ModelAndView
      */
-    @GetMapping("/category/list")
+    @GetMapping("/admin/category/list")
     public ModelAndView getAllCategories(
         @RequestParam(defaultValue = "0") int page) {
 
@@ -287,7 +287,7 @@ public class AdminController {
     @GetMapping("/admin/categories/coupons")
     public ModelAndView getCategoriesCoupons(@RequestParam(defaultValue = "0") int page) {
 
-        ModelAndView mv = new ModelAndView("admin/coupon-category-inquiry");
+        ModelAndView mv = new ModelAndView("/admin/coupon-category-inquiry");
 
         Pageable pageable = PageRequest.of(page, 15);
 
@@ -352,7 +352,7 @@ public class AdminController {
     @PostMapping("/admin/coupons/template/create")
     public String adminCouponTemplateCreate(@ModelAttribute CouponTemplateRegisterRequestDto couponTemplateRegisterRequestDto) {
         couponTemplateService.createCouponTemplate(couponTemplateRegisterRequestDto);
-        return "redirect:/templates/list";
+        return "redirect:/admin/templates/list";
     }
 
     /**

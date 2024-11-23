@@ -9,7 +9,6 @@
   <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css">
   <link rel="stylesheet" href="/static/style-mypage.css">
-  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script
     src="https://code.jquery.com/jquery-3.7.1.min.js"
     integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
@@ -24,6 +23,9 @@
     .button-cancel {
       margin: 0;
       height: 2.3rem;
+    }
+    .card-body p {
+      margin-bottom: 10px;
     }
     .btn-payco {
       display: inline-block;
@@ -830,6 +832,24 @@
     const phoneInput = document.getElementById("newPhoneNumber");
     phoneInput.value = phoneInput.value.replace(/-/g, ''); // 하이픈 제거
   }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // 모든 collapse 요소를 선택합니다.
+    const collapsibleElements = document.querySelectorAll('.collapse');
+
+    // 각 collapse 요소에 이벤트 리스너를 추가합니다.
+    collapsibleElements.forEach(element => {
+      // 펼쳐질 때 이벤트
+      element.addEventListener('show.bs.collapse', () => {
+        console.log('show');
+      });
+
+      // 접힐 때 이벤트
+      element.addEventListener('hide.bs.collapse', () => {
+        console.log('close');
+      });
+    });
+  });
 </script>
 <script src="/static/js/jquery-1.11.0.min.js"></script>
 <script src="/static/js/plugins.js"></script>

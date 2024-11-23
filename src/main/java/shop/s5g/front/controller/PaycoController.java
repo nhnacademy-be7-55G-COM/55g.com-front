@@ -62,7 +62,7 @@ public class PaycoController {
     public String link(@RequestParam(name = "code") String code, RedirectAttributes redirectAttributes) {
         paycoService.linkAccount(code);
         redirectAttributes.addFlashAttribute("success", "연동에 성공했습니다");
-        return "redirect:/mypage";
+        return "redirect:/mypage#personalInfo";
     }
 
     @ExceptionHandler(NeedLinkAccountException.class)
@@ -75,6 +75,6 @@ public class PaycoController {
     @ExceptionHandler(AlreadyLinkAccountException.class)
     public String handleAlreadyLinkAccountException(AlreadyLinkAccountException e, RedirectAttributes redirectAttributes) {
         redirectAttributes.addFlashAttribute("error", e.getMessage());
-        return "redirect:/mypage";
+        return "redirect:/mypage#personalInfo";
     }
 }
