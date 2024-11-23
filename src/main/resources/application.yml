@@ -18,6 +18,11 @@ spring:
     username: username
     password: password
 
+  servlet:
+    multipart:
+      max-file-size: 2MB
+      max-request-size: 10MB
+
 image:
   appkey: appkey
   secretKey: secretKey
