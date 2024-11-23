@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="https://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}"
+>
+<head>
+  <meta charset="UTF-8">
+  <title>Access Denied</title>
+  <style>
+    body {
+      background-color: var(--light-color);
+      font-family: 'Pretendard', sans-serif;
+      color: var(--body-text-color);
+    }
+
+    #outerContainer {
+      padding-top: 120px;
+    }
+
+    #messageForm {
+      max-width: 600px;
+      border: 2px solid #ddd;
+      padding: 40px;
+      border-radius: 8px;
+      background-color: white;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    h3.display-4 {
+      color: var(--dark-color);
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    p {
+      font-size: 1.1rem;
+      color: var(--dark-color);
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    button {
+      display: block;
+      width: 100%;
+      background-color: var(--accent-color);
+      color: white;
+      padding: 12px;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      text-align: center;
+    }
+
+    button:hover {
+      background-color: var(--dark-color);
+    }
+
+    /* Media Queries for Responsive Design */
+    @media (max-width: 768px) {
+      #messageForm {
+        padding: 30px;
+      }
+
+      h3.display-4 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body layout:fragment="content">
+<div id="outerContainer" class="container d-flex justify-content-center">
+  <div id="messageForm">
+    <h3 class="display-4" >액세스 거부됨</h3>
+    <p>세션 시간이 초과되거나 허용되지 않은 접근이므로 액세스가 거부되었습니다.</p>
+    <button onclick="backToPage()">돌아가기</button>
+    <script>
+      const backToPage = () => {
+        window.location.href = '/';
+      }
+    </script>
+  </div>
+</div>
+</body>
+</html>
