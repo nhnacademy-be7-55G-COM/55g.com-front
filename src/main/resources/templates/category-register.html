@@ -1,66 +1,77 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}">
 <head>
+    <th:block th:replace="~{fragments/head :: headTemplate}"></th:block>
     <meta charset="utf-8">
     <title>카테고리 등록</title>
     <style>
-        /*!* 기본 스타일 *!*/
         body {
-            font-family: Arial, sans-serif;
             justify-content: center;
             align-items: center;
-            height: 100vh;
             margin: 0;
-            padding: 20px;
+            font-family: Arial, sans-serif;
         }
 
-        /*!* 폼 컨테이너 *!*/
         form {
-            background-color: #ffffff;
-            border-radius: 8px;
-            padding: 25px 30px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ddd; /* 테두리 */
+            border-radius: 8px; /* 테두리 둥글게 */
             width: 100%;
-            max-width: 400px;
+            max-width: 400px; /* 최대 너비 */
+            background-color: #fff; /* 배경색 */
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 약간의 그림자 */
         }
 
         h1 {
-            font-size: 1.8rem;
-            color: #333;
-            text-align: center;
             margin-bottom: 20px;
-        }
-
-        label {
-            font-size: 0.9rem;
-            font-weight: bold;
-            margin-bottom: 5px;
             color: #333;
         }
 
-        input[type="text"],
-        select {
-            width: 100%;
+        label, input, select {
+            display: block;
+            margin: 10px auto;
+        }
+
+        input, select {
             padding: 10px;
-            margin-top: 5px;
-            margin-bottom: 15px;
+            width: 100%;
+            max-width: 300px;
             border: 1px solid #ddd;
             border-radius: 4px;
-            font-size: 1rem;
         }
 
-        input[type="checkbox"] {
-            margin-right: 8px;
-            transform: scale(1.2);
+        .button-container {
+            display: flex;
+            justify-content: center; /* 가로 정렬 */
+            gap: 10px; /* 버튼 간격 */
+            margin-top: 20px; /* 버튼 위 여백 */
         }
 
+        button {
+            background-color: #D7BFA6;
+            color: #fff;
+            cursor: pointer;
+            font-weight: bold;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+        }
+
+        button:hover {
+            background-color: #CBB299;
+        }
+
+        a button {
+            text-decoration: none;
+        }
     </style>
-
-
 </head>
-<body>
+<body layout:fragment="content">
 
-<form action="/category/register" method="post">
+<form action="/admin/category/register" method="post">
     <h1>카테고리 등록</h1>
 
     <!-- 카테고리 이름 입력 -->
@@ -69,31 +80,36 @@
 
     <!-- 상위 카테고리 선택 -->
     <label for="parentCategoryId">상위 카테고리</label>
-    <select id="parentCategoryId" name="parentCategoryId" onchange="handleCatgorySelection(this)">
-        <option th:value="0" disabled selected>없음 (루트 카테고리)</option>
+    <select id="parentCategoryId" onchange="handleCategorySelection(this)">
+        <option value="0" selected>없음 (루트 카테고리)</option>
         <option th:each="parentCategory : ${parentCategories}"
                 th:value="${parentCategory.categoryId}"
                 th:text="${parentCategory.categoryName}">
         </option>
     </select>
 
-    <div id="selectContainer"></div>
+    <!-- Hidden input to handle null -->
+    <input type="hidden" id="hiddenParentCategoryId" name="parentCategoryId" value="">
 
-    <!-- 등록 버튼 -->
-    <button type="submit">카테고리 등록</button>
-<!--    <button>카테고리 등록</button>-->
+    <!-- 버튼 컨테이너 -->
+    <div class="button-container">
+        <button type="submit">카테고리 등록</button>
+        <a th:href="@{/admin}">
+            <button type="button">관리자 페이지로 이동</button>
+        </a>
+    </div>
 </form>
 
 <script>
+    function handleCategorySelection(selectElement) {
+        const hiddenInput = document.getElementById('hiddenParentCategoryId');
 
-    function handleCatgorySelection(selectElement) {
-        if (selectElement.value == "0") {
-            selectElement.value = NULL;
+        if (selectElement.value === "0") {
+            hiddenInput.value = ""; // 없음 선택 시 null로 처리 (빈 값 전송)
         } else {
-            selectElement.name = "parentCategoryId";
+            hiddenInput.value = selectElement.value; // 선택된 categoryId 설정
         }
     }
-
 </script>
 </body>
 </html>
