@@ -5,7 +5,7 @@
     <title>작가 등록</title>
 </head>
 <body>
-<form method="post" action="/admin/author/register">
+<form method="post" th:action="@{/admin/author/register}">
     <input type="text" name="name" placeholder="작가 이름을 입력하세요" required>
     <button type="submit">등록하기</button>
 </form>

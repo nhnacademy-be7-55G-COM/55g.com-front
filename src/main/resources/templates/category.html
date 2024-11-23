@@ -17,14 +17,12 @@
         /* 테이블 스타일 */
         table {
             border-collapse: collapse;
-            width: 80%;
+            width: 60%; /* 폭을 기존보다 줄임 */
             margin: 20px auto;
-            background-color: #fff;
-            border: 1px solid #ddd;
         }
 
         th, td {
-            padding: 10px;
+            padding: 5px 8px; /* 셀의 상하 패딩을 줄임 */
             text-align: center;
             vertical-align: middle; /* 수직 정렬을 중앙으로 */
             border: 1px solid #ddd;
@@ -34,10 +32,14 @@
             background-color: #f4f4f4;
         }
 
+        tr {
+            height: 25px; /* 행의 높이를 설정하여 테이블 높이를 줄임 */
+        }
+
         /* 버튼 스타일 */
         button {
-            padding: 8px 12px;
-            font-size: 1rem;
+            padding: 6px 10px; /* 버튼 크기 조정 */
+            font-size: 0.9rem; /* 글자 크기 줄임 */
             font-weight: bold;
             background-color: #D7BFA6;
             color: #fff;

@@ -10,16 +10,16 @@
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
-            background-color: #f9f9f9;
-            color: #333;
+            /*background-color: #f9f9f9;*/
+            /*color: #333;*/
         }
 
         table {
             border-collapse: collapse;
             width: 80%;
             margin: 20px auto;
-            background-color: #fff;
-            border: 1px solid #ddd;
+            /*background-color: #fff;*/
+            /*border: 1px solid #ddd;*/
         }
 
         th, td {
@@ -120,11 +120,11 @@
             fetch(`/admin/tag/delete/${tagId}`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json ', [_csrf_header]: _csrf
                 }
             })
                 .then(response => {
-                    if (response.status === 200) {
+                    if (response.ok) {
                         alert('태그가 삭제되었습니다.');
                         location.reload(); // 페이지 새로고침
                     } else {

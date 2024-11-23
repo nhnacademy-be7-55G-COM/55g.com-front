@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}">>
 <head>
     <meta charset="UTF-8">
     <th:block th:replace="~{fragments/head :: headTemplate}"></th:block>
@@ -37,28 +38,33 @@
             font-size: 14px;
         }
 
+        .button-container {
+            text-align: center; /* 버튼을 중앙 정렬 */
+        }
+
         button {
-            display: inline-block;
             padding: 10px 20px;
             border: none;
             border-radius: 4px;
             font-size: 14px;
             cursor: pointer;
+            background-color: #D7BFA6;
+            color: white; /* 버튼 글자색 */
         }
 
         button:hover {
-            background-color: #f2f2f2;
+            background-color: #CBB299; /* 버튼 호버 시 배경색 */
         }
     </style>
 </head>
-<body>
-<div th:replace="~{fragments/header}"></div>
+<body layout:fragment="content">
 <form th:action="@{/admin/publisher/update/{id} (id = ${modifyPublisher.id})}" method="post">
     <input type="hidden" name="_method" value="PUT">
     <label for="name">출판사 제목 수정</label>
     <input type="text" id="name" name="name" th:value="${modifyPublisher.name}">
-    <button type="submit">수정</button>
+    <div class="button-container">
+        <button type="submit">수정</button>
+    </div>
 </form>
-<div th:replace="~{fragments/footer}"></div>
 </body>
 </html>

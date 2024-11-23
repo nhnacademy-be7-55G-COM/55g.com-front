@@ -71,7 +71,7 @@
 </head>
 <body layout:fragment="content">
 
-<form method="post" action="/admin/tag/register">
+<form method="post" th:action="@{/admin/tag/register}">
     <h1>태그 등록</h1>
     <input type="text" name="tagName" placeholder="태그 이름을 입력하세요" required>
 
