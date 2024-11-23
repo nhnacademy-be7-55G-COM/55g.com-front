@@ -1,11 +1,11 @@
 package shop.s5g.front.controller.order;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import shop.s5g.front.annotation.SessionRequired;
 import shop.s5g.front.domain.purchase.PurchaseSheet;
 import shop.s5g.front.dto.CustomerInfoDto;
 import shop.s5g.front.dto.member.MemberInfoResponseDto;
@@ -23,6 +22,7 @@ import shop.s5g.front.dto.order.OrderCreateResponseDto;
 import shop.s5g.front.dto.order.PurchaseRequestDto;
 import shop.s5g.front.dto.order.WrapModifyRequestDo;
 import shop.s5g.front.dto.point.PointUseDto;
+import shop.s5g.front.exception.BadRequestException;
 import shop.s5g.front.service.order.OrderService;
 import shop.s5g.front.utils.PaymentUtils;
 
@@ -31,7 +31,7 @@ import shop.s5g.front.utils.PaymentUtils;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/payment/support")
-public class PaymentSupportController {
+public class PaymentSupportController {     // TODO: 전체적으로 Validation 과정 넣기.
     private final String tossPaymentsClientKey;
     private final OrderService orderService;
     private final PurchaseSheet purchaseSheet;
@@ -48,8 +48,7 @@ public class PaymentSupportController {
      */
 
     @GetMapping("/generate-order")
-    @SessionRequired
-    public String generateOrderId(/* User Auth */HttpServletRequest request, @RequestParam long orderId) {
+    public String generateOrderId(@RequestParam long orderId) {
         String value = purchaseSheet.getRandomOrderId();
         purchaseSheet.setOrderId(orderId);
 
@@ -82,8 +81,13 @@ public class PaymentSupportController {
     }
 
     @PostMapping("/create-order")
-    @SessionRequired
-    public ResponseEntity<OrderCreateResponseDto> createNewOrder(HttpServletRequest request, @RequestBody PurchaseRequestDto purchase) {
+    public ResponseEntity<OrderCreateResponseDto> createNewOrder(
+        @Valid @RequestBody PurchaseRequestDto purchase,
+        BindingResult errors
+    ) {
+        if (errors.hasErrors()) {
+            throw new BadRequestException("주문 형식이 잘못되었습니다.");
+        }
         purchaseSheet.generateOrder();
         OrderCreateRequestDto order = purchaseSheet.createOrderRequest(purchase.delivery());
 
@@ -100,17 +104,13 @@ public class PaymentSupportController {
     }
 
     @DeleteMapping("/order")
-    @SessionRequired
-    public ResponseEntity<HttpStatus> deleteOrder(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
+    public ResponseEntity<HttpStatus> deleteOrder() {
         // 주문 세션에서 주문 ID를 가져와서 삭제 요청을 날림.
         orderService.deleteOrder(purchaseSheet.getOrderId());
-//        session.invalidate();
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @PutMapping("/point")
-    @SessionRequired
     public ResponseEntity<HttpStatus> updateUsingPoint(@RequestBody PointUseDto use) {
         try {
             purchaseSheet.updateUsingPoint(use.point());
