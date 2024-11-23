@@ -102,10 +102,11 @@ const refundDetail = (id) => {
   return axios.post(`/mypage/support/orders/refund`, multipart, headers)
     .then(response => {
       alert("반품이 신청되었습니다. 반품한 책에 결제한 만큼 포인트로 환불됩니다.");
+      window.location.reload();
     })
     .catch(err => {
       console.log(err);
-      alert("반품에 실패했습니다. 다시 시도해 주세요.");
+      alert(`반품에 실패했습니다: ${err.response.data.message}`);
     });
 }
 const applyOrderDetailTemplate = (tr) => {
@@ -124,6 +125,12 @@ const applyOrderDetailTemplate = (tr) => {
           dangerButton = `<button onclick="cancelDetail(${detail.orderDetailId})" class="btn btn-outline-danger button-cancel">주문취소</button>`;
         else
           dangerButton = `<button onclick="extendRefundDiv(this, ${detail.orderDetailId})" class="btn btn-outline-danger button-cancel">반품하기</button>`;
+      } else if (detail.orderDetailType === 'CONFIRMED') {
+        dangerButton = `<p style="margin:0">주문확정</p>`
+      } else if (detail.orderDetailType === 'RETURN') {
+        dangerButton = `<p style="margin: 0">반품신청완료</p>`
+      } else if (detail.orderDetailType === 'CANCEL') {
+        dangerButton = `<p style="margin: 0">취소완료</p>`
       }
       tbody.innerHTML += `
         <tr data-order-id="${detail.orderDetailId}">

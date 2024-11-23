@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 import shop.s5g.front.exception.AlertRedirectException;
+import shop.s5g.front.exception.order.SessionDoesNotAvailableException;
 
 @ControllerAdvice
 public class ControllerExceptionResolver {
@@ -15,5 +16,12 @@ public class ControllerExceptionResolver {
         mv.addObject("title", e.getTitle());
         mv.addObject("message", ExceptionUtils.getRootCauseMessage(e));
         return mv;
+    }
+
+    @ExceptionHandler(SessionDoesNotAvailableException.class)
+    public ModelAndView sessionExpired(SessionDoesNotAvailableException e) {
+        return redirectToAlert(
+            new AlertRedirectException("세션이 만료되었습니다.", "/", e)
+        );
     }
 }

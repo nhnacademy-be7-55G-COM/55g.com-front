@@ -9,6 +9,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import shop.s5g.front.adapter.refund.RefundAdapter;
+import shop.s5g.front.config.ComponentBuilderConfig;
 import shop.s5g.front.dto.publisher.RefundCreateRequestDto;
 import shop.s5g.front.dto.refund.OrderDetailRefundRequestDto;
 import shop.s5g.front.dto.refund.RefundHistoryCreateResponseDto;
@@ -35,7 +36,7 @@ public class RefundServiceImpl implements RefundService {
                     String extension = FilenameUtils.getExtension(image.getOriginalFilename());
 
                     String digestName = String.format("%s.%s", filename, extension);
-                    imageService.uploadImage(digestName, imageByte);
+                    imageService.uploadImage(generateFilePath(digestName), imageByte);
                     imagePathList.add(digestName);
                 }
             }
@@ -46,6 +47,11 @@ public class RefundServiceImpl implements RefundService {
         }catch (IOException e) {
             throw new ApplicationException("이미지 업로드 도중 문제가 발생했습니다.");
         }
+    }
+
+    private String generateFilePath(String digestName) {
+        // /55gshop/refundImage/[digestName]
+        return ComponentBuilderConfig.IMAGE_LOCATION_PATH + "refundImage/" + digestName;
     }
 
 }
