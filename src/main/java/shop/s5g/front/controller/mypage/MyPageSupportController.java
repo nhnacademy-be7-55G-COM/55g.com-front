@@ -1,4 +1,4 @@
-package shop.s5g.front.controller;
+package shop.s5g.front.controller.mypage;
 
 import jakarta.validation.Valid;
 import java.util.List;
