@@ -15,11 +15,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import shop.s5g.front.annotation.RedirectWithAlert;
-import shop.s5g.front.annotation.SessionRequired;
 import shop.s5g.front.domain.purchase.PurchaseSheet;
 import shop.s5g.front.dto.order.OrderRabbitResponseDto;
 import shop.s5g.front.dto.payment.TossPaymentInfo;
-import shop.s5g.front.exception.order.OrderSessionNotAvailableException;
+import shop.s5g.front.exception.order.SessionDoesNotAvailableException;
 import shop.s5g.front.service.order.OrderService;
 import shop.s5g.front.service.payments.PaymentsService;
 
@@ -43,8 +42,7 @@ public class PaymentController {
     //  쿠폰사용여부, 장바구니 등을 세션에서 관리하고, javascript의 비동기 전달값과 비교하여 검증.
 
     @GetMapping("/success")
-    @SessionRequired
-    @RedirectWithAlert(exceptions = OrderSessionNotAvailableException.class, title = "주문 오류", redirect = "/purchase")
+    @RedirectWithAlert(exceptions = SessionDoesNotAvailableException.class, title = "주문 오류", redirect = "/purchase")
     public String requestSuccess(
         @RequestParam long amount,
         @RequestParam String orderId,
