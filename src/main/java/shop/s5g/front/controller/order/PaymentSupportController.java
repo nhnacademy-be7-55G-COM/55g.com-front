@@ -88,7 +88,6 @@ public class PaymentSupportController {     // TODO: 전체적으로 Validation 
         if (errors.hasErrors()) {
             throw new BadRequestException("주문 형식이 잘못되었습니다.");
         }
-        purchaseSheet.generateOrder();
         OrderCreateRequestDto order = purchaseSheet.createOrderRequest(purchase.delivery());
 
 //        // TODO: 세션에서 쿠폰 사용 여부, 합계 및 netPrice 가져오기.

@@ -56,7 +56,6 @@ public class PurchaseSheet implements Serializable {    // 주문서 빈!
     private PointPolicyView policy;                 // 기본 포인트 정책
     @Getter
     private MemberInfoResponseDto memberInfo;       // 주문서를 작성하는 회원 정보
-    // TODO: 아직 배송비가 포함되지 않음.
     private LinkedList<DeliveryFeeResponseDto> fee;       // 배송비 리스트
 
     @Getter @Setter(AccessLevel.PRIVATE)
@@ -166,11 +165,6 @@ public class PurchaseSheet implements Serializable {    // 주문서 빈!
         mv.addObject("accRate", accRateSum);
         mv.addObject("wrappingPaperList", wraps.stream().map(wrappingPaperService::convertToView).toList());
         cartList.forEach(cart -> orderInfo.purchaseMap.put(cart.id(), new PurchaseCell(cart)));
-    }
-
-    public String generateOrder() { // 이전 버전에서 order 넘버를 생성하던 메소드.
-//        orderInfo = new OrderInformation(randomStringProvider);
-        return orderInfo.randomOrderId;
     }
 
     // TODO: 위 메소드와 동일함. 리팩토링 해야함.
