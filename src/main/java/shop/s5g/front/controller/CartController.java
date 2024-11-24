@@ -25,6 +25,7 @@ import shop.s5g.front.dto.cart.request.CartRemoveBookRequestDto;
 import shop.s5g.front.dto.cart.request.CartUpdateQuantityRequestDto;
 import shop.s5g.front.exception.cart.CartConvertException;
 import shop.s5g.front.exception.cart.CartDetailPageException;
+import shop.s5g.front.exception.cart.CartPurchaseException;
 import shop.s5g.front.exception.cart.CartPutException;
 import shop.s5g.front.service.cart.CartService;
 
@@ -63,7 +64,7 @@ public class CartController {
         }
 
     }
-    //TODO 도서 상세페이지에 스크립트 작성할 때 예외 메시지를 정하는 걸로
+
     @PostMapping("/cart")
     public ResponseEntity<Map<String,Integer>> putBook(
         @RequestBody @Validated CartPutRequestDto cartPutRequestDto, BindingResult bindingResult) {
@@ -169,7 +170,7 @@ public class CartController {
 
             return ResponseEntity.status(HttpStatus.OK).build();
 
-        } catch (Exception e) {
+        } catch (CartDetailPageException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
@@ -182,7 +183,7 @@ public class CartController {
 
             return ResponseEntity.status(HttpStatus.OK).build();
 
-        }catch (Exception e){
+        }catch (CartPurchaseException e){
 
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 
