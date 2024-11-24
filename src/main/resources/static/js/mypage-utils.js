@@ -152,7 +152,7 @@ const applyOrderDetailTemplate = (tr) => {
           <td colspan="6">
             <div>
               <div class="d-flex flex-row mb-1">
-                <p class="flex-grow-1 me-auto" style="margin-bottom: 0; font-size=18px">환불: ${titleSummary}</p>
+                <p class="flex-grow-1 me-auto" style="margin-bottom: 0; font-size: 18px">환불: ${titleSummary}</p>
                 <select class="ms-3" name="refundType" class="form-select">
                   <option value="1" selected>단순변심</option>
                   <option value="2">오배송</option>
@@ -192,44 +192,44 @@ const applyOrderDetailTemplate = (tr) => {
   });
 };
 
-const callOrderHistoryPage = async (tableSelector, {startDate, endDate}) => {
-  const table = document.querySelector(tableSelector);
-  const orders = (await axios.get('/mypage/support/orders',
-      {params: {startDate: startDate, endDate: endDate}}
-  )).data;
-
-  const tbody = table.querySelector('tbody');
-  tbody.innerHTML = '';
-  orders.forEach(order => {
-    const tr = document.createElement('tr');
-    tr.setAttribute('data-order-id', order.orderId);
-
-    const orderId = document.createElement('td');
-    orderId.innerHTML = order.orderId;
-
-    const totalPrice = document.createElement('td');
-    totalPrice.innerHTML = order.totalPrice;
-
-    const representTitle = document.createElement('td');
-    representTitle.innerHTML = order.representTitle;
-
-    const orderedAt = document.createElement('td');
-    orderedAt.innerHTML = order.orderedAt;
-
-    const quantity = order.totalQuantity;
-    const kind = order.totalKind;
-
-    if (kind > 1) {
-      representTitle.innerHTML = `<p>${representTitle.innerHTML} 등</p><p>${kind} 종류 ${quantity} 권</p>`;
-    } else if (quantity > 1) {
-      representTitle.innerHTML = `${representTitle.innerHTML} ${quantity}권`;
-    }
-
-    tr.append(orderId, representTitle, totalPrice, orderedAt);
-    applyOrderDetailTemplate(tr);
-    tbody.appendChild(tr);
-  });
-}
+// const callOrderHistoryPage = async (tableSelector, {startDate, endDate}) => {
+//   const table = document.querySelector(tableSelector);
+//   const orders = (await axios.get('/mypage/support/orders',
+//       {params: {startDate: startDate, endDate: endDate}}
+//   )).data;
+//
+//   const tbody = table.querySelector('tbody');
+//   tbody.innerHTML = '';
+//   orders.forEach(order => {
+//     const tr = document.createElement('tr');
+//     tr.setAttribute('data-order-id', order.orderId);
+//
+//     const orderId = document.createElement('td');
+//     orderId.innerHTML = order.orderId;
+//
+//     const totalPrice = document.createElement('td');
+//     totalPrice.innerHTML = order.totalPrice;
+//
+//     const representTitle = document.createElement('td');
+//     representTitle.innerHTML = order.representTitle;
+//
+//     const orderedAt = document.createElement('td');
+//     orderedAt.innerHTML = order.orderedAt;
+//
+//     const quantity = order.totalQuantity;
+//     const kind = order.totalKind;
+//
+//     if (kind > 1) {
+//       representTitle.innerHTML = `<p>${representTitle.innerHTML} 등</p><p>${kind} 종류 ${quantity} 권</p>`;
+//     } else if (quantity > 1) {
+//       representTitle.innerHTML = `${representTitle.innerHTML} ${quantity}권`;
+//     }
+//
+//     tr.append(orderId, representTitle, totalPrice, orderedAt);
+//     applyOrderDetailTemplate(tr);
+//     tbody.appendChild(tr);
+//   });
+// }
 
 // TODO: 환불정보는 나중에...
 const orderDetailModalTemplate = `

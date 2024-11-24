@@ -69,7 +69,8 @@ public class MyPageController {
         model.addAttribute("member", responseDto);
         model.addAttribute("addresses", addresses);
 
-        return "mypage";
+//        return "mypage";
+        return "layout/mypage";
     }
 
     @PostMapping("/mypage/changeInfo")
