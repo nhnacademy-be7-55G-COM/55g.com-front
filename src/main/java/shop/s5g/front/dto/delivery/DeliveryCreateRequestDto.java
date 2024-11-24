@@ -1,6 +1,6 @@
 package shop.s5g.front.dto.delivery;
 
-import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -18,8 +18,9 @@ public record DeliveryCreateRequestDto(
     String address,
     @Min(1)
     long deliveryFeeId,
-    @FutureOrPresent
+    @Future
     LocalDate receivedDate,
+    @Size(min=1)
     @NotNull
     String receiverName
 ) implements Serializable {

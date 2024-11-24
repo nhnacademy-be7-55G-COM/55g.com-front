@@ -1,111 +1,125 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}">
 <head>
+    <th:block th:replace="~{fragments/head :: headTemplate}"></th:block>
     <meta charset="UTF-8">
     <title>출판사 목록</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: var(--light-color);
-            color: #333;
+        table {
+            border-collapse: collapse;
+            width: 80%;
+            margin: 20px auto;
         }
 
-        h1 {
-            text-align: center;
-            /*color: #4CAF50;*/
-        }
-
-        .publisher-list {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: var(--light-color);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-        }
-
-        .publisher-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        th, td {
+            border: 1px solid #ddd;
             padding: 10px;
-            border-bottom: 1px solid #eee;
+            text-align: center;
         }
 
-        .publisher-item:last-child {
-            border-bottom: none;
+        th {
+            background-color: #f4f4f4;
         }
 
-        .publisher-item div {
-            font-size: 18px;
+        i {
+            cursor: pointer;
+            font-size: 1.2rem;
         }
 
-        .publisher-item a {
-            text-decoration: none;
-            /*color: #4CAF50;*/
-            font-weight: bold;
-            margin-left: 10px;
+        i.edit-icon {
+            color: #4CAF50;
         }
 
-        .publisher-item a:hover {
-            text-decoration: underline;
+        i.edit-icon:hover {
+            color: #388E3C;
         }
 
-        .delete-button {
-            color: red;
+        i.delete-icon {
+            color: #F44336;
         }
 
-        .delete-button:hover {
-            color: darkred;
+        i.delete-icon:hover {
+            color: #D32F2F;
         }
 
         .pagination {
-            text-align: center;
+            display: flex; /* 플렉스 박스를 사용하여 정렬 */
+            justify-content: center; /* 중앙 배치 */
             margin-top: 20px;
+            gap: 5px; /* 버튼 사이의 간격 */
         }
 
         .pagination a, .pagination strong {
-            display: inline-block;
-            margin: 0 5px;
+            margin: 0;
             padding: 8px 12px;
             border: 1px solid #ccc;
             border-radius: 4px;
             text-decoration: none;
             color: #333;
-            font-weight: bold;
         }
 
         .pagination a:hover {
             background-color: #f0f0f0;
         }
 
-        .pagination strong {
-            /*background-color: #4CAF50;*/
-            /*color: white;*/
-            /*border-color: #4CAF50;*/
+        .admin-btn-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .admin-btn-container button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #D7BFA6;
+            color: white;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .admin-btn-container button:hover {
+            background-color: #CBB299;
         }
     </style>
 </head>
-<body>
-<div class="publisher-list" th:each="publisher : ${allPublisher}" th:if="${publisher.active}">
-    <div class="publisher-item">
-        <div th:text="${publisher.name}"></div>
-        <div>
-            <a th:href="@{/admin/publisher/modify/{id}(id = ${publisher.id})}">수정</a>
-            <a href="#" class="delete-button"
-               th:attr="onclick=|deletePublisher(${publisher.id})|">삭제</a>
-        </div>
-    </div>
-</div>
+<body layout:fragment="content">
 
-<a th:href="@{/admin}" class="btn">관리자 페이지로 이동</a>
+<h1 style="text-align: center;">출판사 목록</h1>
+
+<table>
+    <thead>
+    <tr>
+        <th>출판사 이름</th>
+        <th>수정</th>
+        <th>삭제</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="publisher : ${allPublisher}" th:if="${publisher.active}">
+        <td th:text="${publisher.name}"></td>
+        <td>
+            <i class="fas fa-edit edit-icon" th:onclick="|window.location.href='@{/admin/publisher/modify/{id}(id=${publisher.id})}'|"></i>
+        </td>
+        <td>
+            <i class="fas fa-trash delete-icon" th:attr="onclick=|deletePublisher(${publisher.id})|"></i>
+        </td>
+    </tr>
+    </tbody>
+</table>
 
 <div class="pagination">
     <th:block th:each="page : ${#numbers.sequence(startPage1, endPage1)}">
         <a th:if="${page != nowPage1}" th:href="@{/admin/publisher/list(page=${page - 1})}" th:text="${page}"></a>
         <strong th:if="${page == nowPage1}" th:text="${page}"></strong>
     </th:block>
+</div>
+
+<div class="admin-btn-container">
+    <a th:href="@{/admin}">
+        <button>관리자 페이지로 이동</button>
+    </a>
 </div>
 
 <script>
