@@ -109,8 +109,13 @@
         <p><strong>송장 번호:</strong><span id="detail-invoiceNumber" th:text="${delivery.invoiceNumber}"></span></p>
         <p><strong>받는 날:</strong><span id="detail-receivedDate" th:text="${delivery.receivedDate}"></span></p>
         <p><strong>출고 날:</strong><span id="detail-shippingDate" th:text="${delivery.shippingDate}"></span></p>
-        <p><strong>배송 상태:</strong><span id="detail-status" th:text="${delivery.status}"></span></p>
+        <p><strong>배송 상태:</strong><span id="detail-status"></span></p>
       </div>
+      <script th:inline="javascript">
+        const detailStatus = document.querySelector('#detail-status');
+        const status = [[${delivery.status}]];
+        detailStatus.textContent = deliveryMap[status];
+      </script>
     </div>
   </div>
 </div>
