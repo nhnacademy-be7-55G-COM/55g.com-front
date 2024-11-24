@@ -3,7 +3,7 @@ package shop.s5g.front.service.point.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import shop.s5g.front.adapter.PointAdapter;
+import shop.s5g.front.adapter.point.PointAdapter;
 import shop.s5g.front.dto.PageResponseDto;
 import shop.s5g.front.dto.point.PointHistoryResponseDto;
 import shop.s5g.front.service.point.PointHistoryService;
