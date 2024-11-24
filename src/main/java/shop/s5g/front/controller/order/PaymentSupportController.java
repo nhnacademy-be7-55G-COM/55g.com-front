@@ -57,11 +57,13 @@ public class PaymentSupportController {     // TODO: 전체적으로 Validation 
     }
 
     // TODO: 쿠폰 사용 업데이트
+    // TODO: 회원 전용. PreAuthorize
     @PutMapping("/coupon")
     public ResponseEntity<HttpStatus> updateCouponUsage() {
         return ResponseEntity.ok().build();
     }
 
+    // TODO: 비회원을 따로 분리하거나 공통으로 만들기. 분리하는게 나을듯?
     @GetMapping("/customer")
     public CustomerInfoDto sendCustomerInfo() {
         // TODO: Auth에서 사용자 정보를 가져오거나 api로 요청하여 가져오도록 함.
@@ -109,6 +111,7 @@ public class PaymentSupportController {     // TODO: 전체적으로 Validation 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    // TODO: 멤버전용, PreAuthorize
     @PutMapping("/point")
     public ResponseEntity<HttpStatus> updateUsingPoint(@RequestBody PointUseDto use) {
         try {
