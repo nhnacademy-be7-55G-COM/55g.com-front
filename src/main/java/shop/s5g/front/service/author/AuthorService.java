@@ -10,4 +10,10 @@ public interface AuthorService {
     MessageDto addAuthor(AuthorRequestDto authorRequestDto);
 
     PageResponseDto<AuthorResponseDto> getAllAuthor(Pageable pageable);
+
+    AuthorResponseDto getAuthorById(long authorId);
+
+    MessageDto updateAuthor(long authorId, AuthorRequestDto authorRequestDto);
+
+    MessageDto deleteAuthor(long authorId);
 }
