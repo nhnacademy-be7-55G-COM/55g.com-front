@@ -18,6 +18,50 @@
       crossorigin="anonymous"
   ></script>
   <style>
+    .spinner-border {
+      width: 5rem;
+      height: 5rem;
+    }
+    .button-cancel {
+      margin: 0;
+      height: 2.3rem;
+    }
+    .card-body p {
+      margin-bottom: 10px;
+    }
+    .btn-payco {
+      display: inline-block;
+      background-color: #ffffff;
+      color: #ff2233;
+      font-family: 'Pretendard', sans-serif; /* 깔끔한 폰트 */
+      font-size: 16px;
+      font-weight: bold;
+      text-align: center;
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 5px; /* 모서리를 둥글게 */
+      border: none;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 살짝 그림자 추가 */
+      transition: all 0.3s ease; /* 애니메이션 효과 */
+    }
+
+    .btn-payco:hover {
+      background-color: #ff2233;
+      box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* 그림자 강화 */
+      cursor: pointer;
+    }
+    td[colspan="6"] select {
+      width: 150px;
+      margin: 0;
+    }
+    .refund-image-button {
+      height: 2.5rem;
+      margin: 0;
+      padding: 0.2rem 0.78rem;
+    }
+    table p {
+      margin-bottom: 6px;
+    }
     div#mainContent {
       margin: auto;
       margin-bottom: 2rem;
@@ -40,15 +84,15 @@
         </a>
         <div class="collapse" id="memberInfo">
           <ul class="nav flex-column ms-3" style="margin-top: 0">
-            <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#personalInfo">개인
+            <li class="nav-item"><a class="nav-link"  href="#personalInfo">개인
               정보 관리</a></li>
-            <li class="nav-item"><a class="nav-link" data-bs-toggle="tab"
+            <li class="nav-item"><a class="nav-link"
                                     href="#deliveryAddress">배송 주소</a></li>
-            <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#coupons">쿠폰</a>
+            <li class="nav-item"><a class="nav-link"  href="#coupons">쿠폰</a>
             </li>
-            <li class="nav-item"><a class="nav-link" data-bs-toggle="tab"
+            <li class="nav-item"><a class="nav-link"
                                     href="#gradeInfo">등급</a></li>
-            <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#deleteAccount">회원
+            <li class="nav-item"><a class="nav-link"  href="#deleteAccount">회원
               탈퇴</a></li>
           </ul>
         </div>
@@ -64,7 +108,7 @@
         </a>
         <div class="collapse" id="shoppingHistory">
           <ul class="nav flex-column ms-3" style="margin-top: 0">
-            <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#orders">주문
+            <li class="nav-item"><a class="nav-link"  href="/mypage/order">주문
               내역</a></li>
           </ul>
         </div>
@@ -80,49 +124,13 @@
         </a>
         <div class="collapse" id="activityHistory">
           <ul class="nav flex-column ms-3" style="margin-top: 0">
-            <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#likes">좋아요</a>
+            <li class="nav-item"><a class="nav-link" href="#likes">좋아요</a>
             </li>
-            <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#reviews">리뷰
+            <li class="nav-item"><a class="nav-link" href="#reviews">리뷰
               내역</a></li>
-            <li class="nav-item"><a id="points-tab" class="nav-link" data-bs-toggle="tab" href="#points">포인트
+            <li class="nav-item"><a id="points-tab" class="nav-link" href="/mypage/point-history">포인트
               내역</a></li>
-            <li class="nav-item"><a id="" class="nav-link" data-bs-toggle="tab" href="#coupons">쿠폰 내역</a></li>
-            <script>
-              const pointButton = document.querySelector('a#points-tab');
-              const pointHistoryCaller = async (size, page) => {
-                const {totalPage, totalElements} = await callPointHistoryPage(
-                    '#pointHistoryTable', {size: size, page: page});
-                const pageButtonTemplate = `<li class="page-item"><button class="page-link"></button></li>`;
-                const pageButtonActiveTemplate = `<li class="page-item active"><button class="page-link"></button></li>`;
-                const pagination = document.querySelector('#point-pagination');
-                pagination.innerHTML = '';
-                console.log(`totalPage: ${totalPage}, totalElements: ${totalElements}`);
-                if (totalPage > 0) {
-                  for (let i = 0; i < totalPage; i++) {
-                    let pageButton = null;
-                    console.log(`i: ${i}, page: ${page}, page===i => ${page === i}`);
-                    console.log(`typeof(i): ${typeof (i)}, typeof(page): ${typeof (page)}`);
-                    if (page === i) { // isActive
-                      pageButton = `<li class="page-item active"><button class="page-link" data-index="${i}">${i
-                      + 1}</button></li>`;
-                    } else {
-                      pageButton = `<li class="page-item"><button class="page-link" data-index="${i}">${i
-                      + 1}</button></li>`;
-                    }
-                    pagination.innerHTML += pageButton;
-                  }
-                }
-                const buttons = pagination.querySelectorAll('li > button');
-                buttons.forEach(button => {
-                  const index = button.getAttribute('data-index');
-                  button.addEventListener('click', () => {
-                    console.log(`call page: ${index}`);
-                    pointHistoryCaller(defaultSize, parseInt(index));
-                  });
-                });
-              };
-              pointButton.addEventListener('click', () => pointHistoryCaller(defaultSize, 0));
-            </script>
+            <li class="nav-item"><a id="" class="nav-link" href="#coupons">쿠폰 내역</a></li>
           </ul>
         </div>
       </li>
