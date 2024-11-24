@@ -5,9 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import shop.s5g.front.dto.PageResponseDto;
 import shop.s5g.front.dto.author.AuthorRequestDto;
 import shop.s5g.front.dto.author.AuthorResponseDto;
@@ -45,5 +43,27 @@ public class AuthorController {
         model.addAttribute("authorStartPage", authorStartPage);
         model.addAttribute("authorEndPage", authorEndPage);
         return "author-list";
+    }
+
+    //작가 수정 페이지 이동
+    @GetMapping("/admin/author/modify/{authorId}")
+    public String authorModify(@PathVariable("authorId") long authorId, Model model) {
+        AuthorResponseDto author = authorService.getAuthorById(authorId);
+        model.addAttribute("modifyAuthor", author);
+        return "author-modify";
+    }
+
+    //출판사 수정
+    @PutMapping("/admin/author/update/{authorId}")
+    public String authorUpdate(@PathVariable("authorId") long authorId, @ModelAttribute AuthorRequestDto authorRequestDto) {
+        authorService.updateAuthor(authorId, authorRequestDto);
+        return "redirect:/admin/author/list";
+    }
+
+    //작가 삭제(비활성화)
+    @PostMapping("/admin/author/delete/{authorId}")
+    public String authorDelete(@PathVariable("authorId") long authorId) {
+        authorService.deleteAuthor(authorId);
+        return "redirect:/admin/author/list";
     }
 }

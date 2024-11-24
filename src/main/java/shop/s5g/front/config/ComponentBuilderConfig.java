@@ -24,4 +24,12 @@ public class ComponentBuilderConfig {
     ) {
         return builder.path("/wrappingpaper");
     }
+
+    @Bean("refundImageLocationBuilder")
+    @Scope("prototype")
+    public UriComponentsBuilder refundImageLocationBuilder(
+        @Qualifier("imageLocationBuilder") UriComponentsBuilder builder
+    ) {
+        return builder.path("/refundImages");
+    }
 }

@@ -1,4 +1,4 @@
-package shop.s5g.front.controller;
+package shop.s5g.front.controller.mypage;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -83,7 +83,8 @@ public class MyPageController {
         model.addAttribute("member", responseDto);
         model.addAttribute("addresses", addresses);
 
-        return "mypage";
+//        return "mypage";
+        return "layout/mypage";
     }
 
     @PostMapping("/mypage/changeInfo")

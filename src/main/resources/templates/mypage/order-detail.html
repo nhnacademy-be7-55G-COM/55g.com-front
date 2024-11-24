@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="https://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/mypage}"
+>
+<head>
+  <meta charset="UTF-8">
+  <title>주문 상세 내역</title>
+  <script src="/static/js/mypage-utils.js"></script>
+  <script th:inline="javascript">
+    const deliveryStatus = [[${delivery.status}]];
+  </script>
+  <style>
+    .order-title {
+      font-size: 1.4rem;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body layout:fragment="mypageContent">
+<div id="detail-body">
+  <div>
+    <div class="order-title">주문정보</div>
+    <table class="table" id="detail-table-books">
+      <thead>
+      <tr>
+        <th scope="col" style="width: 60%;">제목</th>
+        <th scope="col">권 수</th>
+        <th scope="col">가격</th>
+        <th scope="col">적립</th>
+        <th scope="col">포장지</th>
+        <th scope="col">주문취소</th>
+      </tr>
+      </thead>
+      <tbody>
+      <th:block th:each="detail: ${details}">
+        <tr th:id="|row-${detail.orderDetailId}|">
+          <td th:text="${detail.bookTitle}"></td>
+          <td th:text="${detail.quantity}"></td>
+          <td th:text="${detail.totalPrice}"></td>
+          <td th:text="${detail.accumulationPrice}"></td>
+          <td th:text="${detail.wrappingPaperName}"></td>
+          <td>
+
+          </td>
+          <script th:inline="javascript">
+            var dangerArea = document.querySelector('tr#row-[[${detail.orderDetailId}]] > td:nth-child(6)');
+            var detailId = [[${detail.orderDetailId}]];
+            var dangerButton = '';
+            switch([[${detail.orderDetailType}]]) {
+              case 'COMPLETE':
+                if (deliveryStatus === 'PREPARING')
+                  dangerButton = `<button onclick="cancelDetail(${detailId})" class="btn btn-outline-danger button-cancel">주문취소</button>`;
+                else
+                  dangerButton = `<button onclick="extendRefundDiv(this, ${detailId})" class="btn btn-outline-danger button-cancel">반품하기</button>`;
+                break;
+              case 'CONFIRMED':
+                dangerButton = `<p style="margin:0">주문확정</p>`; break;
+              case 'RETURN':
+                dangerButton = `<p style="margin: 0">반품신청완료</p>`; break;
+              case 'CANCEL':
+                dangerButton = `<p style="margin: 0">취소완료</p>`; break;
+              default:
+                throw '허용되지 않은 주문상태입니다.';
+            }
+            dangerArea.innerHTML = dangerButton;
+          </script>
+        </tr>
+        <tr th:id="|row-refund-${detail.orderDetailId}|" style="display: none">
+          <td colspan="6">
+            <div>
+              <div class="d-flex flex-row mb-1">
+                <p th:text="${#strings.length(detail.bookTitle) > 30 ? #strings.substring(detail.bookTitle, 0, 30)+'...' : detail.bookTitle}" class="flex-grow-1 me-auto" style="margin-bottom: 0; font-size: 18px"></p>
+                <select name="refundType" class="form-select">
+                  <option value="1" selected>단순변심</option>
+                  <option value="2">오배송</option>
+                  <option value="3">배송 지연</option>
+                  <option value="4">파손/파본</option>
+                  <option value="5">잘못 주문함</option>
+                  <option value="6">기타</option>
+                </select>
+              </div>
+              <textarea class="form-control-sm refund-reason-area w-100 mb-1" rows="3" placeholder="환불 사유 입력..." required></textarea>
+              <div class="image-container">
+                <div>
+                  <button type="button" class="refund-image-button btn btn-warning text-white" th:onclick="|extendImageInput('#row-refund-${detail.orderDetailId}')|" style="padding: 10px">이미지 추가</button>
+                  <button
+                      type="button" class="btn btn-danger refund-image-button ms-4"
+                      th:onclick="|refundDetail(${detail.orderDetailId})|"
+                  >반품신청</button>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </th:block>
+      </tbody>
+    </table>
+  </div>
+  <div class="card-container">
+    <div class="card">
+      <div class="card-header text-center text-black">
+        <div class="card-title">배송 정보</div>
+      </div>
+      <div class="card-body">
+        <p><strong>수신자:</strong><span id="detail-receiverName" th:text="${delivery.receiverName}"></span></p>
+        <p><strong>배송 주소:</strong><span id="detail-address" th:text="${delivery.address}"></span></p>
+        <p><strong>송장 번호:</strong><span id="detail-invoiceNumber" th:text="${delivery.invoiceNumber}"></span></p>
+        <p><strong>받는 날:</strong><span id="detail-receivedDate" th:text="${delivery.receivedDate}"></span></p>
+        <p><strong>출고 날:</strong><span id="detail-shippingDate" th:text="${delivery.shippingDate}"></span></p>
+        <p><strong>배송 상태:</strong><span id="detail-status" th:text="${delivery.status}"></span></p>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

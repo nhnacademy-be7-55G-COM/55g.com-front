@@ -12,9 +12,11 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http.authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll())
             .formLogin(AbstractHttpConfigurer::disable)
+            .logout(AbstractHttpConfigurer::disable)
+            .exceptionHandling(customizer -> customizer.accessDeniedPage("/error/access-denied" ))
         ;
+
         http.cors(AbstractHttpConfigurer::disable);
         return http.build();
     }
-
 }
