@@ -23,6 +23,7 @@ import shop.s5g.front.dto.MessageDto;
 import shop.s5g.front.dto.address.AddressRequestDto;
 import shop.s5g.front.dto.address.AddressResponseDto;
 import shop.s5g.front.dto.address.AddressUpdateRequestDto;
+import shop.s5g.front.dto.coupon.coupon.AvailableCouponResponseDto;
 import shop.s5g.front.dto.coupon.user.ValidUserCouponResponseDto;
 import shop.s5g.front.dto.member.MemberInfoResponseDto;
 import shop.s5g.front.dto.member.MemberUpdateRequestDto;
@@ -31,6 +32,7 @@ import shop.s5g.front.exception.auth.UnauthorizedException;
 import shop.s5g.front.service.address.AddressService;
 import shop.s5g.front.service.auth.AuthService;
 import shop.s5g.front.service.cart.CartService;
+import shop.s5g.front.service.coupon.coupon.CouponService;
 import shop.s5g.front.service.coupon.user.UserCouponService;
 import shop.s5g.front.service.member.MemberService;
 
@@ -45,6 +47,7 @@ public class MyPageController {
     private final AuthService authService;
     private final CartService cartService;
     private final UserCouponService userCouponService;
+    private final CouponService couponService;
 
     @PostMapping("/mypage/addAddress")
     public String registerAddress(@Valid @ModelAttribute AddressRequestDto addressRequestDto,
@@ -72,19 +75,32 @@ public class MyPageController {
     @GetMapping("/mypage")
     public String myPage(Model model) {
 
-        Pageable pageable = PageRequest.of(0, 15);
-
         MemberInfoResponseDto responseDto = memberService.getMemberInfo();
         List<AddressResponseDto> addresses = addressService.getAddresses();
-        Page<ValidUserCouponResponseDto> couponList = userCouponService.getUserCoupons(
-            responseDto.customerId(), pageable);
 
-        model.addAttribute("couponList", couponList);
         model.addAttribute("member", responseDto);
         model.addAttribute("addresses", addresses);
 
-//        return "mypage";
         return "layout/mypage";
+    }
+
+    @GetMapping("/mypage/coupons")
+    public String couponPage(Model model) {
+
+        Pageable pageable = PageRequest.of(0, 15);
+
+        MemberInfoResponseDto responseDto = memberService.getMemberInfo();
+        Page<ValidUserCouponResponseDto> couponList = userCouponService.getUserCoupons(
+            responseDto.customerId(), pageable);
+        Page<AvailableCouponResponseDto> availableCouponList = couponService.getAvailableCoupons(pageable);
+
+        model.addAttribute("member", responseDto);
+        model.addAttribute("couponList", couponList);
+        model.addAttribute("availableCouponList", availableCouponList);
+
+        model.addAttribute("usableCurrentPage", couponList.getPageable().getPageNumber());
+
+        return "coupon/user-coupon";
     }
 
     @PostMapping("/mypage/changeInfo")

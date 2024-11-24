@@ -43,22 +43,34 @@ public class UserCouponServiceImpl implements UserCouponService {
     }
 
     /**
-     *
+     * 해당 유저가 사용한 쿠폰 목록 조회
      * @param customerId
      * @param pageable
-     * @return
+     * @return Page<InValidUserCouponResponseDto>
      */
     @Override
     public Page<InValidUserCouponResponseDto> getUsedCoupons(Long customerId, Pageable pageable) {
         return null;
     }
 
+    /**
+     * 해당 유저가 사용하지는 않았으나 기간이 만료된 쿠폰 목록 조회
+     * @param customerId
+     * @param pageable
+     * @return Page<InValidUserCouponResponseDto>
+     */
     @Override
     public Page<InValidUserCouponResponseDto> getExpiredCoupons(Long customerId,
         Pageable pageable) {
         return null;
     }
 
+    /**
+     * 해당 유저의 쿠폰이 기간이 만료되었거나, 사용한 쿠폰 목록 조회
+     * @param customerId
+     * @param pageable
+     * @return Page<InValidUserCouponResponseDto>
+     */
     @Override
     public Page<InValidUserCouponResponseDto> getInvalidCoupons(Long customerId,
         Pageable pageable) {

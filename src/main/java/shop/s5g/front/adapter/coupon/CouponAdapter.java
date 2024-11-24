@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import shop.s5g.front.config.FeignGatewayAuthorizationConfig;
 import shop.s5g.front.dto.MessageDto;
+import shop.s5g.front.dto.coupon.coupon.AvailableCouponResponseDto;
 import shop.s5g.front.dto.coupon.coupon.CouponRegisterRequestDto;
 import shop.s5g.front.dto.coupon.coupon.CouponResponseDto;
 
@@ -20,5 +21,8 @@ public interface CouponAdapter {
 
     @GetMapping("/api/shop/admin/coupons")
     ResponseEntity<Page<CouponResponseDto>> getAllCoupons(Pageable pageable);
+
+    @GetMapping("/api/shop/admin/coupons/available")
+    ResponseEntity<Page<AvailableCouponResponseDto>> getAvailableCoupons(Pageable pageable);
 
 }

@@ -242,7 +242,7 @@ main {
 
 .user-info-container {
   max-width: 1200px;
-  margin: 20px auto;
+  margin: 20px auto 30px;
   padding: 20px;
   background-color: #fff;
   border-radius: 10px;
@@ -276,14 +276,13 @@ main {
   gap: 5px; /* 이름과 등급 간 간격 */
 }
 
-.user-info-text h2 {
+.user-info-text .user-message {
   margin: 0;
   font-size: 20px;
-  font-weight: bold;
-  color: #333;
+  color: #666;
 }
 
-.user-info-text p {
+.user-info-text .user-grade {
   margin: 0;
   font-size: 16px;
   color: #666;
@@ -316,4 +315,94 @@ main {
 
 .right-border {
   border-right: solid 2px lightgray;
+}
+
+
+
+.container {
+  padding: 20px;
+}
+
+/* 탭 리스트 스타일 */
+.tab-list {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  list-style: none;
+  padding: 0px;
+  border-bottom: 2px solid #ddd; /* 탭 아래에 구분선 추가 */
+  margin-bottom: 20px; /* 탭과 콘텐츠 사이 여백 추가 */
+}
+
+.tab-item {
+  margin-right: 30px; /* 각 탭 간의 간격 추가 */
+  padding: 10px 20px;
+  cursor: pointer;
+  color: #aaa;
+  border-bottom: 2px solid transparent; /* 기본 상태에서 밑줄 제거 */
+  transition: color 0.3s ease, border-color 0.3s ease; /* 부드러운 애니메이션 */
+}
+
+.tab-item:hover {
+  color: #f39c12; /* 호버 시 강조 색상 */
+}
+
+.tab-item.active {
+  color: #000; /* 활성화된 탭의 텍스트 색상 */
+  border-bottom: 2px solid #f39c12; /* 활성화된 탭 밑줄 강조 */
+}
+
+/* 콘텐츠 영역 스타일 */
+.tab-panel {
+  display: none;
+  padding: 20px;
+  background: #f9f9f9; /* 콘텐츠 배경 색상 */
+  border: 1px solid #ddd; /* 콘텐츠 박스 구분선 */
+  border-radius: 5px; /* 모서리 둥글게 */
+}
+
+.tab-panel.active {
+  display: block;
+}
+
+.tab-panel ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.tab-panel ul li {
+  margin-bottom: 10px;
+  padding: 10px;
+  background: #fff; /* 쿠폰 리스트 항목 배경 */
+  border: 1px solid #eee;
+  border-radius: 5px; /* 모서리 둥글게 */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* 약간의 그림자 */
+}
+
+
+/*
+ 발급 가능한 쿠폰 목록
+ */
+.available-coupon-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.row {
+  width: 100%;
+}
+
+.detail-coupons {
+  width: 100%;
+  height: 100%;
+  border: none;
+  overflow: hidden;
+}
+
+.detail-coupons img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
 }
