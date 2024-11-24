@@ -235,3 +235,85 @@ main {
   height: 24px;
   object-fit: contain; /* 로고가 버튼 안에 맞게 */
 }
+
+
+
+
+
+.user-info-container {
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center; /* 모든 요소를 수직 가운데 정렬 */
+  gap: 20px; /* 프로필 이미지와 텍스트 간 간격 */
+}
+
+.user-profile {
+  flex-shrink: 0; /* 이미지 크기 고정 */
+}
+
+.user-profile img {
+  border-radius: 50%;
+  width: 120px;
+  height: 120px; /* 프로필 이미지 크기 */
+}
+
+.user-details-container {
+  flex: 1; /* 남은 공간을 텍스트와 통계에 할당 */
+  display: flex;
+  justify-content: space-between; /* 텍스트와 통계를 양쪽 정렬 */
+  align-items: center; /* 모든 요소를 수직 가운데 정렬 */
+}
+
+.user-info-text {
+  display: flex;
+  flex-direction: column; /* 텍스트를 세로로 배치 */
+  justify-content: center; /* 텍스트를 수직 가운데 정렬 */
+  gap: 5px; /* 이름과 등급 간 간격 */
+}
+
+.user-info-text h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+}
+
+.user-info-text p {
+  margin: 0;
+  font-size: 16px;
+  color: #666;
+}
+
+.user-stats {
+  display: flex;
+  gap: 10px; /* 포인트와 쿠폰 간 간격을 줄임 */
+  align-items: center; /* 포인트와 쿠폰을 수직 가운데 정렬 */
+}
+
+.stat {
+  text-align: center; /* 텍스트 중앙 정렬 */
+}
+
+.stat-label {
+  font-size: 14px;
+  color: #888;
+}
+
+.stat-value {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+}
+
+.left-border {
+  border-left: solid 2px lightgray;
+}
+
+.right-border {
+  border-right: solid 2px lightgray;
+}

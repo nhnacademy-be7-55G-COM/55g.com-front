@@ -45,6 +45,15 @@
       box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* 그림자 강화 */
       cursor: pointer;
     }
+
+    .coupon-item {
+      border: 1px solid #ddd;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      background-color: #f9f9f9;
+    }
+
   </style>
   <script>
     const defaultSize = 10;
@@ -166,7 +175,7 @@
                   내역</a></li>
                 <li class="nav-item"><a id="points-tab" class="nav-link" data-bs-toggle="tab" href="#points">포인트
                   내역</a></li>
-                <li class="nav-item"><a id="" class="nav-link" data-bs-toggle="tab" href="#coupons">쿠폰 내역</a></li>
+                <li class="nav-item"><a id="" class="nav-link" data-bs-toggle="tab" href="#couponsList">쿠폰 내역</a></li>
                 <script>
                   const pointButton = document.querySelector('a#points-tab');
                   const pointHistoryCaller = async (size, page) => {
@@ -315,12 +324,53 @@
           </div>
         </div>
 
-        <!-- 쿠폰 -->
-        <div class="tab-pane fade" id="coupons" role="tabpanel">
-          <h3>쿠폰 목록</h3>
-          <p>현재 보유 중인 쿠폰 목록입니다.</p>
-          <!-- 쿠폰 목록 및 정보 -->
+          <!-- -->
+          
+<!--          <h3>쿠폰 목록</h3>-->
+<!--          <div th:each="coupon : ${couponList}">-->
+<!--            <div class="position-relative text-center">-->
+<!--              <img src="/static/images/default-coupon.png" alt="쿠폰 이미지">-->
+<!--              <div class="position-absolute top-50 start-50 translate-middle text-white">-->
+<!--                <h1 th:text="${coupon.couponName()}"></h1>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
+
         </div>
+
+        <!--        <div class="tab-pane fade show active" id="coupons" role="tabpanel">-->
+<!--          <div class="user-info-container">-->
+<!--            <div class="user-info-card">-->
+<!--              <div class="user-profile">-->
+<!--                <img src="https://via.placeholder.com/100" alt="사용자 프로필 이미지" />-->
+<!--              </div>-->
+<!--              <div class="user-details">-->
+<!--                <h2>홍길동님 안녕하세요.</h2>-->
+<!--              </div>-->
+<!--              <div class="user-stats">-->
+<!--                <div>-->
+<!--                  <span class="stat-value">3,000</span>-->
+<!--                  <span class="stat-label">포인트</span>-->
+<!--                </div>-->
+<!--                <div>-->
+<!--                  <span class="stat-value">2</span>-->
+<!--                  <span class="stat-label">쿠폰</span>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
+
+<!--          <h3>쿠폰 목록</h3>-->
+<!--          <p>현재 보유 중인 쿠폰 목록입니다.</p>-->
+<!--          <div class="coupon-list">-->
+<!--            <div class="coupon-item" th:each="coupon : ${couponList}">-->
+<!--              <img src="/static/images/default-coupon.png" alt="쿠폰 이미지" />-->
+<!--              <div class="coupon-text">-->
+<!--                <h4 th:text="${coupon.couponName()}">쿠폰 이름</h4>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
 
 
         <!-- 등급 정보 섹션 -->

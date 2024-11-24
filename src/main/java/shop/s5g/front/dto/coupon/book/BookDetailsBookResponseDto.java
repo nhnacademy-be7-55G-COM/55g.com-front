@@ -1,4 +1,4 @@
-package shop.s5g.front.dto.coupon;
+package shop.s5g.front.dto.coupon.book;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

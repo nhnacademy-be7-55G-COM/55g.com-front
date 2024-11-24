@@ -1,11 +1,13 @@
-package shop.s5g.front.dto.coupon;
+package shop.s5g.front.dto.coupon.policy;
 
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
-public record CouponPolicyRegisterRequestDto(
-    @Min(0)
+public record CouponPolicyUpdateRequestDto(
+
+    @NotNull
+    Long couponPolicyId,
+
     @NotNull
     BigDecimal discountPrice,
 
