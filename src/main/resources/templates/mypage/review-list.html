@@ -174,12 +174,7 @@
     <p><strong>별점:</strong> <span id="modal-score"></span></p>
     <p><strong>리뷰 내용:</strong> <span id="modal-content"></span></p>
     <p><strong>작성 날짜:</strong> <span id="modal-review-at"></span></p>
-    <div>
-      <strong>첨부 파일:</strong>
-      <div class="review-images" id="modal-images">
-        <p class="no-images" style="display: none;">첨부 파일이 없습니다.</p>
-      </div>
-    </div>
+    <p><strong>첨부 파일:</strong> <span id="modal-images"></span></p>
   </div>
 </div>
 
@@ -197,21 +192,25 @@
     // 데이터를 모달에 세팅
     document.getElementById('modal-title').innerText = title;
     document.getElementById('modal-score').innerText = '⭐'.repeat(score);
-    document.getElementById('modal-content').innerText = content;
+    document.getElementById('modal-content').innerText = content || "리뷰 내용이 없습니다.";
     document.getElementById('modal-review-at').innerText = reviewAt;
 
     // 이미지 리스트 생성
     const imagesContainer = document.getElementById('modal-images');
     imagesContainer.innerHTML = ''; // 초기화
 
+    if (images.length === 0) {
+      imagesContainer.innerText = '첨부 파일이 없습니다.';
+    }
+
     images.forEach(image => {
       const linkElement = document.createElement('a');
-      linkElement.href = `https://image.toast.com/aaaacko/55gshop/review/${image}`;
+      linkElement.href = `https://image.toast.com/aaaacko/55gshop/review/${image.trim()}`;
       linkElement.target = '_blank'; // 새 탭에서 열기
       linkElement.style = 'margin: 5px;';
 
       const imgElement = document.createElement('img');
-      imgElement.src = `https://image.toast.com/aaaacko/55gshop/review/${image}`;
+      imgElement.src = `https://image.toast.com/aaaacko/55gshop/review/${image.trim()}`;
       imgElement.alt = 'Review Image';
       imgElement.style = 'height: 100px; width: 100px; object-fit: contain;';
 
