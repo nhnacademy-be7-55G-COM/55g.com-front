@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}">
 <head>
+  <th:block th:replace="~{fragments/head :: headTemplate}"></th:block>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>관리자 대시보드</title>
   <link rel="stylesheet" href="style.css">
-  <div th:replace="~{fragments/head}"></div>
   <style>
     /* 기본 모달 스타일 */
     .modal {
@@ -255,9 +256,8 @@
   </style>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
-<body style="background-color: var(--light-color); font-family: var(--body-font), serif; color: var(--body-text-color);">
+<body layout:fragment="content" style="background-color: var(--light-color); font-family: var(--body-font), serif; color: var(--body-text-color);">
 <!-- 관리자 헤더 -->
-<div th:replace="~{fragments/header}"></div>
 <div class="container-fluid">
   <div class="row">
     <!-- 사이드바 -->
@@ -293,9 +293,9 @@
                   <li>
                     <a class="nav-link">쿠폰 생성</a>
                     <ul>
-                      <li><a class="nav-link" href="/templates/list">사용자 쿠폰 생성</a></li>
-                      <li><a class="nav-link" href="/books/list">도서 쿠폰 생성</a></li>
-                      <li><a class="nav-link" href="/category/list">카테고리 쿠폰 생성</a></li>
+                      <li><a class="nav-link" href="/admin/templates/list">사용자 쿠폰 생성</a></li>
+                      <li><a class="nav-link" href="/admin/books/list">도서 쿠폰 생성</a></li>
+                      <li><a class="nav-link" href="/admin/category/list">카테고리 쿠폰 생성</a></li>
                     </ul>
                   </li>
                   <li>
@@ -324,10 +324,10 @@
             <a>카테고리</a>
             <ul>
               <li>
-                <a class="nav-link" href="#" data-url="/admin/category">카테고리 목록</a>
+                <a class="nav-link" href="/admin/category">카테고리 목록</a>
               </li>
               <li>
-                <a class="nav-link" href="#" data-url="/category/register">카테고리 등록</a>
+                <a class="nav-link" href="/admin/category/register">카테고리 등록</a>
               </li>
             </ul>
           </li>
@@ -336,10 +336,10 @@
             <a>출판사</a>
             <ul>
               <li>
-                <a class="nav-link" href="#" data-url="/admin/publisher/list">출판사 목록</a>
+                <a class="nav-link" href="/admin/publisher/list">출판사 목록</a>
               </li>
               <li>
-                <a class="nav-link" href="#" data-url="/admin/publisher/register">출판사 등록</a>
+                <a class="nav-link" href="/admin/publisher/register">출판사 등록</a>
               </li>
             </ul>
           </li>
@@ -348,10 +348,22 @@
             <a>태그</a>
             <ul>
               <li>
-                <a class="nav-link" href="#" data-url="/admin/tag/list">태그 목록</a>
+                <a class="nav-link" href="/admin/tag/list">태그 목록</a>
               </li>
               <li>
-                <a class="nav-link" href="#" data-url="/admin/tag/register">태그 등록</a>
+                <a class="nav-link" href="/admin/tag/register">태그 등록</a>
+              </li>
+            </ul>
+          </li>
+<!---->
+          <li class="nav-item border-bottom">
+            <a>작가</a>
+            <ul>
+              <li>
+                <a class="nav-link" href="/admin/author/list">작가 목록</a>
+              </li>
+              <li>
+                <a class="nav-link" href="/admin/author/register">작가 등록</a>
               </li>
             </ul>
           </li>
@@ -410,7 +422,7 @@
       </div>
       <div id="coupon-policy-form" style="display:none; text-align: center;">
         <h2>쿠폰 정책 생성</h2>
-        <form id="coupon-form" action="/admin/coupons/policy/create" method="POST" style="display: inline-block; width: 100%; max-width: 400px;">
+        <form id="coupon-form" th:action="@{/admin/coupons/policy/create}" method="POST" style="display: inline-block; width: 100%; max-width: 400px;">
           <div class="mb-3">
             <label for="condition" class="form-label" style="text-align: left; display: block; margin-bottom: 2px; margin-left: 25px;">조건</label>
             <input type="text" class="form-control small-input" id="condition" name="condition" placeholder="예: 20000원" style="margin: 0 auto; text-align: left; padding-left: 10px;" required>
@@ -423,7 +435,7 @@
           </div>
           <div class="mb-3">
             <label for="max-discount" class="form-label" style="text-align: left; display: block; margin-bottom: 2px; margin-left: 25px;">최대 할인</label>
-            <input type="text" class="form-control small-input" id="max-discount" name="maxPrice" placeholder="예: 2000원" style="margin: 0 auto; text-align: left; padding-left: 10px;" required>
+            <input type="text" class="form-control small-input" id="max-discount" name="maxPrice" placeholder="예: 2000원" style="margin: 0 auto; text-align: left; padding-left: 10px;">
             <small style="display: block; text-align: left; margin-left: 25px; color: #6c757d;">최대할인은 (조건/할인) 까지 가능합니다.</small>
           </div>
           <div class="mb-3">
@@ -437,7 +449,6 @@
     </main>
   </div>
 </div>
-<div th:replace="~{fragments/admin-footer}"></div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
   $(document).ready(function() {
@@ -457,59 +468,59 @@
       }
     });
   });
-
-  // 요소 선택
-  const couponPolicyBtn = document.getElementById("couponPolicyBtn");
-  const couponModal = document.getElementById("couponModal");
-  const closeModalBtn = document.getElementById("closeModalBtn");
-
-  // 버튼 클릭 시 모달 표시
-  couponPolicyBtn.addEventListener("click", () => {
-    couponModal.style.display = "flex"; // 모달을 화면에 보이도록 설정
-  });
-
-  // 닫기 버튼 클릭 시 모달 숨김
-  closeModalBtn.addEventListener("click", () => {
-    couponModal.style.display = "none";
-  });
-
-  // 모달 외부 클릭 시 모달 숨김
-  window.addEventListener("click", (event) => {
-    if (event.target === couponModal) {
-      couponModal.style.display = "none";
-    }
-  });
-
-  // 쿠폰 정책 선택 시 동적으로 폼 표시
-  function selectCouponPolicy(policyId, condition) {
-    // 선택된 정책의 ID를 숨겨진 입력 필드에 설정
-    document.getElementById("couponPolicyId").value = policyId;
-
-    // 쿠폰 이름과 설명 입력 폼을 표시
-    document.getElementById("couponForm").style.display = "block";
-
-    // 쿠폰 정책 모달 닫기
-    document.getElementById("couponModal").style.display = "none";
-
-    // 선택된 정책의 조건을 표시하거나 다른 작업을 추가할 수 있습니다.
-    alert(`선택된 쿠폰 정책: ${condition} (ID: ${policyId})`);
-  }
-
-  // 모달 열기
-  document.getElementById("couponPolicyBtn").addEventListener("click", function() {
-    document.getElementById("couponModal").style.display = "flex";
-  });
-
-  // 모달 닫기
-  document.getElementById("closeModalBtn").addEventListener("click", function() {
-    document.getElementById("couponModal").style.display = "none";
-  });
-
-  window.addEventListener("click", function(event) {
-    if (event.target === document.getElementById("couponModal")) {
-      document.getElementById("couponModal").style.display = "none";
-    }
-  });
+  //
+  // // 요소 선택
+  // const couponPolicyBtn = document.getElementById("couponPolicyBtn");
+  // const couponModal = document.getElementById("couponModal");
+  // const closeModalBtn = document.getElementById("closeModalBtn");
+  //
+  // // 버튼 클릭 시 모달 표시
+  // couponPolicyBtn.addEventListener("click", () => {
+  //   couponModal.style.display = "flex"; // 모달을 화면에 보이도록 설정
+  // });
+  //
+  // // 닫기 버튼 클릭 시 모달 숨김
+  // closeModalBtn.addEventListener("click", () => {
+  //   couponModal.style.display = "none";
+  // });
+  //
+  // // 모달 외부 클릭 시 모달 숨김
+  // window.addEventListener("click", (event) => {
+  //   if (event.target === couponModal) {
+  //     couponModal.style.display = "none";
+  //   }
+  // });
+  //
+  // // 쿠폰 정책 선택 시 동적으로 폼 표시
+  // function selectCouponPolicy(policyId, condition) {
+  //   // 선택된 정책의 ID를 숨겨진 입력 필드에 설정
+  //   document.getElementById("couponPolicyId").value = policyId;
+  //
+  //   // 쿠폰 이름과 설명 입력 폼을 표시
+  //   document.getElementById("couponForm").style.display = "block";
+  //
+  //   // 쿠폰 정책 모달 닫기
+  //   document.getElementById("couponModal").style.display = "none";
+  //
+  //   // 선택된 정책의 조건을 표시하거나 다른 작업을 추가할 수 있습니다.
+  //   alert(`선택된 쿠폰 정책: ${condition} (ID: ${policyId})`);
+  // }
+  //
+  // // 모달 열기
+  // document.getElementById("couponPolicyBtn").addEventListener("click", function() {
+  //   document.getElementById("couponModal").style.display = "flex";
+  // });
+  //
+  // // 모달 닫기
+  // document.getElementById("closeModalBtn").addEventListener("click", function() {
+  //   document.getElementById("couponModal").style.display = "none";
+  // });
+  //
+  // window.addEventListener("click", function(event) {
+  //   if (event.target === document.getElementById("couponModal")) {
+  //     document.getElementById("couponModal").style.display = "none";
+  //   }
+  // });
 
   document.getElementById("coupon-form").addEventListener("submit", function(event) {
     event.preventDefault();

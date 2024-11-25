@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import shop.s5g.front.config.FeignGatewayAuthorizationConfig;
 import shop.s5g.front.dto.MessageDto;
-import shop.s5g.front.dto.coupon.CouponPolicyInquiryResponseDto;
-import shop.s5g.front.dto.coupon.CouponPolicyRegisterRequestDto;
+import shop.s5g.front.dto.coupon.policy.CouponPolicyInquiryResponseDto;
+import shop.s5g.front.dto.coupon.policy.CouponPolicyRegisterRequestDto;
 
 @FeignClient(name = "couponPolicy", url = "${gateway.url}", configuration = FeignGatewayAuthorizationConfig.class)
 public interface CouponPolicyAdapter {
@@ -24,4 +24,9 @@ public interface CouponPolicyAdapter {
 
     @GetMapping("/api/shop/admin/coupons/policy/{couponPolicyId}")
     ResponseEntity<CouponPolicyInquiryResponseDto> findCouponPolicy(@PathVariable("couponPolicyId") Long couponPolicyId);
+
+    @PostMapping("/api/shop/admin/coupons/policy/{couponPolicyId}")
+    ResponseEntity<MessageDto> updateCouponPolicy(
+        @PathVariable("couponPolicyId") Long couponPolicyId,
+        @RequestBody CouponPolicyRegisterRequestDto couponPolicyRegisterRequestDto);
 }

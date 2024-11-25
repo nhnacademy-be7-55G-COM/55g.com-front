@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <th:block th:replace="~{fragments/head :: headTemplate}"></th:block>
+  <title>쿠폰 템플릿 수정</title>
+  <meta charset="utf-8" />
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body style="background-color: var(--light-color); font-family: var(--body-font),serif; color: var(--body-text-color);">
+<div th:replace="~{fragments/header}"></div>
+
+<main class="container my-5 mx-auto" style="max-width: 600px;">
+  <h2 class="text-center" style="color: var(--dark-color); font-family: var(--heading-font),serif;">쿠폰 템플릿 수정</h2>
+
+  <div id="coupon-template-form" style="text-align: center;">
+
+    <form id="coupon-form" th:action="@{/admin/coupons/template/update}" method="post" style="display: inline-block; width: 100%; max-width: 600px;">
+      <input type="hidden" name="couponTemplateId" th:value="${couponTemplate.couponTemplateId()}">
+
+      <!-- 쿠폰 이름 -->
+      <div class="mb-3">
+        <label for="coupon-name" class="form-label" style="text-align: left; display: block; margin-bottom: 2px; margin-left: 25px;">쿠폰 이름</label>
+        <input type="text" class="form-control" id="coupon-name" name="couponName" placeholder="예: 여름 세일 쿠폰" style="margin: 0 auto; text-align: left; padding-left: 10px;" th:value="${couponTemplate.couponName}" required>
+      </div>
+
+      <!-- 쿠폰 설명 -->
+      <div class="mb-3">
+        <label for="coupon-description" class="form-label" style="text-align: left; display: block; margin-bottom: 2px; margin-left: 25px;">쿠폰 설명</label>
+        <textarea class="form-control" id="coupon-description" name="couponDescription" placeholder="쿠폰에 대한 설명을 작성하세요." style="margin: 0 auto; text-align: left; padding-left: 10px;" th:value="${couponTemplate.couponDescription}" required></textarea>
+      </div>
+
+      <!-- 수정 버튼 -->
+      <button type="submit" class="styled-button" style="display: block; margin: 0 auto;">수정</button>
+    </form>
+  </div>
+</main>
+
+</body>
+</html>

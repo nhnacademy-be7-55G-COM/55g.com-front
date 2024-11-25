@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import shop.s5g.front.dto.PageResponseDto;
+import shop.s5g.front.dto.category.CategoryOneResponseDto;
 import shop.s5g.front.dto.category.CategoryRequestDto;
 import shop.s5g.front.dto.category.CategoryResponseDto;
 import shop.s5g.front.service.category.CategoryService;
@@ -21,19 +22,19 @@ public class CategoryController {
 
 
     //카테고리 등록
-    @GetMapping("/category/register")
-    public String showCategoryForm(Model model, @PageableDefault(9999) Pageable pageable) {
+    @GetMapping("/admin/category/register")
+    public String showCategoryForm(Model model, @PageableDefault(page = 0, size = 999) Pageable pageable) {
 //        model.addAttribute("parentCategories", categoryService.getParentCategories());
-        model.addAttribute("parentCategories", categoryService.getKoreaCategories(pageable));
+        model.addAttribute("parentCategories", categoryService.getKoreaCategories(pageable).content());
         return "category-register";
     }
 
     //카테고리 등록
-    @PostMapping("/category/register")
+    @PostMapping("/admin/category/register")
     //부모 카테고리 이름, 현재 카테고리 이름, 활성화 여부
     public String getCategory(@ModelAttribute CategoryRequestDto requestDto) {
         categoryService.addCategory(requestDto);
-        return "redirect:/";
+        return "redirect:/admin";
     }
 
     //전체 카테고리 조회
@@ -60,7 +61,7 @@ public class CategoryController {
     }
 
     //하위 카테고리 조회
-    @GetMapping("/category/child/{categoryId}")
+    @GetMapping("/admin/category/child/{categoryId}")
     @ResponseBody
     public List<CategoryResponseDto> childCategory(@PathVariable("categoryId") long categoryId, Model model) {
         List<CategoryResponseDto> childCategories = categoryService.getChildCategories(categoryId);
@@ -73,6 +74,14 @@ public class CategoryController {
     public String categoryDetail(@PathVariable("categoryId") long categoryId, Model model) {
         List<CategoryResponseDto> childCategories = categoryService.getChildCategories(categoryId);
         model.addAttribute("childCategories", childCategories);
+        return "category-list";
+    }
+
+    //카테고리 수정 페이지 이동
+    @GetMapping("/admin/category/modify/{categoryId}")
+    public String categoryModify(@PathVariable("categoryId") long categoryId, Model model) {
+        CategoryOneResponseDto category = categoryService.getCategoryById(categoryId);
+        model.addAttribute("modifyCategory", category);
         return "category-modify";
     }
 
@@ -80,6 +89,13 @@ public class CategoryController {
     @PutMapping("/admin/category/update/{categoryId}")
     public String categoryUpdate(@PathVariable("categoryId") Long categoryId, @ModelAttribute CategoryRequestDto requestDto) {
         categoryService.updateCategory(categoryId, requestDto);
+        return "redirect:/admin";
+    }
+
+    //카테고리 삭제(비활성화)
+    @PostMapping("/admin/category/delete/{categoryId}")
+    public String categoryDelete(@PathVariable("categoryId") Long categoryId) {
+        categoryService.delete(categoryId);
         return "redirect:/admin";
     }
 }

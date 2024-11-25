@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <th:block th:replace="~{fragments/head :: headTemplate}"></th:block>
+  <title>쿠폰 정책 수정</title>
+  <meta charset="utf-8" />
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body style="background-color: var(--light-color); font-family: var(--body-font),serif; color: var(--body-text-color);">
+<div th:replace="~{fragments/header}"></div>
+
+<main class="container my-5 mx-auto" style="max-width: 400px;">
+  <h2 class="text-center" style="color: var(--dark-color); font-family: var(--heading-font),serif;">쿠폰 정책 수정</h2>
+
+  <div id="coupon-policy-form" style= "text-align: center;">
+
+    <form id="coupon-form" th:action="@{/admin/coupons/policy/update}" method="post" style="display: inline-block; width: 100%; max-width: 400px;">
+      <input type="hidden" name="couponPolicyId" th:value="${policyId}">
+      <div class="mb-3">
+        <label for="condition" class="form-label" style="text-align: left; display: block; margin-bottom: 2px; margin-left: 25px;">조건</label>
+        <input type="text" class="form-control small-input" id="condition" name="condition" placeholder="예: 20000원" style="margin: 0 auto; text-align: left; padding-left: 10px;" th:value="${policyInfo.condition}" required>
+        <small style="display: block; text-align: left; margin-left: 25px; color: #6c757d;">최소 만원, 최대 50만원까지 가능합니다.</small>
+      </div>
+      <div class="mb-3">
+        <label for="discount-value" class="form-label" style="text-align: left; display: block; margin-bottom: 2px; margin-left: 25px;">할인</label>
+        <input type="text" class="form-control small-input" id="discount-value" name="discountPrice" placeholder="예: 0.05" style="margin: 0 auto; text-align: left; padding-left: 10px;" th:value="${policyInfo.discountPrice}" required>
+        <small style="display: block; text-align: left; margin-left: 25px; color: #6c757d;">ex) 0.05 = 5%, 0.5 = 50%, 1000 = 1000원 할인 적용 / 최대 조건의 80% 적용 가능</small>
+      </div>
+      <div class="mb-3">
+        <label for="max-discount" class="form-label" style="text-align: left; display: block; margin-bottom: 2px; margin-left: 25px;">최대 할인</label>
+        <input type="text" class="form-control small-input" id="max-discount" name="maxPrice" placeholder="예: 2000원" style="margin: 0 auto; text-align: left; padding-left: 10px;" th:value="${policyInfo.maxPrice}">
+        <small style="display: block; text-align: left; margin-left: 25px; color: #6c757d;">최대할인은 (조건/할인) 까지 가능합니다.</small>
+      </div>
+      <div class="mb-3">
+        <label for="duration" class="form-label" style="text-align: left; display: block; margin-bottom: 2px; margin-left: 25px;">기간</label>
+        <input type="text" class="form-control small-input" id="duration" name="duration" placeholder="예: 30일" style="margin: 0 auto; text-align: left; padding-left: 10px;" th:value="${policyInfo.duration}" required>
+        <small style="display: block; text-align: left; margin-left: 25px; color: #6c757d;">1 ~ 365일까지 가능합니다.</small>
+      </div>
+      <button type="submit" class="styled-button" style="display: block; margin: 0 auto;">수정</button>
+    </form>
+  </div>
+</main>
+
+<div th:replace="~{fragments/footer}"></div>
+
+<script>
+
+  const couponPolicyBtn = document.getElementById("couponPolicyBtn");
+  const couponModal = document.getElementById("couponModal");
+  const closeModalBtn = document.getElementById("closeModalBtn");
+
+  couponPolicyBtn.addEventListener("click", () => {
+    couponModal.style.display = "flex";
+  });
+
+  closeModalBtn.addEventListener("click", () => {
+    couponModal.style.display = "none";
+  });
+
+  window.addEventListener("click", (event) => {
+    if (event.target === couponModal) {
+      couponModal.style.display = "none";
+    }
+  });
+
+  document.getElementById("coupon-form").addEventListener("submit", function(event) {
+    event.preventDefault();
+    const form = document.getElementById('coupon-form');
+
+    const conditionValue = document.getElementById('condition').value;
+    const discountValue = document.getElementById("discount-value").value;
+    const maxPriceValue = document.getElementById('max-discount').value;
+    const durationValue = document.getElementById('duration').value;
+
+    const numericPattern = /^\d+(\.\d{1,2})?$/;
+    if (!numericPattern.test(discountValue) || !numericPattern.test(conditionValue) ||
+        (maxPriceValue && !numericPattern.test(maxPriceValue)) || !/^\d+$/.test(durationValue)) {
+      alert("입력된 값은 숫자 형식만 허용됩니다. 소수점 이하 2자리까지만 가능합니다.");
+      form.reset();
+      return;
+    }
+
+    const condition = parseFloat(conditionValue);
+    const discountPrice = parseFloat(discountValue);
+    const maxPrice = maxPriceValue ? parseFloat(maxPriceValue) : null;
+    const duration = parseInt(durationValue);
+
+    if (isNaN(condition) || condition < 10000 || condition > 500000) {
+      alert("조건은 10000원 에서 500000원 사이의 값이어야 합니다.");
+      form.reset();
+      return;
+    }
+
+    if (discountPrice < 1) {
+      if (discountPrice > 0.8) {
+        alert("할인은 최대 80%까지 가능합니다.");
+        form.reset();
+        return;
+      }
+    } else {
+      if (discountPrice < 1000 || discountPrice > condition * 0.8) {
+        alert(`할인은 최소 1000원, 최대 조건의 80%까지 가능합니다.`);
+        form.reset();
+        return;
+      }
+    }
+
+    if (maxPrice !== null) {
+      if (maxPrice < 0 || maxPrice > condition / 2) {
+        alert("최대 할인은 조건보다 작아야 하며 음수가 될 수 없습니다.");
+        form.reset();
+        return;
+      }
+    }
+
+    if (isNaN(duration) || duration < 1 || duration > 365) {
+      alert("기간은 1일에서 365일 사이의 값이어야 합니다.");
+      form.reset();
+      return;
+    }
+
+    var methodInput = document.createElement('input');
+    methodInput.type = 'hidden';
+    methodInput.name = '_method';
+    methodInput.value = 'PATCH';
+    form.appendChild(methodInput);
+  });
+</script>
+</body>
+</html>

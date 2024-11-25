@@ -8,10 +8,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import shop.s5g.front.adapter.coupon.CouponCategoryAdapter;
 import shop.s5g.front.dto.MessageDto;
-import shop.s5g.front.dto.coupon.CouponCategoryDetailsCategoryNameDto;
-import shop.s5g.front.dto.coupon.CouponCategoryRequestDto;
-import shop.s5g.front.dto.coupon.CategoryResponseDto;
-import shop.s5g.front.dto.coupon.CouponCategoryResponseDto;
+import shop.s5g.front.dto.coupon.category.CouponCategoryDetailsCategoryNameDto;
+import shop.s5g.front.dto.coupon.category.CouponCategoryRequestDto;
+import shop.s5g.front.dto.coupon.category.CategoryResponseDto;
+import shop.s5g.front.dto.coupon.category.CouponCategoryResponseDto;
 import shop.s5g.front.exception.coupon.CouponCategoryNotFoundException;
 import shop.s5g.front.service.coupon.category.CouponCategoryService;
 
@@ -87,16 +87,14 @@ public class CouponCategoryServiceImpl implements CouponCategoryService {
 
     /**
      * 쿠폰 적용된 카테고리 조회
-     * @param couponTemplateId
      * @param pageable
      * @return Page<CouponCategoryDetailsCategoryNameDto>
      */
     @Override
-    public Page<CouponCategoryDetailsCategoryNameDto> getCategoryNamesForAppliedCouponTemplates(
-        Long couponTemplateId, Pageable pageable) {
+    public Page<CouponCategoryDetailsCategoryNameDto> getCategoryNamesForAppliedCouponTemplates(Pageable pageable) {
 
         try {
-            ResponseEntity<Page<CouponCategoryDetailsCategoryNameDto>> categoryList = couponCategoryAdapter.findCategoryNameByTemplateId(couponTemplateId, pageable);
+            ResponseEntity<Page<CouponCategoryDetailsCategoryNameDto>> categoryList = couponCategoryAdapter.findCategoryNameByTemplate(pageable);
 
             if (categoryList.getStatusCode().is2xxSuccessful()) {
                 return categoryList.getBody();

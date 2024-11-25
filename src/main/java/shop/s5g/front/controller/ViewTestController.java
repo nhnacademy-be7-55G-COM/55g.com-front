@@ -12,4 +12,9 @@ public class ViewTestController {
         return "payments/pending";
     }
 
+    @GetMapping("/mypage")
+    public String mypageTestLayout() {
+        return "test-mypage";
+    }
+
 }

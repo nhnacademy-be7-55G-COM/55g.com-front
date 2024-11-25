@@ -9,8 +9,8 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import shop.s5g.front.adapter.coupon.CouponPolicyAdapter;
 import shop.s5g.front.dto.MessageDto;
-import shop.s5g.front.dto.coupon.CouponPolicyInquiryResponseDto;
-import shop.s5g.front.dto.coupon.CouponPolicyRegisterRequestDto;
+import shop.s5g.front.dto.coupon.policy.CouponPolicyInquiryResponseDto;
+import shop.s5g.front.dto.coupon.policy.CouponPolicyRegisterRequestDto;
 import shop.s5g.front.exception.coupon.CouponPolicyNotFoundException;
 import shop.s5g.front.exception.coupon.CouponPolicyRegisterFailedException;
 import shop.s5g.front.service.coupon.policy.CouponPolicyService;
@@ -80,5 +80,21 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
             throw new CouponPolicyNotFoundException(e.getMessage());
         }
 
+    }
+
+    @Override
+    public MessageDto updateCouponPolicy(Long couponPolicyId,
+        CouponPolicyRegisterRequestDto couponPolicyRegisterRequestDto) {
+
+        try {
+            ResponseEntity<MessageDto> response = couponPolicyAdapter.updateCouponPolicy(couponPolicyId, couponPolicyRegisterRequestDto);
+
+            if (response.getStatusCode().is2xxSuccessful()) {
+                return response.getBody();
+            }
+            throw new RuntimeException("update failed... to Coupon Policy");
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 }

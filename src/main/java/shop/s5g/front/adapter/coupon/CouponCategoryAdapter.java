@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import shop.s5g.front.config.FeignGatewayAuthorizationConfig;
 import shop.s5g.front.dto.MessageDto;
-import shop.s5g.front.dto.coupon.CouponCategoryDetailsCategoryNameDto;
-import shop.s5g.front.dto.coupon.CouponCategoryRequestDto;
-import shop.s5g.front.dto.coupon.CategoryResponseDto;
-import shop.s5g.front.dto.coupon.CouponCategoryResponseDto;
+import shop.s5g.front.dto.coupon.category.CouponCategoryDetailsCategoryNameDto;
+import shop.s5g.front.dto.coupon.category.CouponCategoryRequestDto;
+import shop.s5g.front.dto.coupon.category.CategoryResponseDto;
+import shop.s5g.front.dto.coupon.category.CouponCategoryResponseDto;
 
 @FeignClient(name = "couponCategory", url = "${gateway.url}", configuration = FeignGatewayAuthorizationConfig.class)
 public interface CouponCategoryAdapter {
@@ -30,8 +30,6 @@ public interface CouponCategoryAdapter {
     @GetMapping("/api/shop/admin/coupons/categories")
     ResponseEntity<Page<CouponCategoryResponseDto>> findAllCouponCategories(Pageable pageable);
 
-    @GetMapping("/api/shop/admin/coupons/categories/name/template/{templateId}")
-    ResponseEntity<Page<CouponCategoryDetailsCategoryNameDto>> findCategoryNameByTemplateId(
-        @PathVariable("templateId") Long templateId, Pageable pageable
-    );
+    @GetMapping("/api/shop/admin/coupons/categories/name/templates")
+    ResponseEntity<Page<CouponCategoryDetailsCategoryNameDto>> findCategoryNameByTemplate(Pageable pageable);
 }

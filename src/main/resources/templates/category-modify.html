@@ -1,61 +1,73 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}">
 <head>
+    <th:block th:replace="~{fragments/head :: headTemplate}"></th:block>
     <meta charset="UTF-8">
     <title>카테고리 수정</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
-            color: #333;
-            margin: 20px;
+            /*margin: 0;*/
+            /*padding: 0;*/
+            /*display: flex;*/
+            justify-content: center; /* 수평 중앙 정렬 */
+            align-items: center; /* 수직 중앙 정렬 */
+            /*height: 100vh; !* 화면 전체 높이 *!*/
+            /*background-color: #f9f9f9;*/
         }
 
-        .category-form {
-            max-width: 500px;
-            margin: 0 auto 20px;
+        form {
+            margin: 50px auto;
             padding: 20px;
-            background-color: #fff;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd; /* 테두리 */
+            border-radius: 8px; /* 테두리 둥글게 */
+            width: 100%;
+            max-width: 400px; /* 최대 너비 */
+            background-color: #fff; /* 배경색 */
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 약간의 그림자 */
         }
 
-        .category-form input[type="text"] {
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+            color: #333;
+        }
+
+        input[type="text"] {
             width: 100%;
             padding: 10px;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             border: 1px solid #ddd;
             border-radius: 4px;
-            font-size: 16px;
+            font-size: 1rem;
         }
 
-        .category-form button {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            /*background-color: #4CAF50;*/
+        button {
+            padding: 10px 15px;
+            background-color: #D7BFA6;
             color: white;
             border: none;
             border-radius: 4px;
-            font-size: 16px;
+            font-size: 1rem;
             cursor: pointer;
         }
 
-        .category-form button:hover {
-            /*background-color: #45a049;*/
+        button:hover {
+            background-color: #CBB299;
         }
     </style>
 </head>
-<body>
+<body layout:fragment="content">
 
-<div th:each="category : ${childCategories}" class="category-form">
-    <form th:action="@{/admin/category/update/{categoryId} (categoryId = ${category.categoryId})}" method="post">
-        <input type="hidden" name="_method" value="PUT">
-        <input type="text" id="name" name="categoryName" th:value="${category.categoryName}" placeholder="카테고리 이름">
-        <button type="submit">수정</button>
-    </form>
-</div>
+<form th:action="@{/admin/category/update/{categoryId} (categoryId = ${modifyCategory.categoryId()})}" method="post">
+    <input type="hidden" name="_method" value="PUT">
+    <label for="name">카테고리 수정</label>
+    <input type="text" id="name" name="categoryName" th:value="${modifyCategory.categoryName()}">
+    <button type="submit">수정</button>
+</form>
 
 </body>
 </html>

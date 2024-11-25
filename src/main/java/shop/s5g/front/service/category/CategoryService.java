@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import shop.s5g.front.dto.MessageDto;
 import shop.s5g.front.dto.PageResponseDto;
 import shop.s5g.front.dto.category.CategoryDetailResponseDto;
+import shop.s5g.front.dto.category.CategoryOneResponseDto;
 import shop.s5g.front.dto.category.CategoryRequestDto;
 import shop.s5g.front.dto.category.CategoryResponseDto;
 
@@ -19,4 +20,8 @@ public interface CategoryService {
     List<CategoryResponseDto> getChildCategories(long categoryId);
 
     MessageDto updateCategory(Long categoryId, CategoryRequestDto requestDto);
+
+    MessageDto delete(Long categoryId);
+
+    CategoryOneResponseDto getCategoryById(long categoryId);
 }

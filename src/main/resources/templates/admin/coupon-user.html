@@ -1,10 +1,84 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>사용자 쿠폰 조회</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>쿠폰 조회</title>
+  <link rel="stylesheet" href="style.css">
+  <div th:replace="~{fragments/head}"></div>
+  <style>
+    .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: transparent;
+      border: none;
+      font-size: 24px;
+      color: #333;
+      cursor: pointer;
+      z-index: 10;
+    }
+  </style>
 </head>
 <body>
+<div class="container" style="position: relative;">
+  <button class="close-btn" onclick="window.location.href='/admin'">&times;</button>
+  <h2>사용자 쿠폰 조회</h2>
 
+  <table border="1" style="width: 100%; margin-top: 20px; border-collapse: collapse;">
+    <thead>
+    <tr>
+      <th style="padding: 10px; background-color: #f0f0f0;">순번</th>
+      <th style="padding: 10px; background-color: #f0f0f0;">쿠폰 코드</th>
+      <th style="padding: 10px; background-color: #f0f0f0;">생성 날짜</th>
+      <th style="padding: 10px; background-color: #f0f0f0;">만료일</th>
+      <th style="padding: 10px; background-color: #f0f0f0;">사용 여부</th>
+      <th style="padding: 10px; background-color: #f0f0f0;">사용한 템플릿 보기</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="coupon, iterStat : ${couponList}">
+      <!-- 순번 표시 -->
+      <td style="padding: 10px;" th:text="${iterStat.index + 1 + (currentPage * couponList.getContent().size())}">순번</td>
+
+      <!-- 쿠폰 코드 표시 -->
+      <td style="padding: 10px;" th:text="${coupon.couponCode}">쿠폰 코드</td>
+
+      <!-- 생성 날짜 표시 -->
+      <td style="padding: 10px;" th:text="${coupon.formattedCreatedAt()}">생성 날짜</td>
+
+      <!-- 만료일 표시 -->
+      <td style="padding: 10px;">
+        <span th:if="${coupon.expiredAt != null}" th:text="${coupon.formattedExpiredAt()}">없으면 -</span>
+        <span th:if="${coupon.expiredAt == null}">-</span>
+      </td>
+
+      <!-- 사용 여부 표시 -->
+      <td style="padding: 10px;">
+        <span th:if="${coupon.usedAt != null}" th:text="'O'">사용</span>
+        <span th:if="${coupon.usedAt == null}">-</span>
+      </td>
+
+      <!-- 템플릿 보기 링크 -->
+      <td style="padding: 10px;">
+        <a th:href="@{/admin/coupons/use/template/{couponTemplateId}(couponTemplateId=${coupon.couponTemplateId})}">템플릿 보기</a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <div class="pagination">
+    <span th:if="${currentPage > 0}">
+      <a th:href="@{/admin/users/coupons(page=${currentPage - 1})}">이전</a>
+    </span>
+
+    <span>현재 페이지: <span th:text="${currentPage + 1}"></span></span>
+
+    <span th:if="${currentPage < 999}">
+      <a th:href="@{/admin/users/coupons(page=${currentPage + 1})}">다음</a>
+    </span>
+  </div>
+
+</div>
 </body>
 </html>

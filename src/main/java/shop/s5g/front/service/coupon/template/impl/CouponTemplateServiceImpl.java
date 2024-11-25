@@ -1,6 +1,5 @@
 package shop.s5g.front.service.coupon.template.impl;
 
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,8 +9,9 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import shop.s5g.front.adapter.coupon.CouponTemplateAdapter;
 import shop.s5g.front.dto.MessageDto;
-import shop.s5g.front.dto.coupon.CouponTemplateInquiryResponseDto;
-import shop.s5g.front.dto.coupon.CouponTemplateRegisterRequestDto;
+import shop.s5g.front.dto.coupon.template.CouponTemplateInquiryResponseDto;
+import shop.s5g.front.dto.coupon.template.CouponTemplateRegisterRequestDto;
+import shop.s5g.front.dto.coupon.template.CouponTemplateUpdateRequestDto;
 import shop.s5g.front.exception.coupon.CouponTemplateNotFoundException;
 import shop.s5g.front.exception.coupon.CouponTemplateRegisterFailedException;
 import shop.s5g.front.service.coupon.template.CouponTemplateService;
@@ -27,8 +27,6 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
      * @param couponTemplateRegisterRequestDto
      * @return MessageDto
      */
-
-    //TODO (young ho) - 나중에 에러처리 수정예정
     @Override
     public MessageDto createCouponTemplate(
         CouponTemplateRegisterRequestDto couponTemplateRegisterRequestDto) {
@@ -47,15 +45,14 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
 
     /**
      * 쿠폰 템플릿 조회
-     * @param page
-     * @param size
+     * @param pageable
      * @return List<CouponTemplateInquiryResponseDto>
      */
     @Override
-    public List<CouponTemplateInquiryResponseDto> getCouponTemplates(int page, int size) {
+    public Page<CouponTemplateInquiryResponseDto> getCouponTemplates(Pageable pageable) {
 
         try {
-            ResponseEntity<List<CouponTemplateInquiryResponseDto>> response = couponTemplateAdapter.findCouponTemplates(page, size);
+            ResponseEntity<Page<CouponTemplateInquiryResponseDto>> response = couponTemplateAdapter.findCouponTemplates(pageable);
 
             if (response.getStatusCode().is2xxSuccessful()) {
                 return response.getBody();
@@ -88,6 +85,11 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
         }
     }
 
+    /**
+     * 특정 쿠폰 템플릿 조회
+     * @param couponTemplateId
+     * @return CouponTemplateInquiryResponseDto
+     */
     @Override
     public CouponTemplateInquiryResponseDto findCouponTemplateById(Long couponTemplateId) {
 
@@ -103,5 +105,46 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
             throw new CouponTemplateRegisterFailedException(e.getMessage());
         }
 
+    }
+
+    /**
+     * 쿠폰 템플릿 삭제
+     * @param couponTemplateId
+     * @return MessageDto
+     */
+    @Override
+    public MessageDto deleteCouponTemplate(Long couponTemplateId) {
+
+        try {
+            ResponseEntity<MessageDto> response = couponTemplateAdapter.deleteCouponTemplate(couponTemplateId);
+
+            if (response.getStatusCode().is2xxSuccessful()) {
+                return response.getBody();
+            }
+            throw new RuntimeException("Delete CouponTemplate Failed...");
+
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    /**
+     * 쿠폰 템플릿 수정
+     * @param couponTemplateId
+     * @return MessageDto
+     */
+    @Override
+    public MessageDto updateCouponTemplate(Long couponTemplateId, CouponTemplateUpdateRequestDto couponTemplateUpdateRequestDto) {
+        try {
+            ResponseEntity<MessageDto> response = couponTemplateAdapter.updateCouponTemplate(couponTemplateId, couponTemplateUpdateRequestDto);
+
+            if (response.getStatusCode().is2xxSuccessful()) {
+                return response.getBody();
+            }
+            throw new RuntimeException("Update CouponTemplate Failed...");
+
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 }

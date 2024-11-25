@@ -64,15 +64,12 @@ public class PublisherController {
     //출판사 수정
     @PutMapping("/admin/publisher/update/{id}")
     public String publisherUpdate(@PathVariable("id") Long id, @ModelAttribute PublisherRequestDto publisherRequestDto) {
-
-        //publisher -> publisherRequestDto로 바꿔야 함
-        //publisher.setPublisherName(publisherRequestDto.getPublisherName());
         publisherService.updatePublisher(id, publisherRequestDto);
         return "redirect:/admin";
     }
 
     //출판사 삭제(비활성화)
-    @DeleteMapping("/admin/publisher/delete/{id}")
+    @PostMapping("/admin/publisher/delete/{id}")
     public String publisherDelete(@PathVariable("id") Long id) {
         publisherService.delete(id);
         return "redirect:/admin/publisher/list";

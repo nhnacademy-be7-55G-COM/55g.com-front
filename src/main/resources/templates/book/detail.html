@@ -1,7 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html
+    xmlns:layout="http://ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout/default}">
 <head>
   <style>
+
     .btn-coupon {
       text-align: left;
       width: 60%;
@@ -15,11 +18,128 @@
     .btn-purchase {
       margin: 15px 10px 15px 0px;
     }
+
+    .quantity-selector {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #ccc; /* 외부 테두리 */
+      border-radius: 5px; /* 둥근 모서리 */
+      overflow: hidden; /* 내부 경계 제거 */
+      width: 140px; /* 전체 폭 */
+      height: 40px; /* 버튼과 입력 필드 높이 */
+    }
+
+    /* 버튼 스타일 */
+    .quantity-selector .btn {
+      background-color: #d7b89c; /* 버튼 배경색 */
+      border: none; /* 개별 테두리 제거 */
+      color: white; /* 버튼 텍스트 색상 */
+      font-size: 16px; /* 텍스트 크기 */
+      font-weight: bold; /* 텍스트 굵기 */
+      cursor: pointer;
+      width: 40px; /* 버튼 폭 */
+      height: 100%; /* 버튼 높이 부모 높이와 일치 */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.2s ease;
+    }
+
+    .quantity-selector .btn:hover {
+      background-color: #c19b82; /* 버튼 hover 배경색 */
+    }
+
+    /* 입력 필드 스타일 */
+    .quantity-input {
+      border: none; /* 기본 테두리 제거 */
+      text-align: center; /* 텍스트 가운데 정렬 */
+      font-size: 16px; /* 텍스트 크기 */
+      width: 60px; /* 입력 필드 폭 */
+      height: 100%; /* 높이 부모 높이와 일치 */
+      -moz-appearance: textfield; /* Firefox 스피너 제거 */
+      appearance: textfield; /* 크로스 브라우저 스피너 제거 */
+      padding: 0; /* 여백 제거 */
+      margin: 0; /* 외부 여백 제거 */
+      box-sizing: border-box; /* 박스 크기 계산 방식 조정 */
+    }
+
+    .quantity-input::-webkit-inner-spin-button,
+    .quantity-input::-webkit-outer-spin-button {
+      -webkit-appearance: none; /* Chrome, Safari에서 스피너 제거 */
+      margin: 0; /* 스피너 공간 제거 */
+    }
+
+    .quantity-input:focus {
+      outline: none; /* 포커스 시 기본 테두리 제거 */
+    }
+
+    .cart-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5); /* 반투명 배경 */
+      display: none; /* 기본적으로 숨김 */
+      justify-content: center; /* Flexbox 가로 중앙 정렬 */
+      align-items: center; /* Flexbox 세로 중앙 정렬 */
+      z-index: 1000; /* 다른 요소 위로 */
+    }
+
+    /* 모달 컨텐츠 */
+    .cart-modal-content {
+      background: white;
+      padding: 20px;
+      border-radius: 8px; /* 둥근 모서리 */
+      text-align: center;
+      width: 300px;
+      max-width: 80%; /* 작은 화면에서 크기 제한 */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 */
+      animation: fadeIn 0.3s ease; /* 모달 등장 애니메이션 */
+    }
+
+    /* 버튼 스타일 */
+    .cart-modal-buttons {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 20px;
+    }
+
+    .cart-modal-buttons .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .btn-confirm {
+      background-color: #c19b82; /* 파란색 */
+      color: white;
+    }
+
+    .btn-cancel {
+      background-color: #ccc; /* 회색 */
+      color: black;
+    }
+
+    /* 애니메이션 효과 */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
   </style>
 </head>
-<div th:replace="~{fragments/head}"></div>
-<body>
-<div th:replace="~{fragments/header}"></div>
+<!--<div th:replace="~{fragments/head}"></div>-->
+<body layout:fragment="content">
+<!--<div th:replace="~{fragments/header}"></div>-->
 <!-- 본문 시작 -->
 <main>
   <div class="container mt-5">
@@ -50,11 +170,32 @@
           <button class="btn btn-success btn-coupon"><strong>받을 수 있는 쿠폰이 존재합니다!</strong><br/>
             쿠폰 받기<br/>
           </button>
+<!--          <h3 class="sale-price text-danger">판매가: 8,100원</h3>-->
+        </div>
+        <div class="quantity-selector">
+          <button type="button" class="btn-decrement" onclick="decrement()">−</button>
+          <input type="number" class="quantity-input" id="quantity" value="1" min="1" />
+          <button type="button" class="btn-increment" onclick="increment()">+</button>
         </div>
         <div class="btn-group mt-3">
           <button class="btn btn-primary btn-purchase" onclick="putTOCart()">카트에 넣기</button>
-          <button class="btn btn-success btn-purchase">바로 구매</button>
+          <button class="btn btn-success btn-purchase" onclick="instantPurchase()">바로 구매</button>
         </div>
+        <script th:inline="javascript">
+          const instantPurchase = () => {
+            const quantity = document.querySelector('#quantity').value;
+            const bookId= [[${book.bookId}]];
+            const obj = [
+              {
+                bookId: bookId,
+                quantity: quantity
+              }
+            ];
+            const param = encodeURIComponent(btoa(JSON.stringify(obj)));
+
+            window.location.href = `/purchase/instant?cart=${param}`;
+          }
+        </script>
       </div>
       <hr>
 
@@ -70,28 +211,132 @@
 <!-- 본문 끝 -->
 <div th:replace="~{fragments/footer}"></div>
 
+<div class="cart-modal" id="cartModal">
+  <div class="cart-modal-content">
+    <h4 style="white-space: nowrap">장바구니에 상품이 추가되었습니다.</h4>
+    <p>장바구니 페이지로 이동하시겠습니까?</p>
+    <div class="cart-modal-buttons">
+      <button type="button" class="btn btn-cancel" id="close">계속 쇼핑하기</button>
+      <button type="button" class="btn btn-confirm" id="confirm">장바구니로 이동</button>
+    </div>
+  </div>
+</div>
+
 <script>
-  async function putTOCart() {
+
+  const bookQuantity = document.getElementById('quantity');
+  const stock = [[${book.stock}]];
+
+  const modalBackground = document.getElementById('cartModal');
+  const confirmBtn = document.getElementById('confirm');
+  const cancelBtn = document.getElementById('close');
+
+
+  // 모달 열기 함수
+  function showModal() {
+    modalBackground.style.display = 'flex'; // 모달 표시
+  }
+
+  // 모달 닫기 함수
+  function closeModal() {
+    modalBackground.style.display = 'none'; // 모달 숨기기
+  }
+
+  // 이동하기 버튼 클릭 시
+  confirmBtn.addEventListener('click', () => {
+    closeModal();
+    loadCartPage(); // 장바구니 페이지로 이동
+  });
+
+  // 계속 쇼핑하기 버튼 클릭 시
+  cancelBtn.addEventListener('click', closeModal);
+
+
+  bookQuantity.addEventListener('input', () => {
+    const min = 1;
+
+    // 한글, 특수문자 제거
+    bookQuantity.value = bookQuantity.value.replace(/[^0-9]/g, '');
+
+    // 최소값 유지
+    if (bookQuantity.value === '' || parseInt(bookQuantity.value, 10) < min) {
+      bookQuantity.value = min;
+    }
+
+    const currentValue = parseInt(bookQuantity.value, 10);
+    if (currentValue > stock) {
+      bookQuantity.value = stock;
+      alert(`현재재고는 ${stock}개 입니다.`);
+    }
+  });
+
+  bookQuantity.addEventListener('keydown', (event) => {
+    const currentValue = parseInt(bookQuantity.value, 10);
+    const min = 1;
+
+    // 백스페이스, Delete 키 사용을 차단 (최소값일 경우만)
+    if ((event.key === 'Backspace' || event.key === 'Delete') && currentValue <= min) {
+      event.preventDefault();
+    }
+
+    // 숫자가 아닌 다른 키 입력 방지 (한글은 조합문자라서 처리가 안되는듯하다)
+    if (
+        !/^[0-9]$/.test(event.key) && // 숫자 키 외의 입력 방지
+        event.key !== 'Backspace' &&
+        event.key !== 'Delete' &&
+        event.key !== 'ArrowLeft' &&
+        event.key !== 'ArrowRight'
+    ) {
+      event.preventDefault();
+    }
+  });
+
+
+
+  function decrement(){
+    let currentQuantity = parseInt(bookQuantity.value,10);
+    if (currentQuantity > 1){
+      bookQuantity.value = currentQuantity - 1;
+    }
+  }
+
+  function increment() {
+    let currentQuantity = parseInt(bookQuantity.value,10);
+    if (currentQuantity < stock){
+      bookQuantity.value = currentQuantity + 1;
+    }
+  }
+
+
+  async function putTOCart(){
     console.log('putting start');
     const isloggedIn = await isLoggedIn();
 
-    if (isloggedIn) {
-      fetch("/cart", {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+    if (isloggedIn){
+      fetch("/cart",{
+        method:'POST',
+        headers: {'Content-Type':'application/json', [_csrf_header]: _csrf },
         body: JSON.stringify({
           bookId: [[${book.bookId}]],
-          quantity: 1
+          quantity: parseInt(bookQuantity.value,10)
         })
       })
-      .then(response => {
-        if (response.ok) {
-          updateCartCountWhenPutting();
-          alert("장바구니 담기에 성공했습니다.");
+      .then(response =>{
+        if (response.ok){
+
+          return response.json();
 
         } else {
           alert("장바구니 담는데 실패했습니다.");
         }
+      })
+      .then(data =>{
+
+        const cartCountChange = parseInt(data.cartCountChange,10);
+        if (cartCountChange == 1){
+          updateCartCountWhenPutting()
+        }
+        showModal();
       })
       .catch(error => {
         console.error('Error putting item:', error);
@@ -108,16 +353,18 @@
         let cartData = JSON.parse(localStorage.getItem('cart'));
         let book = cartData.cartBookInfoList.find(book => book.bookId === [[${book.bookId}]]);
 
-        if (book) {
-          book.quantity += 1;
-        } else {
-          cartData.cartBookInfoList.push({bookId: [[${book.bookId}]], quantity: 1});
+        if (book){
+          book.quantity += parseInt(bookQuantity.value,10);
+        }else {
+          cartData.cartBookInfoList.push({bookId:[[${book.bookId}]],quantity:parseInt(bookQuantity.value,10),status:true});
           updateCartCountWhenPutting();
 
         }
 
         localStorage.setItem('cart', JSON.stringify(cartData));
-        alert('장바구니에 담겼습니다.');
+
+        showModal();
+
 
       } catch (error) {
         alert("장바구니에 담는데 실패했습니다. 다시 시도해주세요");

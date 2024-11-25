@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import shop.s5g.front.adapter.CartAdapter;
-import shop.s5g.front.dto.MessageDto;
 import shop.s5g.front.dto.book.BookPurchaseView;
 import shop.s5g.front.dto.book.BookSimpleResponseDto;
 import shop.s5g.front.dto.cart.request.CartBookInfoRequestDto;
@@ -38,11 +37,11 @@ public class CartServiceImpl implements CartService {
     private final BookService bookService;
 
     @Override
-    public MessageDto putBook(CartPutRequestDto cartPutRequestDto) {
+    public int putBook(CartPutRequestDto cartPutRequestDto) {
         try {
-            ResponseEntity<MessageDto> response = cartAdapter.putBook(cartPutRequestDto);
+            ResponseEntity<Map<String, Integer>> response = cartAdapter.putBook(cartPutRequestDto);
 
-            return response.getBody();
+            return response.getBody().get("cartCountChange");
 
         } catch (Exception e) {
             throw new CartPutException("물품을 담는데 실패했습니다.");
@@ -147,6 +146,20 @@ public class CartServiceImpl implements CartService {
         } catch (Exception e){
 
             throw new CartPurchaseException("정보를 가져오는데 실패했습니다 다시 시도해주세요");
+
+        }
+    }
+
+    @Override
+    public void removePurchasedBooks() {
+
+        try {
+
+            cartAdapter.removePurchasedBooks();
+
+        } catch (Exception e){
+
+            throw new CartPurchaseException("구매한 물품의 장바구니 업데이트를 실패했습니다.");
 
         }
     }
