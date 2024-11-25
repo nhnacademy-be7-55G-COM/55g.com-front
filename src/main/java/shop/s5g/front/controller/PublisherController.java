@@ -35,10 +35,6 @@ public class PublisherController {
     @GetMapping("/admin/publisher/list")
     public String publisherList(Model model, @PageableDefault(page = 0, size = 9) Pageable pageable) {
         PageResponseDto<PublisherResponseDto> publisherList = publisherService.getPublisherList(pageable);
-//        log.debug("통신 끝");
-//        log.debug(publisherList.toString());
-//        log.debug("page number:{}" +
-//                "",publisherList.getPageable().getPageNumber());
         int nowPage1 = pageable.getPageNumber() + 1;
 
         //시작 페이지

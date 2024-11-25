@@ -1,99 +1,102 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
-  <title>My Page</title>
-  <meta charset="utf-8">
-  <th:block th:replace="~{fragments/head :: headTemplate}"></th:block>
-  <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css">
-  <link rel="stylesheet" href="/static/style-mypage.css">
-  <script
-    src="https://code.jquery.com/jquery-3.7.1.min.js"
-    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
-    crossorigin="anonymous"
-  ></script>
-  <script src="/static/js/mypage-utils.js"></script>
-  <style>
-    .spinner-border {
-      width: 5rem;
-      height: 5rem;
-    }
-    .button-cancel {
-      margin: 0;
-      height: 2.3rem;
-    }
-    .card-body p {
-      margin-bottom: 10px;
-    }
-    .btn-payco {
-      display: inline-block;
-      background-color: #ffffff;
-      color: #ff2233;
-      font-family: 'Pretendard', sans-serif; /* 깔끔한 폰트 */
-      font-size: 16px;
-      font-weight: bold;
-      text-align: center;
-      text-decoration: none;
-      padding: 10px 20px;
-      border-radius: 5px; /* 모서리를 둥글게 */
-      border: none;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 살짝 그림자 추가 */
-      transition: all 0.3s ease; /* 애니메이션 효과 */
-    }
-
-    .btn-payco:hover {
-      background-color: #ff2233;
-      box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* 그림자 강화 */
-      cursor: pointer;
-    }
-  </style>
-  <script>
-    const defaultSize = 10;
-    const hash = window.location.hash;
-    const getHashFromHref = (href) => {
-      return href.substring(href.search('#'));
-    }
-
-    const findParentSideBarNode = (element) => {
-      const parent = element.parentElement;
-      if (parent.tagName === 'BODY')
-        throw 'Cannot find parent Div';
-      if (parent.tagName === 'DIV' && parent.className.includes('collapse'))
-        return parent;
-      return findParentSideBarNode(parent);
-    }
-
-    const hashHandler = async (hash) => {
-      if (hash.includes('#orders')) {
-        const urlParams = new URLSearchParams(window.location.search);
-        const startDate = urlParams.get('startDate');
-        const endDate = urlParams.get('endDate');
-        const startDateInput = document.querySelector('#startDateInput');
-        const endDateInput = document.querySelector('#endDateInput');
-        startDateInput.value = startDate;
-        endDateInput.value = endDate;
-        const fetchButton = document.querySelector('#orderSearchButton');
-        fetchButton.click();
-        window.scrollTo({top: 0, left: 0});
-      }
-    };
-
-    if (hash !== '') {
-      document.addEventListener('DOMContentLoaded', () => {
-        const tabs = document.querySelectorAll('nav#sidebar li.nav-item > a');
-        for (let i = 0; i<tabs.length; i++) {
-          const hrefHash = getHashFromHref(tabs[i].href);
-          if (hrefHash === hash) {
-            findParentSideBarNode(tabs[i]).classList.add('show');
-            hashHandler(hash).then(resolve => tabs[i].click());
-            return;
-          }
+    <title>My Page</title>
+    <meta charset="utf-8">
+    <th:block th:replace="~{fragments/head :: headTemplate}"></th:block>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css">
+    <link rel="stylesheet" href="/static/style-mypage.css">
+    <script
+            src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+            crossorigin="anonymous"
+    ></script>
+    <script src="/static/js/mypage-utils.js"></script>
+    <style>
+        .spinner-border {
+            width: 5rem;
+            height: 5rem;
         }
-      });
-    }
-  </script>
+
+        .button-cancel {
+            margin: 0;
+            height: 2.3rem;
+        }
+
+        .card-body p {
+            margin-bottom: 10px;
+        }
+
+        .btn-payco {
+            display: inline-block;
+            background-color: #ffffff;
+            color: #ff2233;
+            font-family: 'Pretendard', sans-serif; /* 깔끔한 폰트 */
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px; /* 모서리를 둥글게 */
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 살짝 그림자 추가 */
+            transition: all 0.3s ease; /* 애니메이션 효과 */
+        }
+
+        .btn-payco:hover {
+            background-color: #ff2233;
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* 그림자 강화 */
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        const defaultSize = 10;
+        const hash = window.location.hash;
+        const getHashFromHref = (href) => {
+            return href.substring(href.search('#'));
+        }
+
+        const findParentSideBarNode = (element) => {
+            const parent = element.parentElement;
+            if (parent.tagName === 'BODY')
+                throw 'Cannot find parent Div';
+            if (parent.tagName === 'DIV' && parent.className.includes('collapse'))
+                return parent;
+            return findParentSideBarNode(parent);
+        }
+
+        const hashHandler = async (hash) => {
+            if (hash.includes('#orders')) {
+                const urlParams = new URLSearchParams(window.location.search);
+                const startDate = urlParams.get('startDate');
+                const endDate = urlParams.get('endDate');
+                const startDateInput = document.querySelector('#startDateInput');
+                const endDateInput = document.querySelector('#endDateInput');
+                startDateInput.value = startDate;
+                endDateInput.value = endDate;
+                const fetchButton = document.querySelector('#orderSearchButton');
+                fetchButton.click();
+                window.scrollTo({top: 0, left: 0});
+            }
+        };
+
+        if (hash !== '') {
+            document.addEventListener('DOMContentLoaded', () => {
+                const tabs = document.querySelectorAll('nav#sidebar li.nav-item > a');
+                for (let i = 0; i < tabs.length; i++) {
+                    const hrefHash = getHashFromHref(tabs[i].href);
+                    if (hrefHash === hash) {
+                        findParentSideBarNode(tabs[i]).classList.add('show');
+                        hashHandler(hash).then(resolve => tabs[i].click());
+                        return;
+                    }
+                }
+            });
+        }
+    </script>
 </head>
 
 <body data-bs-spy="scroll" data-bs-target="#sidebar" tabindex="0"
@@ -107,653 +110,677 @@
 <div th:if="${success}" th:attr="data-success=${success}" style="display:none;"></div>
 
 <div class="container">
-  <div class="row">
-    <!-- 사이드바 -->
-    <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block sidebar">
-      <div class="position-sticky">
-        <ul class="nav flex-column">
+    <div class="row">
+        <!-- 사이드바 -->
+        <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block sidebar">
+            <div class="position-sticky">
+                <ul class="nav flex-column">
 
-          <!-- 회원 정보 -->
-          <li class="nav-item">
-            <a class="nav-link collapsed d-flex justify-content-between align-items-center"
-               data-bs-toggle="collapse" href="#memberInfo" role="button"
-               aria-expanded="false" aria-controls="memberInfo">
-              회원 정보
-              <i class="fas fa-chevron-right toggle-icon"></i>
-            </a>
-            <div class="collapse" id="memberInfo">
-              <ul class="nav flex-column ms-3" style="margin-top: 0">
-                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#personalInfo">개인
-                  정보 관리</a></li>
-                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab"
-                                        href="#deliveryAddress">배송 주소</a></li>
-                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#coupons">쿠폰</a>
-                </li>
-                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab"
-                                        href="#gradeInfo">등급</a></li>
-                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#deleteAccount">회원
-                  탈퇴</a></li>
-              </ul>
+                    <!-- 회원 정보 -->
+                    <li class="nav-item">
+                        <a class="nav-link collapsed d-flex justify-content-between align-items-center"
+                           data-bs-toggle="collapse" href="#memberInfo" role="button"
+                           aria-expanded="false" aria-controls="memberInfo">
+                            회원 정보
+                            <i class="fas fa-chevron-right toggle-icon"></i>
+                        </a>
+                        <div class="collapse" id="memberInfo">
+                            <ul class="nav flex-column ms-3" style="margin-top: 0">
+                                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#personalInfo">개인
+                                    정보 관리</a></li>
+                                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab"
+                                                        href="#deliveryAddress">배송 주소</a></li>
+                                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#coupons">쿠폰</a>
+                                </li>
+                                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab"
+                                                        href="#gradeInfo">등급</a></li>
+                                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#deleteAccount">회원
+                                    탈퇴</a></li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <!-- 쇼핑 내역 -->
+                    <li class="nav-item">
+                        <a class="nav-link collapsed d-flex justify-content-between align-items-center"
+                           data-bs-toggle="collapse" href="#shoppingHistory" role="button"
+                           aria-expanded="false" aria-controls="shoppingHistory">
+                            쇼핑 내역
+                            <i class="fas fa-chevron-right toggle-icon"></i>
+                        </a>
+                        <div class="collapse" id="shoppingHistory">
+                            <ul class="nav flex-column ms-3" style="margin-top: 0">
+                                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#orders">주문
+                                    내역</a></li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <!-- 활동 내역 -->
+                    <li class="nav-item">
+                        <a class="nav-link collapsed d-flex justify-content-between align-items-center"
+                           data-bs-toggle="collapse" href="#activityHistory" role="button"
+                           aria-expanded="false" aria-controls="activityHistory">
+                            활동 내역
+                            <i class="fas fa-chevron-right toggle-icon"></i>
+                        </a>
+                        <div class="collapse" id="activityHistory">
+                            <ul class="nav flex-column ms-3" style="margin-top: 0">
+                                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#likes"
+                                                        onclick="loadLikes()">좋아요</a>
+                                </li>
+                                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#reviews">리뷰
+                                    내역</a></li>
+                                <li class="nav-item"><a id="points-tab" class="nav-link" data-bs-toggle="tab"
+                                                        href="#points">포인트
+                                    내역</a></li>
+                                <li class="nav-item"><a id="" class="nav-link" data-bs-toggle="tab" href="#coupons">쿠폰
+                                    내역</a></li>
+                                <script>
+                                    const pointButton = document.querySelector('a#points-tab');
+                                    const pointHistoryCaller = async (size, page) => {
+                                        const {totalPage, totalElements} = await callPointHistoryPage(
+                                            '#pointHistoryTable', {size: size, page: page});
+                                        const pageButtonTemplate = `<li class="page-item"><button class="page-link"></button></li>`;
+                                        const pageButtonActiveTemplate = `<li class="page-item active"><button class="page-link"></button></li>`;
+                                        const pagination = document.querySelector('#point-pagination');
+                                        pagination.innerHTML = '';
+                                        console.log(`totalPage: ${totalPage}, totalElements: ${totalElements}`);
+                                        if (totalPage > 0) {
+                                            for (let i = 0; i < totalPage; i++) {
+                                                let pageButton = null;
+                                                console.log(`i: ${i}, page: ${page}, page===i => ${page === i}`);
+                                                console.log(`typeof(i): ${typeof (i)}, typeof(page): ${typeof (page)}`);
+                                                if (page === i) { // isActive
+                                                    pageButton = `<li class="page-item active"><button class="page-link" data-index="${i}">${i
+                                                    + 1}</button></li>`;
+                                                } else {
+                                                    pageButton = `<li class="page-item"><button class="page-link" data-index="${i}">${i
+                                                    + 1}</button></li>`;
+                                                }
+                                                pagination.innerHTML += pageButton;
+                                            }
+                                        }
+                                        const buttons = pagination.querySelectorAll('li > button');
+                                        buttons.forEach(button => {
+                                            const index = button.getAttribute('data-index');
+                                            button.addEventListener('click', () => {
+                                                console.log(`call page: ${index}`);
+                                                pointHistoryCaller(defaultSize, parseInt(index));
+                                            });
+                                        });
+                                    };
+                                    pointButton.addEventListener('click', () => pointHistoryCaller(defaultSize, 0));
+                                </script>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
             </div>
-          </li>
+        </nav>
 
-          <!-- 쇼핑 내역 -->
-          <li class="nav-item">
-            <a class="nav-link collapsed d-flex justify-content-between align-items-center"
-               data-bs-toggle="collapse" href="#shoppingHistory" role="button"
-               aria-expanded="false" aria-controls="shoppingHistory">
-              쇼핑 내역
-              <i class="fas fa-chevron-right toggle-icon"></i>
-            </a>
-            <div class="collapse" id="shoppingHistory">
-              <ul class="nav flex-column ms-3" style="margin-top: 0">
-                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#orders">주문
-                  내역</a></li>
-              </ul>
-            </div>
-          </li>
+        <!-- 메인 콘텐츠 -->
+        <main class="col-md-9 col-lg-10">
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade" id="personalInfo" role="tabpanel">
+                    <h3 style="font-family: 'Pretendard', sans-serif;">개인 정보</h3>
+                    <div class="info-card">
+                        <p class="info-item">
+                            <i class="fas fa-user"></i> <strong>아이디:</strong> <span
+                                th:text="${member.loginId()}"></span>
+                        </p>
+                        <p class="info-item">
+                            <i class="fas fa-id-card"></i> <strong>이름:</strong> <span
+                                th:text="${member.name()}"></span>
+                        </p>
+                        <p class="info-item">
+                            <i class="fas fa-phone-alt"></i> <strong>연락처:</strong>
+                            <span
+                                    th:text="${member.phoneNumber().substring(0, 3) + '-' + member.phoneNumber().substring(3, 7) + '-' + member.phoneNumber().substring(7)}"></span>
+                        </p>
+                        <p class="info-item">
+                            <i class="fas fa-envelope"></i> <strong>이메일:</strong> <span
+                                th:text="${member.email()}"></span>
+                        </p>
+                        <p class="info-item">
+                            <i class="fas fa-birthday-cake"></i> <strong>생년월일:</strong>
+                            <span
+                                    th:text="${member.birth().substring(0, 4)} + '년 ' + ${member.birth().substring(4, 6)} + '월 ' + ${member.birth().substring(6)} + '일'"></span>
+                        </p>
+                        <p class="info-item">
+                            <i class="fas fa-calendar-alt"></i> <strong>가입 일자:</strong>
+                            <span
+                                    th:text="${#temporals.format(member.createdAt(), 'yyyy년 MM월 dd일 HH시 mm분')}"></span>
+                        </p>
 
-          <!-- 활동 내역 -->
-          <li class="nav-item">
-            <a class="nav-link collapsed d-flex justify-content-between align-items-center"
-               data-bs-toggle="collapse" href="#activityHistory" role="button"
-               aria-expanded="false" aria-controls="activityHistory">
-              활동 내역
-              <i class="fas fa-chevron-right toggle-icon"></i>
-            </a>
-            <div class="collapse" id="activityHistory">
-              <ul class="nav flex-column ms-3" style="margin-top: 0">
-                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#likes">좋아요</a>
-                </li>
-                <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#reviews">리뷰
-                  내역</a></li>
-                <li class="nav-item"><a id="points-tab" class="nav-link" data-bs-toggle="tab" href="#points">포인트
-                  내역</a></li>
-                <li class="nav-item"><a id="" class="nav-link" data-bs-toggle="tab" href="#coupons">쿠폰 내역</a></li>
-                <script>
-                  const pointButton = document.querySelector('a#points-tab');
-                  const pointHistoryCaller = async (size, page) => {
-                    const {totalPage, totalElements} = await callPointHistoryPage(
-                        '#pointHistoryTable', {size: size, page: page});
-                    const pageButtonTemplate = `<li class="page-item"><button class="page-link"></button></li>`;
-                    const pageButtonActiveTemplate = `<li class="page-item active"><button class="page-link"></button></li>`;
-                    const pagination = document.querySelector('#point-pagination');
-                    pagination.innerHTML = '';
-                    console.log(`totalPage: ${totalPage}, totalElements: ${totalElements}`);
-                    if (totalPage > 0) {
-                      for (let i = 0; i < totalPage; i++) {
-                        let pageButton = null;
-                        console.log(`i: ${i}, page: ${page}, page===i => ${page === i}`);
-                        console.log(`typeof(i): ${typeof (i)}, typeof(page): ${typeof (page)}`);
-                        if (page === i) { // isActive
-                          pageButton = `<li class="page-item active"><button class="page-link" data-index="${i}">${i
-                          + 1}</button></li>`;
-                        } else {
-                          pageButton = `<li class="page-item"><button class="page-link" data-index="${i}">${i
-                          + 1}</button></li>`;
-                        }
-                        pagination.innerHTML += pageButton;
-                      }
-                    }
-                    const buttons = pagination.querySelectorAll('li > button');
-                    buttons.forEach(button => {
-                      const index = button.getAttribute('data-index');
-                      button.addEventListener('click', () => {
-                        console.log(`call page: ${index}`);
-                        pointHistoryCaller(defaultSize, parseInt(index));
-                      });
-                    });
-                  };
-                  pointButton.addEventListener('click', () => pointHistoryCaller(defaultSize, 0));
-                </script>
-              </ul>
-            </div>
-          </li>
-        </ul>
-      </div>
-    </nav>
+                        <p class="info-item">
+                            <i class="fas fa-sign-in-alt"></i> <strong>최근 로그인:</strong>
+                            <span
+                                    th:text="${#temporals.format(member.latestLoginAt(), 'yyyy년 MM월 dd일 HH시 mm분')}"></span>
+                        </p>
+                    </div>
 
-    <!-- 메인 콘텐츠 -->
-    <main class="col-md-9 col-lg-10">
-      <div class="tab-content" id="myTabContent">
-        <div class="tab-pane fade" id="personalInfo" role="tabpanel">
-          <h3 style="font-family: 'Pretendard', sans-serif;">개인 정보</h3>
-          <div class="info-card">
-            <p class="info-item">
-              <i class="fas fa-user"></i> <strong>아이디:</strong> <span
-                th:text="${member.loginId()}"></span>
-            </p>
-            <p class="info-item">
-              <i class="fas fa-id-card"></i> <strong>이름:</strong> <span
-                th:text="${member.name()}"></span>
-            </p>
-            <p class="info-item">
-              <i class="fas fa-phone-alt"></i> <strong>연락처:</strong>
-              <span
-                  th:text="${member.phoneNumber().substring(0, 3) + '-' + member.phoneNumber().substring(3, 7) + '-' + member.phoneNumber().substring(7)}"></span>
-            </p>
-            <p class="info-item">
-              <i class="fas fa-envelope"></i> <strong>이메일:</strong> <span
-                th:text="${member.email()}"></span>
-            </p>
-            <p class="info-item">
-              <i class="fas fa-birthday-cake"></i> <strong>생년월일:</strong>
-              <span
-                  th:text="${member.birth().substring(0, 4)} + '년 ' + ${member.birth().substring(4, 6)} + '월 ' + ${member.birth().substring(6)} + '일'"></span>
-            </p>
-            <p class="info-item">
-              <i class="fas fa-calendar-alt"></i> <strong>가입 일자:</strong>
-              <span
-                  th:text="${#temporals.format(member.createdAt(), 'yyyy년 MM월 dd일 HH시 mm분')}"></span>
-            </p>
-
-            <p class="info-item">
-              <i class="fas fa-sign-in-alt"></i> <strong>최근 로그인:</strong>
-              <span
-                  th:text="${#temporals.format(member.latestLoginAt(), 'yyyy년 MM월 dd일 HH시 mm분')}"></span>
-            </p>
-          </div>
-
-          <button class="btn btn-custom btn-lg mt-3" data-bs-toggle="modal"
-                  data-bs-target="#updatePersonalModal">
-            개인 정보 변경
-          </button>
-          <!-- 비밀번호 변경 버튼 -->
-          <button class="btn btn-custom btn-lg mt-3 ms-2" data-bs-toggle="modal"
-                  data-bs-target="#changePasswordModal">
-            비밀번호 변경
-          </button>
-
-          <div class="social-integration mt-4">
-            <h5>소셜 연동</h5>
-            <div class="social-buttons">
-              <a href="/linkAccount/payco" class="btn-payco">PAYCO</a>
-            </div>
-          </div>
-
-        </div>
-
-        <!-- 배송 주소 -->
-        <div class="tab-pane fade" id="deliveryAddress" role="tabpanel">
-          <h3 style="font-family: 'Pretendard', sans-serif;">배송 주소 관리</h3>
-          <div class="info-card">
-            <!-- 현재 주소 목록 -->
-            <h5 style="font-family: 'Pretendard', sans-serif"><strong>등록된 주소</strong></h5>
-            <ul class="list-unstyled">
-              <li th:each="address : ${addresses}" class="mb-4">
-                <div class="address-card">
-                  <div>
-                    <h6 class="address-title">
-                      <strong th:text="${address.alias()}"></strong>
-                      <span th:if="${address.isDefault()}" class="badge">기본 배송지</span>
-                    </h6>
-                    <p class="address-details"><strong>주소:</strong> <span
-                        th:text="${address.primaryAddress()}"></span></p>
-                    <p class="address-details"><strong>상세주소:</strong> <span
-                        th:text="${address.detailAddress()}"></span></p>
-                  </div>
-                  <!-- 버튼 섹션 -->
-                  <div class="d-flex justify-content-between align-items-center mt-3">
-                    <!-- 수정 버튼 -->
-                    <button type="button" class="btn btn-edit btn-sm"
-                            data-bs-toggle="modal"
-                            th:attr="data-bs-target=${'#editAddressModal' + address.addressId()}">
-                      수정
+                    <button class="btn btn-custom btn-lg mt-3" data-bs-toggle="modal"
+                            data-bs-target="#updatePersonalModal">
+                        개인 정보 변경
+                    </button>
+                    <!-- 비밀번호 변경 버튼 -->
+                    <button class="btn btn-custom btn-lg mt-3 ms-2" data-bs-toggle="modal"
+                            data-bs-target="#changePasswordModal">
+                        비밀번호 변경
                     </button>
 
-                    <!-- 삭제 버튼 -->
-                    <form th:action="@{/mypage/deleteAddress}" method="post" class="mb-0">
-                      <input type="hidden" name="addressId" th:value="${address.addressId()}">
-                      <button type="submit" class="btn btn-delete btn-sm">삭제</button>
-                    </form>
-                  </div>
+                    <div class="social-integration mt-4">
+                        <h5>소셜 연동</h5>
+                        <div class="social-buttons">
+                            <a href="/linkAccount/payco" class="btn-payco">PAYCO</a>
+                        </div>
+                    </div>
+
                 </div>
-              </li>
-            </ul>
-            <!-- 주소 추가하기 버튼 -->
-            <button class="btn btn-custom btn-lg mt-3" data-bs-toggle="modal"
-                    data-bs-target="#addAddressModal">
-              주소 추가하기
-            </button>
-          </div>
-        </div>
 
-        <!-- 쿠폰 -->
-        <div class="tab-pane fade" id="coupons" role="tabpanel">
-          <h3>쿠폰 목록</h3>
-          <p>현재 보유 중인 쿠폰 목록입니다.</p>
-          <!-- 쿠폰 목록 및 정보 -->
-        </div>
+                <!-- 배송 주소 -->
+                <div class="tab-pane fade" id="deliveryAddress" role="tabpanel">
+                    <h3 style="font-family: 'Pretendard', sans-serif;">배송 주소 관리</h3>
+                    <div class="info-card">
+                        <!-- 현재 주소 목록 -->
+                        <h5 style="font-family: 'Pretendard', sans-serif"><strong>등록된 주소</strong></h5>
+                        <ul class="list-unstyled">
+                            <li th:each="address : ${addresses}" class="mb-4">
+                                <div class="address-card">
+                                    <div>
+                                        <h6 class="address-title">
+                                            <strong th:text="${address.alias()}"></strong>
+                                            <span th:if="${address.isDefault()}" class="badge">기본 배송지</span>
+                                        </h6>
+                                        <p class="address-details"><strong>주소:</strong> <span
+                                                th:text="${address.primaryAddress()}"></span></p>
+                                        <p class="address-details"><strong>상세주소:</strong> <span
+                                                th:text="${address.detailAddress()}"></span></p>
+                                    </div>
+                                    <!-- 버튼 섹션 -->
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <!-- 수정 버튼 -->
+                                        <button type="button" class="btn btn-edit btn-sm"
+                                                data-bs-toggle="modal"
+                                                th:attr="data-bs-target=${'#editAddressModal' + address.addressId()}">
+                                            수정
+                                        </button>
+
+                                        <!-- 삭제 버튼 -->
+                                        <form th:action="@{/mypage/deleteAddress}" method="post" class="mb-0">
+                                            <input type="hidden" name="addressId" th:value="${address.addressId()}">
+                                            <button type="submit" class="btn btn-delete btn-sm">삭제</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                        <!-- 주소 추가하기 버튼 -->
+                        <button class="btn btn-custom btn-lg mt-3" data-bs-toggle="modal"
+                                data-bs-target="#addAddressModal">
+                            주소 추가하기
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 쿠폰 -->
+                <div class="tab-pane fade" id="coupons" role="tabpanel">
+                    <h3>쿠폰 목록</h3>
+                    <p>현재 보유 중인 쿠폰 목록입니다.</p>
+                    <!-- 쿠폰 목록 및 정보 -->
+                </div>
 
 
-        <!-- 등급 정보 섹션 -->
-        <div class="tab-pane fade" id="gradeInfo" role="tabpanel">
-          <h3 style="font-family: 'Pretendard', sans-serif;">등급 정보</h3>
-          <div class="info-card">
-            <!-- 현재 등급 -->
-            <p class="info-item">
-              <i class="fas fa-medal bronze-icon" th:if="${member.grade().gradeName() == '일반'}"></i>
-              <i class="fas fa-medal silver-icon" th:if="${member.grade().gradeName() == '로얄'}"></i>
-              <i class="fas fa-medal gold-icon" th:if="${member.grade().gradeName() == '골드'}"></i>
-              <i class="fas fa-medal platinum-icon"
-                 th:if="${member.grade().gradeName() == '플래티넘'}"></i>
-              <strong>현재 등급:</strong> <span th:text="${member.grade().gradeName()}"></span>
-            </p>
+                <!-- 등급 정보 섹션 -->
+                <div class="tab-pane fade" id="gradeInfo" role="tabpanel">
+                    <h3 style="font-family: 'Pretendard', sans-serif;">등급 정보</h3>
+                    <div class="info-card">
+                        <!-- 현재 등급 -->
+                        <p class="info-item">
+                            <i class="fas fa-medal bronze-icon" th:if="${member.grade().gradeName() == '일반'}"></i>
+                            <i class="fas fa-medal silver-icon" th:if="${member.grade().gradeName() == '로얄'}"></i>
+                            <i class="fas fa-medal gold-icon" th:if="${member.grade().gradeName() == '골드'}"></i>
+                            <i class="fas fa-medal platinum-icon"
+                               th:if="${member.grade().gradeName() == '플래티넘'}"></i>
+                            <strong>현재 등급:</strong> <span th:text="${member.grade().gradeName()}"></span>
+                        </p>
 
-            <!-- 등급 산정 기간 -->
-            <p class="info-item">
-              <i class="fas fa-calendar-alt"></i> <strong>등급 산정 기간:</strong>
-              <span
-                  th:text="${#temporals.format(#temporals.createNow().minus(3, T(java.time.temporal.ChronoUnit).MONTHS), 'yyyy-MM-dd')}"></span>
-              ~
-              <span th:text="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}"></span>
-            </p>
+                        <!-- 등급 산정 기간 -->
+                        <p class="info-item">
+                            <i class="fas fa-calendar-alt"></i> <strong>등급 산정 기간:</strong>
+                            <span
+                                    th:text="${#temporals.format(#temporals.createNow().minus(3, T(java.time.temporal.ChronoUnit).MONTHS), 'yyyy-MM-dd')}"></span>
+                            ~
+                            <span th:text="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}"></span>
+                        </p>
 
-            <!-- 현재 구매 금액 -->
-            <p class="info-item">
-              <i class="fas fa-won-sign"></i> <strong>현재 구매 금액:</strong> <span th:text="'원'"></span>
-            </p>
+                        <!-- 현재 구매 금액 -->
+                        <p class="info-item">
+                            <i class="fas fa-won-sign"></i> <strong>현재 구매 금액:</strong> <span th:text="'원'"></span>
+                        </p>
 
-            <!-- 다음 등급까지 남은 금액 -->
-            <p class="info-item">
-              <i class="fas fa-arrow-up"></i> <strong>다음 등급까지 남은 금액:</strong>
-              <span th:text="'원'"></span>
-            </p>
+                        <!-- 다음 등급까지 남은 금액 -->
+                        <p class="info-item">
+                            <i class="fas fa-arrow-up"></i> <strong>다음 등급까지 남은 금액:</strong>
+                            <span th:text="'원'"></span>
+                        </p>
 
-            <!-- 등급 혜택 확인 버튼 -->
-            <button class="btn btn-custom btn-lg mt-3" data-bs-toggle="modal"
-                    data-bs-target="#gradeBenefitsModal">
-              등급 혜택 확인
-            </button>
-          </div>
-        </div>
+                        <!-- 등급 혜택 확인 버튼 -->
+                        <button class="btn btn-custom btn-lg mt-3" data-bs-toggle="modal"
+                                data-bs-target="#gradeBenefitsModal">
+                            등급 혜택 확인
+                        </button>
+                    </div>
+                </div>
 
-        <!-- 회원 탈퇴 -->
-        <div class="tab-pane fade" id="deleteAccount" role="tabpanel">
-          <h3 style="font-family: 'Pretendard', sans-serif; font-weight: bold;">회원 탈퇴</h3>
-          <p style="font-family: 'Pretendard', sans-serif;">정말로 회원 탈퇴를 원하시면 아래 버튼을 눌러 진행해주세요.</p>
+                <!-- 회원 탈퇴 -->
+                <div class="tab-pane fade" id="deleteAccount" role="tabpanel">
+                    <h3 style="font-family: 'Pretendard', sans-serif; font-weight: bold;">회원 탈퇴</h3>
+                    <p style="font-family: 'Pretendard', sans-serif;">정말로 회원 탈퇴를 원하시면 아래 버튼을 눌러 진행해주세요.</p>
 
-          <!-- 회원 탈퇴 폼 -->
-          <form>
-            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal"
-                    style="font-family: 'Pretendard', sans-serif; font-weight: 600; border-radius: 5px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); padding: 5px 10px;">
-              회원 탈퇴
-            </button>
-          </form>
-        </div>
-        <!-- 좋아요 -->
-        <div class="tab-pane fade" id="likes" role="tabpanel">
-          <h3>좋아요 목록</h3>
-          <p>좋아요 표시한 상품 목록입니다.</p>
-          <!-- 좋아요 목록 표시 -->
-        </div>
+                    <!-- 회원 탈퇴 폼 -->
+                    <form>
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                                data-bs-target="#deleteConfirmationModal"
+                                style="font-family: 'Pretendard', sans-serif; font-weight: 600; border-radius: 5px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); padding: 5px 10px;">
+                            회원 탈퇴
+                        </button>
+                    </form>
+                </div>
+                <!-- 좋아요 -->
+                <div class="tab-pane fade" id="likes" role="tabpanel">
+                    <table id="likes-table">
+                        <thead>
+                        <tr>
+                            <th>도서 제목</th>
+                            <th>가격</th>
+                            <th>출판사</th>
+                            <th>상태</th>
+                            <th>삭제</th> <!-- 삭제 버튼 열 추가 -->
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <!-- 좋아요 목록이 여기에 추가됩니다. -->
+                        </tbody>
+                    </table>
+                </div>
 
-        <!-- 리뷰 내역 -->
-        <div class="tab-pane fade" id="reviews" role="tabpanel">
-          <h3>리뷰 내역</h3>
-          <p>작성한 리뷰 목록입니다.</p>
-          <!-- 리뷰 목록 표시 -->
-        </div>
-        <!-- 주문 목록 -->
-        <div class="tab-pane fade" id="orders" role="tabpanel">
-          <h3>주문 목록</h3>
-          <th:block th:replace="~{order/order-list :: #orderHistory}" />
-<!--          <ul>-->
-<!--            <li th:each="order : ${orders}">-->
-<!--              <span th:text="${order.date}"></span> - <span th:text="${order.amount}"></span>-->
-<!--            </li>-->
-<!--          </ul>-->
+                <!-- 리뷰 내역 -->
+                <div class="tab-pane fade" id="reviews" role="tabpanel">
+                    <h3>리뷰 내역</h3>
+                    <p>작성한 리뷰 목록입니다.</p>
+                    <!-- 리뷰 목록 표시 -->
+                </div>
+                <!-- 주문 목록 -->
+                <div class="tab-pane fade" id="orders" role="tabpanel">
+                    <h3>주문 목록</h3>
+                    <th:block th:replace="~{order/order-list :: #orderHistory}"/>
+                    <!--          <ul>-->
+                    <!--            <li th:each="order : ${orders}">-->
+                    <!--              <span th:text="${order.date}"></span> - <span th:text="${order.amount}"></span>-->
+                    <!--            </li>-->
+                    <!--          </ul>-->
 
-        </div>
+                </div>
 
-        <!-- 포인트 내역 -->
-        <div class="tab-pane fade" id="points" role="tabpanel">
-          <h3>포인트 내역</h3>
-          <p>현재 포인트: <span th:text="${member.point()}"></span></p>
-          <div th:replace="~{fragments/point-history :: #pointHistoryTable}"></div>
-          <ul id="point-pagination" class="pagination d-flex justify-content-end"></ul>
-        </div>
+                <!-- 포인트 내역 -->
+                <div class="tab-pane fade" id="points" role="tabpanel">
+                    <h3>포인트 내역</h3>
+                    <p>현재 포인트: <span th:text="${member.point()}"></span></p>
+                    <div th:replace="~{fragments/point-history :: #pointHistoryTable}"></div>
+                    <ul id="point-pagination" class="pagination d-flex justify-content-end"></ul>
+                </div>
 
-      </div>
-    </main>
-  </div>
+            </div>
+        </main>
+    </div>
 </div>
 <!-- 개인 정보 변경 Modal -->
 <div class="modal fade" id="updatePersonalModal" tabindex="-1"
      aria-labelledby="updatePersonalModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content info-card">
-      <div class="modal-header">
-        <h5 class="modal-title info-title" id="updatePersonalModalLabel">개인 정보 변경</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form th:action="@{/mypage/changeInfo}" method="post">
-          <div class="mb-3">
-            <label for="newName" class="form-label">새 이름</label>
-            <input type="text" class="form-control form-input" id="newName" name="name"
-                   placeholder="새 이름을 입력하세요" th:value="${member.name}">
-          </div>
-          <div class="mb-3">
-            <label for="newPhoneNumber" class="form-label">새 연락처</label>
-            <input type="tel" class="form-control form-input" id="newPhoneNumber" name="phoneNumber"
-                   placeholder="010-0000-0000 형식으로 입력하세요"
-                   th:value="${member.phoneNumber().substring(0, 3) + '-' + member.phoneNumber().substring(3, 7) + '-' + member.phoneNumber().substring(7)}"
-                   required
-                   oninput="formatPhoneNumber()">
-            <div id="phoneError" style="color: red; font-size: 0.9rem; display: none;">
-              핸드폰 번호는 '010-0000-0000' 형식으로 입력해야 합니다
+    <div class="modal-dialog">
+        <div class="modal-content info-card">
+            <div class="modal-header">
+                <h5 class="modal-title info-title" id="updatePersonalModalLabel">개인 정보 변경</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-          </div>
-          <div class="mb-3">
-            <label for="newEmail" class="form-label">새 이메일</label>
-            <input type="email" class="form-control form-input" id="newEmail" name="email"
-                   placeholder="새 이메일을 입력하세요" th:value="${member.email}">
-          </div>
-          <button type="submit" class="btn btn-custom btn-lg mt-3" onclick="removeHyphens()" >변경 저장</button>
-        </form>
-      </div>
+            <div class="modal-body">
+                <form th:action="@{/mypage/changeInfo}" method="post">
+                    <div class="mb-3">
+                        <label for="newName" class="form-label">새 이름</label>
+                        <input type="text" class="form-control form-input" id="newName" name="name"
+                               placeholder="새 이름을 입력하세요" th:value="${member.name}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="newPhoneNumber" class="form-label">새 연락처</label>
+                        <input type="tel" class="form-control form-input" id="newPhoneNumber" name="phoneNumber"
+                               placeholder="010-0000-0000 형식으로 입력하세요"
+                               th:value="${member.phoneNumber().substring(0, 3) + '-' + member.phoneNumber().substring(3, 7) + '-' + member.phoneNumber().substring(7)}"
+                               required
+                               oninput="formatPhoneNumber()">
+                        <div id="phoneError" style="color: red; font-size: 0.9rem; display: none;">
+                            핸드폰 번호는 '010-0000-0000' 형식으로 입력해야 합니다
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="newEmail" class="form-label">새 이메일</label>
+                        <input type="email" class="form-control form-input" id="newEmail" name="email"
+                               placeholder="새 이메일을 입력하세요" th:value="${member.email}">
+                    </div>
+                    <button type="submit" class="btn btn-custom btn-lg mt-3" onclick="removeHyphens()">변경 저장</button>
+                </form>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 <!-- 비밀번호 변경 Modal -->
 <div class="modal fade" id="changePasswordModal" tabindex="-1"
      aria-labelledby="changePasswordModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content info-card">
-      <div class="modal-header">
-        <h5 class="modal-title info-title" id="changePasswordModalLabel">비밀번호 변경</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form id="changePasswordForm" th:action="@{/mypage/changePassword}" method="post" onsubmit="return validatePassword()">
-          <div class="mb-3">
-            <label for="oldPassword" class="form-label">현재 비밀번호</label>
-            <input type="password" class="form-control form-input" id="oldPassword"
-                   name="oldPassword" placeholder="현재 비밀번호를 입력하세요" required>
-          </div>
-          <div class="mb-3">
-            <label for="newPassword" class="form-label">새 비밀번호</label>
-            <input type="password" class="form-control form-input" id="newPassword"
-                   name="newPassword" placeholder="새 비밀번호를 입력하세요" required oninput="validatePassword()">
-          </div>
-          <div class="mb-3">
-            <label for="confirmNewPassword" class="form-label">새 비밀번호 확인</label>
-            <input type="password" class="form-control form-input" id="confirmNewPassword"
-                   name="confirmNewPassword" placeholder="새 비밀번호를 다시 입력하세요" required oninput="validatePassword()">
-          </div>
-          <div id="passwordError" class="text-danger" style="display: none;">새 비밀번호와 확인 비밀번호가 일치하지 않습니다.</div>
-          <button type="submit" class="btn btn-custom btn-lg mt-3">비밀번호 변경</button>
-        </form>
-      </div>
+    <div class="modal-dialog">
+        <div class="modal-content info-card">
+            <div class="modal-header">
+                <h5 class="modal-title info-title" id="changePasswordModalLabel">비밀번호 변경</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="changePasswordForm" th:action="@{/mypage/changePassword}" method="post"
+                      onsubmit="return validatePassword()">
+                    <div class="mb-3">
+                        <label for="oldPassword" class="form-label">현재 비밀번호</label>
+                        <input type="password" class="form-control form-input" id="oldPassword"
+                               name="oldPassword" placeholder="현재 비밀번호를 입력하세요" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="newPassword" class="form-label">새 비밀번호</label>
+                        <input type="password" class="form-control form-input" id="newPassword"
+                               name="newPassword" placeholder="새 비밀번호를 입력하세요" required oninput="validatePassword()">
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirmNewPassword" class="form-label">새 비밀번호 확인</label>
+                        <input type="password" class="form-control form-input" id="confirmNewPassword"
+                               name="confirmNewPassword" placeholder="새 비밀번호를 다시 입력하세요" required
+                               oninput="validatePassword()">
+                    </div>
+                    <div id="passwordError" class="text-danger" style="display: none;">새 비밀번호와 확인 비밀번호가 일치하지 않습니다.</div>
+                    <button type="submit" class="btn btn-custom btn-lg mt-3">비밀번호 변경</button>
+                </form>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 <!-- 등급 혜택 모달 -->
 <div class="modal fade" id="gradeBenefitsModal" tabindex="-1"
      aria-labelledby="gradeBenefitsModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content info-card">
-      <div class="modal-header">
-        <h5 class="modal-title info-title" id="gradeBenefitsModalLabel">등급별 혜택</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <ul>
-          <li><strong>일반:</strong> 0 ~ 10만 포인트 미만, 1%의 적립 혜택이 있습니다.</li>
-          <li><strong>로얄:</strong> 10만 ~ 20만 포인트 미만, 2%의 적립 혜택이 있습니다.</li>
-          <li><strong>골드:</strong> 20만 ~ 30만 포인트 미만, 3%의 적립 혜택이 있습니다.</li>
-          <li><strong>플래티넘:</strong> 30만 ~ , 4%의 적립 혜택이 있습니다.</li>
-        </ul>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-      </div>
+    <div class="modal-dialog">
+        <div class="modal-content info-card">
+            <div class="modal-header">
+                <h5 class="modal-title info-title" id="gradeBenefitsModalLabel">등급별 혜택</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <ul>
+                    <li><strong>일반:</strong> 0 ~ 10만 포인트 미만, 1%의 적립 혜택이 있습니다.</li>
+                    <li><strong>로얄:</strong> 10만 ~ 20만 포인트 미만, 2%의 적립 혜택이 있습니다.</li>
+                    <li><strong>골드:</strong> 20만 ~ 30만 포인트 미만, 3%의 적립 혜택이 있습니다.</li>
+                    <li><strong>플래티넘:</strong> 30만 ~ , 4%의 적립 혜택이 있습니다.</li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 <!-- 주소 추가 모달 -->
 <div class="modal fade" id="addAddressModal" tabindex="-1" aria-labelledby="addAddressModalLabel"
      aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content info-card" style="padding: 20px;">
-      <div class="modal-header">
-        <h5 class="modal-title" id="addAddressModalLabel"
-            style="font-family: 'Pretendard', sans-serif; font-weight: bold;">주소 추가</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form th:action="@{/mypage/addAddress}" method="post">
-
-          <!-- 별칭 입력 -->
-          <div class="mb-3">
-            <label for="addressAlias" class="form-label" style="font-weight: 600;">별칭</label>
-            <input type="text" class="form-control form-input" id="addressAlias" name="alias"
-                   placeholder="주소의 별칭 (예: 집, 회사)" required>
-          </div>
-
-          <!-- 우편번호 입력 및 찾기 버튼 -->
-          <div class="mb-3">
-            <label for="zipCode" class="form-label" style="font-weight: 600;">우편번호</label>
-            <div class="input-group" style="display: flex; align-items: stretch;">
-              <!-- 우편번호 입력란 -->
-              <input type="text" class="form-control form-input" id="zipCode" name="zipCode"
-                     placeholder="우편번호" required readonly
-                     style="height: calc(1.5em + .75rem + 2px); margin-top: 15px;margin-right:30px; padding-right: 30px;">
-              <!-- 찾기 버튼 -->
-              <button type="button" class="btn btn-secondary" onclick="execDaumPostcode()"
-                      style="height: calc(1.5em + .75rem + 2px);">
-                찾기
-              </button>
+    <div class="modal-dialog">
+        <div class="modal-content info-card" style="padding: 20px;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addAddressModalLabel"
+                    style="font-family: 'Pretendard', sans-serif; font-weight: bold;">주소 추가</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-          </div>
+            <div class="modal-body">
+                <form th:action="@{/mypage/addAddress}" method="post">
 
-          <!-- 주소 입력 -->
-          <div class="mb-3">
-            <label for="address" class="form-label" style="font-weight: 600;">주소</label>
-            <input type="text" class="form-control form-input" id="address" name="primaryAddress"
-                   placeholder="주소" required readonly>
-          </div>
+                    <!-- 별칭 입력 -->
+                    <div class="mb-3">
+                        <label for="addressAlias" class="form-label" style="font-weight: 600;">별칭</label>
+                        <input type="text" class="form-control form-input" id="addressAlias" name="alias"
+                               placeholder="주소의 별칭 (예: 집, 회사)" required>
+                    </div>
 
-          <!-- 상세 주소 입력 -->
-          <div class="mb-3">
-            <label for="detailAddress" class="form-label" style="font-weight: 600;">상세 주소</label>
-            <input type="text" class="form-control form-input" id="detailAddress"
-                   name="detailAddress" placeholder="상세 주소 입력" required>
-          </div>
+                    <!-- 우편번호 입력 및 찾기 버튼 -->
+                    <div class="mb-3">
+                        <label for="zipCode" class="form-label" style="font-weight: 600;">우편번호</label>
+                        <div class="input-group" style="display: flex; align-items: stretch;">
+                            <!-- 우편번호 입력란 -->
+                            <input type="text" class="form-control form-input" id="zipCode" name="zipCode"
+                                   placeholder="우편번호" required readonly
+                                   style="height: calc(1.5em + .75rem + 2px); margin-top: 15px;margin-right:30px; padding-right: 30px;">
+                            <!-- 찾기 버튼 -->
+                            <button type="button" class="btn btn-secondary" onclick="execDaumPostcode()"
+                                    style="height: calc(1.5em + .75rem + 2px);">
+                                찾기
+                            </button>
+                        </div>
+                    </div>
 
-          <!-- 기본 배송지 여부 -->
-          <div class="form-check mb-3" style="padding-left: 1.5em;">
-            <input type="checkbox" class="form-check-input" id="setAsDefault" name="isDefault"
-                   value="true">
-            <label class="form-check-label" for="setAsDefault" style="font-weight: 600;">기본 주소지로
-              설정</label>
-          </div>
+                    <!-- 주소 입력 -->
+                    <div class="mb-3">
+                        <label for="address" class="form-label" style="font-weight: 600;">주소</label>
+                        <input type="text" class="form-control form-input" id="address" name="primaryAddress"
+                               placeholder="주소" required readonly>
+                    </div>
 
-          <!-- 제출 버튼 -->
-          <div class="d-grid mt-4">
-            <button type="submit" class="btn btn-custom" onclick="prepareFormAndSubmit()">주소 추가
-            </button>
-          </div>
-        </form>
-      </div>
+                    <!-- 상세 주소 입력 -->
+                    <div class="mb-3">
+                        <label for="detailAddress" class="form-label" style="font-weight: 600;">상세 주소</label>
+                        <input type="text" class="form-control form-input" id="detailAddress"
+                               name="detailAddress" placeholder="상세 주소 입력" required>
+                    </div>
+
+                    <!-- 기본 배송지 여부 -->
+                    <div class="form-check mb-3" style="padding-left: 1.5em;">
+                        <input type="checkbox" class="form-check-input" id="setAsDefault" name="isDefault"
+                               value="true">
+                        <label class="form-check-label" for="setAsDefault" style="font-weight: 600;">기본 주소지로
+                            설정</label>
+                    </div>
+
+                    <!-- 제출 버튼 -->
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-custom" onclick="prepareFormAndSubmit()">주소 추가
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 <<!-- 기본 배송지 수정 모달 -->
 <div th:each="address : ${addresses}"
      th:id="'editAddressModal' + ${address.addressId()}"
      class="modal fade" tabindex="-1" aria-labelledby="editAddressModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content info-card">
-      <div class="modal-header">
-        <h5 class="modal-title" id="editAddressModalLabel">수정</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form th:action="@{/mypage/updateAddress}" method="post" id="editAddressForm">
-          <input type="hidden" name="addressId" th:value="${address.addressId()}">
-
-          <!-- 별칭 입력 -->
-          <div class="mb-3">
-            <label for="alias" class="form-label">별칭</label>
-            <input type="text" class="form-control form-input" id="alias" name="alias"
-                   th:value="${address.alias()}" placeholder="예: 집, 회사">
-          </div>
-
-          <!-- 기본 배송지 여부 -->
-          <div class="form-check mb-3 d-flex justify-content-between align-items-center">
-            <div class="d-flex align-items-center">
-              <input type="checkbox" class="form-check-input" id="isDefault" name="isDefault"
-                     value="true"
-                     th:checked="${address.isDefault()}">
-              <label class="form-check-label ms-2" for="isDefault">기본 배송지로 설정</label>
+    <div class="modal-dialog">
+        <div class="modal-content info-card">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editAddressModalLabel">수정</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+            <div class="modal-body">
+                <form th:action="@{/mypage/updateAddress}" method="post" id="editAddressForm">
+                    <input type="hidden" name="addressId" th:value="${address.addressId()}">
 
-          </div>
+                    <!-- 별칭 입력 -->
+                    <div class="mb-3">
+                        <label for="alias" class="form-label">별칭</label>
+                        <input type="text" class="form-control form-input" id="alias" name="alias"
+                               th:value="${address.alias()}" placeholder="예: 집, 회사">
+                    </div>
 
-          <button type="button" class="btn btn-custom btn-sm" onclick="submitIsDefault()">설정
-          </button>
-        </form>
-      </div>
+                    <!-- 기본 배송지 여부 -->
+                    <div class="form-check mb-3 d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <input type="checkbox" class="form-check-input" id="isDefault" name="isDefault"
+                                   value="true"
+                                   th:checked="${address.isDefault()}">
+                            <label class="form-check-label ms-2" for="isDefault">기본 배송지로 설정</label>
+                        </div>
+
+                    </div>
+
+                    <button type="button" class="btn btn-custom btn-sm" onclick="submitIsDefault()">설정
+                    </button>
+                </form>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 <!-- 회원 탈퇴 모달 -->
-<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content" style="border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
-      <div class="modal-header" style="border-bottom: 1px solid #ddd;">
-        <h5 class="modal-title" id="deleteConfirmationModalLabel" style="font-family: 'Pretendard', sans-serif; font-weight: bold;">회원 탈퇴 확인</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body" style="font-family: 'Pretendard', sans-serif; font-size: 1.1rem;">
-        <p>정말로 회원 탈퇴를 하시겠습니까?</p>
-        <p style="color: red;">* 탈퇴 후에는 복구가 불가능합니다.</p>
-      </div>
-      <div class="modal-footer" style="border-top: 1px solid #ddd; justify-content: space-between;">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="font-family: 'Pretendard', sans-serif;">취소</button>
+<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+            <div class="modal-header" style="border-bottom: 1px solid #ddd;">
+                <h5 class="modal-title" id="deleteConfirmationModalLabel"
+                    style="font-family: 'Pretendard', sans-serif; font-weight: bold;">회원 탈퇴 확인</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="font-family: 'Pretendard', sans-serif; font-size: 1.1rem;">
+                <p>정말로 회원 탈퇴를 하시겠습니까?</p>
+                <p style="color: red;">* 탈퇴 후에는 복구가 불가능합니다.</p>
+            </div>
+            <div class="modal-footer" style="border-top: 1px solid #ddd; justify-content: space-between;">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                        style="font-family: 'Pretendard', sans-serif;">취소
+                </button>
 
-        <!-- 탈퇴 요청을 위한 폼 -->
-        <form th:action="@{/mypage/deleteAccount}" method="post">
-          <button type="submit" class="btn btn-danger" style="font-family: 'Pretendard', sans-serif; font-weight: 600; border-radius: 5px; padding: 8px 16px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">탈퇴하기</button>
-        </form>
-      </div>
+                <!-- 탈퇴 요청을 위한 폼 -->
+                <form th:action="@{/mypage/deleteAccount}" method="post">
+                    <button type="submit" class="btn btn-danger"
+                            style="font-family: 'Pretendard', sans-serif; font-weight: 600; border-radius: 5px; padding: 8px 16px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                        탈퇴하기
+                    </button>
+                </form>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 <script>
-  function prepareFormAndSubmit() {
-    const checkbox = document.getElementById("setAsDefault");
+    function prepareFormAndSubmit() {
+        const checkbox = document.getElementById("setAsDefault");
 
-    // 체크박스가 체크되지 않았으면 value를 "false"로 설정
-    if (!checkbox.checked) {
-      // hidden input 생성
-      const hiddenFalseInput = document.createElement("input");
-      hiddenFalseInput.type = "hidden";
-      hiddenFalseInput.name = checkbox.name;
-      hiddenFalseInput.value = "false";
-      checkbox.form.appendChild(hiddenFalseInput);
+        // 체크박스가 체크되지 않았으면 value를 "false"로 설정
+        if (!checkbox.checked) {
+            // hidden input 생성
+            const hiddenFalseInput = document.createElement("input");
+            hiddenFalseInput.type = "hidden";
+            hiddenFalseInput.name = checkbox.name;
+            hiddenFalseInput.value = "false";
+            checkbox.form.appendChild(hiddenFalseInput);
+        }
+
+        // 폼 제출
+        checkbox.form.submit();
     }
 
-    // 폼 제출
-    checkbox.form.submit();
-  }
+    function submitIsDefault() {
+        const checkbox = document.getElementById("isDefault");
 
-  function submitIsDefault() {
-    const checkbox = document.getElementById("isDefault");
+        if (!checkbox.checked) {
+            const hiddenFalseInput = document.createElement("input");
+            hiddenFalseInput.type = "hidden";
+            hiddenFalseInput.name = checkbox.name;
+            hiddenFalseInput.value = "false";
+            checkbox.form.appendChild(hiddenFalseInput);
+        }
 
-    if (!checkbox.checked) {
-      const hiddenFalseInput = document.createElement("input");
-      hiddenFalseInput.type = "hidden";
-      hiddenFalseInput.name = checkbox.name;
-      hiddenFalseInput.value = "false";
-      checkbox.form.appendChild(hiddenFalseInput);
+        // 폼 제출
+        checkbox.form.submit();
     }
-
-    // 폼 제출
-    checkbox.form.submit();
-  }
 </script>
 
 <!-- 주문 상세 Modal -->
 <div class="modal fade" id="orderDetailModal" tabindex="-1"
      aria-labelledby="orderDetailModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content" style="width: 60rem; transform: translate(-15rem, 0);">
-      <div class="modal-header">
-        <h5 class="modal-title" id="orderDetailModalLabel">주문 상세</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body" id="detail-modal-body">
-      </div>
+    <div class="modal-dialog">
+        <div class="modal-content" style="width: 60rem; transform: translate(-15rem, 0);">
+            <div class="modal-header">
+                <h5 class="modal-title" id="orderDetailModalLabel">주문 상세</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="detail-modal-body">
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 <script>
-  const orderDetailModal = document.querySelector('#orderDetailModal');
-  const detailModalBody = document.querySelector('#detail-modal-body');
-  const detailModalInstance = new bootstrap.Modal(orderDetailModal);
-  orderDetailModal.addEventListener('hidden.bs.modal', () => {
+    const orderDetailModal = document.querySelector('#orderDetailModal');
+    const detailModalBody = document.querySelector('#detail-modal-body');
+    const detailModalInstance = new bootstrap.Modal(orderDetailModal);
+    orderDetailModal.addEventListener('hidden.bs.modal', () => {
+        detailModalBody.innerHTML = orderDetailModalTemplate;
+    })
+    // document.querySelector('#orderDetailModal .btn-close').addEventListener('click', () => {
+    // })
     detailModalBody.innerHTML = orderDetailModalTemplate;
-  })
-  // document.querySelector('#orderDetailModal .btn-close').addEventListener('click', () => {
-  // })
-  detailModalBody.innerHTML = orderDetailModalTemplate;
 </script>
 <script>
-  document.getElementById('changePasswordForm').addEventListener('submit', function (event) {
-    const newPassword = document.getElementById('newPassword').value;
-    const confirmNewPassword = document.getElementById('confirmNewPassword').value;
-    const passwordError = document.getElementById('passwordError');
+    document.getElementById('changePasswordForm').addEventListener('submit', function (event) {
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+        const passwordError = document.getElementById('passwordError');
 
-    // 검증: 새 비밀번호와 확인 비밀번호가 일치하는지 확인
-    if (newPassword !== confirmNewPassword) {
-      event.preventDefault(); // 폼 제출 방지
-      passwordError.style.display = 'block'; // 오류 메시지 표시
-    } else {
-      passwordError.style.display = 'none'; // 오류 메시지 숨김
+        // 검증: 새 비밀번호와 확인 비밀번호가 일치하는지 확인
+        if (newPassword !== confirmNewPassword) {
+            event.preventDefault(); // 폼 제출 방지
+            passwordError.style.display = 'block'; // 오류 메시지 표시
+        } else {
+            passwordError.style.display = 'none'; // 오류 메시지 숨김
+        }
+    });
+
+    function formatPhoneNumber() {
+        const phoneInput = document.getElementById("newPhoneNumber");
+        const phoneError = document.getElementById("phoneError");
+
+        let phoneValue = phoneInput.value.replace(/[^0-9]/g, '');
+
+        if (phoneValue.startsWith("010")) {
+            if (phoneValue.length <= 3) {
+                phoneInput.value = phoneValue;
+            } else if (phoneValue.length <= 7) {
+                phoneInput.value = `${phoneValue.slice(0, 3)}-${phoneValue.slice(3)}`;
+            } else if (phoneValue.length <= 11) {
+                phoneInput.value = `${phoneValue.slice(0, 3)}-${phoneValue.slice(3, 7)}-${phoneValue.slice(
+                    7, 11)}`;
+            }
+        } else {
+            phoneError.style.display = "block";
+            return;
+        }
+
+        phoneError.style.display = (phoneValue.length === 11) ? "none" : "block";
     }
-  });
 
-  function formatPhoneNumber() {
-    const phoneInput = document.getElementById("newPhoneNumber");
-    const phoneError = document.getElementById("phoneError");
+    document.getElementById('changePasswordForm').addEventListener('submit', function (event) {
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+        const passwordError = document.getElementById('passwordError');
 
-    let phoneValue = phoneInput.value.replace(/[^0-9]/g, '');
-
-    if (phoneValue.startsWith("010")) {
-      if (phoneValue.length <= 3) {
-        phoneInput.value = phoneValue;
-      } else if (phoneValue.length <= 7) {
-        phoneInput.value = `${phoneValue.slice(0, 3)}-${phoneValue.slice(3)}`;
-      } else if (phoneValue.length <= 11) {
-        phoneInput.value = `${phoneValue.slice(0, 3)}-${phoneValue.slice(3, 7)}-${phoneValue.slice(
-            7, 11)}`;
-      }
-    } else {
-      phoneError.style.display = "block";
-      return;
-    }
-
-    phoneError.style.display = (phoneValue.length === 11) ? "none" : "block";
-  }
-
-  document.getElementById('changePasswordForm').addEventListener('submit', function (event) {
-    const newPassword = document.getElementById('newPassword').value;
-    const confirmNewPassword = document.getElementById('confirmNewPassword').value;
-    const passwordError = document.getElementById('passwordError');
-
-    if (newPassword !== confirmNewPassword) {
-      event.preventDefault(); // 폼 제출 방지
-      passwordError.style.display = 'block'; // 오류 메시지 표시
-    } else {
-      passwordError.style.display = 'none'; // 오류 메시지 숨김
-    }
-  });
+        if (newPassword !== confirmNewPassword) {
+            event.preventDefault(); // 폼 제출 방지
+            passwordError.style.display = 'block'; // 오류 메시지 표시
+        } else {
+            passwordError.style.display = 'none'; // 오류 메시지 숨김
+        }
+    });
 </script>
 
 <div th:replace="~{fragments/footer}"></div>
@@ -761,95 +788,152 @@
 <!-- 카카오 주소 API -->
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
-  function execDaumPostcode() {
-    new daum.Postcode({
-      oncomplete: function (data) {
-        document.getElementById("zipCode").value = data.zonecode;
-        document.getElementById("address").value = data.address;
-        document.getElementById("detailAddress").focus();
-      }
-    }).open();
-  }
+    function execDaumPostcode() {
+        new daum.Postcode({
+            oncomplete: function (data) {
+                document.getElementById("zipCode").value = data.zonecode;
+                document.getElementById("address").value = data.address;
+                document.getElementById("detailAddress").focus();
+            }
+        }).open();
+    }
 </script>
 
 <!-- 자바스크립트로 메시지 가져와서 alert 처리 -->
 <script>
-  window.onload = function() {
-    // error 메시지 확인 후 alert
-    var errorMessage = document.querySelector('[data-error]');
-    if (errorMessage) {
-      alert(errorMessage.getAttribute('data-error'));
-    }
+    window.onload = function () {
+        // error 메시지 확인 후 alert
+        var errorMessage = document.querySelector('[data-error]');
+        if (errorMessage) {
+            alert(errorMessage.getAttribute('data-error'));
+        }
 
-    // success 메시지 확인 후 alert
-    var successMessage = document.querySelector('[data-success]');
-    if (successMessage) {
-      alert(successMessage.getAttribute('data-success'));
-    }
-  };
+        // success 메시지 확인 후 alert
+        var successMessage = document.querySelector('[data-success]');
+        if (successMessage) {
+            alert(successMessage.getAttribute('data-success'));
+        }
+    };
 </script>
 
 <script>
-  // 실시간 비밀번호 확인 로직
-  function validatePassword() {
-    const newPassword = document.getElementById("newPassword").value;
-    const confirmNewPassword = document.getElementById("confirmNewPassword").value;
-    const passwordError = document.getElementById("passwordError");
+    // 실시간 비밀번호 확인 로직
+    function validatePassword() {
+        const newPassword = document.getElementById("newPassword").value;
+        const confirmNewPassword = document.getElementById("confirmNewPassword").value;
+        const passwordError = document.getElementById("passwordError");
 
-    // 비밀번호가 일치하지 않으면 오류 메시지 표시
-    if (newPassword !== confirmNewPassword) {
-      passwordError.style.display = "block";
-    } else {
-      passwordError.style.display = "none";
-    }
-  }
-
-  // DOM이 준비되었을 때 실행
-  document.addEventListener("DOMContentLoaded", () => {
-    // 모든 탭 링크 요소 선택
-    const tabLinks = document.querySelectorAll('[data-bs-toggle="tab"]');
-
-    tabLinks.forEach(link => {
-      // 탭 링크를 클릭할 때마다 이벤트 리스너 추가
-      link.addEventListener('click', (event) => {
-        // 모든 탭 패널에서 show, active 클래스 제거
-        document.querySelectorAll('.tab-pane').forEach(pane => {
-          pane.classList.remove('show', 'active');
-        });
-
-        // 현재 클릭된 링크의 href 속성에서 이동할 대상 탭 ID를 추출
-        const targetId = event.target.getAttribute('href');
-        const targetPane = document.querySelector(targetId);
-
-        // 대상 탭에 show, active 클래스 추가하여 활성화
-        if (targetPane) {
-          targetPane.classList.add('show', 'active');
+        // 비밀번호가 일치하지 않으면 오류 메시지 표시
+        if (newPassword !== confirmNewPassword) {
+            passwordError.style.display = "block";
+        } else {
+            passwordError.style.display = "none";
         }
-      });
+    }
+
+    // DOM이 준비되었을 때 실행
+    document.addEventListener("DOMContentLoaded", () => {
+        // 모든 탭 링크 요소 선택
+        const tabLinks = document.querySelectorAll('[data-bs-toggle="tab"]');
+
+        tabLinks.forEach(link => {
+            // 탭 링크를 클릭할 때마다 이벤트 리스너 추가
+            link.addEventListener('click', (event) => {
+                // 모든 탭 패널에서 show, active 클래스 제거
+                document.querySelectorAll('.tab-pane').forEach(pane => {
+                    pane.classList.remove('show', 'active');
+                });
+
+                // 현재 클릭된 링크의 href 속성에서 이동할 대상 탭 ID를 추출
+                const targetId = event.target.getAttribute('href');
+                const targetPane = document.querySelector(targetId);
+
+                // 대상 탭에 show, active 클래스 추가하여 활성화
+                if (targetPane) {
+                    targetPane.classList.add('show', 'active');
+                }
+            });
+        });
     });
-  });
-  function removeHyphens() {
-    const phoneInput = document.getElementById("newPhoneNumber");
-    phoneInput.value = phoneInput.value.replace(/-/g, ''); // 하이픈 제거
-  }
 
-  document.addEventListener('DOMContentLoaded', () => {
-    // 모든 collapse 요소를 선택합니다.
-    const collapsibleElements = document.querySelectorAll('.collapse');
+    function removeHyphens() {
+        const phoneInput = document.getElementById("newPhoneNumber");
+        phoneInput.value = phoneInput.value.replace(/-/g, ''); // 하이픈 제거
+    }
 
-    // 각 collapse 요소에 이벤트 리스너를 추가합니다.
-    collapsibleElements.forEach(element => {
-      // 펼쳐질 때 이벤트
-      element.addEventListener('show.bs.collapse', () => {
-        console.log('show');
-      });
+    document.addEventListener('DOMContentLoaded', () => {
+        // 모든 collapse 요소를 선택합니다.
+        const collapsibleElements = document.querySelectorAll('.collapse');
 
-      // 접힐 때 이벤트
-      element.addEventListener('hide.bs.collapse', () => {
-        console.log('close');
-      });
+        // 각 collapse 요소에 이벤트 리스너를 추가합니다.
+        collapsibleElements.forEach(element => {
+            // 펼쳐질 때 이벤트
+            element.addEventListener('show.bs.collapse', () => {
+                console.log('show');
+            });
+
+            // 접힐 때 이벤트
+            element.addEventListener('hide.bs.collapse', () => {
+                console.log('close');
+            });
+        });
     });
-  });
+
+    function loadLikes() {
+        fetch('/mypage/like/list', {method: 'GET'})
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('네트워크 응답이 올바르지 않습니다.');
+                }
+                return response.json();
+            })
+            .then(books => {
+                const likesTableBody = document.querySelector('#likes-table tbody');
+                likesTableBody.innerHTML = ''; // 기존 내용을 지우기
+
+                books.forEach(book => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+        <td>${book.title}</td>
+        <td>${book.price}</td>
+        <td>${book.publisher}</td>
+        <td>${book.status}</td>
+        <td>
+            <button data-book-id="${book.bookId}" class="btn-delete">삭제</button>
+        </td>
+    `;
+                    likesTableBody.appendChild(row);
+                });
+
+                document.querySelectorAll('.btn-delete').forEach(button => {
+                    button.addEventListener('click', function (event) {
+                        const bookId = this.getAttribute('data-book-id');
+                        fetch(`/mypage/like/delete/${bookId}`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json', [_csrf_header]: _csrf
+                            }
+                        })
+                            .then(response => {
+                                if (response.ok) {
+                                    alert('삭제되었습니다.');
+                                    window.location.reload();
+                                } else {
+                                    alert('삭제에 실패했습니다.');
+                                }
+                            })
+                            .catch(error => console.error('Error:', error));
+                    });
+                });
+
+            })
+            .catch(error => {
+                console.error('오류 발생:', error);
+                alert('좋아요 목록을 불러오는 데 실패했습니다.');
+            });
+    }
+
+    document.addEventListener('DOMContentLoaded', loadLikes);
 </script>
 <script src="/static/js/jquery-1.11.0.min.js"></script>
 <script src="/static/js/plugins.js"></script>

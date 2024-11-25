@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html
     xmlns:layout="http://ultraq.net.nz/thymeleaf/layout"
-    layout:decorate="~{layout/default}">
+    layout:decorate="~{layout/default}" >
 <head>
   <style>
 
@@ -118,6 +118,10 @@
         <div class="btn-group mt-3">
           <button class="btn btn-primary btn-purchase" onclick="putTOCart()">카트에 넣기</button>
           <button class="btn btn-success btn-purchase" onclick="instantPurchase()">바로 구매</button>
+          <form th:action="@{/mypage/like/{bookId}(bookId=${book.bookId()})}" method="post" style="display: inline;">
+            <button type="submit" class="btn-custom">좋아요</button>
+          </form>
+
         </div>
         <script th:inline="javascript">
           const instantPurchase = () => {
@@ -147,7 +151,6 @@
   </div>
 </main>
 <!-- 본문 끝 -->
-<div th:replace="~{fragments/footer}"></div>
 
 <script>
 

@@ -2,7 +2,6 @@ package shop.s5g.front.adapter;
 
 import java.util.List;
 
-import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import shop.s5g.front.config.FeignGatewayAuthorizationConfig;
 import shop.s5g.front.dto.MessageDto;
 import shop.s5g.front.dto.PageResponseDto;
-import shop.s5g.front.dto.category.CategoryDetailResponseDto;
 import shop.s5g.front.dto.category.CategoryOneResponseDto;
 import shop.s5g.front.dto.category.CategoryRequestDto;
 import shop.s5g.front.dto.category.CategoryResponseDto;
