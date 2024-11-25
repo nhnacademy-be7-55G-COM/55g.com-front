@@ -32,7 +32,7 @@ public class ReviewController {
             throw new BadRequestException();
         }
         reviewService.addReview(createReviewRequestDto);
-        return "redirect:/review/list";
+        return "redirect:/mypage/review-list";
     }
 
     @GetMapping("/mypage/review-list")
