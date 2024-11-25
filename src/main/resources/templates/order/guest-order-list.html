@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="https://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}">
+>
+<head>
+  <meta charset="UTF-8">
+  <title>비회원 주문 조회</title>
+<!--  <script src="/static/js/mypage-utils.js"></script>-->
+</head>
+<body layout:fragment="content">
+<div class="container">
+  <h3 class="display-3 mb-3">내 주문 내역</h3>
+  <div id="orderHistory">
+    <table class="table table-hover" id="orderHistoryTable">
+      <thead>
+      <tr>
+        <th scope="col" style="width: 65%">주문 내용</th>
+        <th scope="col">주문 가격</th>
+        <th scope="col">주문 일시</th>
+      </tr>
+      </thead>
+      <tbody>
+      <th:block th:each="order: ${orderList}">
+      <tr th:data-order-id="${order.orderId()}">
+        <td th:text="${order.representTitle()}"></td>
+        <td th:text="${order.totalPrice()}"></td>
+        <td th:text="${#temporals.format(order.orderedAt(), 'yyyy-MM-dd HH:mm')}"></td>
+      </tr>
+      </th:block>
+      </tbody>
+    </table>
+    <script>
+      const rows = document.querySelectorAll('#orderHistoryTable tr');
+      rows.forEach(row => {
+        row.style.cursor = 'pointer';
+        row.addEventListener('click', () => {
+          window.location.href='/guest/order/'+row.getAttribute('data-order-id');
+        });
+      });
+    </script>
+  </div>
+</div>
+
+</body>
+</html>
