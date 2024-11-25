@@ -3,6 +3,8 @@ package shop.s5g.front.dto.review;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import java.util.List;
+import org.springframework.web.multipart.MultipartFile;
 
 public record CreateReviewRequestDto(
     @NotNull
@@ -15,7 +17,8 @@ public record CreateReviewRequestDto(
     @Max(5)
     int score,
 
-    String content
+    String content,
+    List<MultipartFile> attachment
 ) {
 
 }
