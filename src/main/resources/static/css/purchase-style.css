@@ -187,3 +187,15 @@ input#usePointInput {
   font-size: 12px;
   height: 1.8rem;
 }
+
+.pn-start {
+  width: 4rem;
+}
+
+.pn-center {
+  width: 5rem;
+}
+
+.pn-end {
+  width: 5rem;
+}

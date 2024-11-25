@@ -125,13 +125,12 @@
     <table class="table" id="detail-table-books">
       <thead>
       <tr>
-        <th scope="col" style="width: 50%;">제목</th>
+        <th scope="col" style="width: 60%;">제목</th>
         <th scope="col">권 수</th>
         <th scope="col">가격</th>
         <th scope="col">적립</th>
         <th scope="col">포장지</th>
         <th scope="col">주문취소</th>
-        <th scope="col">리뷰</th>
       </tr>
       </thead>
       <tbody>
@@ -229,6 +228,11 @@
         <p><strong>출고 날:</strong><span id="detail-shippingDate" th:text="${delivery.shippingDate}"></span></p>
         <p><strong>배송 상태:</strong><span id="detail-status" th:text="${delivery.status}"></span></p>
       </div>
+      <script th:inline="javascript">
+        const detailStatus = document.querySelector('#detail-status');
+        const status = [[${delivery.status}]];
+        detailStatus.textContent = deliveryMap[status];
+      </script>
     </div>
   </div>
 </div>

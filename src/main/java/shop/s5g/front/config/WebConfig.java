@@ -20,7 +20,7 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(new AuthorizationInterceptor());
         registry.addInterceptor(new LoginStatusInterceptor());
         registry.addInterceptor(new PurchaseSessionInterceptor())
-            .addPathPatterns("/purchase/**");
+            .addPathPatterns("/purchase/**", "/guest/purchase/**");
         registry.addInterceptor(new MemberAccessInterceptor()).addPathPatterns("/mypage/**");
         registry.addInterceptor(new AdminAccessInterceptor()).addPathPatterns("/admin/**")
             .excludePathPatterns("/admin/login");

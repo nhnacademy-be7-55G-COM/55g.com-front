@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>구매 진행중...</title>
+  <script th:inline="javascript">
+    const redirect = [[${redirect}]];
+
+    const cartSize = [[${cartSize}]];
+
+    localStorage['cartCount'] = parseInt(localStorage['cartCount']) - cartSize;
+
+    window.location.href = redirect;
+  </script>
+</head>
+<body>
+
+</body>
+</html>
