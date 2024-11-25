@@ -1,6 +1,7 @@
 package shop.s5g.front.service.review.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -8,7 +9,9 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import shop.s5g.front.adapter.review.ReviewAdapter;
 import shop.s5g.front.dto.MessageDto;
+import shop.s5g.front.dto.PageResponseDto;
 import shop.s5g.front.dto.review.CreateReviewRequestDto;
+import shop.s5g.front.dto.review.ReviewResponseDto;
 import shop.s5g.front.exception.review.ReviewRegisterFailedException;
 import shop.s5g.front.service.review.ReviewService;
 
@@ -31,5 +34,10 @@ public class ReviewServiceImpl implements ReviewService {
         } catch (HttpClientErrorException | HttpServerErrorException e) {
             throw new ReviewRegisterFailedException(e.getMessage());
         }
+    }
+
+    @Override
+    public PageResponseDto<ReviewResponseDto> getReviewList(Pageable pageable) {
+        return reviewAdapter.getReviewList(pageable);
     }
 }
