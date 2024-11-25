@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 public record AvailableCouponResponseDto(
     Long couponId,
 
+    Long couponTemplateId,
+
     String couponName,
 
     LocalDateTime createdAt,
