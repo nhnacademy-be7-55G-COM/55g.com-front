@@ -12,6 +12,8 @@ public interface OrderService {
 
     OrderCreateResponseDto createOrder(OrderCreateRequestDto createRequest);
 
+    OrderCreateResponseDto createGuestOrder(long customerId, OrderCreateRequestDto createRequest);
+
     List<OrderWithDetailResponseDto> queryOrdersBetweenDates(OrderQueryRequestDto queryRequest);
 
     void deleteOrder(long orderId);

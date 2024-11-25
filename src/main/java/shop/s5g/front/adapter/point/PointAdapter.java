@@ -1,4 +1,4 @@
-package shop.s5g.front.adapter;
+package shop.s5g.front.adapter.point;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
