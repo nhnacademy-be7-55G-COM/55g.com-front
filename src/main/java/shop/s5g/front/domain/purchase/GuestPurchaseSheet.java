@@ -1,13 +1,9 @@
 package shop.s5g.front.domain.purchase;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.SessionScope;
@@ -16,73 +12,44 @@ import shop.s5g.front.dto.book.BookPurchaseView;
 import shop.s5g.front.dto.customer.CustomerResponseDto;
 import shop.s5g.front.dto.delivery.DeliveryCreateRequestDto;
 import shop.s5g.front.dto.delivery.DeliveryFeeResponseDto;
-import shop.s5g.front.dto.member.MemberInfoResponseDto;
 import shop.s5g.front.dto.order.OrderCreateRequestDto;
 import shop.s5g.front.dto.order.OrderDetailCreateRequestDto;
 import shop.s5g.front.exception.ResourceNotFoundException;
-import shop.s5g.front.service.member.MemberService;
+import shop.s5g.front.service.customer.CustomerService;
 
-@Component
-@SessionScope                   // 세션에 종속적임
-@RequiredArgsConstructor
 @Slf4j
-public class PurchaseSheet extends AbstractPurchaseSheet {    // 주문서 빈!
-    private final transient MemberService memberService;
+@SessionScope
+@RequiredArgsConstructor
+@Component
+public class GuestPurchaseSheet extends AbstractPurchaseSheet{
+    private final transient CustomerService customerService;
 
-    @Getter
-    private MemberInfoResponseDto memberInfo;       // 주문서를 작성하는 회원 정보
+    private CustomerResponseDto customer = null;
+    private boolean customerReady = false;
 
-    @Getter @Setter(AccessLevel.PRIVATE)
-    private BigDecimal accRateSum;          // 포인트 적립 비율 합산
-
-    @Getter @Setter(AccessLevel.PRIVATE)
-    private BigDecimal memberAccRate;       // 멤버십 포인트 비율
-
-    // ------------------------------
-
-    // 주문서를 생성했다면, 필요한 정보들을 비동기로 가져옴.
     @Override
     protected List<CompletableFuture<Void>> futuresSupplier() {
-        return List.of(memberService.getMemberInfoAsync().thenAccept(
-                info -> {
-                    memberInfo = info;
-                    setMemberAccRate(BigDecimal.valueOf(info.grade().point(), 2));
-                }
-            )
-        );
+        return List.of();
     }
 
-    // 상기의 비동기 작업들을 기다림.
     @Override
-    protected void joinCallback() {
-        sumAccRate();
-    }
-
-    // TODO: 소수점 이슈때문에 나중에 각각 계산을 해야함.
-    private void sumAccRate() {     // 적립률 합연산
-        memberAccRate = BigDecimal.valueOf(memberInfo.grade().point(), 2);
-        setDefaultAccRate(policy.value());
-        accRateSum = getDefaultAccRate().add(memberAccRate);
-    }
-
-    // TODO: 적절한 예외로 바꾸기
-    @Override
-    public void pushToModel(ModelAndView mv) {      // 뷰에 표현하기 위한 DTO 주입.
+    public void pushToModel(ModelAndView mv) {
         if (!isReady()) {
             log.error("Purchase Sheet was not joined! Please check synchronization logic!");
             throw new IllegalStateException();
         }
-        log.trace("Attending arguments to purchase model...");
         mv.addObject("cartList", getCartList());
         mv.addObject("fees", getFee());
         mv.addObject("purchasePointPolicy", policy);
-        mv.addObject("memberInfo", memberInfo);
-        mv.addObject("accRate", accRateSum);
         mv.addObject("wrappingPaperList", getWraps().stream().map(wrappingPaperService::convertToView).toList());
         getCartList().forEach(cart -> orderInfo.purchaseMap.put(cart.id(), new PurchaseCell(cart)));
     }
 
-    // shop api로 보낼 OrderCreateRequestDto를 작성함.
+//    @Override
+//    public boolean isReady() {
+//        return super.isReady() && customerReady;
+//    }
+
     @Override
     public OrderCreateRequestDto createOrderRequest(DeliveryCreateRequestDto delivery) {
         if (orderInfo == null) {
@@ -90,18 +57,15 @@ public class PurchaseSheet extends AbstractPurchaseSheet {    // 주문서 빈!
         }
         long totalPrice = 0;
         long netPrice = 0;
-        long accumulationPrice = 0;
-        final long usePoint = orderInfo.usingPoint;
         List<OrderDetailCreateRequestDto> details = new ArrayList<>(getCartList().size());
         for (PurchaseCell cell: orderInfo.purchaseMap.values()) {
             BookPurchaseView book = cell.book;
             // TODO: 쿠폰 적용, 한 권만 적용
             long wrapCost = cell.wrappingPaper != null ? cell.wrappingPaper.price() : 0;
-            long subTotalPrice = book.totalPrice() - 0 + (book.totalPrice() * (book.quantity()-1)) + wrapCost;
-            int subAccPrice = usePoint == 0 ? BigDecimal.valueOf(subTotalPrice).multiply(accRateSum).intValue() : 0;
+            long subTotalPrice = book.totalPrice() * book.quantity() + wrapCost;
+            int subAccPrice = 0;
             // netPrice...
             totalPrice += subTotalPrice;
-            accumulationPrice += subAccPrice;
 
             details.add(new OrderDetailCreateRequestDto(
                 book.id(),
@@ -113,7 +77,7 @@ public class PurchaseSheet extends AbstractPurchaseSheet {    // 주문서 빈!
         }
 
         // 최종 가격 결정.
-        orderInfo.totalPrice = totalPrice - usePoint;
+        orderInfo.totalPrice = totalPrice;
         orderInfo.netPrice = netPrice;
 
         // 배송비 유효성 체크
@@ -134,7 +98,7 @@ public class PurchaseSheet extends AbstractPurchaseSheet {    // 주문서 빈!
         }
 
         orderInfo.order = new OrderCreateRequestDto(
-            memberInfo.customerId(), delivery, details, orderInfo.netPrice, orderInfo.totalPrice, usePoint
+            customer.customerId(), delivery, details, orderInfo.netPrice, orderInfo.totalPrice, 0
         );
 
         return orderInfo.order;
@@ -142,22 +106,16 @@ public class PurchaseSheet extends AbstractPurchaseSheet {    // 주문서 빈!
 
     @Override
     public long updateUsingPoint(long point) {
-        if (point < 0) {
-            // TODO: 적절한 예외로 바꾸기
-            throw new UnsupportedOperationException("포인트는 음수가 될 수 없어요.");
-        }
-        if (memberInfo.point() < point) {
-            // TODO: 적절한 예외로 바꾸기
-            throw new UnsupportedOperationException("포인트는 가지고 있는것보다 클 수 없어요.");
-        }
-        orderInfo.usingPoint = point;
-        return point;
+        throw new UnsupportedOperationException("비회원은 포인트 기능을 제공하지 않습니다.");
     }
 
     @Override
     public CustomerResponseDto getCustomerInfo() {
-        return new CustomerResponseDto(
-            memberInfo.customerId(), memberInfo.password(), memberInfo.name(), memberInfo.phoneNumber(), memberInfo.email()
-        );
+        return customer;
+    }
+
+    public void setCustomer(CustomerResponseDto customer) {
+        this.customer = customer;
+        customerReady = true;
     }
 }

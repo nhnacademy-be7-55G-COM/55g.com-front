@@ -9,6 +9,11 @@
 <body
     style="background-color: var(--light-color); font-family: var(--body-font),serif; color: var(--body-text-color);">
 <div th:replace="~{fragments/header}"></div>
+<!-- 실패 메시지 -->
+<div th:if="${error}" th:attr="data-error=${error}" style="display:none;"></div>
+
+<!-- 성공 메시지 -->
+<div th:if="${success}" th:attr="data-success=${success}" style="display:none;"></div>
 
 <main class="container my-5 mx-auto" style="max-width: 400px;">
   <h2 class="text-center" style="color: var(--dark-color); font-family: var(--heading-font),serif;">
@@ -30,5 +35,21 @@
 </main>
 
 <div th:replace="~{fragments/footer}"></div>
+<!-- 자바스크립트로 메시지 가져와서 alert 처리 -->
+<script>
+  window.onload = function() {
+    // error 메시지 확인 후 alert
+    var errorMessage = document.querySelector('[data-error]');
+    if (errorMessage) {
+      alert(errorMessage.getAttribute('data-error'));
+    }
+
+    // success 메시지 확인 후 alert
+    var successMessage = document.querySelector('[data-success]');
+    if (successMessage) {
+      alert(successMessage.getAttribute('data-success'));
+    }
+  };
+</script>
 </body>
 </html>
