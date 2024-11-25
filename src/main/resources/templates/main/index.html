@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="https://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}"
+>
+<head>
+  <meta charset="UTF-8">
+  <title>55g Book Store</title>
+
+  <!-- Font Awesome 아이콘 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+  <!-- Pretendard 폰트 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css">
+
+  <!-- Slick Carousel CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
+
+  <!-- 내부 스타일 -->
+  <style>
+    body {
+      font-family: 'Pretendard', sans-serif;
+    }
+    #billboard {
+      padding: 20px 0;
+      background-color: #f9f9f9;
+    }
+    .main-slider {
+      width: 80%;
+      margin: 0 auto;
+    }
+    .slider-item {
+      text-align: center;
+    }
+    .slider-item img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+    }
+    .slider-text {
+      margin: 15px 0;
+    }
+    .slider-text h2 {
+      font-size: 1.8em;
+      margin-bottom: 10px;
+      color: #333;
+    }
+    .slider-text p {
+      font-size: 1em;
+      color: #666;
+    }
+    .slider-navigation {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .nav-button {
+      display: inline-block;
+      background-color: #333;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      margin: 0 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .nav-button:hover {
+      background-color: #555;
+    }
+  </style>
+</head>
+<body layout:fragment="content">
+
+<section id="billboard">
+  <div class="main-slider">
+    <!-- 슬라이드 아이템 1 -->
+    <div class="slider-item">
+      <img src="/static/images/banner1.jpg" alt="최신 신간 도서">
+      <div class="slider-text">
+        <h2>노벨 문학상 수상 특집(1)</h2>
+        <p>한강의 책, 세계, 이야기</p>
+      </div>
+    </div>
+    <!-- 슬라이드 아이템 2 -->
+    <div class="slider-item">
+      <img src="/static/images/banner2.jpg" alt="베스트셀러 할인">
+      <div class="slider-text">
+        <h2>노벨 문학상 수상 특집(2)</h2>
+        <p>1945 ~ 2024 책으로 읽는 현대사</p>
+      </div>
+    </div>
+    <!-- 슬라이드 아이템 3 -->
+    <div class="slider-item">
+      <img src="/static/images/banner3.jpg" alt="이벤트 도서">
+      <div class="slider-text">
+        <h2>국내 최대 규모의 종합 문학상</h2>
+        <p>2024 대산문학상 특별전</p>
+      </div>
+    </div>
+  </div>
+  <!-- 네비게이션 버튼 -->
+  <div class="slider-navigation">
+    <button id="slider-prev" class="nav-button">이전</button>
+    <button id="slider-next" class="nav-button">다음</button>
+  </div>
+</section>
+
+<!-- jQuery -->
+
+<!-- Slick Carousel -->
+<script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+
+<!-- Slick 초기화 -->
+<script>
+  $(document).ready(function () {
+    function initializeSlick() {
+      if ($('.main-slider').hasClass('slick-initialized')) {
+        console.log('Slick already initialized.');
+        return;
+      }
+
+      $('.main-slider').slick({
+        autoplay: true,
+        autoplaySpeed: 3000,
+        dots: true,
+        arrows: false,
+        infinite: true,
+        slidesToShow: 1,
+        slidesToScroll: 1,
+      });
+
+      // Custom Navigation Buttons
+      $('#slider-prev').on('click', function () {
+        $('.main-slider').slick('slickPrev');
+      });
+      $('#slider-next').on('click', function () {
+        $('.main-slider').slick('slickNext');
+      });
+
+      console.log('Slick initialized successfully.');
+    }
+
+    initializeSlick(); // DOM 준비 시 초기화
+  });
+</script>
+
+</body>
+</html>
