@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import shop.s5g.front.dto.order.OrderRabbitResponseDto;
-import shop.s5g.front.dto.MessageDto;
-import shop.s5g.front.dto.coupon.EventCouponRequestDto;
 
 @Service
 @RequiredArgsConstructor

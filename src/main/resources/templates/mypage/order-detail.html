@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="https://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/mypage}"
+>
+<head>
+  <meta charset="UTF-8">
+  <title>주문 상세 내역</title>
+  <script src="/static/js/mypage-utils.js"></script>
+  <script th:inline="javascript">
+    const deliveryStatus = [[${delivery.status}]];
+  </script>
+  <style>
+    .order-title {
+      font-size: 1.4rem;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body layout:fragment="mypageContent">
+<!-- Review Modal -->
+<div id="reviewModal" class="modal"
+     style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000;">
+  <div class="modal-content"
+       style="position: relative; max-width: 500px; margin: 10% auto; background: #fff8dc; border-radius: 10px; padding: 30px; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);">
+    <!-- Close Button -->
+    <button class="close-btn" onclick="document.getElementById('reviewModal').style.display='none'"
+            style="position: absolute; top: 10px; right: 15px; font-size: 24px; color: #333; background: none; border: none; cursor: pointer;">
+      &times;
+    </button>
+
+    <!-- Modal Header -->
+    <h2 class="section-title divider text-center"
+        style="margin-bottom: 20px; font-family: var(--heading-font); color: #333;">
+      리뷰 등록
+    </h2>
+
+    <!-- Review Form -->
+    <form th:action="@{/review}" method="post" enctype="multipart/form-data"
+          style="display: flex; flex-direction: column; gap: 20px;">
+      <!-- Hidden Fields -->
+      <input type="hidden" th:name="bookId" th:value="${bookId}"/>
+      <input type="hidden" th:name="orderDetailId" th:value="${orderDetailId}"/>
+
+      <!-- Star Rating -->
+      <label for="score" style="font-weight: bold; color: #333;">별점</label>
+      <div id="star-rating"
+           style="display: flex; gap: 10px; justify-content: center; align-items: center;">
+        <!-- Dynamic Star Rating -->
+        <input type="radio" id="star1" name="score" value="1" style="display: none;">
+        <label for="star1" class="star" data-value="1" style="font-size: 24px; cursor: pointer;">&#9733;</label>
+
+        <input type="radio" id="star2" name="score" value="2" style="display: none;">
+        <label for="star2" class="star" data-value="2" style="font-size: 24px; cursor: pointer;">&#9733;</label>
+
+        <input type="radio" id="star3" name="score" value="3" style="display: none;">
+        <label for="star3" class="star" data-value="3" style="font-size: 24px; cursor: pointer;">&#9733;</label>
+
+        <input type="radio" id="star4" name="score" value="4" style="display: none;">
+        <label for="star4" class="star" data-value="4" style="font-size: 24px; cursor: pointer;">&#9733;</label>
+
+        <input type="radio" id="star5" name="score" value="5" style="display: none;" checked>
+        <label for="star5" class="star" data-value="5"
+               style="font-size: 24px; color: #ffa500; cursor: pointer;">&#9733;</label>
+      </div>
+
+      <!-- Review Content -->
+      <label for="content" style="font-weight: bold; color: #333;">리뷰 내용:</label>
+      <textarea id="content" name="content" rows="5" class="form-control"
+                placeholder="리뷰를 작성해주세요."
+                style="width: 100%; border: 1px solid #ccc; border-radius: 5px; padding: 10px; background: #fff; color: #333;"></textarea>
+
+      <!-- File Upload -->
+      <label for="attachment" style="font-weight: bold; color: #333;">첨부파일:</label>
+      <input type="file" id="attachment" name="attachment" multiple
+             style="border: 1px solid #ccc; border-radius: 5px; padding: 5px; background: #fff; color: #333;">
+      <p id="file-error" style="color: red; font-size: 14px; display: none;">첨부파일 오류 메시지</p>
+
+      <script>
+        document.getElementById('attachment').addEventListener('change', function () {
+          const allowedExtensions = ['jpg', 'jpeg', 'png', 'gif']; // 허용할 확장자 목록
+          const maxFiles = 3; // 최대 파일 개수
+          const files = this.files;
+          const errorMessage = document.getElementById('file-error');
+
+          // 초기화
+          errorMessage.style.display = 'none';
+          errorMessage.textContent = '';
+
+          // 파일 개수 제한
+          if (files.length > maxFiles) {
+            errorMessage.textContent = `최대 ${maxFiles}개의 파일만 업로드할 수 있습니다.`;
+            errorMessage.style.display = 'block';
+            this.value = ''; // 선택 초기화
+            return;
+          }
+
+          // 확장자 제한
+          for (const file of files) {
+            const fileExtension = file.name.split('.').pop().toLowerCase();
+            if (!allowedExtensions.includes(fileExtension)) {
+              errorMessage.textContent = `허용되지 않은 파일 형식입니다: ${file.name}`;
+              errorMessage.style.display = 'block';
+              this.value = ''; // 선택 초기화
+              return;
+            }
+          }
+        });
+      </script>
+
+      <!-- Submit Button -->
+      <button type="submit" class="btn btn-primary btn-submit"
+              style="background: #ffa500; border: none; padding: 10px; border-radius: 5px; font-weight: bold; color: #fff; cursor: pointer; transition: background 0.3s;">
+        등록
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- 주문 상세내역-->
+<div id="detail-body">
+  <div>
+    <div class="order-title">주문정보</div>
+    <table class="table" id="detail-table-books">
+      <thead>
+      <tr>
+        <th scope="col" style="width: 50%;">제목</th>
+        <th scope="col">권 수</th>
+        <th scope="col">가격</th>
+        <th scope="col">적립</th>
+        <th scope="col">포장지</th>
+        <th scope="col">주문취소</th>
+        <th scope="col">리뷰</th>
+      </tr>
+      </thead>
+      <tbody>
+      <th:block th:each="detail: ${details}">
+        <tr th:id="|row-${detail.orderDetailId}|">
+          <td th:text="${detail.bookTitle}"></td>
+          <td th:text="${detail.quantity}"></td>
+          <td th:text="${detail.totalPrice}"></td>
+          <td th:text="${detail.accumulationPrice}"></td>
+          <td th:text="${detail.wrappingPaperName}"></td>
+          <td>
+
+          </td>
+          <td>
+
+          </td>
+
+          <script th:inline="javascript">
+            var dangerArea = document.querySelector('tr#row-[[${detail.orderDetailId}]] > td:nth-child(6)');
+            var reviewArea = document.querySelector('tr#row-[[${detail.orderDetailId}]] > td:nth-child(7)');
+            var detailId = [[${detail.orderDetailId}]];
+            var detailBookId = [[${detail.bookId}]];
+            var dangerButton = '';
+            var reviewButton = '';
+            switch([[${detail.orderDetailType}]]) {
+              // TODO: 주문확정 버튼 필요
+              case 'COMPLETE':
+                if (deliveryStatus === 'PREPARING')
+                  dangerButton = `<button onclick="cancelDetail(${detailId})" class="btn btn-outline-danger button-cancel">주문취소</button>`;
+                else
+                  dangerButton = `<button onclick="extendRefundDiv(this, ${detailId})" class="btn btn-outline-danger button-cancel">반품하기</button>`;
+                break;
+              case 'CONFIRM':
+                dangerButton = `<p style="margin:0">주문확정</p>`;
+                reviewButton = `<button class="btn btn-accent"
+                    onclick="openReviewModal(this)"
+                    data-book-id="${detailBookId}"
+                    data-order-detail-id="${detailId}"
+                    style="padding: 10px 20px; border-radius: 5px; font-size: 16px; font-weight: bold; background: #ffa500; color: #fff; border: none; cursor: pointer;">
+            리뷰 등록
+            </button>`
+                break;
+              case 'RETURN':
+                dangerButton = `<p style="margin: 0">반품신청완료</p>`; break;
+              case 'CANCEL':
+                dangerButton = `<p style="margin: 0">취소완료</p>`; break;
+              default:
+                throw '허용되지 않은 주문상태입니다.';
+            }
+            dangerArea.innerHTML = dangerButton;
+            reviewArea.innerHTML = reviewButton;
+          </script>
+        </tr>
+        <tr th:id="|row-refund-${detail.orderDetailId}|" style="display: none">
+          <td colspan="6">
+            <div>
+              <div class="d-flex flex-row mb-1">
+                <p th:text="${#strings.length(detail.bookTitle) > 30 ? #strings.substring(detail.bookTitle, 0, 30)+'...' : detail.bookTitle}" class="flex-grow-1 me-auto" style="margin-bottom: 0; font-size: 18px"></p>
+                <select name="refundType" class="form-select">
+                  <option value="1" selected>단순변심</option>
+                  <option value="2">오배송</option>
+                  <option value="3">배송 지연</option>
+                  <option value="4">파손/파본</option>
+                  <option value="5">잘못 주문함</option>
+                  <option value="6">기타</option>
+                </select>
+              </div>
+              <textarea class="form-control-sm refund-reason-area w-100 mb-1" rows="3" placeholder="환불 사유 입력..." required></textarea>
+              <div class="image-container">
+                <div>
+                  <button type="button" class="refund-image-button btn btn-warning text-white" th:onclick="|extendImageInput('#row-refund-${detail.orderDetailId}')|" style="padding: 10px">이미지 추가</button>
+                  <button
+                      type="button" class="btn btn-danger refund-image-button ms-4"
+                      th:onclick="|refundDetail(${detail.orderDetailId})|"
+                  >반품신청</button>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </th:block>
+      </tbody>
+    </table>
+  </div>
+  <div class="card-container">
+    <div class="card">
+      <div class="card-header text-center text-black">
+        <div class="card-title">배송 정보</div>
+      </div>
+      <div class="card-body">
+        <p><strong>수신자:</strong><span id="detail-receiverName" th:text="${delivery.receiverName}"></span></p>
+        <p><strong>배송 주소:</strong><span id="detail-address" th:text="${delivery.address}"></span></p>
+        <p><strong>송장 번호:</strong><span id="detail-invoiceNumber" th:text="${delivery.invoiceNumber}"></span></p>
+        <p><strong>받는 날:</strong><span id="detail-receivedDate" th:text="${delivery.receivedDate}"></span></p>
+        <p><strong>출고 날:</strong><span id="detail-shippingDate" th:text="${delivery.shippingDate}"></span></p>
+        <p><strong>배송 상태:</strong><span id="detail-status" th:text="${delivery.status}"></span></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function openReviewModal(button) {
+    // Extract bookId and orderDetailId from the button's data attributes
+    const bookId = button.getAttribute('data-book-id');
+    const orderDetailId = button.getAttribute('data-order-detail-id');
+
+    // Set the extracted values to the hidden inputs in the modal
+    document.querySelector('#reviewModal input[name="bookId"]').value = bookId;
+    document.querySelector('#reviewModal input[name="orderDetailId"]').value = orderDetailId;
+
+    // Display the modal
+    document.getElementById('reviewModal').style.display = 'block';
+  }
+</script>
+
+<!-- 리뷰 모달 스크립트 -->
+<script>
+  const stars = document.querySelectorAll('#star-rating .star');
+
+  // Initialize default rating (5 stars selected)
+  document.addEventListener('DOMContentLoaded', () => {
+    stars.forEach((star, index) => {
+      if (index < 5) {
+        star.style.color = '#ffa500'; // Highlight all 5 stars
+      }
+    });
+  });
+
+  stars.forEach(star => {
+    star.addEventListener('click', () => {
+      const value = parseInt(star.getAttribute('data-value'));
+
+      // Reset all stars
+      stars.forEach(s => s.style.color = '#ccc');
+
+      // Highlight up to the selected star
+      for (let i = 0; i < value; i++) {
+        stars[i].style.color = '#ffa500';
+      }
+
+      // Select the corresponding radio input
+      document.querySelector(`#star${value}`).checked = true;
+    });
+  });
+</script>
+</body>
+</html>

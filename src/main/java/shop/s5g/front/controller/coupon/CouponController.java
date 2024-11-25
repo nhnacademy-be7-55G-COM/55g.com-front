@@ -16,9 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import shop.s5g.front.annotation.MemberAndAdminOnly;
 import shop.s5g.front.dto.MessageDto;
-import shop.s5g.front.dto.coupon.CouponCategoryDetailsCategoryNameDto;
+import shop.s5g.front.dto.coupon.category.CouponCategoryDetailsCategoryNameDto;
 import shop.s5g.front.dto.member.MemberInfoResponseDto;
 import shop.s5g.front.service.coupon.category.CouponCategoryService;
 import shop.s5g.front.service.coupon.coupon.CouponService;
@@ -40,7 +39,6 @@ public class CouponController {
      * @return
      */
     @PostMapping("/issue")
-    @MemberAndAdminOnly
     public String getEventCoupon(RedirectAttributes redirectAttributes) {
 
         MemberInfoResponseDto loginMember =  memberService.getMemberInfo();
