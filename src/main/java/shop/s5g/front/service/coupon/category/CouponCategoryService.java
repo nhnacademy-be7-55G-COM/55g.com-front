@@ -3,10 +3,10 @@ package shop.s5g.front.service.coupon.category;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import shop.s5g.front.dto.MessageDto;
-import shop.s5g.front.dto.coupon.CouponCategoryDetailsCategoryNameDto;
-import shop.s5g.front.dto.coupon.CouponCategoryRequestDto;
-import shop.s5g.front.dto.coupon.CategoryResponseDto;
-import shop.s5g.front.dto.coupon.CouponCategoryResponseDto;
+import shop.s5g.front.dto.coupon.category.CouponCategoryDetailsCategoryNameDto;
+import shop.s5g.front.dto.coupon.category.CouponCategoryRequestDto;
+import shop.s5g.front.dto.coupon.category.CategoryResponseDto;
+import shop.s5g.front.dto.coupon.category.CouponCategoryResponseDto;
 
 public interface CouponCategoryService {
 

@@ -7,11 +7,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import shop.s5g.front.adapter.coupon.CouponBookAdapter;
 import shop.s5g.front.dto.MessageDto;
-import shop.s5g.front.dto.coupon.BookDetailsBookResponseDto;
-import shop.s5g.front.dto.coupon.CouponBookDetailsBookTitleResponseDto;
-import shop.s5g.front.dto.coupon.CouponBookRequestDto;
-import shop.s5g.front.dto.coupon.CouponBookResponseDto;
-import shop.s5g.front.dto.coupon.CouponTemplateInquiryResponseDto;
+import shop.s5g.front.dto.coupon.book.BookDetailsBookResponseDto;
+import shop.s5g.front.dto.coupon.book.CouponBookDetailsBookTitleResponseDto;
+import shop.s5g.front.dto.coupon.book.CouponBookRequestDto;
+import shop.s5g.front.dto.coupon.book.CouponBookResponseDto;
+import shop.s5g.front.dto.coupon.template.CouponTemplateInquiryResponseDto;
 import shop.s5g.front.exception.coupon.CouponBookNotFoundException;
 import shop.s5g.front.service.coupon.book.CouponBookService;
 

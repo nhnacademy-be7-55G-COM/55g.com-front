@@ -13,6 +13,7 @@ import shop.s5g.front.service.order.OrderDetailService;
 @RequestMapping("/mypage")
 @RequiredArgsConstructor
 public class MyPageSubController {
+
     private final OrderDetailService orderDetailService;
 
     @GetMapping("/point-history")
@@ -29,6 +30,8 @@ public class MyPageSubController {
     public ModelAndView viewOrderDetail(@PathVariable long orderId) {
         OrderDetailInfoDto info = orderDetailService.getOrderDetailAllInfos(orderId);
         ModelAndView mv = new ModelAndView("mypage/order-detail");
+
+        // TODO: 리뷰 id 또는 리뷰 등록 여부 반환 필요 (리뷰 작성 여부 체크해야함) / boolean으로 반환되면 좋을듯
 
         mv.addObject("details", info.details());
         mv.addObject("delivery", info.delivery());
