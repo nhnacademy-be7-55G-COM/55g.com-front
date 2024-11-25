@@ -77,7 +77,7 @@ public class BookServiceImpl implements BookService {
         try {
             if (file != null && !file.isEmpty()) {
                 ImageResponseDto imageDto = imageService.uploadImage(
-                    "/55gshop/book/thumnails/" + file.getOriginalFilename(), file.getBytes());
+                    "/55gshop/book/thumbnails/" + file.getOriginalFilename(), file.getBytes());
                 filePath = file.getOriginalFilename();
             }
 
@@ -101,7 +101,7 @@ public class BookServiceImpl implements BookService {
         try {
             if (file != null && !file.isEmpty()) {
                 ImageResponseDto imageDto = imageService.uploadImage(
-                    "/55gshop/book/thumnails/" + file.getOriginalFilename(), file.getBytes());
+                    "/55gshop/book/thumbnails/" + file.getOriginalFilename(), file.getBytes());
                 filePath = file.getOriginalFilename();
             }
 
