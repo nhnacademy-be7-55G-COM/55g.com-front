@@ -1,8 +1,12 @@
 package shop.s5g.front.config;
 
+import feign.Client;
 import feign.RequestInterceptor;
 import feign.codec.ErrorDecoder;
+import feign.httpclient.ApacheHttpClient;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.springframework.context.annotation.Bean;
 import shop.s5g.front.advice.FeignErrorDecoder;
 import shop.s5g.front.utils.AuthTokenHolder;
@@ -24,5 +28,14 @@ public class FeignGatewayAuthorizationConfig {
     @Bean
     public ErrorDecoder errorDecoder() {
         return new FeignErrorDecoder();
+    }
+
+    @Bean
+    public CloseableHttpClient closeableHttpClient() {
+        return HttpClients.createDefault();
+    }
+    @Bean
+    public Client feignClient(CloseableHttpClient httpClient) {
+        return new ApacheHttpClient(httpClient);
     }
 }
