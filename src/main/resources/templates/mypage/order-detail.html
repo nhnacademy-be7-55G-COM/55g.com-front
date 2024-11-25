@@ -108,19 +108,18 @@
 
           </td>
           <td>
-            <button class="btn btn-accent"
-                    onclick="openReviewModal(this)"
-                    th:attr="data-book-id=${detail.bookId}, data-order-detail-id=${detail.orderDetailId}"
-                    style="padding: 10px 20px; border-radius: 5px; font-size: 16px; font-weight: bold; background: #ffa500; color: #fff; border: none; cursor: pointer;">
-            리뷰 등록
-            </button>
+
           </td>
 
           <script th:inline="javascript">
             var dangerArea = document.querySelector('tr#row-[[${detail.orderDetailId}]] > td:nth-child(6)');
+            var reviewArea = document.querySelector('tr#row-[[${detail.orderDetailId}]] > td:nth-child(7)');
             var detailId = [[${detail.orderDetailId}]];
+            var detailBookId = [[${detail.bookId}]];
             var dangerButton = '';
+            var reviewButton = '';
             switch([[${detail.orderDetailType}]]) {
+              // TODO: 주문확정 버튼 필요
               case 'COMPLETE':
                 if (deliveryStatus === 'PREPARING')
                   dangerButton = `<button onclick="cancelDetail(${detailId})" class="btn btn-outline-danger button-cancel">주문취소</button>`;
@@ -128,7 +127,14 @@
                   dangerButton = `<button onclick="extendRefundDiv(this, ${detailId})" class="btn btn-outline-danger button-cancel">반품하기</button>`;
                 break;
               case 'CONFIRMED':
-                dangerButton = `<p style="margin:0">주문확정</p>`; break;
+                dangerButton = `<p style="margin:0">주문확정</p>`;
+                reviewButton = `<button class="btn btn-accent"
+                    onclick="openReviewModal(this)"
+                    th:attr="data-book-id=${detailBookId}, data-order-detail-id=${detailId}"
+                    style="padding: 10px 20px; border-radius: 5px; font-size: 16px; font-weight: bold; background: #ffa500; color: #fff; border: none; cursor: pointer;">
+            리뷰 등록
+            </button>`
+                break;
               case 'RETURN':
                 dangerButton = `<p style="margin: 0">반품신청완료</p>`; break;
               case 'CANCEL':
@@ -137,6 +143,7 @@
                 throw '허용되지 않은 주문상태입니다.';
             }
             dangerArea.innerHTML = dangerButton;
+            reviewArea.innerHTML = reviewButton;
           </script>
         </tr>
         <tr th:id="|row-refund-${detail.orderDetailId}|" style="display: none">
