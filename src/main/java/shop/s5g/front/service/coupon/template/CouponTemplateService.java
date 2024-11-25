@@ -1,12 +1,11 @@
 package shop.s5g.front.service.coupon.template;
 
-import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import shop.s5g.front.dto.MessageDto;
-import shop.s5g.front.dto.coupon.CouponTemplateInquiryResponseDto;
-import shop.s5g.front.dto.coupon.CouponTemplateRegisterRequestDto;
-import shop.s5g.front.dto.coupon.CouponTemplateUpdateRequestDto;
+import shop.s5g.front.dto.coupon.template.CouponTemplateInquiryResponseDto;
+import shop.s5g.front.dto.coupon.template.CouponTemplateRegisterRequestDto;
+import shop.s5g.front.dto.coupon.template.CouponTemplateUpdateRequestDto;
 
 public interface CouponTemplateService {
 

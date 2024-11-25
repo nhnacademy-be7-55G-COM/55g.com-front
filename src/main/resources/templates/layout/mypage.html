@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko"
+      xmlns:th="https://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/default}"
 >
@@ -21,7 +22,6 @@
       width: 5rem;
       height: 5rem;
     }
-
     .button-cancel {
       margin: 0;
       height: 2.3rem;
@@ -80,29 +80,29 @@
     <div class="position-sticky">
       <ul class="nav flex-column">
 
-        <!-- 회원 정보 -->
-        <li class="nav-item">
-          <a class="nav-link collapsed d-flex justify-content-between align-items-center"
-             data-bs-toggle="collapse" href="#memberInfo" role="button"
-             aria-expanded="false" aria-controls="memberInfo">
-            회원 정보
-            <i class="fas fa-chevron-right toggle-icon"></i>
-          </a>
-          <div class="collapse" id="memberInfo">
-            <ul class="nav flex-column ms-3" style="margin-top: 0">
-              <li class="nav-item"><a class="nav-link" href="#personalInfo">개인
-                정보 관리</a></li>
-              <li class="nav-item"><a class="nav-link"
-                                      href="#deliveryAddress">배송 주소</a></li>
-              <li class="nav-item"><a class="nav-link" href="#coupons">쿠폰</a>
-              </li>
-              <li class="nav-item"><a class="nav-link"
-                                      href="#gradeInfo">등급</a></li>
-              <li class="nav-item"><a class="nav-link" href="#deleteAccount">회원
-                탈퇴</a></li>
-            </ul>
-          </div>
-        </li>
+      <!-- 회원 정보 -->
+      <li class="nav-item">
+        <a class="nav-link collapsed d-flex justify-content-between align-items-center"
+           data-bs-toggle="collapse" href="#memberInfo" role="button"
+           aria-expanded="false" aria-controls="memberInfo">
+          회원 정보
+          <i class="fas fa-chevron-right toggle-icon"></i>
+        </a>
+        <div class="collapse" id="memberInfo">
+          <ul class="nav flex-column ms-3" style="margin-top: 0">
+            <li class="nav-item"><a class="nav-link"  href="#personalInfo">개인
+              정보 관리</a></li>
+            <li class="nav-item"><a class="nav-link"
+                                    href="#deliveryAddress">배송 주소</a></li>
+            <li class="nav-item"><a class="nav-link"  href="/mypage/coupons">쿠폰</a>
+            </li>
+            <li class="nav-item"><a class="nav-link"
+                                    href="#gradeInfo">등급</a></li>
+            <li class="nav-item"><a class="nav-link"  href="#deleteAccount">회원
+              탈퇴</a></li>
+          </ul>
+        </div>
+      </li>
 
         <!-- 쇼핑 내역 -->
         <li class="nav-item">

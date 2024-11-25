@@ -7,15 +7,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import shop.s5g.front.config.FeignGatewayAuthorizationConfig;
 import shop.s5g.front.dto.MessageDto;
-import shop.s5g.front.dto.coupon.BookDetailsBookResponseDto;
-import shop.s5g.front.dto.coupon.CouponBookDetailsBookTitleResponseDto;
-import shop.s5g.front.dto.coupon.CouponBookRequestDto;
-import shop.s5g.front.dto.coupon.CouponBookResponseDto;
-import shop.s5g.front.dto.coupon.CouponTemplateInquiryResponseDto;
+import shop.s5g.front.dto.coupon.book.BookDetailsBookResponseDto;
+import shop.s5g.front.dto.coupon.book.CouponBookDetailsBookTitleResponseDto;
+import shop.s5g.front.dto.coupon.book.CouponBookRequestDto;
+import shop.s5g.front.dto.coupon.book.CouponBookResponseDto;
+import shop.s5g.front.dto.coupon.template.CouponTemplateInquiryResponseDto;
 
 @FeignClient(name = "couponBook", url = "${gateway.url}", configuration = FeignGatewayAuthorizationConfig.class)
 public interface CouponBookAdapter {
