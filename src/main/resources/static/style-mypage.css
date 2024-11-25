@@ -329,13 +329,13 @@ main {
   justify-content: space-between;
   align-items: center;
   list-style: none;
-  padding: 0px;
+  padding: 0;
   border-bottom: 2px solid #ddd; /* 탭 아래에 구분선 추가 */
   margin-bottom: 20px; /* 탭과 콘텐츠 사이 여백 추가 */
 }
 
 .tab-item {
-  margin-right: 30px; /* 각 탭 간의 간격 추가 */
+  margin: 0; /* 각 탭 간의 간격 추가 */
   padding: 10px 20px;
   cursor: pointer;
   color: #aaa;
@@ -354,15 +354,19 @@ main {
 
 /* 콘텐츠 영역 스타일 */
 .tab-panel {
-  display: none;
-  padding: 20px;
-  background: #f9f9f9; /* 콘텐츠 배경 색상 */
-  border: 1px solid #ddd; /* 콘텐츠 박스 구분선 */
-  border-radius: 5px; /* 모서리 둥글게 */
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  transition: opacity 0.3s ease;
 }
 
 .tab-panel.active {
-  display: block;
+  visibility: visible;
+  opacity: 1;
+  position: static;
 }
 
 .tab-panel ul {
@@ -381,28 +385,44 @@ main {
 }
 
 
-/*
- 발급 가능한 쿠폰 목록
- */
-.available-coupon-container {
+
+
+.available-coupons {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   gap: 20px;
 }
 
-.row {
-  width: 100%;
+.coupon-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px;
+  width: 200px;
+  text-align: center;
 }
 
-.detail-coupons {
-  width: 100%;
-  height: 100%;
+.coupon-image img {
+  max-width: 100%;
+  height: auto;
+}
+
+.coupon-details {
+  margin: 8px 0;
+}
+
+.btn-download {
+  background-color: #007bff;
+  color: white;
   border: none;
-  overflow: hidden;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 4px;
 }
 
-.detail-coupons img {
-  width: 100px;
-  height: 100px;
-  object-fit: cover;
+.btn-disabled {
+  background-color: #ddd;
+  color: #aaa;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
 }

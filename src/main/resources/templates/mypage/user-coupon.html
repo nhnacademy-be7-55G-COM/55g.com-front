@@ -7,41 +7,13 @@
   <meta charset="UTF-8">
   <title>사용자 쿠폰함</title>
   <script src="/static/js/mypage-utils.js"></script>
-
-  <style>
-    /* 모달 스타일 */
-    .modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-    .modal-content {
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      width: 400px;
-    }
-    .close-btn {
-      float: right;
-      font-size: 18px;
-      cursor: pointer;
-    }
-  </style>
-
 </head>
 <body>
 <!-- 쿠폰 -->
 <div class="container" role="tabpanel" layout:fragment="mypageContent">
   <div class="user-info-container">
     <div class="user-profile">
-      <img src="/images/default-profile.png" alt="기본 이미지">
+      <img src="/static/images/default-profile.png" alt="기본 이미지">
     </div>
 
     <div class="user-details-container">
@@ -69,51 +41,55 @@
   <!-- 쿠폰 탭 -->
   <div class="coupon-tabs">
     <ul class="tab-list">
-      <li class="tab-item"><a href="#available">발급 가능한 쿠폰</a></li>
-      <li class="tab-item active"><a href="#usable">사용 가능한 쿠폰</a></li>
-      <li class="tab-item"><a href="#expired">만료/사용한 쿠폰</a></li>
+      <li class="tab-item active" data-target="available">
+        <span>발급 가능한 쿠폰</span>
+      </li>
+      <li class="tab-item" data-target="usable">
+        <span>사용 가능한 쿠폰</span>
+      </li>
+      <li class="tab-item" data-target="expired">
+        <span>만료/사용한 쿠폰</span>
+      </li>
     </ul>
   </div>
 
-<!--  <div class="tab-content">-->
-<!--    <div class="available-coupon-container">-->
-<!--      <div class="row" th:each="available : ${availableCouponList}">-->
-<!--        <div class="detail-coupons">-->
-<!--          <img src="/static/images/default-coupon.png" alt="쿠폰">-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
-
-<!--  <div class="coupon-text">-->
-<!--    <p class="discount" th:text="${available.discountPrice()} + '%'">70%</p>-->
-<!--    <p class="title" th:text="${available.couponName()}">법률/비즈니스 70% 할인</p>-->
-<!--    <p class="date" th:text="${available.createdAt()} + ' ~ ' + ${available.expiredAt()}">-->
-<!--      2021.05.02 23:00 ~ 2021.05.31 22:59-->
-<!--    </p>-->
-<!--    <p class="additional-info" th:text="${available.condition()}">-->
-<!--      최대 2만원 할인-->
-<!--      세금/세무 전용 사업자전용 상품유형-->
-<!--    </p>-->
-<!--  </div>-->
-
+  <div class="tab-panel active" id="available">
+    <div class="container">
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 justify-content-center available-coupons">
+        <div th:each="coupon : ${availableCouponList.content}" class="col">
+          <div class="coupon-card border p-3 shadow-sm rounded h-100 d-flex flex-column justify-content-between">
+            <div class="coupon-details text-center">
+              <h3 th:text="${coupon.couponName}" class="text-primary">쿠폰 이름</h3>
+              <p>할인금액: <span th:text="${coupon.discountPrice() < 1 ? coupon.discountPrice().multiply(100).stripTrailingZeros().toPlainString() + '%'
+                                          : coupon.discountPrice().stripTrailingZeros().toPlainString() + '원'}">할인금액</span></p>
+              <p><span th:text="${coupon.condition}">조건</span>원 이상 구매시</p>
+            </div>
+            <div>
+              <button class="btn btn-primary w-100 mt-2" th:if="${coupon.count > 0}" type="button">다운로드</button>
+              <button class="btn btn-secondary w-100 mt-2" th:unless="${coupon.count > 0}" type="button" disabled>발급불가</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
 
-    <div class="tab-panel active" id="usable">사용 가능한 쿠폰 리스트
-      <div>
-        <table>
+  <div class="tab-panel" id="usable">
+    <div class="container-fluid px-0">
+      <div class="table-responsive">
+        <table class="table table-bordered">
           <thead>
           <tr>
-            <th style="padding: 10px; background-color: #f0f0f0;">순번</th>
-            <th style="padding: 10px; background-color: #f0f0f0;">쿠폰이름</th>
-            <th style="padding: 10px; background-color: #f0f0f0;">유효기간</th>
+            <th class="text-center" style="padding: 10px; background-color: #f0f0f0;">순번</th>
+            <th class="text-center" style="padding: 10px; background-color: #f0f0f0;">쿠폰 이름</th>
+            <th class="text-center" style="padding: 10px; background-color: #f0f0f0;">유효기간</th>
           </tr>
           </thead>
           <tbody>
           <tr th:each="usable, iterStat : ${couponList}">
-            <td style="padding: 10px" th:text="${(iterStat.index + 1) + (usableCurrentPage * couponList.size)}">순번</td>
-<!--            <td style="padding: 10px" th:text="${usable.couponName()}">쿠폰이름</td>-->
-            <td style="padding: 10px; cursor: pointer;"
+            <td class="text-center" style="padding: 10px;" th:text="${(iterStat.index + 1) + (usableCurrentPage * couponList.size)}">순번</td>
+            <td class="text-center" style="padding: 10px; cursor: pointer;"
                 th:text="${usable.couponName()}"
                 onclick="showCouponModal(
                   '[[${usable.couponName()}]]',
@@ -121,29 +97,47 @@
                   '[[${usable.discountPrice}]]',
                   '[[${usable.condition}]]',
                   '[[${usable.couponDescription}]]'
-              )">
-              쿠폰이름
+                )">
+              쿠폰 이름
             </td>
-            <td style="padding: 10px" th:text="${usable.expirationMessage}">유효기간</td>
+            <td class="text-center" style="padding: 10px;" th:text="${usable.expirationMessage}">유효기간</td>
           </tr>
           </tbody>
         </table>
       </div>
     </div>
-
-  <div id="couponModal" class="modal" style="display: none;">
-    <div class="modal-content">
-      <span class="close-btn" onclick="closeModal()">&times;</span>
-      <h3>쿠폰 상세 정보</h3>
-      <p><strong>쿠폰 이름:</strong> <span id="modalCouponName"></span></p>
-      <p><strong>유효기간:</strong> <span id="modalCouponExpiration"></span></p>
-      <p><strong>할인 금액:</strong> <span id="modalCouponDiscount"></span></p>
-      <p><strong>조건:</strong> <span id="modalCouponCondition"></span></p>
-      <p><strong>설명:</strong> <span id="modalCouponDescription"></span></p>
-    </div>
   </div>
 
-    <div class="tab-panel" id="expired">만료/사용한 쿠폰 리스트</div>
+    <div class="tab-panel" id="expired">만료/사용한 쿠폰 리스트
+
+    </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const tabs = document.querySelectorAll(".tab-item");
+
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", (event) => {
+          event.preventDefault();
+
+          const currentScrollY = window.scrollY;
+
+          document.querySelector(".tab-item.active").classList.remove("active");
+          document.querySelector(".tab-panel.active").classList.remove("active");
+
+          tab.classList.add("active");
+
+          const targetPanelId = tab.getAttribute("data-target");
+          document.getElementById(targetPanelId).classList.add("active");
+
+          // DOM 업데이트 이후 스크롤 위치 복원
+          requestAnimationFrame(() => {
+            window.scrollTo(0, currentScrollY);
+          });
+        });
+      });
+    });
+  </script>
 </div>
 
 </body>

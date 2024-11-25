@@ -100,7 +100,7 @@ public class MyPageController {
 
         model.addAttribute("usableCurrentPage", couponList.getPageable().getPageNumber());
 
-        return "coupon/user-coupon";
+        return "mypage/user-coupon";
     }
 
     @PostMapping("/mypage/changeInfo")

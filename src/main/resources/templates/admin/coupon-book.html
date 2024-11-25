@@ -17,7 +17,7 @@
     <p><strong>출판사:</strong> <span th:text="${book.publisherName}"></span></p>
   </div>
 
-  <form id="couponForm" action="/admin/coupons/book/create" method="POST">
+  <form id="couponForm" th:action="@{/admin/coupons/book/create}" method="post">
 
     <input type="hidden" name="bookId" th:value="${book.bookId()}">
 
@@ -57,18 +57,5 @@
   </form>
 </div>
 
-</div>
-
-<script>
-  // 선택된 템플릿을 POST 방식으로 전송
-  document.getElementById('couponForm').addEventListener('submit', function(event) {
-    // 선택된 쿠폰 템플릿이 없으면 경고 메시지를 표시하고 폼 제출을 막음
-    const selectedTemplate = document.querySelector('input[name="couponTemplateId"]:checked');
-    if (!selectedTemplate) {
-      alert('쿠폰 템플릿을 선택해 주세요!');
-      event.preventDefault();
-    }
-  });
-</script>
 </body>
 </html>
