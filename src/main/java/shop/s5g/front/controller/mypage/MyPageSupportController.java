@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import shop.s5g.front.annotation.MemberAndAdminOnly;
 import shop.s5g.front.dto.order.OrderDetailCancelRequestDto;
 import shop.s5g.front.dto.order.OrderDetailInfoDto;
 import shop.s5g.front.dto.order.OrderQueryRequestDto;
@@ -31,7 +30,6 @@ import shop.s5g.front.service.refund.RefundService;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/mypage/support")
-@MemberAndAdminOnly
 public class MyPageSupportController {
     private final OrderService orderService;
     private final OrderDetailService orderDetailService;
