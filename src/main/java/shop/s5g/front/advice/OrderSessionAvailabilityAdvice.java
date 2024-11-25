@@ -6,6 +6,8 @@ import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import shop.s5g.front.domain.purchase.AbstractPurchaseSheet;
+import shop.s5g.front.domain.purchase.GuestPurchaseSheet;
 import shop.s5g.front.domain.purchase.PurchaseSheet;
 import shop.s5g.front.exception.order.SessionDoesNotAvailableException;
 
@@ -14,14 +16,22 @@ import shop.s5g.front.exception.order.SessionDoesNotAvailableException;
 @Component
 @RequiredArgsConstructor
 public class OrderSessionAvailabilityAdvice {
-    private final ObjectProvider<PurchaseSheet> sheetProvider;
+    private final ObjectProvider<PurchaseSheet> purchaseSheetProvider;
+    private final ObjectProvider<GuestPurchaseSheet> guestPurchaseSheetProvider;
 
     @Before("within(shop.s5g.front.controller.order.PaymentSupportController)")
     public void checkPurchaseSheetReady() {
-        PurchaseSheet sheet = sheetProvider.getIfAvailable();
+        AbstractPurchaseSheet sheet = null;
+
+        sheet = purchaseSheetProvider.getIfAvailable();
         if (sheet != null && sheet.isReady()) {
             return;
         }
+        sheet = guestPurchaseSheetProvider.getIfAvailable();
+        if (sheet != null && sheet.isReady()) {
+            return;
+        }
+
         throw SessionDoesNotAvailableException.INSTANCE;
     }
 //    @Before("@annotation(shop.s5g.front.annotation.SessionRequired) || @within(shop.s5g.front.annotation.SessionRequired)")

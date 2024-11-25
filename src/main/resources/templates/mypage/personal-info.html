@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="https://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/mypage}"
+>
+<head>
+  <title>개인 정보</title>
+</head>
+<body layout:fragment="mypageContent">
+  <div id="myTabContent">
+    <div id="personalInfo">
+      <h3 style="font-family: 'Pretendard', sans-serif;">개인 정보</h3>
+      <div class="info-card">
+        <p class="info-item">
+          <i class="fas fa-user"></i> <strong>아이디:</strong> <span
+            th:text="${member.loginId()}"></span>
+        </p>
+        <p class="info-item">
+          <i class="fas fa-id-card"></i> <strong>이름:</strong> <span
+            th:text="${member.name()}"></span>
+        </p>
+        <p class="info-item">
+          <i class="fas fa-phone-alt"></i> <strong>연락처:</strong>
+          <span
+              th:text="${member.phoneNumber().substring(0, 3) + '-' + member.phoneNumber().substring(3, 7) + '-' + member.phoneNumber().substring(7)}"></span>
+        </p>
+        <p class="info-item">
+          <i class="fas fa-envelope"></i> <strong>이메일:</strong> <span
+            th:text="${member.email()}"></span>
+        </p>
+        <p class="info-item">
+          <i class="fas fa-birthday-cake"></i> <strong>생년월일:</strong>
+          <span
+              th:text="${member.birth().substring(0, 4)} + '년 ' + ${member.birth().substring(4, 6)} + '월 ' + ${member.birth().substring(6)} + '일'"></span>
+        </p>
+        <p class="info-item">
+          <i class="fas fa-calendar-alt"></i> <strong>가입 일자:</strong>
+          <span
+              th:text="${#temporals.format(member.createdAt(), 'yyyy년 MM월 dd일 HH시 mm분')}"></span>
+        </p>
+
+        <p class="info-item">
+          <i class="fas fa-sign-in-alt"></i> <strong>최근 로그인:</strong>
+          <span
+              th:text="${#temporals.format(member.latestLoginAt(), 'yyyy년 MM월 dd일 HH시 mm분')}"></span>
+        </p>
+      </div>
+
+      <button class="btn btn-custom btn-lg mt-3" data-bs-toggle="modal"
+              data-bs-target="#updatePersonalModal">
+        개인 정보 변경
+      </button>
+      <!-- 비밀번호 변경 버튼 -->
+      <button class="btn btn-custom btn-lg mt-3 ms-2" data-bs-toggle="modal"
+              data-bs-target="#changePasswordModal">
+        비밀번호 변경
+      </button>
+
+      <div class="social-integration mt-4">
+        <h5>소셜 연동</h5>
+        <div class="social-buttons">
+          <a href="/linkAccount/payco" class="btn-payco">PAYCO</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 개인 정보 변경 Modal -->
+  <div class="modal fade" id="updatePersonalModal" tabindex="-1"
+       aria-labelledby="updatePersonalModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content info-card">
+        <div class="modal-header">
+          <h5 class="modal-title info-title" id="updatePersonalModalLabel">개인 정보 변경</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form th:action="@{/mypage/changeInfo}" method="post">
+            <div class="mb-3">
+              <label for="newName" class="form-label">새 이름</label>
+              <input type="text" class="form-control form-input" id="newName" name="name"
+                     placeholder="새 이름을 입력하세요" th:value="${member.name}">
+            </div>
+            <div class="mb-3">
+              <label for="newPhoneNumber" class="form-label">새 연락처</label>
+              <input type="tel" class="form-control form-input" id="newPhoneNumber" name="phoneNumber"
+                     placeholder="010-0000-0000 형식으로 입력하세요"
+                     th:value="${member.phoneNumber().substring(0, 3) + '-' + member.phoneNumber().substring(3, 7) + '-' + member.phoneNumber().substring(7)}"
+                     required
+                     oninput="formatPhoneNumber()">
+              <div id="phoneError" style="color: red; font-size: 0.9rem; display: none;">
+                핸드폰 번호는 '010-0000-0000' 형식으로 입력해야 합니다
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="newEmail" class="form-label">새 이메일</label>
+              <input type="email" class="form-control form-input" id="newEmail" name="email"
+                     placeholder="새 이메일을 입력하세요" th:value="${member.email}">
+            </div>
+            <button type="submit" class="btn btn-custom btn-lg mt-3" onclick="removeHyphens()" >변경 저장</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 비밀번호 변경 Modal -->
+  <div class="modal fade" id="changePasswordModal" tabindex="-1"
+       aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content info-card">
+        <div class="modal-header">
+          <h5 class="modal-title info-title" id="changePasswordModalLabel">비밀번호 변경</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="changePasswordForm" th:action="@{/mypage/changePassword}" method="post" onsubmit="return validatePassword()">
+            <div class="mb-3">
+              <label for="oldPassword" class="form-label">현재 비밀번호</label>
+              <input type="password" class="form-control form-input" id="oldPassword"
+                     name="oldPassword" placeholder="현재 비밀번호를 입력하세요" required>
+            </div>
+            <div class="mb-3">
+              <label for="newPassword" class="form-label">새 비밀번호</label>
+              <input type="password" class="form-control form-input" id="newPassword"
+                     name="newPassword" placeholder="새 비밀번호를 입력하세요" required oninput="validatePassword()">
+            </div>
+            <div class="mb-3">
+              <label for="confirmNewPassword" class="form-label">새 비밀번호 확인</label>
+              <input type="password" class="form-control form-input" id="confirmNewPassword"
+                     name="confirmNewPassword" placeholder="새 비밀번호를 다시 입력하세요" required oninput="validatePassword()">
+            </div>
+            <div id="passwordError" class="text-danger" style="display: none;">새 비밀번호와 확인 비밀번호가 일치하지 않습니다.</div>
+            <button type="submit" class="btn btn-custom btn-lg mt-3">비밀번호 변경</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('changePasswordForm').addEventListener('submit', function (event) {
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+      const passwordError = document.getElementById('passwordError');
+
+      // 검증: 새 비밀번호와 확인 비밀번호가 일치하는지 확인
+      if (newPassword !== confirmNewPassword) {
+        event.preventDefault(); // 폼 제출 방지
+        passwordError.style.display = 'block'; // 오류 메시지 표시
+      } else {
+        passwordError.style.display = 'none'; // 오류 메시지 숨김
+      }
+    });
+
+    function formatPhoneNumber() {
+      const phoneInput = document.getElementById("newPhoneNumber");
+      const phoneError = document.getElementById("phoneError");
+
+      let phoneValue = phoneInput.value.replace(/[^0-9]/g, '');
+
+      if (phoneValue.startsWith("010")) {
+        if (phoneValue.length <= 3) {
+          phoneInput.value = phoneValue;
+        } else if (phoneValue.length <= 7) {
+          phoneInput.value = `${phoneValue.slice(0, 3)}-${phoneValue.slice(3)}`;
+        } else if (phoneValue.length <= 11) {
+          phoneInput.value = `${phoneValue.slice(0, 3)}-${phoneValue.slice(3, 7)}-${phoneValue.slice(
+              7, 11)}`;
+        }
+      } else {
+        phoneError.style.display = "block";
+        return;
+      }
+
+      phoneError.style.display = (phoneValue.length === 11) ? "none" : "block";
+    }
+
+    document.getElementById('changePasswordForm').addEventListener('submit', function (event) {
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+      const passwordError = document.getElementById('passwordError');
+
+      if (newPassword !== confirmNewPassword) {
+        event.preventDefault(); // 폼 제출 방지
+        passwordError.style.display = 'block'; // 오류 메시지 표시
+      } else {
+        passwordError.style.display = 'none'; // 오류 메시지 숨김
+      }
+    });
+
+    function removeHyphens() {
+      const phoneInput = document.getElementById("newPhoneNumber");
+      phoneInput.value = phoneInput.value.replace(/-/g, ''); // 하이픈 제거
+    }
+
+    // 실시간 비밀번호 확인 로직
+    function validatePassword() {
+      const newPassword = document.getElementById("newPassword").value;
+      const confirmNewPassword = document.getElementById("confirmNewPassword").value;
+      const passwordError = document.getElementById("passwordError");
+
+      // 비밀번호가 일치하지 않으면 오류 메시지 표시
+      if (newPassword !== confirmNewPassword) {
+        passwordError.style.display = "block";
+      } else {
+        passwordError.style.display = "none";
+      }
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="https://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/mypage}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>리뷰 내역</title>
+  <style>
+    /* 리뷰 테이블 스타일 */
+    .review-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 16px;
+      text-align: left;
+      font-family: Arial, sans-serif; /* 테이블 글씨체 설정 */
+    }
+
+    .review-table th, .review-table td {
+      padding: 12px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .review-table th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+    }
+
+    .review-table tr:hover {
+      background-color: #f9f9f9;
+    }
+
+    .review-score {
+      color: #FFD700; /* Gold color for stars */
+    }
+
+    /* 페이지 제목 스타일 */
+    .page-title {
+      font-size: 2.5rem;
+      font-weight: bold;
+      text-align: center;
+      margin: 30px 0;
+      padding: 10px 0;
+      color: #333; /* 검정색 글씨 */
+      font-family: Arial, sans-serif; /* 테이블과 동일한 글씨체 */
+    }
+    
+    /* 빈 데이터 메시지 스타일 */
+    .empty-message {
+      text-align: center;
+      font-size: 1.2rem;
+      color: #999;
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body layout:fragment="mypageContent">
+<div>
+  <h1 class="page-title">리뷰 내역</h1>
+
+  <!-- 리뷰 데이터가 있는 경우 -->
+  <table class="review-table" th:if="${reviewList != null and !reviewList.isEmpty()}">
+    <thead>
+    <tr>
+      <th>책 제목</th>
+      <th>별점</th>
+      <th>리뷰 내용</th>
+      <th>작성 날짜</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="review : ${reviewList}">
+      <td th:text="${review.bookTitle}">Book Title</td>
+      <td>
+        <span th:each="i : ${#numbers.sequence(1, review.score)}"
+              class="review-score">&#9733;</span>
+      </td>
+      <td th:text="${review.content}">Review Content</td>
+      <td th:text="${#temporals.format(review.reviewAt, 'yyyy년 MM월 dd일')}">2024-01-01</td>
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- 리뷰 데이터가 없는 경우 -->
+  <p class="empty-message" th:if="${reviewList == null or reviewList.isEmpty()}">
+    리뷰 내역이 없습니다.
+  </p>
+</div>
+</body>
+</html>
