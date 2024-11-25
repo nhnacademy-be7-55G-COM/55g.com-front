@@ -1,17 +1,16 @@
-package shop.s5g.front.dto.coupon;
+package shop.s5g.front.dto.coupon.book;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
-public record CouponCategoryRequestDto(
+public record CouponBookRequestDto(
+    @NotNull
+    @Min(1)
+    Long couponTemplateId,
 
     @NotNull
     @Min(1)
-    Long categoryId,
-
-    @NotNull
-    @Min(1)
-    Long couponTemplateId
+    Long bookId
 ) {
 
 }

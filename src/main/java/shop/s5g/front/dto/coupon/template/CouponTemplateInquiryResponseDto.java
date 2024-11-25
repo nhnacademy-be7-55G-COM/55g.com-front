@@ -1,9 +1,10 @@
-package shop.s5g.front.dto.coupon;
+package shop.s5g.front.dto.coupon.template;
 
 import java.math.BigDecimal;
 
-public record CouponBookResponseDto(
-    String title,
+public record CouponTemplateInquiryResponseDto(
+
+    Long couponTemplateId,
 
     BigDecimal discountPrice,
 
@@ -16,6 +17,7 @@ public record CouponBookResponseDto(
     String couponName,
 
     String couponDescription
+
 ) {
 
 }

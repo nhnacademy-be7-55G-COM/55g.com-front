@@ -1,8 +1,10 @@
-package shop.s5g.front.dto.coupon;
+package shop.s5g.front.dto.coupon.category;
 
 import java.math.BigDecimal;
 
 public record CouponCategoryResponseDto(
+
+    Long couponTemplateId,
 
     Long categoryId,
 
