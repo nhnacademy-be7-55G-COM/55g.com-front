@@ -3,6 +3,7 @@ package shop.s5g.front.service.author.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import shop.s5g.front.adapter.AuthorAdapter;
 import shop.s5g.front.dto.MessageDto;
@@ -37,6 +38,39 @@ public class AuthorServiceImpl implements AuthorService {
             ResponseEntity<PageResponseDto<AuthorResponseDto>> allAuthors = authorAdapter.getAllAuthors(pageable);
             return allAuthors.getBody();
         } catch (BadRequestException e) {
+            throw new AuthorResourceNotFoundException(e.getMessage());
+        }
+    }
+
+    //작가 id로 작가 조회
+    @Override
+    public AuthorResponseDto getAuthorById(long authorId) {
+        try {
+            ResponseEntity<AuthorResponseDto> author = authorAdapter.findAuthor(authorId);
+            return author.getBody();
+        }catch (BadRequestException e) {
+            throw new AuthorResourceNotFoundException(e.getMessage());
+        }
+    }
+
+    //작가 수정
+    @Override
+    public MessageDto updateAuthor(long authorId, AuthorRequestDto authorRequestDto) {
+        try {
+            ResponseEntity<MessageDto> response = authorAdapter.updateAuthor(authorId, authorRequestDto);
+            return response.getBody();
+        }catch (BadRequestException e) {
+            throw new AuthorResourceNotFoundException(e.getMessage());
+        }
+    }
+
+    //작가 삭제(비활성화)
+    @Override
+    public MessageDto deleteAuthor(long authorId) {
+        try {
+            ResponseEntity<MessageDto> response =  authorAdapter.deleteAuthor(authorId);
+            return response.getBody();
+        }catch (BadRequestException e) {
             throw new AuthorResourceNotFoundException(e.getMessage());
         }
     }

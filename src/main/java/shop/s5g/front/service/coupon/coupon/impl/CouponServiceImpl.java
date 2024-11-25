@@ -10,8 +10,9 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import shop.s5g.front.adapter.coupon.CouponAdapter;
 import shop.s5g.front.dto.MessageDto;
-import shop.s5g.front.dto.coupon.CouponRegisterRequestDto;
-import shop.s5g.front.dto.coupon.CouponResponseDto;
+import shop.s5g.front.dto.coupon.coupon.AvailableCouponResponseDto;
+import shop.s5g.front.dto.coupon.coupon.CouponRegisterRequestDto;
+import shop.s5g.front.dto.coupon.coupon.CouponResponseDto;
 import shop.s5g.front.exception.coupon.CouponRegisterFailedException;
 import shop.s5g.front.service.coupon.coupon.CouponService;
 
@@ -61,6 +62,25 @@ public class CouponServiceImpl implements CouponService {
                 return response.getBody();
             }
             throw new RuntimeException("쿠폰 조회에 실패했습니다.");
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    /**
+     * 발급 가능한 쿠폰 조회
+     * @param pageable
+     * @return Page<AvailableCouponResponseDto>
+     */
+    @Override
+    public Page<AvailableCouponResponseDto> getAvailableCoupons(Pageable pageable) {
+        try {
+            ResponseEntity<Page<AvailableCouponResponseDto>> response = couponAdapter.getAvailableCoupons(pageable);
+
+            if (response.getStatusCode().is2xxSuccessful()) {
+                return response.getBody();
+            }
+            throw new RuntimeException("발급 가능한 쿠폰이 없습니다.");
         } catch (HttpClientErrorException | HttpServerErrorException e) {
             throw new RuntimeException(e.getMessage());
         }

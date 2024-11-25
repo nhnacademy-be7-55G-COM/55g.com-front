@@ -64,9 +64,6 @@ public class PublisherController {
     //출판사 수정
     @PutMapping("/admin/publisher/update/{id}")
     public String publisherUpdate(@PathVariable("id") Long id, @ModelAttribute PublisherRequestDto publisherRequestDto) {
-
-        //publisher -> publisherRequestDto로 바꿔야 함
-        //publisher.setPublisherName(publisherRequestDto.getPublisherName());
         publisherService.updatePublisher(id, publisherRequestDto);
         return "redirect:/admin";
     }

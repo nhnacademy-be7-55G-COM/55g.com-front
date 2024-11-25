@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}">
 <head>
+  <th:block th:replace="~{fragments/head :: headTemplate}"></th:block>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>관리자 대시보드</title>
   <link rel="stylesheet" href="style.css">
-  <div th:replace="~{fragments/head}"></div>
   <style>
     /* 기본 모달 스타일 */
     .modal {
@@ -255,9 +256,8 @@
   </style>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
-<body style="background-color: var(--light-color); font-family: var(--body-font), serif; color: var(--body-text-color);">
+<body layout:fragment="content" style="background-color: var(--light-color); font-family: var(--body-font), serif; color: var(--body-text-color);">
 <!-- 관리자 헤더 -->
-<div th:replace="~{fragments/header}"></div>
 <div class="container-fluid">
   <div class="row">
     <!-- 사이드바 -->
@@ -324,10 +324,10 @@
             <a>카테고리</a>
             <ul>
               <li>
-                <a class="nav-link" href="#" data-url="/admin/category">카테고리 목록</a>
+                <a class="nav-link" href="/admin/category">카테고리 목록</a>
               </li>
               <li>
-                <a class="nav-link" href="#" data-url="/category/register">카테고리 등록</a>
+                <a class="nav-link" href="/admin/category/register">카테고리 등록</a>
               </li>
             </ul>
           </li>
@@ -336,10 +336,10 @@
             <a>출판사</a>
             <ul>
               <li>
-                <a class="nav-link" href="#" data-url="/admin/publisher/list">출판사 목록</a>
+                <a class="nav-link" href="/admin/publisher/list">출판사 목록</a>
               </li>
               <li>
-                <a class="nav-link" href="#" data-url="/admin/publisher/register">출판사 등록</a>
+                <a class="nav-link" href="/admin/publisher/register">출판사 등록</a>
               </li>
             </ul>
           </li>
@@ -348,10 +348,10 @@
             <a>태그</a>
             <ul>
               <li>
-                <a class="nav-link" href="#" data-url="/admin/tag/list">태그 목록</a>
+                <a class="nav-link" href="/admin/tag/list">태그 목록</a>
               </li>
               <li>
-                <a class="nav-link" href="#" data-url="/admin/tag/register">태그 등록</a>
+                <a class="nav-link" href="/admin/tag/register">태그 등록</a>
               </li>
             </ul>
           </li>
@@ -360,10 +360,10 @@
             <a>작가</a>
             <ul>
               <li>
-                <a class="nav-link" href="#" data-url="/admin/author/list">작가 목록</a>
+                <a class="nav-link" href="/admin/author/list">작가 목록</a>
               </li>
               <li>
-                <a class="nav-link" href="#" data-url="/admin/author/register">작가 등록</a>
+                <a class="nav-link" href="/admin/author/register">작가 등록</a>
               </li>
             </ul>
           </li>
@@ -449,7 +449,6 @@
     </main>
   </div>
 </div>
-<div th:replace="~{fragments/admin-footer}"></div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
   $(document).ready(function() {

@@ -1,6 +1,5 @@
 package shop.s5g.front.service.publisher;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import shop.s5g.front.dto.MessageDto;
 import shop.s5g.front.dto.PageResponseDto;
