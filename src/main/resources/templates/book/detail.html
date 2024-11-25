@@ -160,6 +160,12 @@
             <span th:if="${!stat.last}">></span>
           </span>
         </div>
+        <div>
+          <span th:each="tag,stat:${book.tagList}">
+            <a th:href="@{/book/list/tag(name=${tag.tagName})}"><span th:text="'#'+${tag.tagName}"></span></a>
+            <span th:if="${!stat.last}">&nbsp;</span>
+          </span>
+        </div>
         <div class="product-price mt-3">
           정가: <span class="original-price"
                     th:text="${#numbers.formatDecimal(book.price, 0, 'COMMA', 0, 'COMMA')}"></span>원
