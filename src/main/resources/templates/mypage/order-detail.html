@@ -88,6 +88,13 @@
           errorMessage.style.display = 'none';
           errorMessage.textContent = '';
 
+          // 파일이 선택되지 않았을 경우
+          if (!files || files.length === 0) {
+            console.log("No files selected");
+            this.value = ''; // 필드 초기화
+            return;
+          }
+
           // 파일 개수 제한
           if (files.length > maxFiles) {
             errorMessage.textContent = `최대 ${maxFiles}개의 파일만 업로드할 수 있습니다.`;
