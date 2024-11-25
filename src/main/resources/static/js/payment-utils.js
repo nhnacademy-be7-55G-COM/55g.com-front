@@ -88,18 +88,18 @@ const returnToIndex = () => {
   window.location.href='/';
 }
 
-const fetchShoppingCart = async () => {
-  return (await axios.get('/payment/support/fetch-cart')).data;
-}
-//
-// const createNewOrder = (deliveryInfo) => {
-//   return axios.post('/payment/support/create-order', deliveryInfo);
-// }
-
 const createNewOrder = ({
   customerId, delivery, elements, netPrice, totalPrice
 }) => {
   return axios.post('/payment/support/create-order', {
+    customerId, delivery, elements, netPrice, totalPrice
+  });
+};
+
+const createNewGuestOrder = ({
+  customerId, delivery, elements, netPrice, totalPrice
+}) => {
+  return axios.post('/guest/payment/support/create-order', {
     customerId, delivery, elements, netPrice, totalPrice
   });
 };
@@ -176,6 +176,10 @@ const onPaymentFail = (orderDataId) => {
   return axios.delete(`/payment/support/order`);
 }
 
+
+const onGuestPaymentFail = (orderDataId) => {
+  return axios.delete(`/guest/payment/support/order`);
+}
 /*
  * origin: 말 그대로 원가격 [sum(book_price*quantity)]
  * discount: 할인가격 [sum(book_price*discount_rate - coupon)]

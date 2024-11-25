@@ -1,13 +1,8 @@
 package shop.s5g.front.domain.purchase;
 
-import jakarta.annotation.PostConstruct;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -18,46 +13,24 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.SessionScope;
 import org.springframework.web.servlet.ModelAndView;
 import shop.s5g.front.dto.book.BookPurchaseView;
-import shop.s5g.front.dto.cart.request.CartBookInfoRequestDto;
+import shop.s5g.front.dto.customer.CustomerResponseDto;
 import shop.s5g.front.dto.delivery.DeliveryCreateRequestDto;
 import shop.s5g.front.dto.delivery.DeliveryFeeResponseDto;
 import shop.s5g.front.dto.member.MemberInfoResponseDto;
 import shop.s5g.front.dto.order.OrderCreateRequestDto;
 import shop.s5g.front.dto.order.OrderDetailCreateRequestDto;
-import shop.s5g.front.dto.order.WrapModifyRequestDo;
-import shop.s5g.front.dto.point.PointPolicyView;
-import shop.s5g.front.dto.wrappingpaper.WrappingPaperResponseDto;
-import shop.s5g.front.dto.wrappingpaper.WrappingPaperView;
 import shop.s5g.front.exception.ResourceNotFoundException;
-import shop.s5g.front.service.cart.CartService;
-import shop.s5g.front.service.delivery.DeliveryFeeService;
 import shop.s5g.front.service.member.MemberService;
-import shop.s5g.front.service.point.PointPolicyService;
-import shop.s5g.front.service.wrappingpaper.WrappingPaperService;
-import shop.s5g.front.utils.RandomStringProvider;
 
 @Component
 @SessionScope                   // 세션에 종속적임
 @RequiredArgsConstructor
 @Slf4j
-public class PurchaseSheet implements Serializable {    // 주문서 빈!
+public class PurchaseSheet extends AbstractPurchaseSheet {    // 주문서 빈!
     private final transient MemberService memberService;
-    private final transient PointPolicyService pointPolicyService;
-    private final transient DeliveryFeeService deliveryFeeService;
-    private final transient WrappingPaperService wrappingPaperService;
-    private final transient CartService cartService;
-    private final transient RandomStringProvider randomStringProvider;
 
-    // 비동기 작업을 관리하는 리스트
-    private transient List<CompletableFuture<?>> futures;
-
-    private List<BookPurchaseView> cartList;        // 카트에서 가져온 책들
-    private List<WrappingPaperResponseDto> wraps;   // 사용 가능한 포장지들
-    private PointPolicyView policy;                 // 기본 포인트 정책
     @Getter
     private MemberInfoResponseDto memberInfo;       // 주문서를 작성하는 회원 정보
-    // TODO: 아직 배송비가 포함되지 않음.
-    private LinkedList<DeliveryFeeResponseDto> fee;       // 배송비 리스트
 
     @Getter @Setter(AccessLevel.PRIVATE)
     private BigDecimal accRateSum;          // 포인트 적립 비율 합산
@@ -65,141 +38,52 @@ public class PurchaseSheet implements Serializable {    // 주문서 빈!
     @Getter @Setter(AccessLevel.PRIVATE)
     private BigDecimal memberAccRate;       // 멤버십 포인트 비율
 
-    @Getter @Setter(AccessLevel.PRIVATE)
-    private BigDecimal defaultAccRate;      // 기본 포인트 적립 비율
-
-    private boolean cartReady;              // 카트에 책정보를 다 가져왔는지?
-    private boolean joined;                 // futures 의 작업이 다 끝났는지?
-    private HashMap<Long, WrappingPaperView> wrapMap;   // 각 책마다 포장지 선택을 저장함.
-    @Getter @Setter
-    private boolean isOrdering;
-
-    @Getter
-    private OrderInformation orderInfo;     // 주문 정보
     // ------------------------------
 
     // 주문서를 생성했다면, 필요한 정보들을 비동기로 가져옴.
-    @PostConstruct
-    public void init() {
-        log.trace("---------- PurchaseSheet is initializing -----------");
-        futures = new LinkedList<>();
-        wrapMap = new HashMap<>();
-        futures.add(pointPolicyService.getPurchasePointPolicyAsync().thenAccept(
-            view -> {
-                policy = view;
-                setDefaultAccRate(view.value());
-            }
-        ));
-        futures.add(memberService.getMemberInfoAsync().thenAccept(
-            info -> {
-                memberInfo = info;
-                setMemberAccRate(BigDecimal.valueOf(info.grade().point(), 2));
-            }
-        ));
-        futures.add(wrappingPaperService.fetchActivePapersAsync().thenAccept(
-            papers -> {
-                wraps = papers;
-                wraps.stream().map(wrappingPaperService::convertToView).forEach(
-                    w-> wrapMap.put(w.id(), w)
-                );
-            }
-        ));
-        futures.add(deliveryFeeService.getAllFeesAsync().thenAccept(
-            fees-> fee = fees
-        ));
-        cartReady = false;
-        joined = false;
-        orderInfo = new OrderInformation(randomStringProvider);
-        log.trace("PurchaseSheet has been initialized: {}", System.identityHashCode(this));
-    }
-    // 쇼핑카트에서 책 ID를 가져와서 책 정보를 요청함.
-    public PurchaseSheet pushCartList(List<CartBookInfoRequestDto> rawCartList) {
-        futures.add(
-            cartService.convertCartToView(rawCartList)
-                .thenAccept(cart -> {
-                    cartList = cart;
-                    cartReady = true;
+    @Override
+    protected List<CompletableFuture<Void>> futuresSupplier() {
+        return List.of(memberService.getMemberInfoAsync().thenAccept(
+                info -> {
+                    memberInfo = info;
+                    setMemberAccRate(BigDecimal.valueOf(info.grade().point(), 2));
                 }
             )
         );
-        return this;
     }
 
     // 상기의 비동기 작업들을 기다림.
-    public void join() {
-        CompletableFuture<?>[] arrFuture = futures.toArray(new CompletableFuture[0]);
-        CompletableFuture.allOf(arrFuture).thenRun(
-            () -> {
-                sumAccRate();
-                setJoined();
-                log.trace("-------- PurchaseSheet Joined ----------");
-            }
-        ).join();
-    }
-    // 상기의 비동기 작업들이 끝났는지?
-    public boolean isReady() {
-        return joined && cartReady;
-    }
-    // 비동기 작업이 완료되었음!
-    private void setJoined() {
-        joined = true;
+    @Override
+    protected void joinCallback() {
+        sumAccRate();
     }
 
     // TODO: 소수점 이슈때문에 나중에 각각 계산을 해야함.
     private void sumAccRate() {     // 적립률 합연산
         memberAccRate = BigDecimal.valueOf(memberInfo.grade().point(), 2);
-        defaultAccRate = policy.value();
-        accRateSum = defaultAccRate.add(memberAccRate);
+        setDefaultAccRate(policy.value());
+        accRateSum = getDefaultAccRate().add(memberAccRate);
     }
 
     // TODO: 적절한 예외로 바꾸기
+    @Override
     public void pushToModel(ModelAndView mv) {      // 뷰에 표현하기 위한 DTO 주입.
         if (!isReady()) {
             log.error("Purchase Sheet was not joined! Please check synchronization logic!");
             throw new IllegalStateException();
         }
         log.trace("Attending arguments to purchase model...");
-        mv.addObject("cartList", cartList);
-        mv.addObject("fees", fee);
+        mv.addObject("cartList", getCartList());
+        mv.addObject("fees", getFee());
         mv.addObject("purchasePointPolicy", policy);
         mv.addObject("memberInfo", memberInfo);
         mv.addObject("accRate", accRateSum);
-        mv.addObject("wrappingPaperList", wraps.stream().map(wrappingPaperService::convertToView).toList());
-        cartList.forEach(cart -> orderInfo.purchaseMap.put(cart.id(), new PurchaseCell(cart)));
-    }
-
-    public String generateOrder() { // 이전 버전에서 order 넘버를 생성하던 메소드.
-//        orderInfo = new OrderInformation(randomStringProvider);
-        return orderInfo.randomOrderId;
-    }
-
-    // TODO: 위 메소드와 동일함. 리팩토링 해야함.
-    public String getRandomOrderId() {
-        return orderInfo.randomOrderId;
-    }
-
-    public long getTotalPrice() {   // 총 결제 금액을 리턴
-        return orderInfo.totalPrice;
-    }
-
-    public long getUsedPoint() {
-        return orderInfo.usingPoint;
-    }
-
-    public long getNetPrice() {     // netPrice가 뭐였더라...
-        return orderInfo.netPrice;
-    }
-
-    public void setOrderId(long orderId) {  // orderId를 세팅함.
-        orderInfo.orderId = orderId;
-        orderInfo.ready = true;
-    }
-
-    public long getOrderId() {  // orderId를 가져옴.
-        return orderInfo.orderId;
+        mv.addObject("wrappingPaperList", getWraps().stream().map(wrappingPaperService::convertToView).toList());
+        getCartList().forEach(cart -> orderInfo.purchaseMap.put(cart.id(), new PurchaseCell(cart)));
     }
 
     // shop api로 보낼 OrderCreateRequestDto를 작성함.
+    @Override
     public OrderCreateRequestDto createOrderRequest(DeliveryCreateRequestDto delivery) {
         if (orderInfo == null) {
             throw new IllegalStateException();
@@ -208,7 +92,7 @@ public class PurchaseSheet implements Serializable {    // 주문서 빈!
         long netPrice = 0;
         long accumulationPrice = 0;
         final long usePoint = orderInfo.usingPoint;
-        List<OrderDetailCreateRequestDto> details = new ArrayList<>(cartList.size());
+        List<OrderDetailCreateRequestDto> details = new ArrayList<>(getCartList().size());
         for (PurchaseCell cell: orderInfo.purchaseMap.values()) {
             BookPurchaseView book = cell.book;
             // TODO: 쿠폰 적용, 한 권만 적용
@@ -234,8 +118,7 @@ public class PurchaseSheet implements Serializable {    // 주문서 빈!
 
         // 배송비 유효성 체크
         boolean feeFlag = false;
-        fee.sort((c1, c2) -> Math.toIntExact((int) c2.condition() - c1.condition()));
-        for (DeliveryFeeResponseDto f: fee) {
+        for (DeliveryFeeResponseDto f: getFee()) {
             if (orderInfo.totalPrice >= f.condition()) {
                 if (delivery.deliveryFeeId() != f.id()) {
                     throw new IllegalArgumentException();
@@ -257,29 +140,24 @@ public class PurchaseSheet implements Serializable {    // 주문서 빈!
         return orderInfo.order;
     }
 
-    // 포장지를 바꿀때 마다 호출해주는 메소드.
-    // 바꾼 결과를 purchaseMap에 저장함.
-    public void changeWrappingPaper(WrapModifyRequestDo wrapModify) {
-        Map<Long, PurchaseCell> purchaseMap = orderInfo.purchaseMap;
-       PurchaseCell cell = purchaseMap.get(wrapModify.bookId());
-
-       if (wrapModify.wrapId() == -1) {
-           cell.wrappingPaper = null;
-       } else {
-           cell.wrappingPaper = wrapMap.get(wrapModify.wrapId());
-       }
-    }
-
+    @Override
     public long updateUsingPoint(long point) {
         if (point < 0) {
             // TODO: 적절한 예외로 바꾸기
-            throw new RuntimeException("포인트는 음수가 될 수 없어요.");
+            throw new UnsupportedOperationException("포인트는 음수가 될 수 없어요.");
         }
         if (memberInfo.point() < point) {
             // TODO: 적절한 예외로 바꾸기
-            throw new RuntimeException("포인트는 가지고 있는것보다 클 수 없어요.");
+            throw new UnsupportedOperationException("포인트는 가지고 있는것보다 클 수 없어요.");
         }
         orderInfo.usingPoint = point;
         return point;
+    }
+
+    @Override
+    public CustomerResponseDto getCustomerInfo() {
+        return new CustomerResponseDto(
+            memberInfo.customerId(), memberInfo.password(), memberInfo.name(), memberInfo.phoneNumber(), memberInfo.email()
+        );
     }
 }

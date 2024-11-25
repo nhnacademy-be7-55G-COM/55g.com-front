@@ -53,6 +53,9 @@ public interface OrderAdapter {
         return fetchOrdersForAdmin(filter.orderId(), filter.customerId(), filter.active(), filter.page(), filter.size(), filter.deliveryStatus());
     }
 
+    @PostMapping("/guests/{customerId}")
+    ResponseEntity<OrderCreateResponseDto> createNewGuestOrder(@PathVariable long customerId, @RequestBody OrderCreateRequestDto createRequest);
+
 //    @DeleteMapping("{detailId}")
 //    ResponseEntity<HttpStatus>
 }

@@ -1,4 +1,4 @@
-package shop.s5g.front.adapter;
+package shop.s5g.front.adapter.delivery;
 
 import java.util.LinkedList;
 import org.springframework.cloud.openfeign.FeignClient;

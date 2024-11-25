@@ -6,7 +6,7 @@ import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import shop.s5g.front.adapter.PointPolicyAdapter;
+import shop.s5g.front.adapter.point.PointPolicyAdapter;
 import shop.s5g.front.dto.member.MemberInfoResponseDto;
 import shop.s5g.front.dto.point.PointPolicyResponseDto;
 import shop.s5g.front.dto.point.PointPolicyView;
