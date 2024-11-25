@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import shop.s5g.front.annotation.MemberAndAdminOnly;
 import shop.s5g.front.annotation.RedirectWithAlert;
 import shop.s5g.front.dto.MessageDto;
 import shop.s5g.front.dto.address.AddressRequestDto;
@@ -30,7 +29,6 @@ import shop.s5g.front.service.member.MemberService;
 
 @Controller
 @RequiredArgsConstructor
-@MemberAndAdminOnly
 @RedirectWithAlert(title = "로그인 필요", redirect = "/login", exceptions = UnauthorizedException.class)
 public class MyPageController {
 

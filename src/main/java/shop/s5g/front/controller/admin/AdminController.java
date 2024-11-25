@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-import shop.s5g.front.annotation.AdminOnly;
-import shop.s5g.front.annotation.RedirectWithAlert;
 import shop.s5g.front.dto.coupon.BookDetailsBookResponseDto;
 import shop.s5g.front.dto.coupon.CouponBookRequestDto;
 import shop.s5g.front.dto.coupon.CouponBookResponseDto;
@@ -31,7 +29,6 @@ import shop.s5g.front.dto.coupon.CouponTemplateInquiryResponseDto;
 import shop.s5g.front.dto.coupon.CouponTemplateRegisterRequestDto;
 import shop.s5g.front.dto.coupon.CouponTemplateUpdateRequestDto;
 import shop.s5g.front.dto.wrappingpaper.WrappingPaperView;
-import shop.s5g.front.exception.auth.UnauthorizedException;
 import shop.s5g.front.service.coupon.book.CouponBookService;
 import shop.s5g.front.service.coupon.category.CouponCategoryService;
 import shop.s5g.front.service.coupon.coupon.CouponService;
@@ -43,8 +40,6 @@ import shop.s5g.front.service.wrappingpaper.WrappingPaperService;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-@AdminOnly
-@RedirectWithAlert(redirect = "/", title = "권한 없음", exceptions = UnauthorizedException.class)
 public class AdminController {
 
     private final CouponPolicyService couponPolicyService;
