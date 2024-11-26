@@ -20,7 +20,7 @@ public record AvailableCouponResponseDto(
 
     BigDecimal discountPrice,
 
-    Integer count
+    Long count
 ) {
 
 }
