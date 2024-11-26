@@ -32,4 +32,6 @@ public interface BookService {
     BookDetailResponseDto getBookDetail(long bookId);
 
     ResponseEntity<MessageDto> addBook(BookAddRequestDto dto, MultipartFile file);
+
+    ResponseEntity<MessageDto> updateBook(long bookId, BookAddRequestDto dto, MultipartFile file);
 }

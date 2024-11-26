@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import shop.s5g.front.dto.book.BookDetailCategoryResponseDto;
+import shop.s5g.front.dto.tag.TagResponseDto;
 
 public record BookDetailResponseDto(
     long bookId,
@@ -26,6 +27,7 @@ public record BookDetailResponseDto(
     String imagePath,
     List<BookAuthorResponseDto> authorList,
     List<BookDetailCategoryResponseDto> categoryList,
+    List<TagResponseDto> tagList,
     long countCoupons
 ) {
 
