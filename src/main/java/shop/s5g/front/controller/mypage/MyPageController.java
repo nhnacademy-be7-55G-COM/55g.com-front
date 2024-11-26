@@ -3,7 +3,9 @@ package shop.s5g.front.controller.mypage;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -90,6 +92,11 @@ public class MyPageController {
         return "mypage/address";
     }
 
+    /**
+     * 마이 페이지 쿠폰함 목록
+     * @param model
+     * @return String - view
+     */
     @GetMapping("/mypage/coupons")
     public String couponPage(Model model) {
 
@@ -107,6 +114,22 @@ public class MyPageController {
         model.addAttribute("usableCurrentPage", couponList.getPageable().getPageNumber());
 
         return "mypage/user-coupon";
+    }
+
+    @PostMapping("/mypage/coupon/get/{memberId}")
+    public String getCoupon(@PathVariable("memberId") Long memberId,
+        @RequestParam Long couponId,
+        @RequestParam Long couponTemplateId) {
+
+        Map<String, Object> userData = new HashMap<>();
+
+        userData.put("memberId", memberId);
+        userData.put("couponId", couponId);
+        userData.put("couponTemplateId", couponTemplateId);
+
+        userCouponService.getCoupon(userData);
+
+        return "redirect:/mypage/coupons";
     }
 
     @PostMapping("/mypage/changeInfo")
@@ -162,16 +185,6 @@ public class MyPageController {
         authService.logoutMember(request, response);
 
         return "redirect:/";
-    }
-
-    @PostMapping("/mypage/coupons/{customerId}")
-    public String unUsedCoupons(
-        @PathVariable("customerId") Long customerId,
-        Pageable pageable, Model model) {
-
-
-
-        return "redirect:/mypage#coupons";
     }
 
 }

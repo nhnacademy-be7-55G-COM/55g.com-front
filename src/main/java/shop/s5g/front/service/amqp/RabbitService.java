@@ -7,6 +7,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
+import shop.s5g.front.dto.coupon.user.UserCouponRabbitResponseDto;
 import shop.s5g.front.dto.order.OrderRabbitResponseDto;
 
 @Service
@@ -14,6 +15,7 @@ import shop.s5g.front.dto.order.OrderRabbitResponseDto;
 public class RabbitService {
     private final RabbitTemplate rabbitTemplate;
     private final ParameterizedTypeReference<OrderRabbitResponseDto> messageType = new ParameterizedTypeReference<OrderRabbitResponseDto>() {};
+    private final ParameterizedTypeReference<UserCouponRabbitResponseDto> userCouponMessageType = new ParameterizedTypeReference<UserCouponRabbitResponseDto>() {};
 
     @Value("${rabbit.exchange.orders}")
     private String orderExchange;
@@ -26,13 +28,13 @@ public class RabbitService {
 
     @Value("${rabbit.route.coupon.create}")
     private String couponRouteKey;
-
+/*
     @Value("${rabbit.exchange.category}")
     private String categoryCouponExchange;
 
     @Value("${rabbit.route.category.coupon}")
     private String categoryCouponRoutingKey;
-
+*/
     @Nullable
     public OrderRabbitResponseDto sendPaymentRequest(Map<String, Object> body) {
         // 타임아웃이 발생되어 응답을 받지 못했을 경우 null.
@@ -40,12 +42,8 @@ public class RabbitService {
     }
 
     @Nullable
-    public OrderRabbitResponseDto sendCouponRequest(Long body) {
-        return rabbitTemplate.convertSendAndReceiveAsType(couponExchange, couponRouteKey, body, messageType);
+    public UserCouponRabbitResponseDto sendCouponRequest(Map<String, Object> couponId) {
+        return rabbitTemplate.convertSendAndReceiveAsType(couponExchange, couponRouteKey, couponId, userCouponMessageType);
     }
 
-    @Nullable
-    public OrderRabbitResponseDto sendCategoryCouponRequest(Map<String, Object> body) {
-        return rabbitTemplate.convertSendAndReceiveAsType(categoryCouponExchange, categoryCouponRoutingKey, body, messageType);
-    }
 }

@@ -65,9 +65,15 @@
               <p><span th:text="${coupon.condition}">조건</span>원 이상 구매시</p>
             </div>
             <div>
-              <button class="btn btn-primary w-100 mt-2" th:if="${coupon.count > 0}" type="button">다운로드</button>
+              <form th:action="@{/mypage/coupon/get/{memberId}(memberId=${member.customerId()})}" method="post">
+                <input type="hidden" name="couponId" th:value="${coupon.couponId()}" />
+                <input type="hidden" name="couponTemplateId" th:value="${coupon.couponTemplateId()}" />
+                <button class="btn btn-primary w-100 mt-2" th:if="${coupon.count > 0}" type="submit">다운로드</button>
+              </form>
+
               <button class="btn btn-secondary w-100 mt-2" th:unless="${coupon.count > 0}" type="button" disabled>발급불가</button>
             </div>
+
           </div>
         </div>
       </div>
