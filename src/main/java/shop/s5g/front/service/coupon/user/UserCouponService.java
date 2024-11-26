@@ -1,8 +1,10 @@
 package shop.s5g.front.service.coupon.user;
 
+import java.util.Map;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import shop.s5g.front.dto.coupon.user.InValidUserCouponResponseDto;
+import shop.s5g.front.dto.coupon.user.UserCouponRabbitResponseDto;
 import shop.s5g.front.dto.coupon.user.ValidUserCouponResponseDto;
 
 public interface UserCouponService {
@@ -14,4 +16,6 @@ public interface UserCouponService {
     Page<InValidUserCouponResponseDto> getExpiredCoupons(Long customerId, Pageable pageable);
 
     Page<InValidUserCouponResponseDto> getInvalidCoupons(Long customerId, Pageable pageable);
+
+    UserCouponRabbitResponseDto getCoupon(Map<String, Object> couponBody);
 }

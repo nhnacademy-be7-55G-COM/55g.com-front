@@ -71,4 +71,16 @@ public class TagServiceImpl implements TagService {
         }
         throw new RuntimeException();
     }
+
+    @Override
+    public ResponseEntity<List<TagResponseDto>> searchTags(String keyword){
+        try{
+            return tagAdapter.searchTags(keyword);
+        }catch(FeignException e){
+            if(e.status()==400){
+                throw new BadRequestException(e.getMessage());
+            }
+            throw new RuntimeException(e);
+        }
+    }
 }
