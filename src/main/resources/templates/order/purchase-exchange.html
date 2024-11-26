@@ -3,14 +3,55 @@
 <head>
   <meta charset="UTF-8">
   <title>구매 진행중...</title>
+  <th:block th:replace="~{fragments/head :: headTemplate}"></th:block>
+
   <script th:inline="javascript">
+    let isLogged;
+
     const redirect = [[${redirect}]];
 
     const cartSize = [[${cartSize}]];
 
-    localStorage['cartCount'] = parseInt(localStorage['cartCount']) - cartSize;
+    // 페이지가 로드될 때 로그인 여부 확인
+    (async () =>{
+      isLogged = await isLoggedIn();
+      console.log('즉시 로그인여부 확인',isLogged);
 
-    window.location.href = redirect;
+      removingBooksInCart();
+    })();
+
+    function removingBooksInCart(){
+      if (isLogged){
+        console.log('회원 구매 로직 진입'); // 회원의 경우
+        fetch("/cart/removePurchasedBooks",{
+          method: 'POST',
+          headers: {[_csrf_header]: _csrf }
+        })
+        .then(response => {
+          console.log("레디스 책 삭제 응답왔음");
+          if (response.ok){
+            localStorage['cartCount'] = parseInt(localStorage['cartCount']) - cartSize;
+          }
+          window.location.href = redirect;
+
+        })
+      }else { // 비회원의 경우
+        const cartData = JSON.parse(localStorage.getItem('cart'));
+        cartData.cartBookInfoList = cartData.cartBookInfoList.filter(book => book.status == false);
+        localStorage.setItem('cart',JSON.stringify(cartData));
+
+        localStorage['cartCount'] = parseInt(localStorage['cartCount']) - cartSize;
+        window.location.href = redirect;
+      }
+    }
+
+
+    async function isLoggedIn() {
+      const response = await fetch("/cart/loginCheck",{method:'GET',credentials:"include"});
+      const data = await response.json();
+      return  data.isLoggedIn;
+    }
+
   </script>
 </head>
 <body>
