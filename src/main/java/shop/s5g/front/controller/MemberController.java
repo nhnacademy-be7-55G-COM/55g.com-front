@@ -61,7 +61,7 @@ public class MemberController {
         return "redirect:/login";
     }
 
-    @PostMapping("/mypage/checkId/{loginId}")
+    @PostMapping("/checkId/{loginId}")
     @ResponseBody
     public boolean checkId(@PathVariable String loginId){
         return memberService.isExistsLoginId(loginId);
