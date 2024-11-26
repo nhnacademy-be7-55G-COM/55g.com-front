@@ -145,7 +145,10 @@
   <div class="container mt-5">
     <div class="row">
       <div class="col-lg-4">
-        <img th:src="'https://image.toast.com/aaaacko/55gshop/book/thumbnails/'+${book.imagePath}"
+        <img th:if="${#strings.isEmpty(book.imagePath)}" src="/static/images/noImage.jpg"
+             class="img-fluid" alt="Product Image">
+        <img th:unless="${#strings.isEmpty(book.imagePath)}"
+             th:src="'https://image.toast.com/aaaacko/55gshop/book/thumbnails/'+${book.imagePath}"
              class="img-fluid" alt="Product Image">
       </div>
       <div class="col-lg-8">
@@ -156,8 +159,16 @@
           | <span th:text="${book.publisherName}"></span></p>
         <div>
           <span class="ratings" th:each="category,stat:${book.categoryList}">
-            <a th:href="@{/book/list/category(name=${category.categoryName})}"><span th:text="${category.categoryName}"></span></a>
+            <a th:href="@{/book/list/category(name=${category.categoryName})}"><span
+                th:text="${category.categoryName}"></span></a>
             <span th:if="${!stat.last}">></span>
+          </span>
+        </div>
+        <div>
+          <span th:each="tag,stat:${book.tagList}">
+            <a th:href="@{/book/list/tag(name=${tag.tagName})}"><span
+                th:text="'#'+${tag.tagName}"></span></a>
+            <span th:if="${!stat.last}">&nbsp;</span>
           </span>
         </div>
         <div class="product-price mt-3">
@@ -212,7 +223,6 @@
   </div>
 </main>
 <!-- 본문 끝 -->
-<div th:replace="~{fragments/footer}"></div>
 
 <div class="cart-modal" id="cartModal">
   <div class="cart-modal-content">
