@@ -233,6 +233,7 @@
       return;
     }
 
+    localStorage['isCartPurchase'] = true;
     if (isLogged){
       window.location.href = "/purchase";
     }else {

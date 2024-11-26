@@ -193,6 +193,7 @@
             ];
             const param = encodeURIComponent(btoa(JSON.stringify(obj)));
 
+            localStorage['isCartPurchase'] = false;
             if (await isLoggedIn())
               window.location.href = `/purchase/instant?cart=${param}`;
             else
