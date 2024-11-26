@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import shop.s5g.front.annotation.RedirectWithAlert;
-import shop.s5g.front.domain.purchase.PurchaseSheet;
+import shop.s5g.front.domain.purchase.GuestPurchaseSheet;
 import shop.s5g.front.dto.order.OrderRabbitResponseDto;
 import shop.s5g.front.dto.payment.TossPaymentInfo;
 import shop.s5g.front.exception.order.SessionDoesNotAvailableException;
@@ -21,14 +21,14 @@ import shop.s5g.front.service.payments.PaymentsService;
 
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/payment")
+@RequestMapping("/guest/payment")
 @Controller
-public class PaymentController {
+public class GuestPaymentController {
     private final PaymentsService paymentsService;
     private final OrderService orderService;
 
     // 프록시로 작동해서 ObjectProvider 를 사용하지 않아도 됨!
-    private final PurchaseSheet purchaseSheet;
+    private final GuestPurchaseSheet purchaseSheet;
 
     // https://docs.tosspayments.com/sdk/v2/js#%EC%9D%91%EB%8B%B5-21
     @GetMapping("/success")

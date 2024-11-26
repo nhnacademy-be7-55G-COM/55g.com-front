@@ -24,7 +24,7 @@ public class SupportControllerExceptionResolver {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
-    @ExceptionHandler(BadRequestException.class)
+    @ExceptionHandler({BadRequestException.class, UnsupportedOperationException.class})
     public ResponseEntity<MessageDto> badRequestExceptionHandler(BadRequestException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new MessageDto(e.getMessage()));
     }

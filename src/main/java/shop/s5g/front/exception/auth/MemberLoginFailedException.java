@@ -1,4 +1,4 @@
-package shop.s5g.front.exception.member;
+package shop.s5g.front.exception.auth;
 
 public class MemberLoginFailedException extends RuntimeException {
 
