@@ -282,7 +282,7 @@ public class AdminController {
     @GetMapping("/admin/categories/coupons")
     public ModelAndView getCategoriesCoupons(@RequestParam(defaultValue = "0") int page) {
 
-        ModelAndView mv = new ModelAndView("/admin/coupon-category-inquiry");
+        ModelAndView mv = new ModelAndView("admin/coupon-category-inquiry");
 
         Pageable pageable = PageRequest.of(page, 15);
 
