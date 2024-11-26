@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="https://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}"
+>
+<head>
+  <meta charset="UTF-8">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
+  <title>55g Book Store</title>
+
+  <!-- Font Awesome 아이콘 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+  <!-- Pretendard 폰트 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css">
+
+  <!-- Slick Carousel CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
+  <link rel="stylesheet" href="/static/style-main.css">
+
+</head>
+<body layout:fragment="content">
+<div id="custom-floating-menu">
+  <ul class="custom-menu-list">
+    <li><button class="custom-menu-button" onclick="window.location.href='/mypage/coupons'">쿠폰 발급</button></li>
+    <li><button class="custom-menu-button">이벤트</button></li>
+    <li><button class="custom-menu-button">고객센터</button></li>
+  </ul>
+</div>
+<section id="billboard">
+  <div class="main-slider">
+    <!-- 슬라이드 아이템 -->
+    <div class="slider-item">
+      <a href="/page1">
+        <img src="/static/images/banner1.jpg" alt="최신 신간 도서">
+        <div class="slider-text">
+          <h2 class="billboard-title">노벨 문학상 수상 특집(1)</h2>
+          <p class="billboard-subtitle">한강의 책, 세계, 이야기</p>
+        </div>
+      </a>
+    </div>
+    <div class="slider-item">
+      <a href="/page2">
+        <img src="/static/images/banner2.jpg" alt="베스트셀러 할인">
+        <div class="slider-text">
+          <h2 class="billboard-title">노벨 문학상 수상 특집(2)</h2>
+          <p class="billboard-subtitle">1945 ~ 2024 책으로 읽는 현대사</p>
+        </div>
+      </a>
+    </div>
+    <div class="slider-item">
+      <a href="/page3">
+        <img src="/static/images/banner3.jpg" alt="이벤트 도서">
+        <div class="slider-text">
+          <h2 class="billboard-title">국내 최대 규모의 종합 문학상</h2>
+          <p class="billboard-subtitle">2024 대산문학상 특별전</p>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="book-section">
+  <div class="section-header">
+    <h2 class="section-title">한강 작가 노벨문학상 수상</h2>
+    <a href="/more-books" class="more-link">더보기 +</a>
+  </div>
+  <div class="book-slider">
+    <!-- 책 아이템 -->
+    <div class="book-item">
+      <img src="/static/images/hankang-1.jpg" alt="작별하지 않는다">
+      <p class="book-category">소설</p>
+      <h3 class="h3-title">작별하지 않는다</h3>
+      <p class="book-author">한강 · 문학동네</p>
+    </div>
+    <div class="book-item">
+      <img src="/static/images/hankang-2.jpg" alt="채식주의자">
+      <p class="book-category">소설</p>
+      <h3 class="h3-title">채식주의자</h3>
+      <p class="book-author">한강 · 창비</p>
+    </div>
+    <div class="book-item">
+      <img src="/static/images/hankang-3.jpg" alt="사람에 저녁을 넣어 두었다">
+      <p class="book-category">시/에세이</p>
+      <h3 class="h3-title">서랍에 저녁을 넣어 두었다</h3>
+      <p class="book-author">한강 · 문학과지성사</p>
+    </div>
+    <div class="book-item">
+      <img src="/static/images/hankang-4.jpg" alt="소년이 온다">
+      <p class="book-category">소설</p>
+      <h3 class="h3-title">소년이 온다</h3>
+      <p class="book-author">한강 · 창비</p>
+    </div>
+    <div class="book-item">
+      <img src="/static/images/hankang-5.jpg" alt="흰">
+      <p class="book-category">소설</p>
+      <h3 class="h3-title">흰</h3>
+      <p class="book-author">한강 · 문학동네</p>
+    </div>
+    <div class="book-item">
+      <img src="/static/images/hankang-6.jpg" alt="소년이 온다">
+      <p class="book-category">소설</p>
+      <h3 class="h3-title">희랍어 시간</h3>
+      <p class="book-author">한강 · 문학동네</p>
+    </div>
+  </div>
+</section>
+
+<section class="book-section">
+  <div class="section-header">
+    <h2 class="section-title">베스트 셀러</h2>
+    <a href="/bestsellers" class="more-link">더보기 +</a>
+  </div>
+  <div class="book-slider">
+    <!-- 베스트셀러 아이템 -->
+    <div class="book-item">
+      <img src="/static/images/best-1.jpg" alt="베스트셀러 책 1">
+      <p class="book-category">경제/경영</p>
+      <h3 class="h3-title">트럼프 2.0 시대</h3>
+      <p class="book-author">박종훈 · 글로퍼스</p>
+    </div>
+    <div class="book-item">
+      <img src="/static/images/best-3.jpg" alt="베스트셀러 책 3">
+      <p class="book-category">시/에세이</p>
+      <h3 class="h3-title">어른의 행복은 조용하다</h3>
+      <p class="book-author">태수 · 페이지2북스</p>
+    </div>
+    <div class="book-item">
+      <img src="/static/images/best-2.jpg" alt="베스트셀러 책 2">
+      <p class="book-category">인문학</p>
+      <h3 class="h3-title">인생의 의미</h3>
+      <p class="book-author">토마스 힐란드 에릭센 · 더퀘스트</p>
+    </div>
+    <div class="book-item">
+      <img src="/static/images/hankang-1.jpg" alt="작별하지 않는다">
+      <p class="book-category">소설</p>
+      <h3 class="h3-title">작별하지 않는다</h3>
+      <p class="book-author">한강 · 문학동네</p>
+    </div>
+    <div class="book-item">
+      <img src="/static/images/hankang-2.jpg" alt="채식주의자">
+      <p class="book-category">소설</p>
+      <h3 class="h3-title">채식주의자</h3>
+      <p class="book-author">한강 · 창비</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- Slick Carousel -->
+<script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+
+<!-- Slick 초기화 -->
+<script>
+  $(document).ready(function () {
+    // 배너 슬라이더 초기화
+    $('.main-slider').slick({
+      slidesToShow: 1,
+      slidesToScroll: 1,
+      autoplay: true,
+      autoplaySpeed: 3000,
+      dots: true,
+      arrows: true,
+      prevArrow: '<button type="button" class="slick-prev"></button>',
+      nextArrow: '<button type="button" class="slick-next"></button>',
+      adaptiveHeight: false, // 높이 변동 방지
+    });
+
+    // 책 슬라이더 초기화
+    $('.book-slider').slick({
+      slidesToShow: 4,
+      slidesToScroll: 4,
+      autoplay: true,
+      autoplaySpeed: 3000,
+      dots: false,
+      arrows: true,
+      prevArrow: '<button type="button" class="slick-prev"></button>',
+      nextArrow: '<button type="button" class="slick-next"></button>',
+      adaptiveHeight: false, // 높이 변동 방지
+      responsive: [
+        {
+          breakpoint: 768,
+          settings: {
+            slidesToShow: 2,
+            slidesToScroll: 2,
+          },
+        },
+        {
+          breakpoint: 480,
+          settings: {
+            slidesToShow: 1,
+            slidesToScroll: 1,
+          },
+        },
+      ],
+    });
+  });
+  document.addEventListener('DOMContentLoaded', () => {
+    const menuButtons = document.querySelectorAll('#custom-floating-menu .custom-menu-button');
+
+    // 메뉴 버튼 클릭 이벤트
+    menuButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        alert(`${button.textContent} 페이지로 이동합니다!`);
+      });
+    });
+  });
+</script>
+
+
+</body>
+</html>

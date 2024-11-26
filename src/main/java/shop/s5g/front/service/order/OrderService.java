@@ -19,4 +19,8 @@ public interface OrderService {
     void deleteOrder(long orderId);
 
     List<OrderAdminTableView> adminQueryWithFilter(OrderQueryFilterDto filter);
+
+    List<OrderWithDetailResponseDto> getGuestOrders(
+        String phoneNumber, String name, String password
+    );
 }
