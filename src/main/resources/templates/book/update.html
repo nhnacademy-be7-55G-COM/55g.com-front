@@ -1,24 +1,26 @@
 <!DOCTYPE html>
 <html>
-<script src="/static/js/jquery-1.11.0.min.js">
-</script>
-<style>
-  #tag-search-result {
-    border: 1px solid black;
-    padding: 5px;
-  }
+<head>
+  <th:block th:replace="~{fragments/head :: headTemplate}"></th:block>
+  <script src="/static/js/jquery-1.11.0.min.js">
+  </script>
+  <style>
+    #tag-search-result {
+      border: 1px solid black;
+      padding: 5px;
+    }
 
-  .tag-search-item {
-    margin: 2px;
-  }
+    .tag-search-item {
+      margin: 2px;
+    }
 
-  .tag {
-    display: inline-block;
-    background-color: aqua;
-    margin: 2px;
-  }
-</style>
-<div th:replace="~{fragments/head}"></div>
+    .tag {
+      display: inline-block;
+      background-color: aqua;
+      margin: 2px;
+    }
+  </style>
+</head>
 <body>
 <div th:replace="~{fragments/header}"></div>
 <!-- 본문 시작 -->
