@@ -37,9 +37,12 @@ public class ReviewServiceImpl implements ReviewService {
         try {
             List<String> imagePathList = new ArrayList<>();
 
-            List<MultipartFile> attachmentList = createReviewRequestDto.attachment();
-            for (int i = 1; i <= attachmentList.size(); i++) {
-                MultipartFile file = attachmentList.get(i - 1);
+            List<MultipartFile> validFiles = createReviewRequestDto.attachment().stream()
+                .filter(file -> file.getSize() > 0) // 크기가 0보다 큰 파일만 유지
+                .toList();
+
+            for (int i = 1; i <= validFiles.size(); i++) {
+                MultipartFile file = validFiles.get(i - 1);
                 byte[] imageByte = file.getBytes();
                 String filename = DigestUtils.md5Hex(imageByte);
                 String extension = FilenameUtils.getExtension(file.getOriginalFilename());
