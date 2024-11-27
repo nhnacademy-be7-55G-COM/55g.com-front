@@ -301,7 +301,7 @@
       <hr />
       <div class="row">
         <div class="col-sm-3 cell-title">배송 주소</div>
-        <div class="col-sm-6">
+        <div class="col-sm-8">
           <div id="addressTypeSelection" class="btn-group btn-group-toggle" role="group" aria-label="Address Selection Group">
             <input th:if="${not #lists.isEmpty(memberInfo.addresses)}" id="savedAddressRadio" name="addType" type="radio" class="form-check-input" autocomplete="off" value="saved" checked />
             <input th:if="${#lists.isEmpty(memberInfo.addresses)}" id="savedAddressRadio" name="addType" type="radio" class="form-check-input" autocomplete="off" value="saved" disabled/>
@@ -315,19 +315,19 @@
           <div id="addressSelection">
             <div class="row">
               <th:block th:each="address: ${memberInfo.addresses}">
-                <div class="mini-address-card d-flex flex-row col-sm-3" style="padding: 0.05rem">
-                  <div class="d-flex flex-column">
-                    <h4 th:if="${not address.isDefault}" th:text="${address.alias}"></h4>
-                    <h4 th:if="${address.isDefault}" th:text="|${address.alias}(기본 배송지)|"></h4>
+                <div class="mini-address-card d-flex flex-row col-sm-5">
+                  <div class="d-flex flex-column me-auto">
+                    <div class="address-title" th:if="${not address.isDefault}" th:text="${address.alias}"></div>
+                    <div class="address-title" th:if="${address.isDefault}" th:text="|${address.alias}(기본 배송지)|"></div>
                     <p th:text="${address.toString()}"></p>
                   </div>
                   <th:block th:if="${address.isDefault}">
                     <script th:inline="javascript">
                       switchAddress([[${address.toString()}]]);
                     </script>
-                    <button onclick="switchAddressByButton(this)" th:data-index="${address.addressId}" class="btn btn-primary" disabled >선택</button>
+                    <button onclick="switchAddressByButton(this)" th:data-index="${address.addressId}" class="btn btn-primary my-auto" disabled >선택</button>
                   </th:block>
-                  <button onclick="switchAddressByButton(this)" th:data-index="${address.addressId}" th:if="${not address.isDefault}" class="btn btn-primary">선택</button>
+                  <button onclick="switchAddressByButton(this)" th:data-index="${address.addressId}" th:if="${not address.isDefault}" class="btn btn-primary my-auto">선택</button>
                 </div>
               </th:block>
               <script>
@@ -339,8 +339,6 @@
                 }
               </script>
             </div>
-
-            <input class="form-control" id="selectedAddressInput" disabled/>
           </div>
           <div id="customAddress" style="display: none;">
             <div>
@@ -387,7 +385,7 @@
         <div class="col-sm-6">
           <div id="paymentButtons" class="d-flex flex-row flex-wrap card-info-contents">
             <button onclick="switchPayment(this, 'CARD')">카드</button>
-            <button onclick="switchPayment(this, 'CULTURE_LAND')">문화상품권</button>
+<!--            <button onclick="switchPayment(this, 'CULTURE_LAND')">문화상품권</button>-->
           </div>
         </div>
       </div>
@@ -523,7 +521,6 @@
       let deliveryInfo = null;
       if (selectAddressType === 'saved')
         deliveryInfo = getDeliveryInfoFromSaved(selectedAddress, deliveryFeeId, '#receiveDate', '#receiverNameInput');
-      // TODO: 회원의 주소 가져오기.
       else if(selectAddressType === 'custom')
         deliveryInfo = getDeliveryInformation(addressSelectors, deliveryFeeId, '#receiveDate', '#receiverNameInput');
       else {
