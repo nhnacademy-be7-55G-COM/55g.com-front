@@ -68,4 +68,10 @@ public class MyPageSupportController {
             refundService.registerRefund(refundRequest)
         );
     }
+
+    @PutMapping("/orders/confirm/{detailId}")
+    public ResponseEntity<HttpStatus> changeDetailStatusToConfirm(@PathVariable long detailId) {
+        orderDetailService.changeOrderDetailStatus(detailId, "CONFIRM");
+        return ResponseEntity.ok().build();
+    }
 }

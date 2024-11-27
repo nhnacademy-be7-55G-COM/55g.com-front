@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import shop.s5g.front.adapter.OrderAdapter;
 import shop.s5g.front.adapter.PaymentsAdapter;
+import shop.s5g.front.dto.order.DetailStatusChangeRequestDto;
 import shop.s5g.front.dto.order.OrderDetailCancelRequestDto;
 import shop.s5g.front.dto.order.OrderDetailInfoDto;
 import shop.s5g.front.service.order.OrderDetailService;
@@ -28,5 +29,10 @@ public class OrderDetailServiceImpl implements OrderDetailService {
         body.put("cancelInfo", cancelReason);
 
         paymentsAdapter.cancelPayment(body);
+    }
+
+    @Override
+    public void changeOrderDetailStatus(long detailId, String typeName) {
+        orderAdapter.changeDetailType(detailId, new DetailStatusChangeRequestDto(typeName));
     }
 }

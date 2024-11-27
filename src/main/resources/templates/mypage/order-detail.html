@@ -125,12 +125,13 @@
     <table class="table" id="detail-table-books">
       <thead>
       <tr>
-        <th scope="col" style="width: 60%;">제목</th>
+        <th scope="col" style="width: 47%;">제목</th>
         <th scope="col">권 수</th>
         <th scope="col">가격</th>
         <th scope="col">적립</th>
         <th scope="col">포장지</th>
         <th scope="col">주문취소</th>
+        <th scope="col">리뷰</th>
       </tr>
       </thead>
       <tbody>
@@ -162,6 +163,7 @@
                   dangerButton = `<button onclick="cancelDetail(${detailId})" class="btn btn-outline-danger button-cancel">주문취소</button>`;
                 else
                   dangerButton = `<button onclick="extendRefundDiv(this, ${detailId})" class="btn btn-outline-danger button-cancel">반품하기</button>`;
+                reviewButton = `<button onclick="changeToConfirm(${detailId})" class="btn btn-outline-success button-cancel">주문확정</button>`;
                 break;
               case 'CONFIRM':
                 dangerButton = `<p style="margin:0">주문확정</p>`;

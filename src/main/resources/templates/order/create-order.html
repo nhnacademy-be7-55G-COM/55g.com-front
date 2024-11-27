@@ -68,15 +68,11 @@
       id: -1,
       cost: 0
     });
-    // let totalPrice=0;
-    // let originPrice = 0;
-    // let discountPrice = 0;
     const priceInfo = getCopyOfPriceInfo();
 
     // !!! Initiate !!!
     calcFromCart(priceInfo, cartList);
     selectDeliveryFee();
-    // let totalPrice = new Decimal([[${summation}]]);
 
     const paymentInfo = {
       orderId: '',
