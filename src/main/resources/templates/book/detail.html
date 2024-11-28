@@ -197,7 +197,7 @@
 <!--          </form>-->
 
           <form id="like-form-${book.bookId}" style="display: inline;">
-            <button type="button" class="btn-custom like-btn" data-book-id="${book.bookId}">좋아요</button>
+            <button type="button" class="btn-custom like-btn" th:data-book-id="${book.bookId}">좋아요</button>
           </form>
 
         </div>
@@ -417,8 +417,8 @@
         fetch(`/mypage/like/${bookId}`, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]').getAttribute('content') // CSRF 토큰 필요 시
+            'Content-Type': 'application/json',[_csrf_header]: _csrf
+            // 'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]').getAttribute('content') // CSRF 토큰 필요 시
           }
         })
                 .then(response => {
