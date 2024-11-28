@@ -1,5 +1,6 @@
 package shop.s5g.front.controller.admin;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -478,6 +479,10 @@ public class AdminController {
             errors.put("message",bindingResult.getFieldError().getDefaultMessage());
 
             return ResponseEntity.badRequest().body(errors);
+        }
+        if (pointPolicyUpdateRequestDto.name().equals("구매")
+            && pointPolicyUpdateRequestDto.value().compareTo(BigDecimal.valueOf(1)) >= 0) {
+            return ResponseEntity.badRequest().build();
         }
 
         try {
