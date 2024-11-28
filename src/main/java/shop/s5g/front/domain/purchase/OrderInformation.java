@@ -14,6 +14,7 @@ class OrderInformation implements Serializable {
     long totalPrice;            // 결제할 금액
     long netPrice;              // 뭐였더라..
     long usingPoint;            // 사용할 포인트
+    String uuid;
 
     OrderCreateRequestDto order;        // 주문
     Map<Long, PurchaseCell> purchaseMap;    // 구매할 책에 대한 각종 정보를 담는 Map
