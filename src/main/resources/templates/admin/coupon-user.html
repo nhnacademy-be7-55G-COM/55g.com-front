@@ -30,9 +30,6 @@
     <tr>
       <th style="padding: 10px; background-color: #f0f0f0;">순번</th>
       <th style="padding: 10px; background-color: #f0f0f0;">쿠폰 코드</th>
-      <th style="padding: 10px; background-color: #f0f0f0;">생성 날짜</th>
-      <th style="padding: 10px; background-color: #f0f0f0;">만료일</th>
-      <th style="padding: 10px; background-color: #f0f0f0;">사용 여부</th>
       <th style="padding: 10px; background-color: #f0f0f0;">사용한 템플릿 보기</th>
     </tr>
     </thead>
@@ -43,21 +40,6 @@
 
       <!-- 쿠폰 코드 표시 -->
       <td style="padding: 10px;" th:text="${coupon.couponCode}">쿠폰 코드</td>
-
-      <!-- 생성 날짜 표시 -->
-      <td style="padding: 10px;" th:text="${coupon.formattedCreatedAt()}">생성 날짜</td>
-
-      <!-- 만료일 표시 -->
-      <td style="padding: 10px;">
-        <span th:if="${coupon.expiredAt != null}" th:text="${coupon.formattedExpiredAt()}">없으면 -</span>
-        <span th:if="${coupon.expiredAt == null}">-</span>
-      </td>
-
-      <!-- 사용 여부 표시 -->
-      <td style="padding: 10px;">
-        <span th:if="${coupon.usedAt != null}" th:text="'O'">사용</span>
-        <span th:if="${coupon.usedAt == null}">-</span>
-      </td>
 
       <!-- 템플릿 보기 링크 -->
       <td style="padding: 10px;">

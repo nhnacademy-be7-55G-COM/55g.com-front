@@ -105,6 +105,11 @@ public class AdminController {
         return mv;
     }
 
+    /**
+     * 관리자 - 템플릿 업데이트
+     * @param couponTemplateUpdateRequestDto
+     * @return String
+     */
     @PostMapping("/admin/coupons/template/update")
     public String updateCouponTemplate(@ModelAttribute CouponTemplateUpdateRequestDto couponTemplateUpdateRequestDto) {
 
@@ -292,7 +297,7 @@ public class AdminController {
     @GetMapping("/admin/categories/coupons")
     public ModelAndView getCategoriesCoupons(@RequestParam(defaultValue = "0") int page) {
 
-        ModelAndView mv = new ModelAndView("/admin/coupon-category-inquiry");
+        ModelAndView mv = new ModelAndView("admin/coupon-category-inquiry");
 
         Pageable pageable = PageRequest.of(page, 15);
 
