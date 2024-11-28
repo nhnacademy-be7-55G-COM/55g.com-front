@@ -79,6 +79,14 @@ spring:
 
     import: optional:configserver:http://55g-config-dev:9050
 
+rabbit:
+  exchange:
+    coupon: 55g.coupon.test.exchange
+  route:
+    coupon:
+      create: 55g.coupon.test
+
+
 ---
 # on profile 'docker'
 spring:

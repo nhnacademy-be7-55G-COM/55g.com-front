@@ -28,13 +28,7 @@ public class RabbitService {
 
     @Value("${rabbit.route.coupon.create}")
     private String couponRouteKey;
-/*
-    @Value("${rabbit.exchange.category}")
-    private String categoryCouponExchange;
 
-    @Value("${rabbit.route.category.coupon}")
-    private String categoryCouponRoutingKey;
-*/
     @Nullable
     public OrderRabbitResponseDto sendPaymentRequest(Map<String, Object> body) {
         // 타임아웃이 발생되어 응답을 받지 못했을 경우 null.
