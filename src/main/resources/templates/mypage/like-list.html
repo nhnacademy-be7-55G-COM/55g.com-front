@@ -7,25 +7,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>좋아요</title>
+    <style>
+        /* 테이블 스타일 */
+        #likes-table {
+            width: 100%;
+            border-collapse: collapse; /* 테두리 겹침 제거 */
+        }
+
+        #likes-table th, #likes-table td {
+            border: 1px solid #ddd; /* 테두리 스타일 */
+            text-align: center; /* 텍스트 중앙 정렬 */
+            padding: 5px; /* 셀 내부 여백을 줄임 */
+        }
+
+        #likes-table th {
+            background-color: #f4f4f4; /* 헤더 배경색 */
+        }
+
+        #likes-table tr:nth-child(even) {
+            background-color: #f9f9f9; /* 짝수 행 배경색 */
+        }
+
+        #likes-table tr:hover {
+            background-color: #f1f1f1; /* 마우스 오버 시 배경색 */
+        }
+    </style>
 </head>
 <body layout:fragment="mypageContent">
-<h1>좋아요 목록</h1>
-
-<div class="tab-pane fade show active" id="likes" role="tabpanel">
-    <table id="likes-table">
-        <thead>
-        <tr>
-            <th>도서 제목</th>
-            <th>가격</th>
-            <th>출판사</th>
-            <th>상태</th>
-            <th>삭제</th> <!-- 삭제 버튼 열 추가 -->
-        </tr>
-        </thead>
-        <tbody>
-        <!-- 좋아요 목록이 여기에 추가됩니다. -->
-        </tbody>
-    </table>
+<h3 style="font-family: 'Pretendard', sans-serif;">좋아요 목록</h3>
+<div class="info-card">
+    <p class="info-item">
+    <div class="tab-pane fade show active" id="likes" role="tabpanel">
+        <table id="likes-table">
+            <thead>
+            <tr>
+                <th>도서 제목</th>
+                <th>가격</th>
+                <th>출판사</th>
+                <th>상태</th>
+                <th>삭제</th> <!-- 삭제 버튼 열 추가 -->
+            </tr>
+            </thead>
+            <tbody>
+            <!-- 좋아요 목록이 여기에 추가됩니다. -->
+            </tbody>
+        </table>
+    </div>
+    </p>
 </div>
 
 <script>
@@ -45,7 +73,7 @@
                 books.forEach(book => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
-                            <td>${book.title}</td>
+                            <td><strong>${book.title}</strong></td>
                             <td>${book.price}</td>
                             <td>${book.publisher}</td>
                             <td>${book.status}</td>
