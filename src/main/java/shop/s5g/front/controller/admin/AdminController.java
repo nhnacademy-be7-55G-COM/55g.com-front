@@ -104,6 +104,11 @@ public class AdminController {
         return mv;
     }
 
+    /**
+     * 관리자 - 템플릿 업데이트
+     * @param couponTemplateUpdateRequestDto
+     * @return String
+     */
     @PostMapping("/admin/coupons/template/update")
     public String updateCouponTemplate(@ModelAttribute CouponTemplateUpdateRequestDto couponTemplateUpdateRequestDto) {
 
