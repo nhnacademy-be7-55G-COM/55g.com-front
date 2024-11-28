@@ -106,7 +106,7 @@
                 )">
               쿠폰 이름
             </td>
-            <td class="text-center" style="padding: 10px;" th:text="${usable.expirationMessage}">유효기간</td>
+            <td class="text-center" style="padding: 10px;">유효기간</td>
           </tr>
           </tbody>
         </table>
@@ -126,8 +126,6 @@
         tab.addEventListener("click", (event) => {
           event.preventDefault();
 
-          const currentScrollY = window.scrollY;
-
           document.querySelector(".tab-item.active").classList.remove("active");
           document.querySelector(".tab-panel.active").classList.remove("active");
 
@@ -136,10 +134,6 @@
           const targetPanelId = tab.getAttribute("data-target");
           document.getElementById(targetPanelId).classList.add("active");
 
-          // DOM 업데이트 이후 스크롤 위치 복원
-          requestAnimationFrame(() => {
-            window.scrollTo(0, currentScrollY);
-          });
         });
       });
     });

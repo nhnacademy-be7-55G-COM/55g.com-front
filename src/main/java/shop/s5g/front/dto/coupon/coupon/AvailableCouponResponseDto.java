@@ -10,17 +10,13 @@ public record AvailableCouponResponseDto(
 
     String couponName,
 
-    LocalDateTime createdAt,
-
-    LocalDateTime expiredAt,
-
     Long condition,
 
     Long maxPrice,
 
     BigDecimal discountPrice,
 
-    Integer count
+    Long count
 ) {
 
 }
