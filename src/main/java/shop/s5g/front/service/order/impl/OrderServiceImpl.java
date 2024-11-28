@@ -59,4 +59,11 @@ public class OrderServiceImpl implements OrderService {
     public List<OrderAdminTableView> adminQueryWithFilter(OrderQueryFilterDto filter) {
         return orderAdapter.fetchOrdersForAdmin(filter);
     }
+
+    @Override
+    public List<OrderWithDetailResponseDto> getGuestOrders(
+        String phoneNumber, String name, String password
+    ) {
+        return orderAdapter.queryAllGuestOrders(phoneNumber, name, password);
+    }
 }

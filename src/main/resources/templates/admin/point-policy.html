@@ -110,10 +110,11 @@
           <span th:text="${policy.name}"></span>
         </div>
         <div class="mb-3">
-          <label for="value" class="form-label">포인트 정책 값</label>
+          <label for="value" class="form-label">값 설정</label>
           <input type="text" class="form-control" id="value" name="value"
                  placeholder="새로운 정책 값을 입력하세요" th:value="${policy.value}" required>
           <div id="error-message" style="color: red; display: none; margin-top: 5px;"></div>
+          <div> 할인율의 경우 0.00 ~ 1.00 사이를 입력해주세요</div>
           <input type="hidden" id="id" name="id" th:value="${policy.id}">
         </div>
         <button type="button" class="btn btn-primary mt-3"
@@ -178,7 +179,7 @@
     })
     .then((response) => {
       if (!response.ok) {
-        throw new Error('서버 오류가 발생했습니다.');
+        throw new Error('오류가 발생했습니다.');
       }
       return response.json();
     })

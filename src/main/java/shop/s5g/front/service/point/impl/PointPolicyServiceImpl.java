@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import shop.s5g.front.adapter.point.PointPolicyAdapter;
 import shop.s5g.front.dto.member.MemberInfoResponseDto;
 import shop.s5g.front.dto.point.PointPolicyResponseDto;
+import shop.s5g.front.dto.point.PointPolicyUpdateRequestDto;
 import shop.s5g.front.dto.point.PointPolicyView;
 import shop.s5g.front.service.member.MemberService;
 import shop.s5g.front.service.point.PointPolicyService;
@@ -42,5 +43,10 @@ public class PointPolicyServiceImpl implements PointPolicyService {
 
         BigDecimal gradePointRate = BigDecimal.valueOf(info.grade().point(), 2);
         return policy.value().add(gradePointRate);
+    }
+
+    @Override
+    public void updatePolicyValue(PointPolicyUpdateRequestDto pointPolicyUpdateRequestDto) {
+        pointPolicyAdapter.updatePolicy(pointPolicyUpdateRequestDto);
     }
 }

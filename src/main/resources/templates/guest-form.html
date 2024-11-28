@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="https://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}">
+>
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <style>
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+    }
+    input[type='number'] {
+      -moz-appearance: textfield;
+    }
+    .form-title {
+      font-size: 1.75rem;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body layout:fragment="content">
+<main class="container my-5 mx-auto" style="max-width: 400px;">
+  <div class="form-title text-center" style="color: var(--dark-color);">
+    비회원 조회</div>
+  <div th:if="${error}" th:attr="data-error=${error}" style="display:none;"></div>
+  <div th:if="${success}" th:attr="data-success=${success}" style="display:none;"></div>
+
+  <form th:action="@{/guest/order}" method="post">
+    <div class="mb-3">
+      <label class="form-label" for="customer-phone-info">휴대폰 번호</label>
+      <div class="pn-input d-flex flex-row" id="customer-phone-info">
+        <!--            <input class="pn-start form-control" maxlength="3" required/>-->
+        <div>010</div>
+        <span class="mx-2">-</span>
+        <input class="pn-center form-control" name="phoneMiddle" type="text" maxlength="4" minlength="4" onKeyup="this.value=this.value.replace(/[^0-9]/g,'');" required/>
+        <span class="mx-2">-</span>
+        <input class="pn-end form-control" name="phoneEnd" type="text" maxlength="4" minlength="4" onKeyup="this.value=this.value.replace(/[^0-9]/g,'');" required/>
+      </div>
+    </div>
+    <div class="mb-3">
+      <label for="name" class="form-label" style="font-weight: 600;">이름</label>
+      <input type="text" class="form-control" id="name" name="name" required>
+    </div>
+    <div class="mb-3">
+      <label for="password" class="form-label" style="font-weight: 600;">비밀번호</label>
+      <input type="password" class="form-control" id="password" name="password" required>
+    </div>
+    <button type="submit" class="btn btn-common w-100">주문 내역 조회</button>
+  </form>
+</main>
+</body>
+</html>

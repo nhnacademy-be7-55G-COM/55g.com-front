@@ -3,14 +3,61 @@
 <head>
   <meta charset="UTF-8">
   <title>구매 진행중...</title>
+  <th:block th:replace="~{fragments/head :: headTemplate}"></th:block>
+
   <script th:inline="javascript">
+    let isLogged;
+
     const redirect = [[${redirect}]];
 
     const cartSize = [[${cartSize}]];
 
-    localStorage['cartCount'] = parseInt(localStorage['cartCount']) - cartSize;
+    // removingBooksInCart();
 
-    window.location.href = redirect;
+    async function removingBooksInCart(){
+      console.log('함수진입');
+      if (localStorage.getItem('isCartPurchase') === undefined || localStorage.getItem('isCartPurchase') === 'true') {
+        if (isLogged) {
+          console.log('회원 구매 로직 진입'); // 회원의 경우
+          const response = await fetch("/cart/removePurchasedBooks", {
+            method: 'POST',
+            headers: {[_csrf_header]: _csrf}
+          });
+          console.log('레디스 책 삭제 응답왔음');
+          if (response.ok) {
+            localStorage['cartCount'] = parseInt(localStorage['cartCount']) - cartSize;
+          }
+        } else { // 비회원의 경우
+          console.log('비회원 장바구니 삭제 진입');
+          const cartData = JSON.parse(localStorage.getItem('cart'));
+          cartData.cartBookInfoList = cartData.cartBookInfoList.filter(
+              book => book.status == false);
+          localStorage.setItem('cart', JSON.stringify(cartData));
+
+          localStorage['cartCount'] = parseInt(localStorage['cartCount']) - cartSize;
+        }
+      } else {
+        localStorage.removeItem('isCartPurchase');
+      }
+    }
+
+
+    async function isLoggedIn() {
+      const response = await fetch("/cart/loginCheck",{method:'GET',credentials:"include"});
+      const data = await response.json();
+      return  data.isLoggedIn;
+    }
+
+    // 페이지가 로드될 때 로그인 여부 확인
+    isLoggedIn()
+    .then(result => {
+      console.log('로그인 여부 ',isLogged);
+      isLogged = result;
+      return removingBooksInCart();
+    })
+    .then(() => {
+      window.location.href = redirect;
+    });
   </script>
 </head>
 <body>
