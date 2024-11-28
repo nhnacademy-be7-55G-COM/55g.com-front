@@ -7,6 +7,7 @@ import shop.s5g.front.adapter.LikeAdapter;
 import shop.s5g.front.dto.MessageDto;
 import shop.s5g.front.dto.book.BookLikeResponseDto;
 import shop.s5g.front.exception.BadRequestException;
+import shop.s5g.front.exception.customer.CustomerNotFoundException;
 import shop.s5g.front.service.like.LikeService;
 
 import java.util.List;
@@ -22,6 +23,8 @@ public class LikeServiceImpl implements LikeService {
         try {
             ResponseEntity<MessageDto> response = likeAdapter.addLike(bookId);
             return response.getBody();
+        } catch (CustomerNotFoundException e) {
+            throw new BadRequestException("로그인이 필요합니다." + e.getMessage());
         } catch (BadRequestException e) {
             throw new BadRequestException(e.getMessage());
         }

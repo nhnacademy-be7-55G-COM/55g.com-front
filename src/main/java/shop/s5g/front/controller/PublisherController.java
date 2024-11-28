@@ -46,7 +46,7 @@ public class PublisherController {
         model.addAttribute("nowPage1", nowPage1);
         model.addAttribute("startPage1", startPage1);
         model.addAttribute("endPage1", endPage1);
-        return "publisher-list";
+        return "publisher/publisher-list";
     }
 
     //출판사 수정 페이지 이동
@@ -54,7 +54,7 @@ public class PublisherController {
     public String publishersModify(@PathVariable("id") Long id, Model model) {
         PublisherResponseDto publisher = publisherService.getPublisherById(id);
         model.addAttribute("modifyPublisher", publisher);
-        return "publisher-modify";
+        return "publisher/publisher-modify";
     }
 
     //출판사 수정

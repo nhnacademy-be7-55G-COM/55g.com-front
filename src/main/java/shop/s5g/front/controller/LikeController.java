@@ -1,6 +1,7 @@
 package shop.s5g.front.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,9 +16,16 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 public class LikeController {
+
     private final LikeService likeService;
 
     //좋아요 페이지 이동
+    @GetMapping("/mypage/like")
+    public String myPage() {
+        return "mypage/like-list";
+    }
+
+    //좋아요 조회
     @GetMapping("/mypage/like/list")
     @ResponseBody
     public List<BookLikeResponseDto> likeList(Model model) {
@@ -26,13 +34,22 @@ public class LikeController {
         return books;
     }
 
+
+    //좋아요 등록
+//    @PostMapping("/mypage/like/{bookId}")
+//    public String likeAdd(@PathVariable("bookId") Long bookId){
+//        likeService.getLike(bookId);
+//        //도서상세로 redirect
+//        return "redirect:/mypage";
+//    }
+
     //좋아요 등록
     @PostMapping("/mypage/like/{bookId}")
-    public String likeAdd(@PathVariable("bookId") Long bookId){
+    public ResponseEntity<String> likeAdd(@PathVariable("bookId") Long bookId) {
         likeService.getLike(bookId);
-        //도서상세로 redirect
-        return "redirect:/mypage";
+        return ResponseEntity.ok("좋아요가 등록되었습니다.");
     }
+
 
     //좋아요 삭제
     @PostMapping("/mypage/like/delete/{bookId}")

@@ -10,6 +10,8 @@ import shop.s5g.front.dto.PageResponseDto;
 import shop.s5g.front.dto.tag.TagRequestDto;
 import shop.s5g.front.dto.tag.TagResponseDto;
 
+import java.util.List;
+
 
 @FeignClient(value = "tag", url = "${gateway.url}", configuration = FeignGatewayAuthorizationConfig.class)
 public interface TagAdapter {
