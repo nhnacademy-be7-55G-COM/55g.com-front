@@ -6,11 +6,9 @@ import java.time.LocalDateTime;
 public record AvailableCouponResponseDto(
     Long couponId,
 
+    Long couponTemplateId,
+
     String couponName,
-
-    LocalDateTime createdAt,
-
-    LocalDateTime expiredAt,
 
     Long condition,
 
@@ -18,7 +16,7 @@ public record AvailableCouponResponseDto(
 
     BigDecimal discountPrice,
 
-    Integer count
+    Long count
 ) {
 
 }

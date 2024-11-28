@@ -3,6 +3,7 @@ package shop.s5g.front.controller.review;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,7 +37,9 @@ public class ReviewController {
     }
 
     @GetMapping("/mypage/review-list")
-    public String getReviewList(@PageableDefault(size = 10) Pageable pageable, Model model) {
+    public String getReviewList(
+        @PageableDefault(size = 10, sort = "reviewAt", direction = Direction.DESC) Pageable pageable,
+        Model model) {
         PageResponseDto<ReviewResponseDto> reviewList = reviewService.getReviewList(pageable);
 
         model.addAttribute("reviewList", reviewList.content());

@@ -17,12 +17,6 @@ public record ValidUserCouponResponseDto(
     @NotNull
     String couponName,
 
-    @NotNull
-    LocalDateTime createdAt,
-
-    @NotNull
-    LocalDateTime expiredAt,
-
     @NotBlank
     String couponDescription,
 
@@ -34,8 +28,5 @@ public record ValidUserCouponResponseDto(
 
     Long maxPrice
 ) {
-    public String getExpirationMessage() {
-        long daysUntilExpire = ChronoUnit.DAYS.between(LocalDateTime.now(), expiredAt);
-        return daysUntilExpire >= 0 ? "D-" + daysUntilExpire : "만료됨";
-    }
+    
 }

@@ -1,9 +1,12 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko"
+      xmlns:th="https://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}"
+>
 <head>
   <title>회원가입</title>
   <meta charset="utf-8">
-  <th:block th:replace="~{fragments/head :: headTemplate}"></th:block>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     /* 전체 폼 디자인 */
@@ -107,8 +110,8 @@
   </style>
 </head>
 
-<body style="background-color: var(--light-color); font-family: var(--body-font),serif; color: var(--body-text-color);">
-<div th:replace="~{fragments/header}"></div>
+<body style="background-color: var(--light-color); font-family: var(--body-font),serif; color: var(--body-text-color);"
+layout:fragment="content">
 
 <main class="container my-5 mx-auto" style="max-width: 500px;">
   <h2 class="text-center mb-4" style="color: var(--dark-color); font-family: var(--heading-font),serif;">회원가입</h2>
@@ -166,7 +169,6 @@
   </form>
 </main>
 
-<div th:replace="~{fragments/footer}"></div>
 
 <script>
   let isIdValid = false;
@@ -209,12 +211,27 @@
 
     if (!isIdValid) return; // 유효하지 않으면 중복 확인 진행하지 않음
 
-    fetch(`/mypage/checkId/${loginId}`, {
+    const baseUrl = window.location.origin; // 현재 도메인 얻기
+    fetch(`${baseUrl}/checkId/${loginId}`, {
       method: 'POST',
-      headers: { [_csrf_header]: _csrf }
+      headers: {
+        [_csrf_header]: _csrf,
+        'Content-Type': 'application/json', // JSON 형식 명시
+      },
     })
-    .then(response => response.json())
+    .then(response => {
+      // 응답 상태 확인
+      if (!response.ok) {
+        console.error(`HTTP error! Status: ${response.status}`);
+        return response.text().then(text => {
+          console.error("Non-JSON response:", text);
+          throw new Error(`Server returned status ${response.status}`);
+        });
+      }
+      return response.json(); // JSON 파싱 시도
+    })
     .then(data => {
+      // 서버로부터 데이터가 올바르게 받아진 경우
       if (data) {
         idDuplicateError.style.display = "block";
         isIdDuplicateChecked = false;
@@ -224,7 +241,10 @@
       }
       toggleSubmitButton();
     })
-    .catch(error => console.error('Error:', error));
+    .catch(error => {
+      // JSON 파싱 에러 또는 네트워크 에러 처리
+      console.error("Error occurred during ID check:", error);
+    });
   }
 
   function checkPasswordMatch() {
@@ -308,11 +328,6 @@
     toggleSubmitButton();
   }
 </script>
-
-
-<script src="/static/js/jquery-1.11.0.min.js"></script>
-<script src="/static/js/plugins.js"></script>
-<script src="/static/js/script.js"></script>
 
 </body>
 </html>
