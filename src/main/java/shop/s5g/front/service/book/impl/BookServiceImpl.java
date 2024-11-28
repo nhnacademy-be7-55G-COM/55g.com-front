@@ -75,14 +75,38 @@ public class BookServiceImpl implements BookService {
         String filePath = null;
 
         try {
-            if (file != null) {
+            if (file != null && !file.isEmpty()) {
                 ImageResponseDto imageDto = imageService.uploadImage(
-                    "/55gshop/book/thumnails/" + file.getOriginalFilename(), file.getBytes());
+                    "/55gshop/book/thumbnails/" + file.getOriginalFilename(), file.getBytes());
                 filePath = file.getOriginalFilename();
             }
 
             BookAddSendDto newDto = BookAddSendDto.of(dto, filePath);
             return bookAdapter.addBook(newDto);
+        } catch (FeignException e) {
+            if (e.status() == 400) {
+                throw new BadRequestException();
+            }
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public ResponseEntity<MessageDto> updateBook(long bookId, BookAddRequestDto dto,
+        MultipartFile file) {
+        String filePath = null;
+
+        try {
+            if (file != null && !file.isEmpty()) {
+                ImageResponseDto imageDto = imageService.uploadImage(
+                    "/55gshop/book/thumbnails/" + file.getOriginalFilename(), file.getBytes());
+                filePath = file.getOriginalFilename();
+            }
+
+            BookAddSendDto newDto = BookAddSendDto.of(dto, filePath);
+            return bookAdapter.updateBook(bookId, newDto);
         } catch (FeignException e) {
             if (e.status() == 400) {
                 throw new BadRequestException();

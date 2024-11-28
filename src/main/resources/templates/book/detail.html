@@ -73,6 +73,68 @@
     .quantity-input:focus {
       outline: none; /* 포커스 시 기본 테두리 제거 */
     }
+
+    .cart-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5); /* 반투명 배경 */
+      display: none; /* 기본적으로 숨김 */
+      justify-content: center; /* Flexbox 가로 중앙 정렬 */
+      align-items: center; /* Flexbox 세로 중앙 정렬 */
+      z-index: 1000; /* 다른 요소 위로 */
+    }
+
+    /* 모달 컨텐츠 */
+    .cart-modal-content {
+      background: white;
+      padding: 20px;
+      border-radius: 8px; /* 둥근 모서리 */
+      text-align: center;
+      width: 300px;
+      max-width: 80%; /* 작은 화면에서 크기 제한 */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 */
+      animation: fadeIn 0.3s ease; /* 모달 등장 애니메이션 */
+    }
+
+    /* 버튼 스타일 */
+    .cart-modal-buttons {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 20px;
+    }
+
+    .cart-modal-buttons .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .btn-confirm {
+      background-color: #c19b82; /* 파란색 */
+      color: white;
+    }
+
+    .btn-cancel {
+      background-color: #ccc; /* 회색 */
+      color: black;
+    }
+
+    /* 애니메이션 효과 */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
   </style>
 </head>
 <!--<div th:replace="~{fragments/head}"></div>-->
@@ -83,7 +145,10 @@
   <div class="container mt-5">
     <div class="row">
       <div class="col-lg-4">
-        <img th:src="'https://image.toast.com/aaaacko/55gshop/book/thumbnails/'+${book.imagePath}"
+        <img th:if="${#strings.isEmpty(book.imagePath)}" src="/static/images/noImage.jpg"
+             class="img-fluid" alt="Product Image">
+        <img th:unless="${#strings.isEmpty(book.imagePath)}"
+             th:src="'https://image.toast.com/aaaacko/55gshop/book/thumbnails/'+${book.imagePath}"
              class="img-fluid" alt="Product Image">
       </div>
       <div class="col-lg-8">
@@ -94,8 +159,16 @@
           | <span th:text="${book.publisherName}"></span></p>
         <div>
           <span class="ratings" th:each="category,stat:${book.categoryList}">
-            <a th:href="@{/book/list/category(name=${category.categoryName})}"><span th:text="${category.categoryName}"></span></a>
+            <a th:href="@{/book/list/category(name=${category.categoryName})}"><span
+                th:text="${category.categoryName}"></span></a>
             <span th:if="${!stat.last}">></span>
+          </span>
+        </div>
+        <div>
+          <span th:each="tag,stat:${book.tagList}">
+            <a th:href="@{/book/list/tag(name=${tag.tagName})}"><span
+                th:text="'#'+${tag.tagName}"></span></a>
+            <span th:if="${!stat.last}">&nbsp;</span>
           </span>
         </div>
         <div class="product-price mt-3">
@@ -124,7 +197,7 @@
 
         </div>
         <script th:inline="javascript">
-          const instantPurchase = () => {
+          const instantPurchase = async () => {
             const quantity = document.querySelector('#quantity').value;
             const bookId= [[${book.bookId}]];
             const obj = [
@@ -135,7 +208,11 @@
             ];
             const param = encodeURIComponent(btoa(JSON.stringify(obj)));
 
-            window.location.href = `/purchase/instant?cart=${param}`;
+            localStorage['isCartPurchase'] = false;
+            if (await isLoggedIn())
+              window.location.href = `/purchase/instant?cart=${param}`;
+            else
+              window.location.href = `/guest/purchase/instant?cart=${param}`;
           }
         </script>
       </div>
@@ -152,10 +229,46 @@
 </main>
 <!-- 본문 끝 -->
 
+<div class="cart-modal" id="cartModal">
+  <div class="cart-modal-content">
+    <h4 style="white-space: nowrap">장바구니에 상품이 추가되었습니다.</h4>
+    <p>장바구니 페이지로 이동하시겠습니까?</p>
+    <div class="cart-modal-buttons">
+      <button type="button" class="btn btn-cancel" id="close">계속 쇼핑하기</button>
+      <button type="button" class="btn btn-confirm" id="confirm">장바구니로 이동</button>
+    </div>
+  </div>
+</div>
+
 <script>
 
   const bookQuantity = document.getElementById('quantity');
   const stock = [[${book.stock}]];
+
+  const modalBackground = document.getElementById('cartModal');
+  const confirmBtn = document.getElementById('confirm');
+  const cancelBtn = document.getElementById('close');
+
+
+  // 모달 열기 함수
+  function showModal() {
+    modalBackground.style.display = 'flex'; // 모달 표시
+  }
+
+  // 모달 닫기 함수
+  function closeModal() {
+    modalBackground.style.display = 'none'; // 모달 숨기기
+  }
+
+  // 이동하기 버튼 클릭 시
+  confirmBtn.addEventListener('click', () => {
+    closeModal();
+    loadCartPage(); // 장바구니 페이지로 이동
+  });
+
+  // 계속 쇼핑하기 버튼 클릭 시
+  cancelBtn.addEventListener('click', closeModal);
+
 
   bookQuantity.addEventListener('input', () => {
     const min = 1;
@@ -184,7 +297,7 @@
       event.preventDefault();
     }
 
-    // 숫자가 아닌 다른 키 입력 방지 (한글 포함)
+    // 숫자가 아닌 다른 키 입력 방지 (한글은 조합문자라서 처리가 안되는듯하다)
     if (
         !/^[0-9]$/.test(event.key) && // 숫자 키 외의 입력 방지
         event.key !== 'Backspace' &&
@@ -241,8 +354,7 @@
         if (cartCountChange == 1){
           updateCartCountWhenPutting()
         }
-        alert("장바구니 담기에 성공했습니다.");
-
+        showModal();
       })
       .catch(error => {
         console.error('Error putting item:', error);
@@ -268,7 +380,9 @@
         }
 
         localStorage.setItem('cart', JSON.stringify(cartData));
-        alert('장바구니에 담겼습니다.');
+
+        showModal();
+
 
       } catch (error) {
         alert("장바구니에 담는데 실패했습니다. 다시 시도해주세요");

@@ -35,4 +35,8 @@ public interface BookAdapter {
     // 도서 등록
     @PostMapping("/api/shop/book")
     ResponseEntity<MessageDto> addBook(BookAddSendDto dto);
+
+    // 도서 수정
+    @PutMapping("/api/shop/books/{bookId}")
+    ResponseEntity<MessageDto> updateBook(@PathVariable long bookId, BookAddSendDto dto);
 }

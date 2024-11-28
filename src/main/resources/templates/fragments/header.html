@@ -38,7 +38,7 @@
 
                 <li class="menu-item has-sub">
                   <button class="nav-link">Category</button>
-                  <ul id="category-list"  class="scrollable-category">
+                  <ul id="unique-category-list" class="scrollable-category hidden">
                     <!-- JavaScript로 카테고리를 동적으로 추가 -->
                   </ul>
                 </li>
@@ -134,54 +134,72 @@
 
       window.addEventListener('DOMContentLoaded', async () => await updateCartCount());
 
-      //국내도서 데이터 가져오기
+      document.addEventListener("DOMContentLoaded", () => {
+        const categoryList = document.getElementById("unique-category-list");
+
+        if (categoryList) {
+          // 기본 숨기기
+          categoryList.style.display = "none";
+
+          // Category 버튼에 hover 이벤트 추가
+          const categoryMenuItem = categoryList.closest(".menu-item.has-sub");
+
+          // 마우스를 올리면 카테고리 리스트 표시
+          categoryMenuItem.addEventListener("mouseenter", () => {
+            categoryList.style.display = "grid"; // 그리드 레이아웃 사용
+          });
+
+          // 마우스를 떼면 카테고리 리스트 숨기기
+          categoryMenuItem.addEventListener("mouseleave", () => {
+            categoryList.style.display = "none";
+          });
+        }
+
+        // 카테고리 데이터를 로드
+        categoryInfo();
+      });
+
       async function categoryInfo() {
         console.log("Loading Categories...");
         try {
-          // fetch로 서버에서 데이터 가져오기
-          const response = await fetch("/category", { method: 'GET' });
-
-          // 응답 데이터를 JSON으로 변환
+          const response = await fetch("/category", { method: "GET" });
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
-          const categories = await response.json(); // 서버에서 받은 JSON 데이터
+          const categories = await response.json();
 
-          // category-list 요소 선택
-          const categoryList = document.getElementById("category-list");
+          const categoryList = document.getElementById("unique-category-list");
+          if (!categoryList) {
+            console.error("Error: #unique-category-list element not found.");
+            return;
+          }
 
-          // 기존 항목 비우기 (필요한 경우)
+          // 기존 항목 제거
           categoryList.innerHTML = "";
 
-          // 각 카테고리를 HTML 요소로 추가
-          categories.forEach(category => {
+          // 카테고리 데이터를 기반으로 리스트 추가
+          categories.forEach((category) => {
             const listItem = document.createElement("li");
             const link = document.createElement("a");
 
-            // a 태그의 href와 텍스트 설정
-            link.href = `/book/list/category?name=${category.categoryName}`; // 카테고리별 상세 페이지로 연결
-            link.textContent = category.categoryName; // 카테고리 이름 표시
+            // 링크 속성 설정
+            link.href = `/book/list/category?name=${encodeURIComponent(category.categoryName)}`;
+            link.textContent = category.categoryName;
 
-            // li에 a 태그 추가
             listItem.appendChild(link);
-
-            // ul에 li 추가
             categoryList.appendChild(listItem);
           });
+
+          console.log("Categories loaded successfully.");
         } catch (error) {
           console.error("Error fetching categories:", error);
         }
       }
-      // 페이지 로드 시 실행
-      document.addEventListener("DOMContentLoaded", categoryInfo);
-
     </script>
   </header>
 
 </div><!--header-wrap-->
-<script src="/static/js/jquery-1.11.0.min.js"></script>
-<script src="/static/js/plugins.js"></script>
-<script src="/static/js/script.js"></script>
+
 
 
 

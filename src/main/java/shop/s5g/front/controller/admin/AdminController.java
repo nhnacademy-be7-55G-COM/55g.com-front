@@ -1,50 +1,53 @@
 package shop.s5g.front.controller.admin;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-import shop.s5g.front.annotation.AdminOnly;
-import shop.s5g.front.annotation.RedirectWithAlert;
-import shop.s5g.front.dto.coupon.BookDetailsBookResponseDto;
-import shop.s5g.front.dto.coupon.CouponBookRequestDto;
-import shop.s5g.front.dto.coupon.CouponBookResponseDto;
-import shop.s5g.front.dto.coupon.CouponCategoryRequestDto;
-import shop.s5g.front.dto.coupon.CategoryResponseDto;
-import shop.s5g.front.dto.coupon.CouponCategoryResponseDto;
-import shop.s5g.front.dto.coupon.CouponPolicyInquiryResponseDto;
-import shop.s5g.front.dto.coupon.CouponPolicyRegisterRequestDto;
-import shop.s5g.front.dto.coupon.CouponPolicyUpdateRequestDto;
-import shop.s5g.front.dto.coupon.CouponRegisterRequestDto;
-import shop.s5g.front.dto.coupon.CouponResponseDto;
-import shop.s5g.front.dto.coupon.CouponTemplateInquiryResponseDto;
-import shop.s5g.front.dto.coupon.CouponTemplateRegisterRequestDto;
-import shop.s5g.front.dto.coupon.CouponTemplateUpdateRequestDto;
+import shop.s5g.front.dto.coupon.book.BookDetailsBookResponseDto;
+import shop.s5g.front.dto.coupon.book.CouponBookRequestDto;
+import shop.s5g.front.dto.coupon.book.CouponBookResponseDto;
+import shop.s5g.front.dto.coupon.category.CouponCategoryRequestDto;
+import shop.s5g.front.dto.coupon.category.CategoryResponseDto;
+import shop.s5g.front.dto.coupon.category.CouponCategoryResponseDto;
+import shop.s5g.front.dto.coupon.policy.CouponPolicyInquiryResponseDto;
+import shop.s5g.front.dto.coupon.policy.CouponPolicyRegisterRequestDto;
+import shop.s5g.front.dto.coupon.policy.CouponPolicyUpdateRequestDto;
+import shop.s5g.front.dto.coupon.coupon.CouponRegisterRequestDto;
+import shop.s5g.front.dto.coupon.coupon.CouponResponseDto;
+import shop.s5g.front.dto.coupon.template.CouponTemplateInquiryResponseDto;
+import shop.s5g.front.dto.coupon.template.CouponTemplateRegisterRequestDto;
+import shop.s5g.front.dto.coupon.template.CouponTemplateUpdateRequestDto;
+import shop.s5g.front.dto.point.PointPolicyResponseDto;
+import shop.s5g.front.dto.point.PointPolicyUpdateRequestDto;
 import shop.s5g.front.dto.wrappingpaper.WrappingPaperView;
-import shop.s5g.front.exception.auth.UnauthorizedException;
 import shop.s5g.front.service.coupon.book.CouponBookService;
 import shop.s5g.front.service.coupon.category.CouponCategoryService;
 import shop.s5g.front.service.coupon.coupon.CouponService;
 import shop.s5g.front.service.coupon.policy.CouponPolicyService;
 import shop.s5g.front.service.coupon.template.CouponTemplateService;
 import shop.s5g.front.service.delivery.DeliveryFeeService;
+import shop.s5g.front.service.point.PointPolicyService;
 import shop.s5g.front.service.wrappingpaper.WrappingPaperService;
 
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-@AdminOnly
-@RedirectWithAlert(redirect = "/", title = "권한 없음", exceptions = UnauthorizedException.class)
 public class AdminController {
 
     private final CouponPolicyService couponPolicyService;
@@ -55,6 +58,7 @@ public class AdminController {
 
     private final DeliveryFeeService deliveryFeeService;
     private final WrappingPaperService wrappingPaperService;
+    private final PointPolicyService pointPolicyService;
 
     /**
      * 기본 관리자 페이지 출력
@@ -452,4 +456,37 @@ public class AdminController {
 
         return mv;
     }
+
+    @GetMapping("/admin/point/policy")
+    public ModelAndView getAllPointPolicies() {
+        ModelAndView mv = new ModelAndView("admin/point-policy");
+
+        List<PointPolicyResponseDto> policies = pointPolicyService.getPolicies();
+        mv.addObject("policies", policies);
+
+        return mv;
+    }
+
+    @PostMapping("/admin/point/policy/update")
+    public ResponseEntity<Map<String,String>> updatePolicyValue(
+        @RequestBody PointPolicyUpdateRequestDto pointPolicyUpdateRequestDto,
+        BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errors = new HashMap<>();
+
+            errors.put("message",bindingResult.getFieldError().getDefaultMessage());
+
+            return ResponseEntity.badRequest().body(errors);
+        }
+
+        try {
+            pointPolicyService.updatePolicyValue(pointPolicyUpdateRequestDto);
+
+            return ResponseEntity.ok().body(Map.of("message", "정책 변경에 성공했습니다."));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
 }

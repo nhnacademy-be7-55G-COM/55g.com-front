@@ -47,7 +47,7 @@
   <hr/>
 
   <div class="display-5">배송상태</div>
-  <form th:action="@{/admin/order/delivery/{id}(id=${info.delivery.id})}" method="post">
+  <form id="editForm" th:action="@{/admin/order/delivery/{id}(id=${info.delivery.id})}" method="post">
     <input type="number" name="id" th:value="${info.delivery.id}" hidden disabled/>
     <div class="container">
       <div class="row mb-3">
@@ -64,22 +64,22 @@
       <div class="row mb-3">
         <div class="col-md-4">
           <label class="form-label" for="receiverName">받는 사람</label>
-          <input type="text" id="receiverName" name="receiverName" th:value="${info.delivery.receiverName}" disabled class="form-control" />
+          <input type="text" id="receiverName" name="receiverName" th:value="${info.delivery.receiverName}" disabled class="form-control" required />
         </div>
         <div class="col-md-4">
           <label class="form-label" for="receivedDate">받길 희망하는 날짜</label>
-          <input type="date" id="receivedDate" name="receivedDate" th:value="${#temporals.format(info.delivery.receivedDate, 'yyyy-MM-dd')}" disabled class="form-control" />
+          <input type="date" id="receivedDate" name="receivedDate" th:value="${#temporals.format(info.delivery.receivedDate, 'yyyy-MM-dd')}" disabled class="form-control" required />
         </div>
         <div class="col-md-4">
-          <label class="form-label" for="shippingDate">배송 시작 날짜</label>
+          <label class="form-label" for="shippingDate">출고일</label>
           <input type="date" id="shippingDate" name="shippingDate" th:value="${#temporals.format(info.delivery.shippingDate, 'yyyy-MM-dd')}" disabled class="form-control" />
         </div>
       </div>
 
       <div class="row mb-3">
         <div class="col-md-4">
-          <label for="status">배송상태</label>
-          <select name="status" id="status" disabled class="form-select">
+          <label for="deliveryStatus">배송상태</label>
+          <select name="status" id="deliveryStatus" disabled class="form-select" onchange="selectorChangeHandler(this)">
             <option value="PREPARING">배송준비중</option>
             <option value="SHIPPING">배송중</option>
             <option value="DELIVERED">배송완료</option>
@@ -89,7 +89,7 @@
 
       <script th:inline="javascript">
         const shippingStatus = [[${info.delivery.status}]];
-        const selectForm = document.querySelector('#status');
+        const selectForm = document.querySelector('#deliveryStatus');
         const options = selectForm.querySelectorAll('option');
         options.forEach(option => {
           if (option.value === shippingStatus) {
@@ -98,54 +98,20 @@
         });
       </script>
     </div>
-<!--    <div>-->
-<!--      <div class="d-flex flex-row">-->
-<!--        <div class="m-2 flex-grow-2">-->
-<!--          <label class="form-label" for="addressInput" style="width:60%;">배송주소</label>-->
-<!--          <input type="text" id="addressInput" name="address" th:value="${info.delivery.address}" required disabled />-->
-<!--        </div>-->
-<!--        <div class="m-2 flex-grow-1">-->
-<!--          <label class="form-label" for="invoiceInput">송장</label>-->
-<!--          <input type="text" id="invoiceInput" name="invoiceNumber" th:value="${info.delivery.invoiceNumber}" disabled />-->
-<!--        </div>-->
-<!--      </div>-->
-<!--      <div class="d-flex flex-row">-->
-<!--        <div>-->
-<!--          <label class="form-label" for="receiverName">받는 사람</label>-->
-<!--          <input type="text" id="receiverName" name="receiverName" th:value="${info.delivery.receiverName}" disabled />-->
-<!--        </div>-->
-<!--        <div class="m-2 flex-grow-1">-->
-<!--          <label class="form-label" for="receivedDate">받길 희망하는 날짜</label>-->
-<!--          <input type="date" id="receivedDate" name="receivedDate" th:value="${#temporals.format(info.delivery.receivedDate, 'yyyy-MM-dd')}" disabled />-->
-<!--        </div>-->
-<!--        <div class="m-2 flex-grow-1">-->
-<!--          <label class="form-label" for="shippingDate">배송 시작 날짜</label>-->
-<!--          <input type="date" id="shippingDate" name="shippingDate" th:value="${#temporals.format(info.delivery.shippingDate, 'yyyy-MM-dd')}" disabled />-->
-<!--        </div>-->
-<!--        <div class="m-2 flex-grow-1">-->
-<!--          <label for="status">배송상태</label>-->
-<!--          <select name="status" id="status" disabled>-->
-<!--            <option value="PREPARING">배송준비중</option>-->
-<!--            <option value="SHIPPING">배송중</option>-->
-<!--            <option value="DELIVERED">배송완료</option>-->
-<!--          </select>-->
-<!--          <script th:inline="javascript">-->
-<!--            const shippingStatus = [[${info.delivery.status}]];-->
-<!--            const selectForm = document.querySelector('#status');-->
-<!--            const options = selectForm.querySelectorAll('option');-->
-<!--            for (let i=0; options.length; i++) {-->
-<!--              if (shippingStatus === options[i].value) {-->
-<!--                options[i].selected = true;-->
-<!--                break;-->
-<!--              }-->
-<!--            }-->
-<!--          </script>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
     <div class="d-flex flex-column">
       <button type="button" class="btn btn-outline-warning ms-auto" onclick="enableModify()">배송 정보 수정하기</button>
       <button type="submit" id="applyBtn" class="btn btn-primary ms-3" disabled>적용하기</button>
+      <script>
+        const selectorChangeHandler = (selector) => {
+          if (selector.value === 'SHIPPING' || selector.value === 'DELIVERED') {
+            document.querySelector('#invoiceInput').required = true;
+            document.querySelector('#shippingDate').required = true;
+          } else {
+            document.querySelector('#invoiceInput').required = false;
+            document.querySelector('#shippingDate').required = false;
+          }
+        }
+      </script>
     </div>
   </form>
 

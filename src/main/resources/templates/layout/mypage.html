@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="https://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}"
+>
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css">
+  <link rel="stylesheet" href="/static/style-mypage.css">
+  <script
+      src="https://code.jquery.com/jquery-3.7.1.min.js"
+      integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+      crossorigin="anonymous"
+  ></script>
+  <style>
+    .spinner-border {
+      width: 5rem;
+      height: 5rem;
+    }
+    .button-cancel {
+      margin: 0;
+      height: 2.3rem;
+    }
+
+    .card-body p {
+      margin-bottom: 10px;
+    }
+
+    .btn-payco {
+      display: inline-block;
+      background-color: #ffffff;
+      color: #ff2233;
+      font-family: 'Pretendard', sans-serif; /* 깔끔한 폰트 */
+      font-size: 16px;
+      font-weight: bold;
+      text-align: center;
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 5px; /* 모서리를 둥글게 */
+      border: none;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 살짝 그림자 추가 */
+      transition: all 0.3s ease; /* 애니메이션 효과 */
+    }
+
+    .btn-payco:hover {
+      background-color: #ff2233;
+      box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* 그림자 강화 */
+      cursor: pointer;
+    }
+
+    td[colspan="6"] select {
+      width: 150px;
+      margin: 0;
+    }
+
+    .refund-image-button {
+      height: 2.5rem;
+      margin: 0;
+      padding: 0.2rem 0.78rem;
+    }
+
+    table p {
+      margin-bottom: 6px;
+    }
+
+    div#mainContent {
+      margin: auto;
+      margin-bottom: 2rem;
+    }
+  </style>
+</head>
+<body layout:fragment="content">
+<!-- 실패 메시지 -->
+<div th:if="${error}" th:attr="data-error=${error}" style="display:none;"></div>
+
+<!-- 성공 메시지 -->
+<div th:if="${success}" th:attr="data-success=${success}" style="display:none;"></div>
+
+<div id="mainContent" class="container row">
+  <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block sidebar">
+    <div class="position-sticky">
+      <ul class="nav flex-column">
+
+      <!-- 회원 정보 -->
+      <li class="nav-item">
+        <a class="nav-link collapsed d-flex justify-content-between align-items-center"
+           data-bs-toggle="collapse" href="#memberInfo" role="button"
+           aria-expanded="false" aria-controls="memberInfo">
+          회원 정보
+          <i class="fas fa-chevron-right toggle-icon"></i>
+        </a>
+        <div class="collapse" id="memberInfo">
+          <ul class="nav flex-column ms-3" style="margin-top: 0">
+            <li class="nav-item"><a class="nav-link"  href="/mypage/personal-info">개인
+              정보 관리</a></li>
+            <li class="nav-item"><a class="nav-link"
+                                    href="/mypage/address">배송 주소</a></li>
+            <li class="nav-item"><a class="nav-link"  href="/mypage/coupons">쿠폰</a>
+            </li>
+            <li class="nav-item"><a class="nav-link"
+                                    href="/mypage/grade">등급</a></li>
+            <li class="nav-item"><a class="nav-link"  href="/mypage/deleteAccount">회원
+              탈퇴</a></li>
+          </ul>
+        </div>
+      </li>
+
+        <!-- 쇼핑 내역 -->
+        <li class="nav-item">
+          <a class="nav-link collapsed d-flex justify-content-between align-items-center"
+             data-bs-toggle="collapse" href="#shoppingHistory" role="button"
+             aria-expanded="false" aria-controls="shoppingHistory">
+            쇼핑 내역
+            <i class="fas fa-chevron-right toggle-icon"></i>
+          </a>
+          <div class="collapse" id="shoppingHistory">
+            <ul class="nav flex-column ms-3" style="margin-top: 0">
+              <li class="nav-item"><a class="nav-link" href="/mypage/order">주문
+                내역</a></li>
+            </ul>
+          </div>
+        </li>
+
+        <!-- 활동 내역 -->
+        <li class="nav-item">
+          <a class="nav-link collapsed d-flex justify-content-between align-items-center"
+             data-bs-toggle="collapse" href="#activityHistory" role="button"
+             aria-expanded="false" aria-controls="activityHistory">
+            활동 내역
+            <i class="fas fa-chevron-right toggle-icon"></i>
+          </a>
+          <div class="collapse" id="activityHistory">
+            <ul class="nav flex-column ms-3" style="margin-top: 0">
+              <li class="nav-item"><a class="nav-link" href="#likes">좋아요</a>
+              </li>
+              <li class="nav-item"><a class="nav-link" href="/mypage/review-list">리뷰 내역</a></li>
+              <li class="nav-item"><a id="points-tab" class="nav-link" href="/mypage/point-history">포인트
+                내역</a></li>
+              <li class="nav-item"><a id="" class="nav-link" href="#coupons">쿠폰 내역</a></li>
+            </ul>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="col-md-9 col-lg-10">
+    <div layout:fragment="mypageContent"></div>
+  </main>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<!-- 자바스크립트로 메시지 가져와서 alert 처리 -->
+<script>
+  window.onload = function() {
+    // error 메시지 확인 후 alert
+    var errorMessage = document.querySelector('[data-error]');
+    if (errorMessage) {
+      alert(errorMessage.getAttribute('data-error'));
+    }
+
+    // success 메시지 확인 후 alert
+    var successMessage = document.querySelector('[data-success]');
+    if (successMessage) {
+      alert(successMessage.getAttribute('data-success'));
+    }
+  };
+</script>
+</body>
+</html>

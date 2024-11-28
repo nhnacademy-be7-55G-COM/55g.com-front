@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="https://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/mypage}">
+<head>
+  <meta charset="UTF-8">
+  <title>나의 포인트 내역</title>
+  <script src="/static/js/mypage-utils.js"></script>
+
+  <script>
+    const defaultSize = 10;
+    const pointHistoryCaller = async (size, page) => {
+      const {totalPage, totalElements} = await callPointHistoryPage(
+          '#pointHistoryTable', {size: size, page: page});
+      const pageButtonTemplate = `<li class="page-item"><button class="page-link"></button></li>`;
+      const pageButtonActiveTemplate = `<li class="page-item active"><button class="page-link"></button></li>`;
+      const pagination = document.querySelector('#point-pagination');
+      pagination.innerHTML = '';
+      console.log(`totalPage: ${totalPage}, totalElements: ${totalElements}`);
+      if (totalPage > 0) {
+        for (let i = 0; i < totalPage; i++) {
+          let pageButton = null;
+          console.log(`i: ${i}, page: ${page}, page===i => ${page === i}`);
+          console.log(`typeof(i): ${typeof (i)}, typeof(page): ${typeof (page)}`);
+          if (page === i) { // isActive
+            pageButton = `<li class="page-item active"><button class="page-link" data-index="${i}">${i
+            + 1}</button></li>`;
+          } else {
+            pageButton = `<li class="page-item"><button class="page-link" data-index="${i}">${i
+            + 1}</button></li>`;
+          }
+          pagination.innerHTML += pageButton;
+        }
+      }
+      const buttons = pagination.querySelectorAll('li > button');
+      buttons.forEach(button => {
+        const index = button.getAttribute('data-index');
+        button.addEventListener('click', () => {
+          console.log(`call page: ${index}`);
+          pointHistoryCaller(defaultSize, parseInt(index));
+        });
+      });
+    };
+    document.addEventListener('DOMContentLoaded', () => pointHistoryCaller(defaultSize, 0));
+  </script>
+</head>
+<body layout:fragment="mypageContent">
+<div>
+  <div th:replace="~{fragments/point-history :: #pointHistoryTable}"></div>
+  <ul id="point-pagination" class="pagination d-flex justify-content-end"></ul>
+</div>
+</body>
+
+</html>

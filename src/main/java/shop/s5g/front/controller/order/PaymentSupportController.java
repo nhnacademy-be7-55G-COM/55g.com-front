@@ -1,11 +1,11 @@
 package shop.s5g.front.controller.order;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,15 +14,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import shop.s5g.front.annotation.SessionRequired;
-import shop.s5g.front.domain.purchase.PurchaseSheet;
+import shop.s5g.front.annotation.RedirectWithAlert;
+import shop.s5g.front.domain.purchase.AbstractPurchaseSheet;
 import shop.s5g.front.dto.CustomerInfoDto;
-import shop.s5g.front.dto.member.MemberInfoResponseDto;
+import shop.s5g.front.dto.customer.CustomerResponseDto;
 import shop.s5g.front.dto.order.OrderCreateRequestDto;
 import shop.s5g.front.dto.order.OrderCreateResponseDto;
 import shop.s5g.front.dto.order.PurchaseRequestDto;
 import shop.s5g.front.dto.order.WrapModifyRequestDo;
 import shop.s5g.front.dto.point.PointUseDto;
+import shop.s5g.front.exception.BadRequestException;
+import shop.s5g.front.service.customer.CustomerService;
 import shop.s5g.front.service.order.OrderService;
 import shop.s5g.front.utils.PaymentUtils;
 
@@ -31,10 +33,13 @@ import shop.s5g.front.utils.PaymentUtils;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/payment/support")
-public class PaymentSupportController {
+@RedirectWithAlert(exceptions = UnsupportedOperationException.class, redirect = "/", title = "지원하지 않는 기능입니다.")
+public class PaymentSupportController {     // TODO: 전체적으로 Validation 과정 넣기.
     private final String tossPaymentsClientKey;
     private final OrderService orderService;
-    private final PurchaseSheet purchaseSheet;
+    private final AbstractPurchaseSheet purchaseSheet;
+    private final CustomerService customerService;
+//    private final PurchaseSheet purchaseSheet;
 
     /**
      *  실행 순서:
@@ -48,8 +53,7 @@ public class PaymentSupportController {
      */
 
     @GetMapping("/generate-order")
-    @SessionRequired
-    public String generateOrderId(/* User Auth */HttpServletRequest request, @RequestParam long orderId) {
+    public String generateOrderId(@RequestParam long orderId) {
         String value = purchaseSheet.getRandomOrderId();
         purchaseSheet.setOrderId(orderId);
 
@@ -58,16 +62,18 @@ public class PaymentSupportController {
     }
 
     // TODO: 쿠폰 사용 업데이트
+    // TODO: 회원 전용. PreAuthorize
     @PutMapping("/coupon")
     public ResponseEntity<HttpStatus> updateCouponUsage() {
         return ResponseEntity.ok().build();
     }
 
+    // TODO: 비회원을 따로 분리하거나 공통으로 만들기. 분리하는게 나을듯?
     @GetMapping("/customer")
     public CustomerInfoDto sendCustomerInfo() {
         // TODO: Auth에서 사용자 정보를 가져오거나 api로 요청하여 가져오도록 함.
         //  지금은 회원만 가능함.
-        MemberInfoResponseDto info = purchaseSheet.getMemberInfo();
+        CustomerResponseDto info = purchaseSheet.getCustomerInfo();
         String customerIdStr = String.valueOf(info.customerId());
         String uuid = PaymentUtils.getUUIDFromCustomerId(info.customerId());
 
@@ -82,9 +88,13 @@ public class PaymentSupportController {
     }
 
     @PostMapping("/create-order")
-    @SessionRequired
-    public ResponseEntity<OrderCreateResponseDto> createNewOrder(HttpServletRequest request, @RequestBody PurchaseRequestDto purchase) {
-        purchaseSheet.generateOrder();
+    public ResponseEntity<OrderCreateResponseDto> createNewOrder(
+        @Valid @RequestBody PurchaseRequestDto purchase,
+        BindingResult errors
+    ) {
+        if (errors.hasErrors()) {
+            throw new BadRequestException("주문 형식이 잘못되었습니다.");
+        }
         OrderCreateRequestDto order = purchaseSheet.createOrderRequest(purchase.delivery());
 
 //        // TODO: 세션에서 쿠폰 사용 여부, 합계 및 netPrice 가져오기.
@@ -100,17 +110,14 @@ public class PaymentSupportController {
     }
 
     @DeleteMapping("/order")
-    @SessionRequired
-    public ResponseEntity<HttpStatus> deleteOrder(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
+    public ResponseEntity<HttpStatus> deleteOrder() {
         // 주문 세션에서 주문 ID를 가져와서 삭제 요청을 날림.
         orderService.deleteOrder(purchaseSheet.getOrderId());
-//        session.invalidate();
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    // TODO: 멤버전용, PreAuthorize
     @PutMapping("/point")
-    @SessionRequired
     public ResponseEntity<HttpStatus> updateUsingPoint(@RequestBody PointUseDto use) {
         try {
             purchaseSheet.updateUsingPoint(use.point());

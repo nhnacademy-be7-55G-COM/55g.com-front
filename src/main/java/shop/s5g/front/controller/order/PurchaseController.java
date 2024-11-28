@@ -11,19 +11,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-import shop.s5g.front.annotation.MemberAndAdminOnly;
 import shop.s5g.front.annotation.RedirectWithAlert;
-import shop.s5g.front.annotation.SessionRequired;
 import shop.s5g.front.domain.purchase.PurchaseSheet;
 import shop.s5g.front.dto.cart.request.CartBookInfoRequestDto;
 import shop.s5g.front.exception.cart.CartPurchaseException;
 import shop.s5g.front.exception.order.PurchaseCreateErrorException;
 import shop.s5g.front.service.cart.CartService;
 
+// TODO: 비멤버 접근 제한
 @RequiredArgsConstructor
 @Slf4j
 @Controller
-@MemberAndAdminOnly
 @RedirectWithAlert(exceptions = PurchaseCreateErrorException.class, redirect = "/", title = "주문서 생성에 실패했습니다.")
 public class PurchaseController {
     private final PurchaseSheet purchaseSheet;
@@ -40,9 +38,8 @@ public class PurchaseController {
      * 다른 좋은 방법이 있을텐데..
      */
     @GetMapping("/purchase")
-    @SessionRequired
     public ModelAndView getPurchaseView() {
-        ModelAndView mv = new ModelAndView("create-order");
+        ModelAndView mv = new ModelAndView("order/create-order");
 
         log.trace("Getting shopping cart...");
         try {
@@ -65,11 +62,10 @@ public class PurchaseController {
         }
     }
     @GetMapping("/purchase/instant")
-    @SessionRequired
     public ModelAndView instantPurchaseSheet(@RequestParam("cart") String cartB64Encoded) {
         String rawCartList = new String(Base64.getUrlDecoder().decode(cartB64Encoded));
 
-        ModelAndView mv = new ModelAndView("create-order");
+        ModelAndView mv = new ModelAndView("order/create-order");
 
         log.trace("Getting shopping cart...");
         try {
@@ -93,4 +89,5 @@ public class PurchaseController {
             throw new PurchaseCreateErrorException("장바구니 형식이 잘못되었습니다.");
         }
     }
+
 }

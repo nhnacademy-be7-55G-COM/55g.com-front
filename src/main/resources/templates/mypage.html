@@ -46,18 +46,18 @@
             transition: all 0.3s ease; /* 애니메이션 효과 */
         }
 
-        .btn-payco:hover {
-            background-color: #ff2233;
-            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* 그림자 강화 */
-            cursor: pointer;
-        }
-    </style>
-    <script>
-        const defaultSize = 10;
-        const hash = window.location.hash;
-        const getHashFromHref = (href) => {
-            return href.substring(href.search('#'));
-        }
+    .btn-payco:hover {
+      background-color: #ff2233;
+      box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* 그림자 강화 */
+      cursor: pointer;
+    }
+  </style>
+  <script>
+    const defaultSize = 10;
+    const hash = window.location.hash;
+    const getHashFromHref = (href) => {
+      return href.substring(href.search('#'));
+    }
 
         const findParentSideBarNode = (element) => {
             const parent = element.parentElement;
@@ -406,21 +406,25 @@
                     </table>
                 </div>
 
-                <!-- 리뷰 내역 -->
-                <div class="tab-pane fade" id="reviews" role="tabpanel">
-                    <h3>리뷰 내역</h3>
-                    <p>작성한 리뷰 목록입니다.</p>
-                    <!-- 리뷰 목록 표시 -->
-                </div>
-                <!-- 주문 목록 -->
-                <div class="tab-pane fade" id="orders" role="tabpanel">
-                    <h3>주문 목록</h3>
-                    <th:block th:replace="~{order/order-list :: #orderHistory}"/>
-                    <!--          <ul>-->
-                    <!--            <li th:each="order : ${orders}">-->
-                    <!--              <span th:text="${order.date}"></span> - <span th:text="${order.amount}"></span>-->
-                    <!--            </li>-->
-                    <!--          </ul>-->
+        <!-- 리뷰 내역 -->
+        <div class="tab-pane fade" id="reviews" role="tabpanel">
+          <h3>리뷰 내역</h3>
+          <p>작성한 리뷰 목록입니다.</p>
+          <!-- 리뷰 목록 표시 -->
+          <div id="reviewList"></div>
+          <script>
+
+          </script>
+        </div>
+        <!-- 주문 목록 -->
+        <div class="tab-pane fade" id="orders" role="tabpanel">
+          <h3>주문 목록</h3>
+          <th:block th:replace="~{order/order-list :: #orderHistory}" />
+<!--          <ul>-->
+<!--            <li th:each="order : ${orders}">-->
+<!--              <span th:text="${order.date}"></span> - <span th:text="${order.amount}"></span>-->
+<!--            </li>-->
+<!--          </ul>-->
 
                 </div>
 

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/mypage}"
+>
+<head>
+  <meta charset="UTF-8">
+  <title>사용자 쿠폰함</title>
+  <script src="/static/js/mypage-utils.js"></script>
+</head>
+<body>
+<!-- 쿠폰 -->
+<div class="container" role="tabpanel" layout:fragment="mypageContent">
+  <div class="user-info-container">
+    <div class="user-profile">
+      <img src="/static/images/default-profile.png" alt="기본 이미지">
+    </div>
+
+    <div class="user-details-container">
+      <div class="user-info-text col-7">
+        <p class="user-message" th:text="${member.name()} + '님 안녕하세요.'"></p>
+        <p class="user-grade" th:text="'회원등급 : ' + ${member.grade().gradeName()}"></p>
+      </div>
+      <div class="user-stats col-3 justify-content-center left-border right-border">
+        <div class="stat">
+          <div class="stat-label">포인트</div>
+          <div class="stat-value" th:text="${member.point()}"></div>
+        </div>
+      </div>
+
+      <div class="user-stats col-2 justify-content-center">
+        <div class="stat">
+          <div class="stat-label">쿠폰</div>
+          <div class="stat-value" th:text="${couponList.getTotalElements()}"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 쿠폰 탭 -->
+  <div class="coupon-tabs">
+    <ul class="tab-list">
+      <li class="tab-item active" data-target="available">
+        <span>발급 가능한 쿠폰</span>
+      </li>
+      <li class="tab-item" data-target="usable">
+        <span>사용 가능한 쿠폰</span>
+      </li>
+      <li class="tab-item" data-target="expired">
+        <span>만료/사용한 쿠폰</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="tab-panel active" id="available">
+    <div class="container">
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 justify-content-center available-coupons">
+        <div th:each="coupon : ${availableCouponList.content}" class="col">
+          <div class="coupon-card border p-3 shadow-sm rounded h-100 d-flex flex-column justify-content-between">
+            <div class="coupon-details text-center">
+              <h3 th:text="${coupon.couponName}" class="text-primary">쿠폰 이름</h3>
+              <p>할인금액: <span th:text="${coupon.discountPrice() < 1 ? coupon.discountPrice().multiply(100).stripTrailingZeros().toPlainString() + '%'
+                                          : coupon.discountPrice().stripTrailingZeros().toPlainString() + '원'}">할인금액</span></p>
+              <p><span th:text="${coupon.condition}">조건</span>원 이상 구매시</p>
+            </div>
+            <div>
+              <form th:action="@{/mypage/coupon/get/{memberId}(memberId=${member.customerId()})}" method="post">
+                <input type="hidden" name="couponId" th:value="${coupon.couponId()}" />
+                <input type="hidden" name="couponTemplateId" th:value="${coupon.couponTemplateId()}" />
+                <button class="btn btn-primary w-100 mt-2" th:if="${coupon.count > 0}" type="submit">다운로드</button>
+              </form>
+
+              <button class="btn btn-secondary w-100 mt-2" th:unless="${coupon.count > 0}" type="button" disabled>발급불가</button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="tab-panel" id="usable">
+    <div class="container-fluid px-0">
+      <div class="table-responsive">
+        <table class="table table-bordered">
+          <thead>
+          <tr>
+            <th class="text-center" style="padding: 10px; background-color: #f0f0f0;">순번</th>
+            <th class="text-center" style="padding: 10px; background-color: #f0f0f0;">쿠폰 이름</th>
+            <th class="text-center" style="padding: 10px; background-color: #f0f0f0;">유효기간</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="usable, iterStat : ${couponList}">
+            <td class="text-center" style="padding: 10px;" th:text="${(iterStat.index + 1) + (usableCurrentPage * couponList.size)}">순번</td>
+            <td class="text-center" style="padding: 10px; cursor: pointer;"
+                th:text="${usable.couponName()}"
+                onclick="showCouponModal(
+                  '[[${usable.couponName()}]]',
+                  '[[${usable.expirationMessage}]]',
+                  '[[${usable.discountPrice}]]',
+                  '[[${usable.condition}]]',
+                  '[[${usable.couponDescription}]]'
+                )">
+              쿠폰 이름
+            </td>
+            <td class="text-center" style="padding: 10px;" th:text="${usable.expirationMessage}">유효기간</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+    <div class="tab-panel" id="expired">만료/사용한 쿠폰 리스트
+
+    </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const tabs = document.querySelectorAll(".tab-item");
+
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", (event) => {
+          event.preventDefault();
+
+          const currentScrollY = window.scrollY;
+
+          document.querySelector(".tab-item.active").classList.remove("active");
+          document.querySelector(".tab-panel.active").classList.remove("active");
+
+          tab.classList.add("active");
+
+          const targetPanelId = tab.getAttribute("data-target");
+          document.getElementById(targetPanelId).classList.add("active");
+
+          // DOM 업데이트 이후 스크롤 위치 복원
+          requestAnimationFrame(() => {
+            window.scrollTo(0, currentScrollY);
+          });
+        });
+      });
+    });
+  </script>
+</div>
+
+</body>
+</html>

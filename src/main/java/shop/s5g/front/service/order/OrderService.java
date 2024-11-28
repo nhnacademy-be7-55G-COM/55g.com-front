@@ -12,9 +12,15 @@ public interface OrderService {
 
     OrderCreateResponseDto createOrder(OrderCreateRequestDto createRequest);
 
+    OrderCreateResponseDto createGuestOrder(long customerId, OrderCreateRequestDto createRequest);
+
     List<OrderWithDetailResponseDto> queryOrdersBetweenDates(OrderQueryRequestDto queryRequest);
 
     void deleteOrder(long orderId);
 
     List<OrderAdminTableView> adminQueryWithFilter(OrderQueryFilterDto filter);
+
+    List<OrderWithDetailResponseDto> getGuestOrders(
+        String phoneNumber, String name, String password
+    );
 }

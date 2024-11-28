@@ -266,7 +266,12 @@
         <h3 class="sidebar-heading p-3">관리자 메뉴</h3>
         <ul class="nav flex-column">
           <li class="nav-item border-bottom">
-            <a class="nav-link active" aria-current="page" href="#" data-url="/admin/dashboard">포인트</a>
+            <span>포인트</span>
+            <ul>
+              <li>
+              <a class="nav-link" href="#" data-url="/admin/point/policy">포인트 정책</a>
+              </li>
+            </ul>
           </li>
           <li class="nav-item border-bottom">
             <a>쿠폰</a>
@@ -283,7 +288,7 @@
                 <a>쿠폰 템플릿</a>
                 <ul>
                   <a class="nav-link" href="/admin/coupons/policy-inquiry">템플릿 생성</a>
-                  <a class="nav-link" href="templates/list">템플릿 조회</a>
+                  <a class="nav-link" href="/admin/templates/list">템플릿 조회</a>
                 </ul>
               </li>
 

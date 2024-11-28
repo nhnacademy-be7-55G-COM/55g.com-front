@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>포인트 정책</title>
+  <style>
+    tr button {
+      margin: 0;
+      height: 2.4rem;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+      width: 400px;
+      max-width: 80%;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .close-button {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: none;
+      border: none;
+      color: black;
+      font-size: 24px;
+      font-weight: bold;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      margin: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background-color: #007bff;
+      color: white;
+    }
+
+    .btn-danger {
+      background-color: #dc3545;
+      color: white;
+    }
+
+    #error-message {
+      color: red;
+      margin-top: 10px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+<div>
+  <table class="table table-hover">
+    <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Policy-Name</th>
+      <th scope="col">Value</th>
+      <th scope="col">Edit</th>
+    </tr>
+    </thead>
+    <tbody>
+    <th:block th:each="policy: ${policies}">
+      <tr class="table-data">
+        <td th:text="${policy.id}"></td>
+        <td th:text="${policy.name}"></td>
+        <td th:text="${policy.value}"></td>
+        <td>
+          <button class="btn btn-danger" th:attr="data-modal-id='modal-' + ${policy.id}" onclick="openModal(this)">
+            수정
+          </button>
+        </td>
+      </tr>
+    </th:block>
+    </tbody>
+  </table>
+</div>
+
+<!-- 모달 -->
+<div th:each="policy: ${policies}">
+  <div class="modal-overlay" th:id="'modal-' + ${policy.id}">
+    <div class="modal-content">
+      <button class="close-button" onclick="closeModal(this)">×</button>
+      <h5>포인트 정책 변경</h5>
+      <form th:id="|policy-form-${policy.id}|">
+        <div class="mb-3">
+          <span th:text="${policy.name}"></span>
+        </div>
+        <div class="mb-3">
+          <label for="value" class="form-label">값 설정</label>
+          <input type="text" class="form-control" id="value" name="value"
+                 placeholder="새로운 정책 값을 입력하세요" th:value="${policy.value}" required>
+          <div id="error-message" style="color: red; display: none; margin-top: 5px;"></div>
+          <div> 할인율의 경우 0.00 ~ 1.00 사이를 입력해주세요</div>
+          <input type="hidden" id="id" name="id" th:value="${policy.id}">
+        </div>
+        <button type="button" class="btn btn-primary mt-3"
+                th:attr="data-form-id='policy-form-' + ${policy.id}"
+                onclick="submitPolicyForm(this)">변경 저장</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script th:inline="javascript">
+  function openModal(button) {
+    const modalId = button.getAttribute('data-modal-id');
+    const modal = document.getElementById(modalId);
+    if (modal) {
+      modal.style.display = 'flex'; // 모달 표시
+    } else {
+      console.error(`Modal with ID "${modalId}" not found!`);
+    }
+  }
+
+  function closeModal(button) {
+    const modal = button.closest('.modal-overlay');
+    if (modal) {
+      modal.style.display = 'none'; // 모달 숨기기
+    }
+  }
+
+  function submitPolicyForm(button) {
+    const formId = button.getAttribute('data-form-id');
+    const form = document.getElementById(formId);
+
+    if (!form) {
+      console.error(`Form with ID "${formId}" not found!`);
+      return;
+    }
+
+    const id = form.querySelector('input[name="id"]')?.value;
+    const value = form.querySelector('input[name="value"]')?.value;
+    const errorMessage = form.querySelector('#error-message');
+
+    if (!id || !value) {
+      console.error('ID 또는 Value 필드를 찾을 수 없습니다.');
+      return;
+    }
+
+    // 에러 메시지 초기화
+    errorMessage.style.display = 'none';
+
+    // 값 검증
+    if (isNaN(value) || parseFloat(value) < 0 || !/^\d+(\.\d{1,2})?$/.test(value)) {
+      errorMessage.textContent = "0 이상의 숫자, 최대 소수점 둘째 자리까지 입력 가능합니다.";
+      errorMessage.style.display = 'block';
+      return;
+    }
+
+    // AJAX 요청
+    fetch('/admin/point/policy/update', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json', [_csrf_header]: _csrf },
+      body: JSON.stringify({ id: id, value: value }),
+    })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('오류가 발생했습니다.');
+      }
+      return response.json();
+    })
+    .then(() => {
+      alert('정책이 성공적으로 업데이트되었습니다.');
+      closeModal(button);
+      window.location.href="/admin";
+    })
+    .catch((error) => {
+      errorMessage.textContent = error.message;
+      errorMessage.style.display = 'block';
+    });
+  }
+</script>
+</body>
+</html>
