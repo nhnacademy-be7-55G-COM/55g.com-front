@@ -18,6 +18,16 @@ public class OrderDetailServiceImpl implements OrderDetailService {
     private final PaymentsAdapter paymentsAdapter;
 
     @Override
+    public OrderDetailInfoDto getOrderDetailAllInfos(String uuid) {
+        return orderAdapter.fetchOrderDetailInfo(uuid);
+    }
+
+    /**
+     * 회원 및 관리자만 가능한 OrderID 직접 검색
+     * @param orderId 검색하고자 하는 주문 ID
+     * @return OrderDetailInfoDto
+     */
+    @Override
     public OrderDetailInfoDto getOrderDetailAllInfos(long orderId) {
         return orderAdapter.fetchOrderDetailInfo(orderId);
     }

@@ -4,6 +4,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +27,11 @@ public class GuestOrderController {
     private final OrderService orderService;
     private final OrderDetailService orderDetailService;
 
+    @ModelAttribute("isGuest")
+    public boolean isGuest() {
+        return true;
+    }
+
     @PostMapping("/order")
     @RedirectWithAlert(exceptions = ResourceNotFoundException.class, redirect = "/guest/login", title = "정보가 존재하지 않습니다.")
     @RedirectWithAlert(exceptions = BadRequestException.class, redirect = "/guest/login", title = "형식이 잘못되었습니다. 다시 시도해주세요.")
@@ -46,10 +52,10 @@ public class GuestOrderController {
         return mv;
     }
     // TODO: 회원 것이랑 구분해야함.
-    @GetMapping("/order/{orderId}")
-    public ModelAndView viewOrderDetail(@PathVariable long orderId) {
-        OrderDetailInfoDto info = orderDetailService.getOrderDetailAllInfos(orderId);
-        ModelAndView mv = new ModelAndView("mypage/order-detail");
+    @GetMapping("/order/{uuid}")
+    public ModelAndView viewOrderDetail(@PathVariable String uuid) {
+        OrderDetailInfoDto info = orderDetailService.getOrderDetailAllInfos(uuid);
+        ModelAndView mv = new ModelAndView("order/guest-order-detail");
 
         // TODO: 리뷰 id 또는 리뷰 등록 여부 반환 필요 (리뷰 작성 여부 체크해야함) / boolean으로 반환되면 좋을듯
 
