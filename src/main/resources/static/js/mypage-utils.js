@@ -11,6 +11,12 @@ const detailMap = {
   CANCEL: '주문 취소'
 };
 
+const changeToConfirm = async (detailId) => {
+  await axios.put(`/mypage/support/orders/confirm/${detailId}`);
+  alert('주문이 확정되었습니다.');
+  window.location.reload();
+}
+
 const callPointHistoryPage = async (tableSelector, {size, page}) => {
   let totalPage = -1;
   let totalElements = -1;

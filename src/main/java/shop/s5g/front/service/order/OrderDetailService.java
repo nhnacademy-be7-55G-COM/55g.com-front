@@ -8,4 +8,6 @@ public interface OrderDetailService {
     OrderDetailInfoDto getOrderDetailAllInfos(long orderId);
 
     void cancelDetailRequest(long detailId, OrderDetailCancelRequestDto cancelReason);
+
+    void changeOrderDetailStatus(long detailId, String typeName);
 }
