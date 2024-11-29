@@ -4,9 +4,9 @@
 <script src="/static/js/jquery-1.11.0.min.js"></script>
 <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
 <script>
-  const Editor=toastui.Editor;
+  const Editor = toastui.Editor;
 </script>
-<link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+<link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css"/>
 <style>
   #tag-search-result {
     border: 1px solid black;
@@ -58,10 +58,38 @@
                     th:selected="${publisher.name==book.publisherName}"></option>
           </select>
         </div>
-        <!--        <div class="form-group">-->
-        <!--          <label>작가</label>-->
-        <!--          <input type="text" class="form-control" name="author" placeholder="작가를 입력하세요">-->
-        <!--        </div>-->
+        <div class="form-group">
+          <label>작가</label>
+          <input type="text" id="author-search-input" name="author-search-input"
+                 placeholder="작가를 입력하세요">
+          <button id="btn-author-search">검색</button>
+          <table style="width:100%">
+            <thead>
+            <tr>
+              <th>이름
+              <th>역할 선택</th>
+            </tr>
+            </thead>
+            <tbody id="author-search-result"></tbody>
+          </table>
+          <table style="width:100%">
+            <thead>
+            <tr>
+              <th>이름
+              <th>기능</th>
+            </thead>
+            </tr>
+            <tbody id="author-list">
+            <tr th:each="author,stat:${book.authorList}">
+              <td th:text="${author.authorName}"></td>
+              <td>
+                <button class="author" th:data-typeId="${author.authorTypeId}"
+                        th:value="${author.authorId}" th:text="삭제"></button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
         <div class="form-group">
           <label>도서 판매 상태</label>
           <select name="bookStatusId" class="form-control" required>
@@ -72,11 +100,11 @@
           </select>
         </div>
         <div class="form-group">
-          <label for="editor-chapter">목차</label>
+          <label>목차</label>
           <div id="editor-chapter"></div>
         </div>
         <div class="form-group">
-          <label for="editor-description">설명</label>
+          <label>설명</label>
           <div id="editor-description"></div>
         </div>
         <div class="form-group">
@@ -132,12 +160,30 @@
   </div>
 </main>
 <!-- 본문 끝 -->
-<div th:replace="~{fragments/footer}"></div>
+<!--<div th:replace="~{fragments/footer}"></div>-->
 </body>
 <script>
   var tagList = [];
+  var authorList = [];
 
+  // === 시작 ===
   $().ready(function () {
+    var authors = $('.author')
+    console.log(authors);
+    authors.each(function (i, e) {
+      var item = $(e);
+      item.on('click', function (e2) {
+        clickAuthorRemove(e2);
+      });
+
+      var data = {
+        'authorId': item.val() * 1,
+        'authorTypeId': item.data('typeid')
+      };
+
+      authorList.push(data);
+    });
+
     var tags = $('.tag');
     console.log(tags);
     tags.each(function (i, e) {
@@ -151,6 +197,143 @@
     });
   });
 
+  // === 작가 ===
+  // 작가 - 등록한 작가의 삭제 버튼 클릭 이벤트 처리
+  function clickAuthorRemove(e) {
+    e.preventDefault();
+    var item = $(e.target);
+
+    var target = {
+      'authorId': item.val() * 1,
+      'authorTypeId': item.data('typeid')*1
+    };
+
+    var targetIndex = -1;
+    authorList.forEach(function (item, index) {
+      console.log(index, item, target);
+      if (item.authorId === target.authorId && item.authorTypeId === target.authorTypeId) {
+        targetIndex = index;
+        return false;
+      }
+    });
+
+    if (targetIndex > -1) {
+      authorList.splice(targetIndex, 1);
+      $(e.target).closest('tr').remove();
+    }
+  }
+
+  // 작가 - 검색한 작가의 역할을 선택하여 작가 목록에 등록
+  function changeAuthorSearchItem(e) {
+    var select = $(e.target);
+    var typeName = select.find('option:selected').text();
+    console.log(e.target, e.target.value, $(e.target).data('id'),
+        $(e.target).find('option:selected').text());
+
+    var data = {
+      'authorId': select.data('id'),
+      'authorTypeId': select.val()*1
+    };
+
+    if (authorList.some(item => {
+      return Object.keys(data).every(key => item[key] === data[key]);
+    })) {
+      alert('이미 추가된 작가입니다.');
+      return;
+    }
+
+    $('#author-list').append(
+        $('<tr>')
+        .append($('<td>').text(select.data('name') + "(" + typeName + ")"))
+        .append($('<td>').append(
+            $('<button>').text('삭제').val(select.data('id')).data('typeid', select.val()).on('click',
+                function (e) {
+                  clickAuthorRemove(e);
+                }))));
+
+    authorList.push(data);
+  }
+
+  // 작가 - 검색 버튼 클릭 이벤트 처리
+  $('#btn-author-search').on('click', function (e) {
+    e.preventDefault();
+    var input = $('#author-search-input');
+
+    if (input.val() == '') {
+      alert('검색할 작가를 입력해주세요.');
+      return;
+    }
+
+    $.ajax({
+      url: '/book/author/search',
+      method: 'GET',
+      data: {
+        'keyword': input.val()
+      },
+      success: function (data) {
+        console.log('author search success!');
+        var authorSearchResult = $('#author-search-result');
+        authorSearchResult.html('');
+
+        if (data.length < 1) {
+          authorSearchResult.append('<tr><td colspan="2">검색 결과가 없습니다.</td></tr>');
+        } else {
+          console.log(data);
+          data.forEach(function (item, index) {
+            if (item.active) {
+              var result = $('<tr>')
+              .append($('<td>').text(item.name))
+              .append($('<td>').append(
+                  $('<select class="search-author-result">').data('id', item.authorId).data('name',
+                      item.name)
+                  .append($('<option selected disabled>').text('역할 선택'))
+                  .append($('<option value="1">').text('지은이'))
+                  .append($('<option value="2">').text('공저자'))
+                  .append($('<option value="3">').text('옮긴이'))
+                  .append($('<option value="4">').text('그림'))
+              ));
+              result.on('change', function (e) {
+                changeAuthorSearchItem(e);
+              });
+              authorSearchResult.append(result);
+            }
+          });
+        }
+      },
+      error: function (a) {
+        console.log(a);
+      }
+    });
+  });
+
+  // === 카테고리 ===
+  $('#category1').on("change", function () {
+    var selectCategory = $('#category1 option:selected').val();
+    console.log(selectCategory);
+
+    $.ajax({
+      url: '/book/categories/' + selectCategory,
+      method: 'GET',
+      success: function (data) {
+        console.log("category success!");
+        var subCategory = $('#category2');
+        subCategory.html('');
+        subCategory.append($('<option selected disabled>').text('하위 카테고리 선택'));
+
+        data.forEach(function (e, i) {
+          if (e.active) {
+            subCategory.append($('<option>').val(e.categoryId).text(e.categoryName));
+          }
+        });
+      },
+      error: function (a) {
+        console.log("error");
+        console.log(a);
+      }
+    });
+  });
+
+  // === 태그 ===
   function clickTagSearchItem(e) {
     e.preventDefault();
 
@@ -177,32 +360,6 @@
     tagList.splice(tagList.indexOf(item.value), 1);
     item.remove();
   }
-
-  $('#category1').on("change", function () {
-    var selectCategory = $('#category1 option:selected').val();
-    console.log(selectCategory);
-
-    $.ajax({
-      url: '/book/categories/' + selectCategory,
-      method: 'GET',
-      success: function (data) {
-        console.log("category success!");
-        var subCategory = $('#category2');
-        subCategory.html('');
-        subCategory.append($('<option selected disabled>').text('하위 카테고리 선택'));
-
-        data.forEach(function (e, i) {
-          if (e.active) {
-            subCategory.append($('<option>').val(e.categoryId).text(e.categoryName));
-          }
-        });
-      },
-      error: function (a) {
-        console.log("error");
-        console.log(a);
-      }
-    });
-  });
 
   $('#btn-tag-search').on('click', function (e) {
     e.preventDefault();
@@ -252,7 +409,7 @@
     initialEditType: 'wysiwyg',
     previewStyle: 'vertical'
   });
-  editorChapter.setHTML('[[${book.chapter}]]');
+  editorChapter.setHTML("[[${book.chapter}]]");
 
   const editorDescription = new Editor({
     el: document.querySelector('#editor-description'),
@@ -260,12 +417,20 @@
     initialEditType: 'wysiwyg',
     previewStyle: 'vertical'
   });
-  editorDescription.setHTML('[[${book.description}]]');
+  editorDescription.setHTML("[[${book.description}]]");
 
   $('#btn-submit').on('click', function (e) {
     e.preventDefault();
 
+    $('#author-list').append(
+        $('<input type="hidden" name="authorJson">').val(JSON.stringify(authorList)));
     $('#tag-list').append($('<input type="hidden" name="tagIdList">').val(tagList));
+
+    $('#editor-chapter').append(
+        $('<input type="hidden" name="chapter">').val(editorChapter.getHTML()));
+    $('#editor-description').append(
+        $('<input type="hidden" name="description">').val(editorDescription.getHTML()));
+
     $('form').submit();
   });
 </script>
