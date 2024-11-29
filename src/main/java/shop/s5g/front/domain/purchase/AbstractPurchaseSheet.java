@@ -194,4 +194,12 @@ public abstract class AbstractPurchaseSheet implements Serializable {
 
     public abstract long updateUsingPoint(long point);
     public abstract CustomerResponseDto getCustomerInfo();
+
+    public String getUuid() {
+        return orderInfo.uuid;
+    }
+
+    public void setUuid(String uuid) {
+       orderInfo.uuid = uuid;
+    }
 }
