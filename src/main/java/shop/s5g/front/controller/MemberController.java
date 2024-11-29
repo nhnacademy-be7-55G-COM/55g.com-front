@@ -14,9 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import shop.s5g.front.advice.LogInAdvice;
 import shop.s5g.front.dto.member.MemberRegistrationRequestDto;
-import shop.s5g.front.service.member.InactiveService;
 import shop.s5g.front.service.member.MemberService;
 
 @Controller
@@ -24,7 +22,6 @@ import shop.s5g.front.service.member.MemberService;
 public class MemberController {
 
     private final MemberService memberService;
-    private final LogInAdvice logInAdvice;
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
