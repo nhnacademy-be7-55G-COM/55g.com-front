@@ -1,6 +1,8 @@
 package shop.s5g.front.service.author;
 
+import java.util.List;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import shop.s5g.front.dto.MessageDto;
 import shop.s5g.front.dto.PageResponseDto;
 import shop.s5g.front.dto.author.AuthorRequestDto;
@@ -16,4 +18,6 @@ public interface AuthorService {
     MessageDto updateAuthor(long authorId, AuthorRequestDto authorRequestDto);
 
     MessageDto deleteAuthor(long authorId);
+
+    ResponseEntity<List<AuthorResponseDto>> searchAuthors(String keyword);
 }
