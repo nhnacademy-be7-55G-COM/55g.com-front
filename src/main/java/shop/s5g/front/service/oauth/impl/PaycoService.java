@@ -10,7 +10,7 @@ import shop.s5g.front.dto.MessageDto;
 import shop.s5g.front.dto.jwt.TokenResponseDto;
 import shop.s5g.front.exception.AlreadyExistsException;
 import shop.s5g.front.exception.ResourceNotFoundException;
-import shop.s5g.front.exception.member.MemberLoginFailedException;
+import shop.s5g.front.exception.auth.MemberLoginFailedException;
 import shop.s5g.front.exception.payco.AlreadyLinkAccountException;
 import shop.s5g.front.exception.payco.LinkAccountFailedException;
 import shop.s5g.front.exception.payco.NeedLinkAccountException;

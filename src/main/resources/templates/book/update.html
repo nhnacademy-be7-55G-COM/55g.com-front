@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+<th:block th:replace="~{fragments/head :: headTemplate}"></th:block>
 <script src="/static/js/jquery-1.11.0.min.js"></script>
 <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
 <script>
@@ -22,7 +23,6 @@
     margin: 2px;
   }
 </style>
-<div th:replace="~{fragments/head}"></div>
 <body>
 <div th:replace="~{fragments/header}"></div>
 <!-- 본문 시작 -->
@@ -30,7 +30,7 @@
   <div class="container mt-5" style="width: 50%;">
     <div class="form-container">
       <h2 class="text-center">도서 수정</h2>
-      <form method="post" th:action="@{/book/update/{bookId} (bookId=${bookId})}"
+      <form method="post" th:action="@{/admin/book/update/{bookId} (bookId=${bookId})}"
             enctype="multipart/form-data">
         <div class="form-group">
           <label for="title">제목</label>

@@ -39,7 +39,7 @@ public class PurchaseController {
      */
     @GetMapping("/purchase")
     public ModelAndView getPurchaseView() {
-        ModelAndView mv = new ModelAndView("create-order");
+        ModelAndView mv = new ModelAndView("order/create-order");
 
         log.trace("Getting shopping cart...");
         try {
@@ -65,7 +65,7 @@ public class PurchaseController {
     public ModelAndView instantPurchaseSheet(@RequestParam("cart") String cartB64Encoded) {
         String rawCartList = new String(Base64.getUrlDecoder().decode(cartB64Encoded));
 
-        ModelAndView mv = new ModelAndView("create-order");
+        ModelAndView mv = new ModelAndView("order/create-order");
 
         log.trace("Getting shopping cart...");
         try {
@@ -89,4 +89,5 @@ public class PurchaseController {
             throw new PurchaseCreateErrorException("장바구니 형식이 잘못되었습니다.");
         }
     }
+
 }

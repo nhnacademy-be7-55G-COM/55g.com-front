@@ -1,0 +1,218 @@
+/* 공통 스타일 */
+body {
+  font-family: 'Pretendard', sans-serif;
+}
+
+/* 배경색 및 섹션 스타일 */
+#billboard {
+  margin-bottom: 0;
+  padding: 30px 0;
+  background-color: #f9f9f9; /* 연한 회색 배경 */
+}
+
+.book-section {
+  padding: 30px 0;
+  background-color: #f9f9f9;
+}
+
+.main-slider, .book-slider {
+  width: 80%;
+  margin: 0 auto;
+}
+
+.section-header {
+  width: 80%;
+  margin: 0 auto 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.section-title {
+  font-family: 'Noto Sans', sans-serif;
+  font-size: 1.8em;
+  font-weight: bold;
+  color: #000000;
+  margin: 0;
+}
+
+.more-link {
+  font-family: 'Noto Sans', sans-serif;
+  font-size: 0.9em;
+  color: #ff6600;
+  text-decoration: none;
+}
+
+.more-link:hover {
+  text-decoration: underline;
+}
+
+/* 슬라이더 및 이미지 스타일 */
+.slick-slide {
+  padding: 0 15px; /* 이미지 간격 */
+  box-sizing: border-box;
+}
+
+.book-item img {
+  width: 100%; /* 고정된 가로 크기 */
+  height: 350px; /* 고정된 높이 */
+  object-fit: cover; /* 비율 유지하며 자르기 */
+  border-radius: 10px;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+}
+
+/* Slick 화살표 스타일 */
+.slick-prev, .slick-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  background-color: black;
+  border: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.slick-prev:hover, .slick-next:hover {
+  background-color: #333;
+}
+
+.slick-prev::before, .slick-next::before {
+  content: '';
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-style: solid;
+}
+
+.slick-prev::before {
+  border-width: 12px 18px 12px 0;
+  border-color: transparent white transparent transparent;
+}
+
+.slick-next::before {
+  border-width: 12px 0 12px 18px;
+  border-color: transparent transparent transparent white;
+}
+
+.slick-prev {
+  left: 25px;
+}
+
+.slick-next {
+  right: 25px;
+}
+
+/* 텍스트 스타일 */
+.billboard-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2em;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.billboard-title:hover {
+  color: #0073e6; /* 파란색 강조 */
+  cursor: pointer;
+}
+
+.billboard-subtitle {
+  font-family: 'Noto Sans', sans-serif;
+  font-size: 1em;
+  color: #666;
+  text-align: center;
+  margin-top: 0;
+}
+
+.book-category {
+  font-family: 'Noto Sans', sans-serif;
+  font-size: 0.9em;
+  color: #888;
+  margin: 10px 0 5px;
+  text-align: center;
+}
+
+.h3-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3em;
+  font-weight: bold;
+  color: #333;
+  margin: 10px 0;
+  text-align: center;
+}
+
+.book-author {
+  font-family: 'Noto Sans', sans-serif;
+  font-size: 0.9em;
+  color: #555;
+  text-align: center;
+}
+/* 플로팅 메뉴 컨테이너 */
+#custom-floating-menu {
+  position: fixed;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  width: 60px; /* 접힌 상태 너비 */
+  height: auto;
+  background-color: #ffffff; /* 흰색 배경 */
+  color: #333;
+  border-radius: 10px 0 0 10px; /* 왼쪽 모서리를 둥글게 */
+  box-shadow: -2px 4px 10px rgba(0, 0, 0, 0.2); /* 그림자 효과 */
+  overflow: hidden; /* 내용 넘침 방지 */
+  transition: width 0.3s ease; /* 너비 변화 애니메이션 */
+  z-index: 1000;
+}
+
+/* 확장 상태 */
+#custom-floating-menu:hover {
+  width: 200px; /* 확장된 너비 */
+}
+
+/* 메뉴 리스트 스타일 */
+.custom-menu-list {
+  list-style: none;
+  margin: 0;
+  padding: 10px 0;
+  text-align: center;
+}
+
+/* 각 메뉴 항목 */
+.custom-menu-list li {
+  margin: 10px 0;
+}
+
+.custom-menu-button {
+  background-color: transparent;
+  border: none;
+  color: #333;
+  font-size: 0.9em;
+  font-family: 'Noto Sans', sans-serif;
+  text-align: left;
+  padding: 10px;
+  width: 100%;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* 버튼 hover 효과 */
+.custom-menu-button:hover {
+  background-color: #0073e6; /* 파란색 배경 */
+  color: #ffffff; /* 흰색 텍스트 */
+}
+
+/* 아이콘 추가 (선택 사항) */
+.custom-menu-button::before {
+  content: '➤'; /* 화살표 아이콘 */
+  margin-right: 10px;
+  color: #C5A992;
+}
+
+/* 확장된 상태에서 아이콘 색상 변경 */
+#custom-floating-menu:hover .custom-menu-button::before {
+  color: #ffffff; /* 흰색 아이콘 */
+}

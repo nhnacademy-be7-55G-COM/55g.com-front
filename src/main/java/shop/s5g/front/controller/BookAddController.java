@@ -25,7 +25,7 @@ public class BookAddController {
     private final CategoryService categoryService;
     private final PublisherService publisherService;
 
-    @GetMapping("/book/add")
+    @GetMapping("/admin/book/add")
     public ModelAndView bookAddForm(@PageableDefault(page = 0, size = 9999) Pageable pageable) {
         ModelAndView model = new ModelAndView();
         model.addObject("categoryList", categoryService.getKoreaCategories(pageable).content());
@@ -34,7 +34,7 @@ public class BookAddController {
         return model;
     }
 
-    @PostMapping("/book/add")
+    @PostMapping("/admin/book/add")
     public String bookAdd(BookAddRequestDto dto, @RequestBody MultipartFile thumbnailFile) {
         ResponseEntity<MessageDto> response = bookService.addBook(dto, thumbnailFile);
 

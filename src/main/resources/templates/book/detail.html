@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html
-    xmlns:layout="http://ultraq.net.nz/thymeleaf/layout"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
     layout:decorate="~{layout/default}">
 <head>
   <style>
@@ -193,7 +193,7 @@
           <button class="btn btn-success btn-purchase" onclick="instantPurchase()">바로 구매</button>
         </div>
         <script th:inline="javascript">
-          const instantPurchase = () => {
+          const instantPurchase = async () => {
             const quantity = document.querySelector('#quantity').value;
             const bookId= [[${book.bookId}]];
             const obj = [
@@ -204,7 +204,11 @@
             ];
             const param = encodeURIComponent(btoa(JSON.stringify(obj)));
 
-            window.location.href = `/purchase/instant?cart=${param}`;
+            localStorage['isCartPurchase'] = false;
+            if (await isLoggedIn())
+              window.location.href = `/purchase/instant?cart=${param}`;
+            else
+              window.location.href = `/guest/purchase/instant?cart=${param}`;
           }
         </script>
       </div>
@@ -220,7 +224,6 @@
   </div>
 </main>
 <!-- 본문 끝 -->
-<div th:replace="~{fragments/footer}"></div>
 
 <div class="cart-modal" id="cartModal">
   <div class="cart-modal-content">

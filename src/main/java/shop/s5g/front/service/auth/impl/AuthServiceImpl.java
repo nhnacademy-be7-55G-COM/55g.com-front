@@ -1,5 +1,6 @@
 package shop.s5g.front.service.auth.impl;
 
+import feign.FeignException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -13,10 +14,12 @@ import shop.s5g.front.adapter.AuthAdapter;
 import shop.s5g.front.dto.auth.RoleResponseDto;
 import shop.s5g.front.dto.jwt.TokenResponseDto;
 import shop.s5g.front.dto.member.LoginRequestDto;
+import shop.s5g.front.exception.AuthenticationException;
+import shop.s5g.front.exception.BadRequestException;
 import shop.s5g.front.exception.auth.LogoutException;
 import shop.s5g.front.exception.auth.RoleGetInfoFailedException;
 import shop.s5g.front.exception.auth.TokenNotFoundException;
-import shop.s5g.front.exception.member.MemberLoginFailedException;
+import shop.s5g.front.exception.auth.MemberLoginFailedException;
 import shop.s5g.front.service.auth.AuthService;
 import shop.s5g.front.utils.TokenUtils;
 
@@ -41,7 +44,7 @@ public class AuthServiceImpl implements AuthService {
             }
             throw new MemberLoginFailedException("Member login failed");
         }
-        catch (HttpClientErrorException | HttpServerErrorException e) {
+        catch (AuthenticationException | FeignException e){
             throw new MemberLoginFailedException(e.getMessage());
         }
     }
@@ -59,9 +62,9 @@ public class AuthServiceImpl implements AuthService {
                 }
                 return;
             }
-            throw new MemberLoginFailedException("Member login failed");
+            throw new MemberLoginFailedException("admin login failed");
         }
-        catch (HttpClientErrorException | HttpServerErrorException e) {
+        catch (AuthenticationException | FeignException e){
             throw new MemberLoginFailedException(e.getMessage());
         }
     }
@@ -75,23 +78,12 @@ public class AuthServiceImpl implements AuthService {
             }
             String refreshToken = cookie.getValue();
             ResponseEntity<Void> responseEntity = authAdapter.logoutMember("Bearer " + refreshToken);
-
-            if (responseEntity.getStatusCode().is2xxSuccessful()){
-                Cookie accessJwt = new Cookie("accessJwt", null);
-                accessJwt.setPath("/");
-                accessJwt.setMaxAge(0);
-
-                Cookie refreshJwt = new Cookie("refreshJwt" , null);
-                refreshJwt.setPath("/");
-                refreshJwt.setMaxAge(0);
-
-                response.addCookie(accessJwt);
-                response.addCookie(refreshJwt);
-            }
         }
-        //TODO finally로 감싸서 쿠키 삭제 강제? 만약 auth서버의 리프레시 토큰이 안지워진다면?
-        catch (HttpClientErrorException | HttpServerErrorException e) {
+        catch (FeignException e) {
             throw new LogoutException("Logout failed");
+        }
+        finally {
+            TokenUtils.setTokenAtCookie(response, null, null, 0 ,0);
         }
     }
 
@@ -110,8 +102,10 @@ public class AuthServiceImpl implements AuthService {
                 throw new MemberLoginFailedException("Member login failed");
 
         }
-        catch (HttpClientErrorException | HttpServerErrorException e) {
+        catch (BadRequestException e) {
             TokenUtils.setTokenAtCookie(response, null, null, 0 ,0);
+        }
+        catch (FeignException e) {
             throw new MemberLoginFailedException(e.getMessage());
         }
     }

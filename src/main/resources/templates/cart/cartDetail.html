@@ -233,8 +233,19 @@
       return;
     }
 
+    localStorage.setItem('isCartPurchase',true);
     if (isLogged){
       window.location.href = "/purchase";
+    }else {
+      const cartData = JSON.parse(localStorage.getItem('cart'));
+      const selectedBookList = [];
+
+      cartData.cartBookInfoList.filter(book => book.status == true).map(book => selectedBookList.push({bookId:book.bookId,
+        quantity: book.quantity}));
+
+      const bookListForPurchase = JSON.stringify(selectedBookList);
+      const encodedBookList = encodeURIComponent(btoa(bookListForPurchase));
+      window.location.href = `/guest/purchase/instant?cart=${encodedBookList}`;
     }
   }
 

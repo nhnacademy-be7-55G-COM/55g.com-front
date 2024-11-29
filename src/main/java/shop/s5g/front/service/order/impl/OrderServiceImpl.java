@@ -32,6 +32,16 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public OrderCreateResponseDto createGuestOrder(long customerId,
+        OrderCreateRequestDto createRequest) {
+        OrderCreateResponseDto response = orderAdapter.createNewGuestOrder(customerId, createRequest).getBody();
+        if (response == null) {
+            throw FAIL_EXCEPTION;
+        }
+        return response;
+    }
+
+    @Override
     public List<OrderWithDetailResponseDto> queryOrdersBetweenDates(
         OrderQueryRequestDto queryRequest) {
         return orderAdapter.fetchOrderListsBetweenDates(
@@ -48,5 +58,12 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<OrderAdminTableView> adminQueryWithFilter(OrderQueryFilterDto filter) {
         return orderAdapter.fetchOrdersForAdmin(filter);
+    }
+
+    @Override
+    public List<OrderWithDetailResponseDto> getGuestOrders(
+        String phoneNumber, String name, String password
+    ) {
+        return orderAdapter.queryAllGuestOrders(phoneNumber, name, password);
     }
 }

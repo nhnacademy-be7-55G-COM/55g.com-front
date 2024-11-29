@@ -28,7 +28,7 @@ public class BookUpdateController {
     private final CategoryService categoryService;
     private final PublisherService publisherService;
 
-    @GetMapping("/book/update/{bookId}")
+    @GetMapping("/admin/book/update/{bookId}")
     public ModelAndView updateBookForm(@PathVariable long bookId,
         @PageableDefault(page = 0, size = 9999) Pageable pageable) {
         ModelAndView modelAndView = new ModelAndView();
@@ -41,7 +41,7 @@ public class BookUpdateController {
         return modelAndView;
     }
 
-    @PostMapping("/book/update/{bookId}")
+    @PostMapping("/admin/book/update/{bookId}")
     public String updateBook(@PathVariable long bookId, BookAddRequestDto dto,
         @RequestBody MultipartFile thumbnailFile) {
         ResponseEntity<MessageDto> response = bookService.updateBook(bookId, dto, thumbnailFile);
