@@ -103,8 +103,10 @@ public class MyPageController {
         Pageable pageable = PageRequest.of(0, 15);
 
         MemberInfoResponseDto responseDto = memberService.getMemberInfo();
+
         Page<ValidUserCouponResponseDto> couponList = userCouponService.getUserCoupons(
             responseDto.customerId(), pageable);
+
         Page<AvailableCouponResponseDto> availableCouponList = couponService.getAvailableCoupons(pageable);
 
         model.addAttribute("member", responseDto);
