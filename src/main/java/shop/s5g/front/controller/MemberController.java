@@ -1,13 +1,9 @@
 package shop.s5g.front.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import java.beans.PropertyEditorSupport;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +14,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import shop.s5g.front.advice.LogInAdvice;
 import shop.s5g.front.dto.member.MemberRegistrationRequestDto;
+import shop.s5g.front.service.member.InactiveService;
 import shop.s5g.front.service.member.MemberService;
 
 @Controller
@@ -26,6 +24,7 @@ import shop.s5g.front.service.member.MemberService;
 public class MemberController {
 
     private final MemberService memberService;
+    private final LogInAdvice logInAdvice;
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
@@ -66,4 +65,5 @@ public class MemberController {
     public boolean checkId(@PathVariable String loginId){
         return memberService.isExistsLoginId(loginId);
     }
+
 }

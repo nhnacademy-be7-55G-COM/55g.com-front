@@ -1,5 +1,6 @@
 package shop.s5g.front.service.member.impl;
 
+import feign.FeignException;
 import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,8 @@ import shop.s5g.front.dto.member.MemberInfoResponseDto;
 import shop.s5g.front.dto.member.MemberRegistrationRequestDto;
 import shop.s5g.front.dto.member.MemberUpdateRequestDto;
 import shop.s5g.front.dto.member.PasswordChangeRequestDto;
+import shop.s5g.front.exception.auth.InactiveException;
+import shop.s5g.front.exception.member.InactiveCodeNotVaildatedException;
 import shop.s5g.front.exception.member.MemberGetInfoFailedException;
 import shop.s5g.front.exception.member.MemberRegisterFailedException;
 import shop.s5g.front.exception.member.MemberUpdateFailedException;
@@ -120,6 +123,20 @@ public class MemberServiceImpl implements MemberService {
         }
         catch (HttpClientErrorException | HttpServerErrorException e) {
             throw new PasswordChangeFailedException(e.getMessage());
+        }
+    }
+
+    @Override
+    public MessageDto activeMember(String loginId) {
+        try{
+            ResponseEntity<MessageDto> responseEntity = memberAdapter.changeActive(loginId);
+            if (responseEntity.getStatusCode().is2xxSuccessful()){
+                return responseEntity.getBody();
+            }
+            throw new InactiveCodeNotVaildatedException("인증 번호가 다릅니다!");
+        }
+        catch (FeignException e){
+            throw new InactiveCodeNotVaildatedException("인증에 실패했습니다.");
         }
     }
 }
