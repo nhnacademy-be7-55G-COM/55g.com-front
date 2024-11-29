@@ -2,12 +2,14 @@ package shop.s5g.front.service.cart;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
+import static org.assertj.core.api.Assertions.assertThatCode;
 import feign.FeignException;
 import java.util.ArrayList;
-import java.util.HashMap;
+
+import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -18,9 +20,17 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 import shop.s5g.front.adapter.BookAdapter;
 import shop.s5g.front.adapter.CartAdapter;
+import shop.s5g.front.dto.cart.request.CartBookInfoRequestDto;
+import shop.s5g.front.dto.cart.request.CartBookSelectRequestDto;
+import shop.s5g.front.dto.cart.request.CartLoginRequestDto;
 import shop.s5g.front.dto.cart.request.CartPutRequestDto;
+import shop.s5g.front.dto.cart.request.CartRemoveBookRequestDto;
+import shop.s5g.front.dto.cart.request.CartUpdateQuantityRequestDto;
+import shop.s5g.front.exception.cart.CartConvertException;
 import shop.s5g.front.exception.cart.CartDetailPageException;
+import shop.s5g.front.exception.cart.CartPurchaseException;
 import shop.s5g.front.exception.cart.CartPutException;
+import shop.s5g.front.exception.cart.CartRemoveAccountException;
 import shop.s5g.front.service.cart.impl.CartServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
@@ -105,4 +115,166 @@ class CartServiceImplTest {
             () -> cartService.getCartDetailPageInfoWhenGuest(anyString())).isInstanceOf(
             CartDetailPageException.class);
     }
+
+    @Test
+    void convertCartToRedisTest() {
+        CartLoginRequestDto cartLoginReq = mock(CartLoginRequestDto.class);
+        Map<String, Integer> expectedResult = Map.of("cartCount", 1);
+
+        when(cartAdapter.convertCartToRedis(cartLoginReq)).thenReturn(
+            ResponseEntity.ok(expectedResult));
+
+        Map<String, Integer> actualResult = cartService.convertCartToRedis(cartLoginReq);
+
+        Assertions.assertEquals(expectedResult, actualResult);
+    }
+
+    @Test
+    void convertCartToRedisExceptionTest() {
+        CartLoginRequestDto cartLoginReq = mock(CartLoginRequestDto.class);
+
+        when(cartAdapter.convertCartToRedis(cartLoginReq)).thenThrow(FeignException.class);
+
+        assertThatThrownBy(() -> cartService.convertCartToRedis(cartLoginReq)).isInstanceOf(
+            CartConvertException.class);
+
+    }
+
+    @Test
+    void redisToDbWhenLogoutTest() {
+
+        when(cartAdapter.redisToDbWhenLogout()).thenReturn(ResponseEntity.ok().build());
+
+        assertThatCode(() -> cartService.redisToDbWhenLogout()).doesNotThrowAnyException();
+    }
+
+    @Test
+    void redisToDbWhenLogoutExceptionTest() {
+        when(cartAdapter.redisToDbWhenLogout()).thenThrow(FeignException.class);
+
+        assertThatThrownBy(() -> cartService.redisToDbWhenLogout()).isInstanceOf(
+            CartConvertException.class);
+    }
+
+    @Test
+    void removeAccountTest() {
+        when(cartAdapter.removeAccount()).thenReturn(ResponseEntity.ok().build());
+
+        assertThatCode(() -> cartService.removeAccount()).doesNotThrowAnyException();
+    }
+
+    @Test
+    void removeAccountExceptionTest() {
+        when(cartAdapter.removeAccount()).thenThrow(FeignException.class);
+
+        assertThatThrownBy(() -> cartService.removeAccount()).isInstanceOf(
+            CartRemoveAccountException.class);
+    }
+
+    @Test
+    void updateQuantityTest() {
+        CartUpdateQuantityRequestDto updateQuantityReqDto = mock(
+            CartUpdateQuantityRequestDto.class);
+
+        when(cartAdapter.updateQuantity(updateQuantityReqDto)).thenReturn(
+            ResponseEntity.ok().build());
+
+        assertThatCode(
+            () -> cartService.updateQuantity(updateQuantityReqDto)).doesNotThrowAnyException();
+
+    }
+
+    @Test
+    void updateQuantityExceptionTest() {
+        CartUpdateQuantityRequestDto updateQuantityReqDto = mock(
+            CartUpdateQuantityRequestDto.class);
+
+        when(cartAdapter.updateQuantity(updateQuantityReqDto)).thenThrow(FeignException.class);
+
+        assertThatThrownBy(() -> cartService.updateQuantity(updateQuantityReqDto)).isInstanceOf(
+            CartDetailPageException.class);
+
+    }
+
+    @Test
+    void removeBookTest() {
+        CartRemoveBookRequestDto cartRemoveBookReqDto = mock(CartRemoveBookRequestDto.class);
+
+        when(cartAdapter.removeBook(cartRemoveBookReqDto)).thenReturn(ResponseEntity.ok().build());
+
+        assertThatCode(
+            () -> cartService.removeBook(cartRemoveBookReqDto)).doesNotThrowAnyException();
+    }
+
+    @Test
+    void removeBookExceptionTest() {
+        CartRemoveBookRequestDto cartRemoveBookReqDto = mock(CartRemoveBookRequestDto.class);
+
+        when(cartAdapter.removeBook(cartRemoveBookReqDto)).thenThrow(FeignException.class);
+
+        assertThatThrownBy(() -> cartService.removeBook(cartRemoveBookReqDto)).isInstanceOf(
+            CartDetailPageException.class);
+    }
+
+    @Test
+    void getBooksWhenPurchase() {
+        CartBookInfoRequestDto cartBookInfoRequestDto = mock(CartBookInfoRequestDto.class);
+        List<CartBookInfoRequestDto> expectedList = new ArrayList<>();
+        expectedList.add(cartBookInfoRequestDto);
+
+        when(cartAdapter.getBooksWhenPurchase()).thenReturn(ResponseEntity.ok(expectedList));
+
+        List<CartBookInfoRequestDto> actualList = cartService.getBooksWhenPurchase();
+
+        Assertions.assertEquals(expectedList, actualList);
+    }
+
+    @Test
+    void getBooksWhenPurchaseExceptionTest() {
+
+        when(cartAdapter.getBooksWhenPurchase()).thenThrow(FeignException.class);
+
+        assertThatThrownBy(() -> cartService.getBooksWhenPurchase()).isInstanceOf(
+            CartPurchaseException.class);
+    }
+
+    @Test
+    void removePurchasedBooksTest() {
+
+        when(cartAdapter.removePurchasedBooks()).thenReturn(ResponseEntity.ok().build());
+
+        assertThatCode(() -> cartService.removePurchasedBooks()).doesNotThrowAnyException();
+    }
+
+    @Test
+    void removePurchasedBooksExceptionTest() {
+
+        when(cartAdapter.removePurchasedBooks()).thenThrow(FeignException.class);
+
+        assertThatThrownBy(() -> cartService.removePurchasedBooks()).isInstanceOf(
+            CartPurchaseException.class);
+    }
+
+    @Test
+    void changeBookStatusInCartTest() {
+        CartBookSelectRequestDto cartBookSelectRequestDto = mock(CartBookSelectRequestDto.class);
+
+        when(cartAdapter.changeBookStatusInCart(cartBookSelectRequestDto)).thenReturn(
+            ResponseEntity.ok().build());
+
+        assertThatCode(() -> cartService.changeBookStatusInCart(
+            cartBookSelectRequestDto)).doesNotThrowAnyException();
+    }
+
+    @Test
+    void changeBookStatusInCartExceptionTest() {
+        CartBookSelectRequestDto cartBookSelectRequestDto = mock(CartBookSelectRequestDto.class);
+
+        when(cartAdapter.changeBookStatusInCart(cartBookSelectRequestDto)).thenThrow(
+            FeignException.class);
+
+        assertThatThrownBy(() -> cartService.changeBookStatusInCart(cartBookSelectRequestDto));
+
+    }
+
 }
