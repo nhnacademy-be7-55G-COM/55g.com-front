@@ -20,13 +20,15 @@ import shop.s5g.front.dto.member.PasswordChangeRequestDto;
 public interface MemberAdapter {
 
     @PostMapping("/api/shop/member")
-    ResponseEntity<MessageDto> registerMember(@RequestBody MemberRegistrationRequestDto memberRegistrationRequestDto);
+    ResponseEntity<MessageDto> registerMember(
+        @RequestBody MemberRegistrationRequestDto memberRegistrationRequestDto);
 
     @GetMapping("/api/shop/member")
     ResponseEntity<MemberInfoResponseDto> getMemberInfo();
 
     @PutMapping("/api/shop/member")
-    ResponseEntity<MessageDto> updateMember(@RequestBody MemberUpdateRequestDto memberUpdateRequestDto);
+    ResponseEntity<MessageDto> updateMember(
+        @RequestBody MemberUpdateRequestDto memberUpdateRequestDto);
 
     @DeleteMapping("/api/shop/member")
     ResponseEntity<MessageDto> deleteMember();
@@ -35,5 +37,10 @@ public interface MemberAdapter {
     ResponseEntity<IdCheckResponseDto> checkId(@PathVariable("loginId") String loginId);
 
     @PostMapping("/api/shop/member/password")
-    ResponseEntity<MessageDto> changePassword(@RequestBody PasswordChangeRequestDto passwordChangeRequestDto);
+    ResponseEntity<MessageDto> changePassword(
+        @RequestBody PasswordChangeRequestDto passwordChangeRequestDto);
+
+
+    @PutMapping("/api/shop/member/{login-id}/active")
+    ResponseEntity<MessageDto> changeActive(@PathVariable("login-id") String loginId);
 }

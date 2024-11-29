@@ -17,4 +17,5 @@ public interface MemberService {
     MessageDto deleteMember();
     boolean isExistsLoginId(String loginId);
     MessageDto changePassword(PasswordChangeRequestDto passwordChangeRequestDto);
+    MessageDto activeMember(String loginId);
 }

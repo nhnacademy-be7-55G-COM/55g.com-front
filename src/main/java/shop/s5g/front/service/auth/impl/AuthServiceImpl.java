@@ -16,6 +16,7 @@ import shop.s5g.front.dto.jwt.TokenResponseDto;
 import shop.s5g.front.dto.member.LoginRequestDto;
 import shop.s5g.front.exception.AuthenticationException;
 import shop.s5g.front.exception.BadRequestException;
+import shop.s5g.front.exception.auth.InactiveException;
 import shop.s5g.front.exception.auth.LogoutException;
 import shop.s5g.front.exception.auth.RoleGetInfoFailedException;
 import shop.s5g.front.exception.auth.TokenNotFoundException;
@@ -43,6 +44,9 @@ public class AuthServiceImpl implements AuthService {
                 return;
             }
             throw new MemberLoginFailedException("Member login failed");
+        }
+        catch (BadRequestException e){
+            throw new InactiveException(e.getMessage());
         }
         catch (AuthenticationException | FeignException e){
             throw new MemberLoginFailedException(e.getMessage());
