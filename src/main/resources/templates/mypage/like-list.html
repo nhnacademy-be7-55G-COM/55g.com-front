@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="https://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/mypage}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>좋아요</title>
+    <style>
+        /* 테이블 스타일 */
+        #likes-table {
+            width: 100%;
+            border-collapse: collapse; /* 테두리 겹침 제거 */
+        }
+
+        #likes-table th, #likes-table td {
+            border: 1px solid #ddd; /* 테두리 스타일 */
+            text-align: center; /* 텍스트 중앙 정렬 */
+            padding: 5px; /* 셀 내부 여백을 줄임 */
+        }
+
+        #likes-table th {
+            background-color: #f4f4f4; /* 헤더 배경색 */
+        }
+
+        #likes-table tr:nth-child(even) {
+            background-color: #f9f9f9; /* 짝수 행 배경색 */
+        }
+
+        #likes-table tr:hover {
+            background-color: #f1f1f1; /* 마우스 오버 시 배경색 */
+        }
+    </style>
+</head>
+<body layout:fragment="mypageContent">
+<h3 style="font-family: 'Pretendard', sans-serif;">좋아요 목록</h3>
+<div class="info-card">
+    <p class="info-item">
+    <div class="tab-pane fade show active" id="likes" role="tabpanel">
+        <table id="likes-table">
+            <thead>
+            <tr>
+                <th>도서 제목</th>
+                <th>가격</th>
+                <th>출판사</th>
+                <th>상태</th>
+                <th>삭제</th> <!-- 삭제 버튼 열 추가 -->
+            </tr>
+            </thead>
+            <tbody>
+            <!-- 좋아요 목록이 여기에 추가됩니다. -->
+            </tbody>
+        </table>
+    </div>
+    </p>
+</div>
+
+<script>
+    // 페이지 로드 시 좋아요 목록 자동 로드
+    function loadLikes() {
+        fetch('/mypage/like/list', {method: 'GET'})
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('네트워크 응답이 올바르지 않습니다.');
+                }
+                return response.json();
+            })
+            .then(books => {
+                const likesTableBody = document.querySelector('#likes-table tbody');
+                likesTableBody.innerHTML = ''; // 기존 내용을 지우기
+
+                books.forEach(book => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                            <td><strong>${book.title}</strong></td>
+                            <td>${book.price}</td>
+                            <td>${book.publisher}</td>
+                            <td>${book.status}</td>
+                            <td>
+                                <button data-book-id="${book.bookId}" class="btn-delete">삭제</button>
+                            </td>
+                        `;
+                    likesTableBody.appendChild(row);
+                });
+
+                // 삭제 버튼 이벤트 설정
+                document.querySelectorAll('.btn-delete').forEach(button => {
+                    button.addEventListener('click', function () {
+                        const bookId = this.getAttribute('data-book-id');
+                        fetch(`/mypage/like/delete/${bookId}`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json', [_csrf_header]: _csrf
+                            }
+                        })
+                            .then(response => {
+                                if (response.ok) {
+                                    alert('삭제되었습니다.');
+                                    loadLikes(); // 목록 갱신
+                                } else {
+                                    alert('삭제에 실패했습니다.');
+                                }
+                            })
+                            .catch(error => console.error('Error:', error));
+                    });
+                });
+
+            })
+            .catch(error => {
+                console.error('오류 발생:', error);
+                alert('좋아요 목록을 불러오는 데 실패했습니다.');
+            });
+    }
+
+    // 페이지 로드 시 자동으로 호출
+    document.addEventListener('DOMContentLoaded', loadLikes);
+</script>
+</body>
+</html>
