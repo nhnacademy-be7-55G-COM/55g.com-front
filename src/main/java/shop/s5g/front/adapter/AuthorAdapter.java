@@ -1,5 +1,6 @@
 package shop.s5g.front.adapter;
 
+import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -32,4 +33,8 @@ public interface AuthorAdapter {
     //작가 삭제(비활성화)
     @DeleteMapping("/api/shop/author/{authorId}")
     ResponseEntity<MessageDto> deleteAuthor(@PathVariable("authorId") long authorId);
+
+    // 작가 이름 검색
+    @GetMapping("/api/shop/authors")
+    ResponseEntity<List<AuthorResponseDto>> searchAuthors(@RequestParam String keyword);
 }

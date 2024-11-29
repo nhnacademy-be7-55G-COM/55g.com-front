@@ -27,7 +27,8 @@ public record BookAddRequestDto(
     @NotNull
     int stock,
     @NotNull
-    List<Long> tagIdList
+    List<Long> tagIdList,
+    String authorJson
 ) {
 
 }

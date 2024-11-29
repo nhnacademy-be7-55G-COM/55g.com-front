@@ -1,5 +1,7 @@
 package shop.s5g.front.service.author.impl;
 
+import feign.FeignException;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -71,6 +73,18 @@ public class AuthorServiceImpl implements AuthorService {
             return response.getBody();
         }catch (BadRequestException e) {
             throw new AuthorResourceNotFoundException(e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseEntity<List<AuthorResponseDto>> searchAuthors(String keyword){
+        try{
+            return authorAdapter.searchAuthors(keyword);
+        }catch(FeignException e){
+            if(e.status()==400){
+                throw new BadRequestException();
+            }
+            throw new RuntimeException();
         }
     }
 }

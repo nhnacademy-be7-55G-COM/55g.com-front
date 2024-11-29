@@ -1,34 +1,37 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <th:block th:replace="~{fragments/head :: headTemplate}"></th:block>
-  <script src="/static/js/jquery-1.11.0.min.js">
-  </script>
-  <style>
-    #tag-search-result {
-      border: 1px solid black;
-      padding: 5px;
-    }
+<th:block th:replace="~{fragments/head :: headTemplate}"></th:block>
+<script src="/static/js/jquery-1.11.0.min.js"></script>
+<script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+<script>
+  const Editor=toastui.Editor;
+</script>
+<link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+<style>
+  #tag-search-result {
+    border: 1px solid black;
+    padding: 5px;
+  }
 
-    .tag-search-item {
-      margin: 2px;
-    }
+  .tag-search-item {
+    margin: 2px;
+  }
 
-    .tag {
-      display: inline-block;
-      background-color: aqua;
-      margin: 2px;
-    }
-  </style>
-</head>
+  .tag {
+    display: inline-block;
+    background-color: aqua;
+    margin: 2px;
+  }
+</style>
 <body>
 <div th:replace="~{fragments/header}"></div>
 <!-- 본문 시작 -->
 <main>
   <div class="container mt-5" style="width: 50%;">
     <div class="form-container">
-      <h2 class="text-center">도서 추가</h2>
-      <form method="post" th:action="@{/admin/book/update/{bookId} (bookId=${bookId})}" enctype="multipart/form-data">
+      <h2 class="text-center">도서 수정</h2>
+      <form method="post" th:action="@{/admin/book/update/{bookId} (bookId=${bookId})}"
+            enctype="multipart/form-data">
         <div class="form-group">
           <label for="title">제목</label>
           <input type="text" class="form-control" id="title" name="title" placeholder="제목을 입력하세요"
@@ -69,16 +72,12 @@
           </select>
         </div>
         <div class="form-group">
-          <label for="chapter">목차</label>
-          <!-- TODO: 별도의 텍스트 편집기 사용 필요 -->
-          <textarea class="form-control" id="chapter" name="chapter"
-                    th:text="${book.chapter}"></textarea>
+          <label for="editor-chapter">목차</label>
+          <div id="editor-chapter"></div>
         </div>
         <div class="form-group">
-          <label for="description">설명</label>
-          <!-- TODO: 별도의 텍스트 편집기 사용 필요 -->
-          <textarea class="form-control" id="description" name="description"
-                    th:text="${book.description}"></textarea>
+          <label for="editor-description">설명</label>
+          <div id="editor-description"></div>
         </div>
         <div class="form-group">
           <label for="publishedDate">출판일시</label>
@@ -119,7 +118,8 @@
           <button id="btn-tag-search">검색</button>
           <div id="tag-search-result"></div>
           <div id="tag-list">
-            <button class="tag" name="tagId" th:each="tag,stat:${book.tagList}" th:value="${tag.tagId}" th:text="${tag.tagName}"></button>
+            <button class="tag" name="tagId" th:each="tag,stat:${book.tagList}"
+                    th:value="${tag.tagId}" th:text="${tag.tagName}"></button>
           </div>
         </div>
         <div class="form-group">
@@ -137,13 +137,13 @@
 <script>
   var tagList = [];
 
-  $().ready(function(){
-    var tags=$('.tag');
+  $().ready(function () {
+    var tags = $('.tag');
     console.log(tags);
-    tags.each(function(i,e){
-      var item=$(e);
+    tags.each(function (i, e) {
+      var item = $(e);
 
-      item.on('click',function(e2){
+      item.on('click', function (e2) {
         clickTagRemove(e2);
       });
 
@@ -245,11 +245,28 @@
     });
   });
 
+  // === 에디터 적용 ===
+  const editorChapter = new Editor({
+    el: document.querySelector('#editor-chapter'),
+    height: '300px',
+    initialEditType: 'wysiwyg',
+    previewStyle: 'vertical'
+  });
+  editorChapter.setHTML('[[${book.chapter}]]');
+
+  const editorDescription = new Editor({
+    el: document.querySelector('#editor-description'),
+    height: '300px',
+    initialEditType: 'wysiwyg',
+    previewStyle: 'vertical'
+  });
+  editorDescription.setHTML('[[${book.description}]]');
+
   $('#btn-submit').on('click', function (e) {
     e.preventDefault();
 
     $('#tag-list').append($('<input type="hidden" name="tagIdList">').val(tagList));
     $('form').submit();
-  })
+  });
 </script>
 </html>
