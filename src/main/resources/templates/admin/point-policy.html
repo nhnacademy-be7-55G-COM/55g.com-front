@@ -116,6 +116,7 @@
           <div id="error-message" style="color: red; display: none; margin-top: 5px;"></div>
           <div> 할인율의 경우 0.00 ~ 1.00 사이를 입력해주세요</div>
           <input type="hidden" id="id" name="id" th:value="${policy.id}">
+          <input type="hidden" id="name" name="name" th:value="${policy.name}">
         </div>
         <button type="button" class="btn btn-primary mt-3"
                 th:attr="data-form-id='policy-form-' + ${policy.id}"
@@ -154,6 +155,7 @@
 
     const id = form.querySelector('input[name="id"]')?.value;
     const value = form.querySelector('input[name="value"]')?.value;
+    const name = form.querySelector('input[name="name"]')?.value;
     const errorMessage = form.querySelector('#error-message');
 
     if (!id || !value) {
@@ -163,6 +165,13 @@
 
     // 에러 메시지 초기화
     errorMessage.style.display = 'none';
+
+    if (name === '구매' && parseFloat(value) >= 1){
+      console.log('구매 포인트 정책 수정',parseFloat(value));
+      errorMessage.textContent = "할인율은 0 초과 ~ 1 미만 입력해주세요"
+      errorMessage.style.display = 'block';
+      return;
+    }
 
     // 값 검증
     if (isNaN(value) || parseFloat(value) < 0 || !/^\d+(\.\d{1,2})?$/.test(value)) {
@@ -175,11 +184,11 @@
     fetch('/admin/point/policy/update', {
       method: 'POST',
       headers: {'Content-Type':'application/json', [_csrf_header]: _csrf },
-      body: JSON.stringify({ id: id, value: value }),
+      body: JSON.stringify({ id: id, value: value,name: name }),
     })
     .then((response) => {
       if (!response.ok) {
-        throw new Error('오류가 발생했습니다.');
+        throw new Error('요청을 양식에 맞춰 다시 제출해주세요');
       }
       return response.json();
     })

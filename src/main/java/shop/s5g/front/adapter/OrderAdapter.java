@@ -27,7 +27,7 @@ public interface OrderAdapter {
     @GetMapping
     List<OrderWithDetailResponseDto> fetchOrderLists(@RequestParam long customerId);
 
-    @GetMapping("/{orderId}")
+    @GetMapping("/id/{orderId}")
     List<OrderDetailWithBookResponseDto> fetchOrderDetailsWithOrderId(@PathVariable("orderId") long orderId);
 
     @PostMapping
@@ -36,7 +36,7 @@ public interface OrderAdapter {
     @GetMapping
     List<OrderWithDetailResponseDto> fetchOrderListsBetweenDates(@RequestParam String startDate, @RequestParam String endDate);
 
-    @GetMapping("/{orderId}?scope=all")
+    @GetMapping("/id/{orderId}?scope=all")
     OrderDetailInfoDto fetchOrderDetailInfo(@PathVariable long orderId);
 
     @DeleteMapping("/{orderId}")
@@ -71,4 +71,7 @@ public interface OrderAdapter {
         @PathVariable long detailId,
         @RequestBody DetailStatusChangeRequestDto change
     );
+
+    @GetMapping("/{uuid}?scope=all")
+    OrderDetailInfoDto fetchOrderDetailInfo(@PathVariable String uuid);
 }

@@ -105,12 +105,11 @@ public class GuestPaymentSupportController {
             throw new BadRequestException("주문 형식이 잘못되었습니다.");
         }
         OrderCreateRequestDto order = guestPurchaseSheet.createOrderRequest(purchase.delivery());
-
+        OrderCreateResponseDto response = orderService.createGuestOrder(guestPurchaseSheet.getCustomerInfo().customerId(), order);
+        guestPurchaseSheet.setUuid(response.uuid());
 //        // TODO: 세션에서 쿠폰 사용 여부, 합계 및 netPrice 가져오기.
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(
-            orderService.createGuestOrder(guestPurchaseSheet.getCustomerInfo().customerId(), order)
-        );
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("/wrap")
