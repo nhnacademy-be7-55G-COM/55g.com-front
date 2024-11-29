@@ -5,10 +5,13 @@ import shop.s5g.front.dto.MessageDto;
 import shop.s5g.front.dto.PageResponseDto;
 import shop.s5g.front.dto.review.CreateReviewRequestDto;
 import shop.s5g.front.dto.review.ReviewResponseDto;
+import shop.s5g.front.dto.review.UpdateReviewRequestDto;
 
 public interface ReviewService {
 
     MessageDto addReview(CreateReviewRequestDto createReviewRequestDto);
 
     PageResponseDto<ReviewResponseDto> getReviewList(Pageable pageable);
+
+    MessageDto updateReview(UpdateReviewRequestDto updateReviewRequestDto);
 }
