@@ -4,6 +4,9 @@ spring:
 
   mvc:
     static-path-pattern: /static/**
+    hiddenmethod:
+      filter:
+        enabled: true
 
   config:
     import: optional:configserver:http://localhost:9000
@@ -128,3 +131,16 @@ spring:
     hiddenmethod:
       filter:
         enabled: true
+
+
+# rabbit mq test
+---
+spring:
+  config:
+    activate:
+      on-profile: coupon
+
+rabbit:
+  route:
+    coupon:
+      create: 55g.dev.test.coupon

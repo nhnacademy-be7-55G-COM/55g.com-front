@@ -1,10 +1,8 @@
 package shop.s5g.front.adapter;
 
-import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import shop.s5g.front.config.FeignGatewayAuthorizationConfig;
 import shop.s5g.front.dto.MessageDto;
@@ -13,6 +11,7 @@ import shop.s5g.front.dto.tag.TagRequestDto;
 import shop.s5g.front.dto.tag.TagResponseDto;
 
 import java.util.List;
+
 
 @FeignClient(value = "tag", url = "${gateway.url}", configuration = FeignGatewayAuthorizationConfig.class)
 public interface TagAdapter {

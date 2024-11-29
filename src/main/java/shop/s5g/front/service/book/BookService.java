@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-//import shop.s5g.front.dto.BookRequestDto;
-//import shop.s5g.front.dto.BookResponseDto;
 import org.springframework.web.multipart.MultipartFile;
 import shop.s5g.front.dto.BookDetailResponseDto;
 import shop.s5g.front.dto.MessageDto;
@@ -17,7 +15,7 @@ import shop.s5g.front.dto.book.BookAddRequestDto;
 
 public interface BookService {
 
-//    PageResponseDto<BookPageableResponseDto> getAllBooks(Pageable pageable);
+    PageResponseDto<BookPageableResponseDto> getAllBooks(Pageable pageable);
 
     List<BookSimpleResponseDto> getSimpleBooks(List<Long> bookIds);
 
@@ -34,4 +32,6 @@ public interface BookService {
     ResponseEntity<MessageDto> addBook(BookAddRequestDto dto, MultipartFile file);
 
     ResponseEntity<MessageDto> updateBook(long bookId, BookAddRequestDto dto, MultipartFile file);
+
+//    MessageDto deleteBook(Long bookId);
 }

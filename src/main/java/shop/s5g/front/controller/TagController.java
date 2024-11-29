@@ -11,8 +11,6 @@ import shop.s5g.front.dto.tag.TagRequestDto;
 import shop.s5g.front.dto.tag.TagResponseDto;
 import shop.s5g.front.service.tag.TagService;
 
-import java.util.List;
-
 @Controller
 @RequiredArgsConstructor
 public class TagController {
@@ -22,7 +20,7 @@ public class TagController {
     //태그 등록 뷰
     @GetMapping("/admin/tag/register")
     public String tegRegister() {
-        return "tag-register";
+        return "tag/tag-register";
     }
 
     //태그 등록
@@ -45,7 +43,7 @@ public class TagController {
         model.addAttribute("tagNowPage", tagNowPage);
         model.addAttribute("tagStartPage", tagStartPage);
         model.addAttribute("tagEndPage", tagEndPage);
-        return "tag-list";
+        return "tag/tag-list";
     }
 
     //태그 삭제(비활성화)

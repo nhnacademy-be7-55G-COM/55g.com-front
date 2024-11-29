@@ -3,7 +3,6 @@ package shop.s5g.front.service.author.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import shop.s5g.front.adapter.AuthorAdapter;
 import shop.s5g.front.dto.MessageDto;

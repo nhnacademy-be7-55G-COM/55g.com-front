@@ -17,5 +17,8 @@ public record PointPolicyUpdateRequestDto(
     BigDecimal value,
 
     @NotBlank
-    String name
+    String name,
+
+    @NotBlank
+    String discountType
 ) {}
