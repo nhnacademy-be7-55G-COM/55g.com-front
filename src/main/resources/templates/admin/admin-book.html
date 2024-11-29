@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}">
+<head>
+    <meta charset="UTF-8">
+    <title>도서 관리</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f4f4f4;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .book-img {
+            width: 80px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .pagination a, .pagination strong {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            color: #333;
+            border-radius: 4px;
+        }
+
+        .pagination a {
+            background-color: #D7BFA6;
+            color: #fff;
+        }
+
+        .pagination a:hover {
+            background-color: #CBB299;
+        }
+
+        .pagination strong {
+            background-color: #CBB299;
+            color: white;
+        }
+
+        /* 페이지네이션 중앙 정렬 */
+        .pagination {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .admin-btn-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .admin-btn-container a {
+            text-decoration: none;
+            padding: 10px 15px;
+            background-color: #D7BFA6;
+            color: white;
+            border-radius: 4px;
+        }
+
+        .admin-btn-container a:hover {
+            background-color: #CBB299;
+        }
+
+        .action-btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .edit-btn {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .edit-btn:hover {
+            background-color: #218838;
+        }
+
+        .delete-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .delete-btn:hover {
+            background-color: #c82333;
+        }
+    </style>
+    <script>
+        function confirmDelete(bookId) {
+            if (confirm("정말로 이 도서를 삭제하시겠습니까?")) {
+                window.location.href = '/admin/book/delete/' + bookId;
+            }
+        }
+    </script>
+</head>
+<body layout:fragment="content">
+<h1 style="text-align: center;">도서 관리</h1>
+<table>
+    <thead>
+    <tr>
+        <th>이미지</th>
+        <th>도서 제목</th>
+        <th>도서 가격</th>
+        <th>도서 수정</th>
+        <th>도서 삭제</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="book : ${allBooks}">
+        <td>
+            <img th:if="${!#strings.isEmpty(book.imageName())}"
+                 th:src="'https://image.toast.com/aaaacko/55gshop/book/thumbnails/'+${book.imageName}"
+                 class="book-img" alt="Product Image">
+        </td>
+        <td th:text="${book.title}"></td>
+        <td th:text="${book.price()}"></td>
+        <td>
+            <button class="action-btn edit-btn"
+                    th:onclick="'window.location.href=\'/admin/book/update/'+${book.bookId()}+'\''">수정</button>
+        </td>
+        <td>
+            <button class="action-btn delete-btn" th:onclick="'confirmDelete('+${book.bookId()}+');'">삭제</button>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<div class="pagination">
+    <th:block th:each="page : ${#numbers.sequence(startPage, endPage)}">
+        <a th:if="${page != nowPage}" th:href="@{/admin/book/list(page=${page - 1})}" th:text="${page}"></a>
+        <strong th:if="${page == nowPage}" th:text="${page}"></strong>
+    </th:block>
+</div>
+
+<div class="admin-btn-container">
+    <a th:href="@{/admin}">관리자 페이지로 이동</a>
+</div>
+
+<script>
+    function deleteBook(bookId) {
+        if (confirm('정말 삭제하시겠습니까?')) {
+            fetch(`/admin/book/delete/${bookId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json ', [_csrf_header]: _csrf
+                }
+            })
+                .then(response => {
+                    if (response.ok) {
+                        alert('도서가 삭제되었습니다.');
+                        location.reload(); // 페이지 새로고침
+                    } else {
+                        alert('도서 삭제에 실패했습니다.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('오류가 발생했습니다.');
+                });
+        }
+    }
+</script>
+</body>
+</html>

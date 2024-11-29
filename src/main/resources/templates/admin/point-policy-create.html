@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+
+<h2>포인트 정책 생성</h2>
+<form id="coupon-form" th:action="@{/admin/coupons/policy/create}" method="POST" style="
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;">
+  <div class="mb-3" style="width: 100%; display: flex; flex-direction: column; align-items: flex-start;">
+    <label for="policy-name" class="form-label" style="margin-bottom: 5px;">포인트 정책 이름</label>
+    <input type="text" class="form-control small-input" id="policy-name" name="policy-name" placeholder="정책이름" style="width: 100%;" required>
+  </div>
+  <div class="mb-3" style="width: 100%; display: flex; flex-direction: column; align-items: flex-start;">
+    <label for="discount-value" class="form-label" style="margin-bottom: 5px;">할인</label>
+    <select id="discountType" name="discountType" class="form-select">
+      <option value="">==할인 방식 선택==</option>
+      <option value="amount">할인금액</option>
+      <option value="rate">할인율</option>
+    </select>
+    <input type="text" class="form-control small-input" id="discount-value" name="discount-value" placeholder="할인정책" style="width: 100%;" required>
+    <small style="color: #6c757d; margin-top: 5px;">할인율의 경우에는 0이상 ~ 1미만으로 입력해주세요.</small>
+  </div>
+  <button type="submit" class="styled-button" style="margin-top: 20px;">생성</button>
+</form>
+
+<script th:inline="javascript">
+  document.getElementById("coupon-form").addEventListener("submit", function (event) {
+    event.preventDefault(); // 기본 제출 동작 방지
+
+    const policyName = document.getElementById("policy-name").value.trim();
+    const discountType = document.getElementById("discountType").value;
+    const discountValue = document.getElementById("discount-value").value.trim();
+    const errorMessage = document.getElementById("error-message");
+
+    // 에러 메시지 초기화
+    if (errorMessage) {
+      errorMessage.style.display = "none";
+      errorMessage.textContent = "";
+    }
+
+    // 1. 정책 이름 검증
+    if (!policyName) {
+      alert("정책 이름을 입력해주세요.");
+      return;
+    }
+
+    // 2. 할인 방식 선택 검증
+    if (!discountType) {
+      alert("할인 방식을 선택해주세요.");
+      return;
+    }
+
+    // 3. 할인 값 검증
+    if (!discountValue || isNaN(discountValue) || parseFloat(discountValue) < 0) {
+      alert("할인 값을 올바르게 입력해주세요. 0 이상의 숫자만 허용됩니다.");
+      return;
+    }
+
+    // 할인율 선택 시 추가 검증
+    if (discountType === "rate" && (parseFloat(discountValue) < 0 || parseFloat(discountValue) >= 1)) {
+      alert("할인율은 0 이상 ~ 1 미만의 값을 입력해주세요.");
+      return;
+    }
+
+    // 할인금액 선택 시 추가 검증
+    if (discountType === "amount" && parseFloat(discountValue) < 0) {
+      alert("할인금액은 0이상을 입력해주세요.");
+      return;
+    }
+
+    // 검증 완료 후 폼 제출 (AJAX 요청 예시)
+    const formData = {
+      policyName: policyName,
+      discountType: discountType,
+      discountValue: parseFloat(discountValue),
+    };
+
+    fetch('/admin/point/policy/create', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json', [_csrf_header]: _csrf },
+      body: JSON.stringify(formData),
+    })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("요청에 실패했습니다. 다시 시도해주세요.");
+      }
+      alert("정책이 성공적으로 생성되었습니다.");
+      window.location.href = "/admin";
+    })
+    .catch((error) => {
+      alert(error.message);
+    });
+  });
+</script>
+</body>
+</html>

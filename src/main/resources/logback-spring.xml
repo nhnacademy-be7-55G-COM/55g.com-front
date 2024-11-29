@@ -35,11 +35,11 @@
   </appender>
 
   <springProfile name="dev &amp;&amp; !local">
-    <root level="info">
+    <root level="error">
       <appender-ref ref="CONSOLE" />
       <appender-ref ref="root_fout" />
     </root>
-    <logger level="trace" additivity="false" name="shop.s5g.front">
+    <logger level="debug" additivity="false" name="shop.s5g.front">
       <appender-ref ref="CONSOLE" />
       <appender-ref ref="app_fout" />
     </logger>

@@ -20,7 +20,7 @@ public class AuthorController {
     //작가 등록 뷰
     @GetMapping("/admin/author/register")
     public String authorRegister() {
-        return "author-register";
+        return "author/author-register";
     }
 
     //작가 등록
@@ -42,7 +42,7 @@ public class AuthorController {
         model.addAttribute("authorNowPage", authorNowPage);
         model.addAttribute("authorStartPage", authorStartPage);
         model.addAttribute("authorEndPage", authorEndPage);
-        return "author-list";
+        return "author/author-list";
     }
 
     //작가 수정 페이지 이동
@@ -50,7 +50,7 @@ public class AuthorController {
     public String authorModify(@PathVariable("authorId") long authorId, Model model) {
         AuthorResponseDto author = authorService.getAuthorById(authorId);
         model.addAttribute("modifyAuthor", author);
-        return "author-modify";
+        return "author/author-modify";
     }
 
     //출판사 수정

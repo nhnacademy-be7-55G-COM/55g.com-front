@@ -115,11 +115,12 @@
       <th>별점</th>
       <th>리뷰 내용</th>
       <th>작성 날짜</th>
+      <th>수정</th>
     </tr>
     </thead>
     <tbody>
     <tr th:each="review : ${reviewList}" onclick="openReviewModal(this)"
-        th:attr="data-title=${review.bookTitle}, data-score=${review.score}, data-content=${review.content}, data-review-at=${#temporals.format(review.reviewAt, 'yyyy년 MM월 dd일')}, data-images=${review.imagePathList}">
+        th:attr="data-title=${review.bookTitle}, data-score=${review.score}, data-content=${review.content}, data-review-at=${#temporals.format(review.reviewAt, 'yyyy년 MM월 dd일')}, data-images=${review.imagePathList}, data-review-id=${review.reviewId()}">
       <td th:text="${review.bookTitle}">Book Title</td>
       <td>
         <span th:each="i : ${#numbers.sequence(1, review.score)}"
@@ -127,6 +128,9 @@
       </td>
       <td th:text="${review.content}">Review Content</td>
       <td th:text="${#temporals.format(review.reviewAt, 'yyyy년 MM월 dd일')}">2024년 01월 01일</td>
+      <td>
+        <button onclick="openEditModal(event, this)" data-id="${review.id}">수정</button>
+      </td>
     </tr>
     </tbody>
   </table>
@@ -165,7 +169,7 @@
   </div>
 </div>
 
-<!-- 모달 -->
+<!-- 상세 모달 -->
 <div id="reviewModal" class="modal">
   <div class="modal-content">
     <button class="close-btn" onclick="closeReviewModal()">&times;</button>
@@ -175,6 +179,71 @@
     <p><strong>리뷰 내용:</strong> <span id="modal-content"></span></p>
     <p><strong>작성 날짜:</strong> <span id="modal-review-at"></span></p>
     <p><strong>첨부 파일:</strong> <span id="modal-images"></span></p>
+  </div>
+</div>
+
+<!-- 수정 모달 -->
+<div id="editModal" class="modal"
+     style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000;">
+  <div class="modal-content"
+       style="position: relative; max-width: 500px; margin: 10% auto; background: #fff8dc; border-radius: 10px; padding: 30px; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);">
+    <!-- Close Button -->
+    <button class="close-btn" onclick="closeEditModal()"
+            style="position: absolute; top: 10px; right: 15px; font-size: 24px; color: #333; background: none; border: none; cursor: pointer;">
+      &times;
+    </button>
+
+    <!-- Modal Header -->
+    <h2 class="section-title divider text-center"
+        style="margin-bottom: 20px; font-family: var(--heading-font); color: #333;">
+      리뷰 수정
+    </h2>
+
+    <!-- Edit Form -->
+    <form id="editForm" method="post" th:action="@{/review}"
+          style="display: flex; flex-direction: column; gap: 20px;">
+      <!-- Hidden Fields -->
+      <input type="hidden" name="_method" value="PATCH">
+      <input type="hidden" id="review-id" name="reviewId">
+
+      <!-- Star Rating -->
+      <label for="edit-score" style="font-weight: bold; color: #333;">별점</label>
+      <div id="edit-star-rating"
+           style="display: flex; gap: 10px; justify-content: center; align-items: center;">
+        <!-- Dynamic Star Rating -->
+        <input type="radio" id="edit-star1" name="score" value="1" style="display: none;">
+        <label for="edit-star1" class="star" data-value="1"
+               style="font-size: 24px; cursor: pointer;">&#9733;</label>
+
+        <input type="radio" id="edit-star2" name="score" value="2" style="display: none;">
+        <label for="edit-star2" class="star" data-value="2"
+               style="font-size: 24px; cursor: pointer;">&#9733;</label>
+
+        <input type="radio" id="edit-star3" name="score" value="3" style="display: none;">
+        <label for="edit-star3" class="star" data-value="3"
+               style="font-size: 24px; cursor: pointer;">&#9733;</label>
+
+        <input type="radio" id="edit-star4" name="score" value="4" style="display: none;">
+        <label for="edit-star4" class="star" data-value="4"
+               style="font-size: 24px; cursor: pointer;">&#9733;</label>
+
+        <input type="radio" id="edit-star5" name="score" value="5" style="display: none;">
+        <label for="edit-star5" class="star" data-value="5"
+               style="font-size: 24px; cursor: pointer;">&#9733;</label>
+      </div>
+
+      <!-- Review Content -->
+      <label for="edit-content" style="font-weight: bold; color: #333;">리뷰 내용:</label>
+      <textarea id="edit-content" name="content" rows="5" class="form-control"
+                placeholder="리뷰를 수정해주세요."
+                style="width: 100%; border: 1px solid #ccc; border-radius: 5px; padding: 10px; background: #fff; color: #333;"></textarea>
+
+      <!-- Submit Button -->
+      <button type="submit" class="btn btn-primary btn-submit"
+              style="background: #ffa500; border: none; padding: 10px; border-radius: 5px; font-weight: bold; color: #fff; cursor: pointer; transition: background 0.3s;">
+        수정
+      </button>
+    </form>
   </div>
 </div>
 
@@ -226,6 +295,47 @@
     // 모달 숨기기
     document.getElementById('reviewModal').style.display = 'none';
   }
+</script>
+
+<script>
+  function openEditModal(event, button) {
+    event.stopPropagation(); // 부모 행의 클릭 이벤트 막기
+
+    const row = button.closest('tr');
+    const id = row.getAttribute('data-review-id');
+    const score = row.getAttribute('data-score');
+    const content = row.getAttribute('data-content');
+
+    // 모달에 데이터 세팅
+    document.getElementById('review-id').value = id;
+    document.getElementById('edit-content').value = content;
+
+    // 별점 설정
+    updateStarRating(score);
+
+    // 모달 열기
+    document.getElementById('editModal').style.display = 'block';
+  }
+
+  function closeEditModal() {
+    document.getElementById('editModal').style.display = 'none';
+  }
+
+  function updateStarRating(score) {
+    const stars = document.querySelectorAll('#edit-star-rating .star');
+    stars.forEach((star, index) => {
+      star.style.color = index < score ? '#ffa500' : '#ccc'; // 색상 설정
+      document.querySelector(`#edit-star${index + 1}`).checked = index + 1 === parseInt(score);
+    });
+  }
+
+  // 별점 클릭 이벤트 리스너 등록
+  document.querySelectorAll('#edit-star-rating .star').forEach((star) => {
+    star.addEventListener('click', (event) => {
+      const score = event.target.getAttribute('data-value');
+      updateStarRating(score); // 별점 업데이트
+    });
+  });
 </script>
 </body>
 </html>

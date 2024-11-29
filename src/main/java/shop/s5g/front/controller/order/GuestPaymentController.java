@@ -66,7 +66,7 @@ public class GuestPaymentController {
             return "error/order-not-proceed";
         }
         log.trace("Toss Payment request success");
-        model.addAttribute("redirect", "/guest/order/" + purchaseSheet.getOrderId());
+        model.addAttribute("redirect", "/guest/login");
 
         HttpSession session = request.getSession(false);
         session.invalidate();

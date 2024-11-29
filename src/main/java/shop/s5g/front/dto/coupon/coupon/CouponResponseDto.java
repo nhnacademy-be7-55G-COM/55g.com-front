@@ -9,23 +9,6 @@ public record CouponResponseDto(
 
     Long couponTemplateId,
 
-    String couponCode,
-
-    LocalDateTime createdAt,
-
-    LocalDateTime expiredAt,
-
-    LocalDateTime usedAt,
-
-    String formattedCreatedAt,
-    String formattedExpiredAt
-
+    String couponCode
 ) {
-    public CouponResponseDto {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 HH시 mm분 ss초");
-
-        formattedCreatedAt = createdAt != null ? createdAt.format(formatter) : null;
-        formattedExpiredAt = expiredAt != null ? expiredAt.format(formatter) : null;
-    }
-
 }

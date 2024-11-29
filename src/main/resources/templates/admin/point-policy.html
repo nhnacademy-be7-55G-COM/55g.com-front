@@ -90,7 +90,7 @@
         <td th:text="${policy.value}"></td>
         <td>
           <button class="btn btn-danger" th:attr="data-modal-id='modal-' + ${policy.id}" onclick="openModal(this)">
-            수정
+            수정 및 삭제
           </button>
         </td>
       </tr>
@@ -111,15 +111,25 @@
         </div>
         <div class="mb-3">
           <label for="value" class="form-label">값 설정</label>
+          <select id="discountType" name="discountType" class="form-select">
+            <option value="">==할인 방식 선택==</option>
+            <option value="amount">할인금액</option>
+            <option value="rate">할인율</option>
+          </select>
           <input type="text" class="form-control" id="value" name="value"
                  placeholder="새로운 정책 값을 입력하세요" th:value="${policy.value}" required>
           <div id="error-message" style="color: red; display: none; margin-top: 5px;"></div>
           <div> 할인율의 경우 0.00 ~ 1.00 사이를 입력해주세요</div>
           <input type="hidden" id="id" name="id" th:value="${policy.id}">
+          <input type="hidden" id="name" name="name" th:value="${policy.name}">
+          <input type="hidden" id="source-name" name="source-name" th:value="${policy.sourceName}">
         </div>
         <button type="button" class="btn btn-primary mt-3"
                 th:attr="data-form-id='policy-form-' + ${policy.id}"
                 onclick="submitPolicyForm(this)">변경 저장</button>
+        <button type="button" class="btn btn-primary mt-3"
+                th:attr="data-form-id='policy-form-' + ${policy.id}"
+                onclick="deletePolicy(this)">삭제</button>
       </form>
     </div>
   </div>
@@ -143,6 +153,45 @@
     }
   }
 
+  function deletePolicy(button) {
+
+    const formId = button.getAttribute('data-form-id');
+    const form = document.getElementById(formId);
+
+    if (!form) {
+      console.error(`Form with ID "${formId}" not found!`);
+      return;
+    }
+
+    const id = form.querySelector('input[name="id"]')?.value;
+    const sourceName = form.querySelector('input[name="source-name"]')?.value;
+
+
+
+    fetch('/admin/point/policy/remove', {
+      method: 'DELETE',
+      headers: {'Content-Type':'application/json', [_csrf_header]: _csrf },
+      body: JSON.stringify({ id: id, sourceName: sourceName }),
+    })
+    .then((response) => {
+      if (!response.ok) {
+        alert("삭제에 실패했습니다. 잠시후 다시 시도해주세요");
+
+        return;
+      }
+      alert('정책이 성공적으로 삭제되었습니다.');
+      window.location.href="/admin";
+    })
+    .catch((error) => {
+      alert("삭제에 실패했습니다. 잠시후 다시 시도해주세요");
+    });
+
+
+  }
+
+
+
+
   function submitPolicyForm(button) {
     const formId = button.getAttribute('data-form-id');
     const form = document.getElementById(formId);
@@ -154,6 +203,8 @@
 
     const id = form.querySelector('input[name="id"]')?.value;
     const value = form.querySelector('input[name="value"]')?.value;
+    const name = form.querySelector('input[name="name"]')?.value;
+    const discountType = form.querySelector('select[name="discountType"]').value;
     const errorMessage = form.querySelector('#error-message');
 
     if (!id || !value) {
@@ -161,8 +212,20 @@
       return;
     }
 
+    if (!discountType) {
+      alert("할인 방식을 선택해주세요.");
+      return;
+    }
+
     // 에러 메시지 초기화
     errorMessage.style.display = 'none';
+
+    if (discountType === 'rate' && parseFloat(value) >= 1){
+      console.log('구매 포인트 정책 수정',parseFloat(value));
+      errorMessage.textContent = "할인율은 0 초과 ~ 1 미만 입력해주세요"
+      errorMessage.style.display = 'block';
+      return;
+    }
 
     // 값 검증
     if (isNaN(value) || parseFloat(value) < 0 || !/^\d+(\.\d{1,2})?$/.test(value)) {
@@ -175,11 +238,11 @@
     fetch('/admin/point/policy/update', {
       method: 'POST',
       headers: {'Content-Type':'application/json', [_csrf_header]: _csrf },
-      body: JSON.stringify({ id: id, value: value }),
+      body: JSON.stringify({ id: id, value: value,name: name,discountType:discountType }),
     })
     .then((response) => {
       if (!response.ok) {
-        throw new Error('오류가 발생했습니다.');
+        throw new Error('요청을 양식에 맞춰 다시 제출해주세요');
       }
       return response.json();
     })

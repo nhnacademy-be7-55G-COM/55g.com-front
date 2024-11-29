@@ -26,7 +26,7 @@ public class CategoryController {
     public String showCategoryForm(Model model, @PageableDefault(page = 0, size = 999) Pageable pageable) {
 //        model.addAttribute("parentCategories", categoryService.getParentCategories());
         model.addAttribute("parentCategories", categoryService.getKoreaCategories(pageable).content());
-        return "category-register";
+        return "category/category-register";
     }
 
     //카테고리 등록
@@ -57,7 +57,7 @@ public class CategoryController {
         model.addAttribute("categoryNowPage", categoryNowPage);
         model.addAttribute("categoryStartPage", categoryStartPage);
         model.addAttribute("categoryEndPage", categoryEndPage);
-        return "category";
+        return "category/category";
     }
 
     //하위 카테고리 조회
@@ -74,7 +74,7 @@ public class CategoryController {
     public String categoryDetail(@PathVariable("categoryId") long categoryId, Model model) {
         List<CategoryResponseDto> childCategories = categoryService.getChildCategories(categoryId);
         model.addAttribute("childCategories", childCategories);
-        return "category-list";
+        return "category/category-list";
     }
 
     //카테고리 수정 페이지 이동
@@ -82,7 +82,7 @@ public class CategoryController {
     public String categoryModify(@PathVariable("categoryId") long categoryId, Model model) {
         CategoryOneResponseDto category = categoryService.getCategoryById(categoryId);
         model.addAttribute("modifyCategory", category);
-        return "category-modify";
+        return "category/category-modify";
     }
 
     //카테고리 수정

@@ -2,7 +2,6 @@ package shop.s5g.front.advice;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.Response;
-import feign.Response.Body;
 import feign.codec.ErrorDecoder;
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -37,6 +36,7 @@ public class FeignErrorDecoder implements ErrorDecoder {
 
         return switch(status) {
             case 400 -> new BadRequestException(messageDto.message());
+            case 403 -> new AuthenticationException("해당 리소스에 접근할 수 없습니다.");
             case 404 -> new ResourceNotFoundException(messageDto.message());
             case 409 -> new AlreadyExistsException(messageDto.message());
             case 401 -> new AuthenticationException(messageDto.message());
