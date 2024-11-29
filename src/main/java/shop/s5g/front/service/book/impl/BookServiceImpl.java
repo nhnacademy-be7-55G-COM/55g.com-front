@@ -33,15 +33,15 @@ public class BookServiceImpl implements BookService {
         this.imageService = imageService;
     }
 
-//    @Override
-//    public PageResponseDto<BookPageableResponseDto> getAllBooks(Pageable pageable) {
-//        try{
-//            ResponseEntity<PageResponseDto<BookPageableResponseDto>> allBooks = bookAdapter.getAllBooksPageable(pageable);
-//            return allBooks.getBody();
-//        }catch (FeignException e) {
-//            throw new BookNotFoundException(e.getMessage());
-//        }
-//    }
+    @Override
+    public PageResponseDto<BookPageableResponseDto> getAllBooks(Pageable pageable) {
+        try{
+            ResponseEntity<PageResponseDto<BookPageableResponseDto>> allBooks = bookAdapter.getAllBooksPageable(pageable);
+            return allBooks.getBody();
+        }catch (FeignException e) {
+            throw new BookNotFoundException(e.getMessage());
+        }
+    }
 
     @Override
     public BookDetailResponseDto getBookDetail(long bookId) {
@@ -116,4 +116,19 @@ public class BookServiceImpl implements BookService {
             throw new RuntimeException(e);
         }
     }
+
+    //도서 삭제
+
+//    @Override
+//    public MessageDto deleteBook(Long bookId) {
+//        try {
+//            MessageDto response =  bookAdapter.deleteBook(bookId);
+//            return response;
+//        }catch (FeignException e) {
+//            if (e.status() == 400) {
+//                throw new BadRequestException("도서 삭제에 실패했습니다.");
+//            }
+//        }
+//        throw new RuntimeException();
+//    }
 }

@@ -10,10 +10,12 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import shop.s5g.front.dto.PageResponseDto;
 import shop.s5g.front.dto.review.CreateReviewRequestDto;
 import shop.s5g.front.dto.review.ReviewResponseDto;
+import shop.s5g.front.dto.review.UpdateReviewRequestDto;
 import shop.s5g.front.exception.BadRequestException;
 import shop.s5g.front.service.review.ReviewService;
 
@@ -48,5 +50,18 @@ public class ReviewController {
         model.addAttribute("pageSize", reviewList.pageSize());
         model.addAttribute("totalElements", reviewList.totalElements());
         return "mypage/review-list";
+    }
+
+    @PatchMapping("/review")
+    public String updateReview(
+        @Valid @ModelAttribute UpdateReviewRequestDto updateReviewRequestDto,
+        BindingResult bindingResult) {
+
+        // TODO: 리뷰 수정 폼에서 실패 메세지 띄우기
+        if (bindingResult.hasErrors()) {
+            throw new BadRequestException();
+        }
+        reviewService.updateReview(updateReviewRequestDto);
+        return "redirect:/mypage/review-list";
     }
 }

@@ -21,4 +21,9 @@ public record CreateReviewRequestDto(
     List<MultipartFile> attachment
 ) {
 
+    public List<MultipartFile> validFiles() {
+        return attachment == null ? List.of() : attachment.stream()
+            .filter(file -> file.getSize() > 0)
+            .toList();
+    }
 }

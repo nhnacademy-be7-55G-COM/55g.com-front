@@ -8,9 +8,11 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import shop.s5g.front.config.FeignGatewayAuthorizationConfig;
+import shop.s5g.front.dto.order.DetailStatusChangeRequestDto;
 import shop.s5g.front.dto.order.OrderAdminTableView;
 import shop.s5g.front.dto.order.OrderCreateRequestDto;
 import shop.s5g.front.dto.order.OrderCreateResponseDto;
@@ -19,12 +21,13 @@ import shop.s5g.front.dto.order.OrderDetailWithBookResponseDto;
 import shop.s5g.front.dto.order.OrderQueryFilterDto;
 import shop.s5g.front.dto.order.OrderWithDetailResponseDto;
 
+// /api/shop/orders
 @FeignClient(value = "order", url = "${gateway.url}", path = "/api/shop/orders", configuration = FeignGatewayAuthorizationConfig.class)
 public interface OrderAdapter {
     @GetMapping
     List<OrderWithDetailResponseDto> fetchOrderLists(@RequestParam long customerId);
 
-    @GetMapping("/{orderId}")
+    @GetMapping("/id/{orderId}")
     List<OrderDetailWithBookResponseDto> fetchOrderDetailsWithOrderId(@PathVariable("orderId") long orderId);
 
     @PostMapping
@@ -33,7 +36,7 @@ public interface OrderAdapter {
     @GetMapping
     List<OrderWithDetailResponseDto> fetchOrderListsBetweenDates(@RequestParam String startDate, @RequestParam String endDate);
 
-    @GetMapping("/{orderId}?scope=all")
+    @GetMapping("/id/{orderId}?scope=all")
     OrderDetailInfoDto fetchOrderDetailInfo(@PathVariable long orderId);
 
     @DeleteMapping("/{orderId}")
@@ -63,6 +66,12 @@ public interface OrderAdapter {
         @RequestParam String password
     );
 
-//    @DeleteMapping("{detailId}")
-//    ResponseEntity<HttpStatus>
+    @PutMapping("/details/{detailId}")
+    ResponseEntity<HttpStatus> changeDetailType(
+        @PathVariable long detailId,
+        @RequestBody DetailStatusChangeRequestDto change
+    );
+
+    @GetMapping("/{uuid}?scope=all")
+    OrderDetailInfoDto fetchOrderDetailInfo(@PathVariable String uuid);
 }

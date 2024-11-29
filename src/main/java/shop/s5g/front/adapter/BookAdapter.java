@@ -26,8 +26,8 @@ public interface BookAdapter {
     ResponseEntity<BookDetailResponseDto> getBook(@PathVariable long bookId);
 
     //모든 도서 페이저블
-//    @GetMapping("/api/shop/books/pageable")
-//    ResponseEntity<PageResponseDto<BookPageableResponseDto>> getAllBooksPageable(Pageable pageable);
+    @GetMapping("/api/shop/books/pageable")
+    ResponseEntity<PageResponseDto<BookPageableResponseDto>> getAllBooksPageable(Pageable pageable);
 
     @GetMapping("/api/shop/books/query")
     List<BookSimpleResponseDto> getSimpleBooks(@RequestParam List<Long> books);
@@ -39,4 +39,9 @@ public interface BookAdapter {
     // 도서 수정
     @PutMapping("/api/shop/books/{bookId}")
     ResponseEntity<MessageDto> updateBook(@PathVariable long bookId, BookAddSendDto dto);
+
+    //도서 삭제
+//    @DeleteMapping("/api/shop/book/{bookId}")
+//    MessageDto deleteBook(@PathVariable("bookId") Long bookId);
+
 }

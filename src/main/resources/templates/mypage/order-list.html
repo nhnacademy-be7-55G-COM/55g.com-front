@@ -8,72 +8,41 @@
   <meta charset="UTF-8">
   <title>나의 주문 내역</title>
   <script src="/static/js/mypage-utils.js"></script>
-  <script>
-    const callOrderHistoryPage = async (tableSelector, {startDate, endDate}) => {
-      const table = document.querySelector(tableSelector);
-      const orders = (await axios.get('/mypage/support/orders',
-          {params: {startDate: startDate, endDate: endDate}}
-      )).data;
-
-      const tbody = table.querySelector('tbody');
-      tbody.innerHTML = '';
-      orders.forEach(order => {
-        const tr = document.createElement('tr');
-        tr.setAttribute('data-order-id', order.orderId);
-
-        const orderId = document.createElement('td');
-        orderId.innerHTML = order.orderId;
-
-        const totalPrice = document.createElement('td');
-        totalPrice.innerHTML = order.totalPrice;
-
-        const representTitle = document.createElement('td');
-        representTitle.innerHTML = order.representTitle;
-
-        const orderedAt = document.createElement('td');
-        orderedAt.innerHTML = order.orderedAt;
-
-        const quantity = order.totalQuantity;
-        const kind = order.totalKind;
-
-        if (kind > 1) {
-          representTitle.innerHTML = `<p>${representTitle.innerHTML} 등</p><p>${kind} 종류 ${quantity} 권</p>`;
-        } else if (quantity > 1) {
-          representTitle.innerHTML = `${representTitle.innerHTML} ${quantity}권`;
-        }
-
-        tr.append(orderId, representTitle, totalPrice, orderedAt);
-        tr.style.cursor='pointer';
-        tr.addEventListener('click', () => window.location.href=`/mypage/order/${order.orderId}`);
-        // applyOrderDetailTemplate(tr);
-        tbody.appendChild(tr);
-      });
-    }
-  </script>
 </head>
 <body>
 
 <div class="container" layout:fragment="mypageContent">
   <div class="mb-3" style="font-size: 2rem; font-weight: bold;">내 주문 내역</div>
   <div id="orderHistory">
-    <div class="d-flex">
-      <input type="date" class="order-date-input" id="startDateInput" name="startDate" />
+    <form class="d-flex">
+      <input type="date" class="order-date-input" id="startDateInput" name="startDate" th:value="${startDate}" />
       <span>부터</span>
-      <input type="date" class="order-date-input" id="endDateInput" name="endDate" />
+      <input type="date" class="order-date-input" id="endDateInput" name="endDate" th:value="${endDate}" />
       <span>까지</span>
-      <button onclick="fetchOrders()" type="button" id="orderSearchButton">검색</button>
-    </div>
+      <button type="submit" id="orderSearchButton">검색</button>
+    </form>
     <table class="table table-hover" id="orderHistoryTable">
       <thead>
       <tr>
-        <th scope="col">ID</th>
         <th scope="col" style="width: 65%">주문 내용</th>
         <th scope="col">주문 가격</th>
         <th scope="col">주문 일시</th>
       </tr>
       </thead>
       <tbody>
-
+      <th:block th:each="order: ${orders}">
+        <tr th:data-order-uuid="${order.uuid}">
+          <td th:if="${order.totalKind > 1}">
+            <p th:text="|${order.representTitle} 등|"></p>
+            <p th:text="|${order.totalKind} 종류 ${order.totalQuantity} 권|"></p>
+          </td>
+          <td th:unless="${order.totalKind > 1}">
+            <p th:text="|${order.representTitle} ${order.totalQuantity}|"></p>
+          </td>
+          <td th:text="${order.totalPrice}"></td>
+          <td th:text="${#temporals.format(order.orderedAt, 'yyyy-MM-dd HH:mm')}"></td>
+        </tr>
+      </th:block>
       </tbody>
     </table>
     <script>
@@ -83,7 +52,7 @@
       const table = document.querySelector(tableSelector);
 
       const fetchOrders = async () => {
-        if (startDateInput.value == null || endDateInput.value == null) {
+        if (startDateInput.value == null || endDateInput.value == null || startDateInput === '' || endDateInput === '') {
           alert('날짜를 입력해주세요.');
         }
         const start = startDateInput.valueAsDate;
@@ -97,6 +66,15 @@
           endDate: endDateInput.value
         });
       }
+    </script>
+    <script>
+      const rows = document.querySelectorAll('#orderHistoryTable tr');
+      rows.forEach(row => {
+        row.style.cursor = 'pointer';
+        row.addEventListener('click', () => {
+          window.location.href='/mypage/order/'+row.getAttribute('data-order-uuid');
+        });
+      });
     </script>
   </div>
 </div>

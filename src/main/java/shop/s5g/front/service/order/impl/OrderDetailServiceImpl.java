@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import shop.s5g.front.adapter.OrderAdapter;
 import shop.s5g.front.adapter.PaymentsAdapter;
+import shop.s5g.front.dto.order.DetailStatusChangeRequestDto;
 import shop.s5g.front.dto.order.OrderDetailCancelRequestDto;
 import shop.s5g.front.dto.order.OrderDetailInfoDto;
 import shop.s5g.front.service.order.OrderDetailService;
@@ -16,6 +17,16 @@ public class OrderDetailServiceImpl implements OrderDetailService {
     private final OrderAdapter orderAdapter;
     private final PaymentsAdapter paymentsAdapter;
 
+    @Override
+    public OrderDetailInfoDto getOrderDetailAllInfos(String uuid) {
+        return orderAdapter.fetchOrderDetailInfo(uuid);
+    }
+
+    /**
+     * 회원 및 관리자만 가능한 OrderID 직접 검색
+     * @param orderId 검색하고자 하는 주문 ID
+     * @return OrderDetailInfoDto
+     */
     @Override
     public OrderDetailInfoDto getOrderDetailAllInfos(long orderId) {
         return orderAdapter.fetchOrderDetailInfo(orderId);
@@ -28,5 +39,10 @@ public class OrderDetailServiceImpl implements OrderDetailService {
         body.put("cancelInfo", cancelReason);
 
         paymentsAdapter.cancelPayment(body);
+    }
+
+    @Override
+    public void changeOrderDetailStatus(long detailId, String typeName) {
+        orderAdapter.changeDetailType(detailId, new DetailStatusChangeRequestDto(typeName));
     }
 }

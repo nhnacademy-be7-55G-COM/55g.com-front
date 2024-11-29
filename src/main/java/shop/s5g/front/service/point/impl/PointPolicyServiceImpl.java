@@ -8,6 +8,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import shop.s5g.front.adapter.point.PointPolicyAdapter;
 import shop.s5g.front.dto.member.MemberInfoResponseDto;
+import shop.s5g.front.dto.point.PointPolicyCreateRequestDto;
+import shop.s5g.front.dto.point.PointPolicyRemoveRequestDto;
 import shop.s5g.front.dto.point.PointPolicyResponseDto;
 import shop.s5g.front.dto.point.PointPolicyUpdateRequestDto;
 import shop.s5g.front.dto.point.PointPolicyView;
@@ -48,5 +50,15 @@ public class PointPolicyServiceImpl implements PointPolicyService {
     @Override
     public void updatePolicyValue(PointPolicyUpdateRequestDto pointPolicyUpdateRequestDto) {
         pointPolicyAdapter.updatePolicy(pointPolicyUpdateRequestDto);
+    }
+
+    @Override
+    public void createPointPolicy(PointPolicyCreateRequestDto pointPolicyCreateRequestDto) {
+        pointPolicyAdapter.createPolicy(pointPolicyCreateRequestDto);
+    }
+
+    @Override
+    public void removePointPolicy(PointPolicyRemoveRequestDto pointPolicyRemoveRequestDto) {
+        pointPolicyAdapter.removePolicy(pointPolicyRemoveRequestDto);
     }
 }

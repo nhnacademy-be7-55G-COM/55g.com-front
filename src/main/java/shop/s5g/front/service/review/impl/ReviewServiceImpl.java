@@ -4,25 +4,22 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatusCode;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.multipart.MultipartFile;
 import shop.s5g.front.adapter.review.ReviewAdapter;
-import shop.s5g.front.config.ComponentBuilderConfig;
 import shop.s5g.front.dto.MessageDto;
 import shop.s5g.front.dto.PageResponseDto;
+import shop.s5g.front.dto.review.BackCreateReviewRequestDto;
+import shop.s5g.front.dto.review.BackUpdateReviewRequestDto;
 import shop.s5g.front.dto.review.CreateReviewRequestDto;
-import shop.s5g.front.dto.review.ReviewRequestDto;
 import shop.s5g.front.dto.review.ReviewResponseDto;
-import shop.s5g.front.exception.ApplicationException;
+import shop.s5g.front.dto.review.UpdateReviewRequestDto;
 import shop.s5g.front.exception.review.ReviewRegisterFailedException;
-import shop.s5g.front.service.image.ImageService;
+import shop.s5g.front.exception.review.ReviewUpdateFailedException;
 import shop.s5g.front.service.review.ReviewService;
 
 @Service
@@ -30,53 +27,64 @@ import shop.s5g.front.service.review.ReviewService;
 public class ReviewServiceImpl implements ReviewService {
 
     private final ReviewAdapter reviewAdapter;
-    private final ImageService imageService;
 
     @Override
     public MessageDto addReview(CreateReviewRequestDto createReviewRequestDto) {
-        try {
-            List<String> imagePathList = new ArrayList<>();
+        BackCreateReviewRequestDto backCreateReviewRequestDto = (BackCreateReviewRequestDto) changeMultipartFileToByte(
+            createReviewRequestDto.validFiles(), createReviewRequestDto);
+        ResponseEntity<MessageDto> response = reviewAdapter.registerReview(
+            backCreateReviewRequestDto);
 
-            List<MultipartFile> validFiles = createReviewRequestDto.attachment().stream()
-                .filter(file -> file.getSize() > 0) // 크기가 0보다 큰 파일만 유지
-                .toList();
+        if (response.getStatusCode().equals(HttpStatus.CREATED)) {
+            return response.getBody();
+        }
+        throw new ReviewRegisterFailedException("review register failed");
+    }
+
+    private Object changeMultipartFileToByte(
+        List<MultipartFile> validFiles, Object reviewDto) {
+
+        try {
+            List<byte[]> imageByteList = new ArrayList<>();
+            List<String> extensions = new ArrayList<>();
 
             for (int i = 1; i <= validFiles.size(); i++) {
                 MultipartFile file = validFiles.get(i - 1);
                 byte[] imageByte = file.getBytes();
-                String filename = DigestUtils.md5Hex(imageByte);
                 String extension = FilenameUtils.getExtension(file.getOriginalFilename());
 
-                String digestName = String.format("%s.%s", filename + "-" + i, extension);
-                imageService.uploadImage(generateFilePath(digestName), imageByte);
-                imagePathList.add(digestName);
+                imageByteList.add(imageByte);
+                extensions.add(extension);
             }
 
-            ReviewRequestDto reviewRequestDto = ReviewRequestDto.from(createReviewRequestDto,
-                imagePathList);
-
-            ResponseEntity<MessageDto> response = reviewAdapter.registerReview(
-                reviewRequestDto);
-
-            if (response.getStatusCode().equals(HttpStatusCode.valueOf(201))) {
-                return response.getBody();
+            if (reviewDto instanceof CreateReviewRequestDto createDto) {
+                return BackCreateReviewRequestDto.from(createDto, imageByteList, extensions);
+            } else if (reviewDto instanceof UpdateReviewRequestDto updateDto) {
+                return BackUpdateReviewRequestDto.from(updateDto, imageByteList, extensions);
             }
-            throw new ReviewRegisterFailedException("review register failed");
 
+            return null;
         } catch (IOException e) {
-            throw new ApplicationException("이미지 업로드 도중 문제가 발생했습니다.");
-
-        } catch (HttpClientErrorException | HttpServerErrorException e) {
-            throw new ReviewRegisterFailedException(e.getMessage());
+            throw new RuntimeException("이미지 업로드 도중 문제가 발생했습니다.");
         }
-    }
-
-    private String generateFilePath(String digestName) {
-        return ComponentBuilderConfig.IMAGE_LOCATION_PATH + "review/" + digestName;
     }
 
     @Override
     public PageResponseDto<ReviewResponseDto> getReviewList(Pageable pageable) {
         return reviewAdapter.getReviewList(pageable);
+    }
+
+    @Override
+    public MessageDto updateReview(UpdateReviewRequestDto updateReviewRequestDto) {
+        BackUpdateReviewRequestDto backUpdateReviewRequestDto = (BackUpdateReviewRequestDto) changeMultipartFileToByte(
+            updateReviewRequestDto.validFiles(), updateReviewRequestDto);
+        ResponseEntity<MessageDto> response = reviewAdapter.updateReview(
+            backUpdateReviewRequestDto);
+
+        if (response.getStatusCode().equals(HttpStatus.NO_CONTENT)) {
+            return response.getBody();
+        }
+        throw new ReviewUpdateFailedException("review update failed");
+
     }
 }

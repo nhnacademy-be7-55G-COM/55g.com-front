@@ -109,13 +109,16 @@ button.payment-selected {
   margin: 0 0.3rem;
 }
 .mini-address-card {
-  padding: 0.05rem;
   background-color: white;
-  border: 1px solid black;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  margin-right: 5px;
+  padding: 0.2rem 0.7rem;
 
 }
 .mini-address-card p {
   margin: 0;
+  font-size: 14px
 }
 .mini-address-card button {
   height: 2.6rem;
@@ -126,6 +129,10 @@ button.payment-selected {
 .accInfo {
   border: 1px solid gray;
   padding: 0.5rem;
+}
+.address-title {
+  font-weight: bold;
+  font-size: 16px;
 }
 
 input::-webkit-outer-spin-button,

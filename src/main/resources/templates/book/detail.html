@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html
-    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-    layout:decorate="~{layout/default}">
+    xmlns:layout="http://ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout/default}" >
 <head>
   <style>
 
@@ -191,6 +191,15 @@
         <div class="btn-group mt-3">
           <button class="btn btn-primary btn-purchase" onclick="putTOCart()">카트에 넣기</button>
           <button class="btn btn-success btn-purchase" onclick="instantPurchase()">바로 구매</button>
+
+<!--          <form th:action="@{/mypage/like/{bookId}(bookId=${book.bookId()})}" method="post" style="display: inline;">-->
+<!--            <button type="submit" class="btn-custom">좋아요</button>-->
+<!--          </form>-->
+
+          <form id="like-form-${book.bookId}" style="display: inline;">
+            <button type="button" class="btn-custom like-btn" th:data-book-id="${book.bookId}">좋아요</button>
+          </form>
+
         </div>
         <script th:inline="javascript">
           const instantPurchase = async () => {
@@ -396,6 +405,37 @@
     localStorage.setItem('cartCount', newCount);
 
   }
+
+
+  document.addEventListener('DOMContentLoaded', function () {
+    // 모든 좋아요 버튼에 이벤트 리스너 추가
+    document.querySelectorAll('.like-btn').forEach(button => {
+      button.addEventListener('click', function () {
+        const bookId = this.getAttribute('data-book-id');
+
+        // AJAX 요청
+        fetch(`/mypage/like/${bookId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',[_csrf_header]: _csrf
+            // 'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]').getAttribute('content') // CSRF 토큰 필요 시
+          }
+        })
+                .then(response => {
+                  if (response.ok) {
+                    alert('좋아요가 등록되었습니다.');
+                    window.location.reload(); // 현재 창 새로고침
+                  } else {
+                    throw new Error('좋아요 등록에 실패했습니다.');
+                  }
+                })
+                .catch(error => {
+                  console.error('Error:', error);
+                  alert('오류가 발생했습니다.');
+                });
+      });
+    });
+  });
 </script>
 </body>
 </html>

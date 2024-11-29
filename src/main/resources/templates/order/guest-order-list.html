@@ -7,11 +7,16 @@
 <head>
   <meta charset="UTF-8">
   <title>비회원 주문 조회</title>
+  <style>
+    p {
+      margin-bottom: 0.08rem;
+    }
+  </style>
 <!--  <script src="/static/js/mypage-utils.js"></script>-->
 </head>
 <body layout:fragment="content">
 <div class="container">
-  <h3 class="display-3 mb-3">내 주문 내역</h3>
+  <div class="mb-3" style="font-weight:bold; font-size: 2rem;">내 주문 내역</div>
   <div id="orderHistory">
     <table class="table table-hover" id="orderHistoryTable">
       <thead>
@@ -23,10 +28,17 @@
       </thead>
       <tbody>
       <th:block th:each="order: ${orderList}">
-      <tr th:data-order-id="${order.orderId()}">
-        <td th:text="${order.representTitle()}"></td>
-        <td th:text="${order.totalPrice()}"></td>
-        <td th:text="${#temporals.format(order.orderedAt(), 'yyyy-MM-dd HH:mm')}"></td>
+      <tr th:data-order-id="${order.orderId}" th:data-order-uuid="${order.uuid}">
+<!--        <td th:text="${order.representTitle()}"></td>-->
+        <td th:if="${order.totalKind > 1}">
+          <p th:text="|${order.representTitle} 등|"></p>
+          <p th:text="|${order.totalKind} 종류 ${order.totalQuantity} 권|"></p>
+        </td>
+        <td th:unless="${order.totalKind > 1}">
+          <p th:text="|${order.representTitle} ${order.totalQuantity}|"></p>
+        </td>
+        <td th:text="${order.totalPrice}"></td>
+        <td th:text="${#temporals.format(order.orderedAt, 'yyyy-MM-dd HH:mm')}"></td>
       </tr>
       </th:block>
       </tbody>
@@ -36,7 +48,7 @@
       rows.forEach(row => {
         row.style.cursor = 'pointer';
         row.addEventListener('click', () => {
-          window.location.href='/guest/order/'+row.getAttribute('data-order-id');
+          window.location.href='/guest/order/'+row.getAttribute('data-order-uuid');
         });
       });
     </script>

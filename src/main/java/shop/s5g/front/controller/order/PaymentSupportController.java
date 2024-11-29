@@ -98,8 +98,9 @@ public class PaymentSupportController {     // TODO: 전체적으로 Validation 
         OrderCreateRequestDto order = purchaseSheet.createOrderRequest(purchase.delivery());
 
 //        // TODO: 세션에서 쿠폰 사용 여부, 합계 및 netPrice 가져오기.
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(orderService.createOrder(order));
+        OrderCreateResponseDto response = orderService.createOrder(order);
+        purchaseSheet.setUuid(response.uuid());
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("/wrap")
