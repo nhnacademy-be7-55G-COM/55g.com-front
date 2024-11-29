@@ -6,12 +6,9 @@ import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
-public record CreateReviewRequestDto(
+public record UpdateReviewRequestDto(
     @NotNull
-    Long bookId,
-
-    @NotNull
-    Long orderDetailId,
+    Long reviewId,
 
     @Min(1)
     @Max(5)
