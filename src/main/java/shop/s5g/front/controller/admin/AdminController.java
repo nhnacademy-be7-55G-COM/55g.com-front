@@ -1,5 +1,6 @@
 package shop.s5g.front.controller.admin;
 
+import jakarta.validation.Valid;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
@@ -518,7 +519,7 @@ public class AdminController {
 
     @PostMapping("/admin/point/policy/update")
     public ResponseEntity<Map<String, String>> updatePolicyValue(
-        @RequestBody @Validated PointPolicyUpdateRequestDto pointPolicyUpdateRequestDto,
+        @RequestBody @Valid PointPolicyUpdateRequestDto pointPolicyUpdateRequestDto,
         BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
@@ -550,7 +551,7 @@ public class AdminController {
 
     @PostMapping("/admin/point/policy/create")
     public ResponseEntity<Map<String, String>> createPointPolicy(@RequestBody
-    @Validated PointPolicyCreateRequestDto pointPolicyCreateRequestDto,
+    @Valid PointPolicyCreateRequestDto pointPolicyCreateRequestDto,
         BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
@@ -575,7 +576,7 @@ public class AdminController {
 
     @DeleteMapping("/admin/point/policy/remove")
     public ResponseEntity<Void> removePointPolicy(
-        @RequestBody @Validated PointPolicyRemoveRequestDto pointPolicyRemoveRequestDto,
+        @RequestBody @Valid PointPolicyRemoveRequestDto pointPolicyRemoveRequestDto,
         BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
