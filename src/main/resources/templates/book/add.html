@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html>
-<script src="/static/js/jquery-1.11.0.min.js">
+<script src="/static/js/jquery-1.11.0.min.js"></script>
+<script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+<script>
+  const Editor=toastui.Editor;
 </script>
+<link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
 <style>
   #tag-search-result {
     border: 1px solid black;
@@ -65,14 +69,12 @@
           </select>
         </div>
         <div class="form-group">
-          <label for="chapter">목차</label>
-          <!-- TODO: 별도의 텍스트 편집기 사용 필요 -->
-          <textarea class="form-control" id="chapter" name="chapter"></textarea>
+          <label for="editor-chapter">목차</label>
+          <div id="editor-chapter"></div>
         </div>
         <div class="form-group">
-          <label for="description">설명</label>
-          <!-- TODO: 별도의 텍스트 편집기 사용 필요 -->
-          <textarea class="form-control" id="description" name="description"></textarea>
+          <label for="editor-description">설명</label>
+          <div id="editor-description"></div>
         </div>
         <div class="form-group">
           <label for="publishedDate">출판일시</label>
@@ -113,7 +115,7 @@
           <label for="thumbnailFile">도서 이미지</label>
           <input type="file" class="form-control" id="thumbnailFile" name="thumbnailFile">
         </div>
-        <button type="submit" id="btn-submit" class="btn btn-primary btn-block">제출</button>
+        <button type="submit" id="btn-submit" class="btn btn-primary btn-block">등록</button>
       </form>
     </div>
   </div>
@@ -152,6 +154,7 @@
     item.remove();
   }
 
+  // === 카테고리 ===
   $('#category1').on("change", function () {
     var selectCategory = $('#category1 option:selected').val();
     console.log(selectCategory);
@@ -219,11 +222,31 @@
     });
   });
 
+  // === 에디터 적용 ===
+  const editorChapter=new Editor({
+    el: document.querySelector('#editor-chapter'),
+    height: '300px',
+    initialEditType: 'wysiwyg',
+    previewStyle: 'vertical'
+  });
+
+  const editorDescription=new Editor({
+    el: document.querySelector('#editor-description'),
+    height: '300px',
+    initialEditType: 'wysiwyg',
+    previewStyle: 'vertical'
+  });
+
+  // === 등록 버튼 ===
   $('#btn-submit').on('click', function (e) {
     e.preventDefault();
 
     $('#tag-list').append($('<input type="hidden" name="tagIdList">').val(tagList));
+
+    $('#editor-chapter').append($('<input type="hidden" name="chapter">').val(editorChapter.getHTML()));
+    $('#editor-description').append($('<input type="hidden" name="description">').val(editorDescription.getHTML()));
+
     $('form').submit();
-  })
+  });
 </script>
 </html>
