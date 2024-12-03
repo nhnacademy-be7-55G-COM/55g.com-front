@@ -3,6 +3,7 @@ package shop.s5g.front.service.amqp;
 import jakarta.annotation.Nullable;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -12,6 +13,7 @@ import shop.s5g.front.dto.order.OrderRabbitResponseDto;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class RabbitService {
     private final RabbitTemplate rabbitTemplate;
     private final ParameterizedTypeReference<OrderRabbitResponseDto> messageType = new ParameterizedTypeReference<OrderRabbitResponseDto>() {};
@@ -32,6 +34,7 @@ public class RabbitService {
     @Nullable
     public OrderRabbitResponseDto sendPaymentRequest(Map<String, Object> body) {
         // 타임아웃이 발생되어 응답을 받지 못했을 경우 null.
+        log.info("Exchange = {}, Routing-Key = {}", orderExchange, tossRouteKey);
         return rabbitTemplate.convertSendAndReceiveAsType(orderExchange, tossRouteKey, body, messageType);
     }
 

@@ -25,6 +25,8 @@ spring:
     multipart:
       max-file-size: 2MB
       max-request-size: 10MB
+  jpa:
+    open-in-view: false
 
 image:
   appkey: appkey
@@ -52,7 +54,6 @@ rabbit:
       create: 55g.coupon.create
     category:
       coupon: 55g.category.coupon.create
-
 redis:
   host: localhost
   port: 6379
