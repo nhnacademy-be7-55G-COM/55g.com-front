@@ -581,6 +581,10 @@ public class AdminController {
 
             return ResponseEntity.ok().build();
 
+        } catch (AlreadyExistsException e) {
+
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
