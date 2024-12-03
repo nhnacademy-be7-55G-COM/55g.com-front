@@ -20,6 +20,13 @@
     <input type="text" class="form-control small-input" id="policy-name" name="policy-name" placeholder="정책이름" style="width: 100%;" required>
   </div>
   <div class="mb-3" style="width: 100%; display: flex; flex-direction: column; align-items: flex-start;">
+    <select id="point-source" name="point-source" required>
+      <option value="" disabled selected>포인트 정책분류 선택</option>
+      <option th:each="source : ${sourceList}"
+              th:value="${source.pointSourceId}"
+              th:text="${source.pointSourceName}">
+      </option>
+    </select>
     <label for="discount-value" class="form-label" style="margin-bottom: 5px;">할인</label>
     <select id="discountType" name="discountType" class="form-select">
       <option value="">==할인 방식 선택==</option>
@@ -39,6 +46,7 @@
     const policyName = document.getElementById("policy-name").value.trim();
     const discountType = document.getElementById("discountType").value;
     const discountValue = document.getElementById("discount-value").value.trim();
+    const pointSourceId = document.getElementById("point-source").value;
     const errorMessage = document.getElementById("error-message");
 
     // 에러 메시지 초기화
@@ -58,6 +66,13 @@
       alert("할인 방식을 선택해주세요.");
       return;
     }
+
+    if (!pointSourceId) {
+      alert("정책 분류를 선택해주세요.");
+      return;
+    }
+
+
 
     // 3. 할인 값 검증
     if (!discountValue || isNaN(discountValue) || parseFloat(discountValue) < 0) {
@@ -82,6 +97,7 @@
       policyName: policyName,
       discountType: discountType,
       discountValue: parseFloat(discountValue),
+      pointSourceId:pointSourceId
     };
 
     fetch('/admin/point/policy/create', {
