@@ -35,6 +35,7 @@ public class RabbitConfig {
         connectionFactory.setPort(port);
         connectionFactory.setUsername(username);
         connectionFactory.setPassword(password);
+        connectionFactory.setVirtualHost("vh1");
 
         return connectionFactory;
     }
