@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+
+<h2>포인트 정책 분류 생성</h2>
+<form id="point-policy-source-form" th:action="@{/admin/coupons/policy/create}" method="POST" style="
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;">
+  <div class="mb-3" style="width: 100%; display: flex; flex-direction: column; align-items: flex-start;">
+    <label for="policy-source-name" class="form-label" style="margin-bottom: 5px;">포인트 정책 분류 이름</label>
+    <input type="text" class="form-control small-input" id="policy-source-name" name="policy-source-name" placeholder="정책분류 이름" style="width: 100%;" required>
+  </div>
+  <button type="submit" class="styled-button" style="margin-top: 20px;">생성</button>
+</form>
+
+<script th:inline="javascript">
+  document.getElementById("point-policy-source-form").addEventListener("submit", function (event) {
+    event.preventDefault(); // 기본 제출 동작 방지
+
+    const pointSourceName = document.getElementById("policy-source-name").value.trim();
+    const errorMessage = document.getElementById("error-message");
+
+    // 에러 메시지 초기화
+    if (errorMessage) {
+      errorMessage.style.display = "none";
+      errorMessage.textContent = "";
+    }
+
+    // 1. 정책 이름 검증
+    if (!pointSourceName) {
+      alert("정책 분류이름을 입력해주세요.");
+      return;
+    }
+
+    if (/^\d+$/.test(pointSourceName)) { // 숫자만 입력된 경우
+      alert("정책 분류이름에 숫자만 입력할 수 없습니다.");
+      return;
+    }
+
+
+    // 검증 완료 후 폼 제출 (AJAX 요청 예시)
+    const formData = {
+      pointSourceName:pointSourceName
+    };
+
+    fetch('/admin/point/source/create', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json', [_csrf_header]: _csrf },
+      body: JSON.stringify(formData),
+    })
+    .then((response) => {
+      if (response.status === 409){
+        alert("이미 존재하는 정책분류입니다. 중복불가입니다.");
+        return;
+
+      } else if (!response.ok) {
+        throw new Error("요청에 실패했습니다. 다시 시도해주세요.");
+      }
+      alert("정책분류가 성공적으로 생성되었습니다.");
+      window.location.href = "/admin";
+    })
+    .catch((error) => {
+      alert(error.message);
+    });
+  });
+</script>
+</body>
+</html>
