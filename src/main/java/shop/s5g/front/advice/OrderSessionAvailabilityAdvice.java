@@ -34,13 +34,4 @@ public class OrderSessionAvailabilityAdvice {
 
         throw SessionDoesNotAvailableException.INSTANCE;
     }
-//    @Before("@annotation(shop.s5g.front.annotation.SessionRequired) || @within(shop.s5g.front.annotation.SessionRequired)")
-//    public void sessionAvailabilityCheck(){
-//        HttpServletRequest request =
-//            (Objects.requireNonNull((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest());
-//        HttpSession session = request.getSession(false);
-//        if (session == null) {
-//            throw SessionDoesNotAvailableException.INSTANCE;
-//        }
-//    }
 }
