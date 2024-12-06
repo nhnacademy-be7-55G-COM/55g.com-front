@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -37,10 +38,13 @@ import shop.s5g.front.dto.coupon.template.CouponTemplateInquiryResponseDto;
 import shop.s5g.front.dto.coupon.template.CouponTemplateRegisterRequestDto;
 import shop.s5g.front.dto.coupon.template.CouponTemplateUpdateRequestDto;
 import shop.s5g.front.dto.point.PointPolicyCreateRequestDto;
+import shop.s5g.front.dto.point.PointPolicyFormResponseDto;
 import shop.s5g.front.dto.point.PointPolicyRemoveRequestDto;
 import shop.s5g.front.dto.point.PointPolicyResponseDto;
 import shop.s5g.front.dto.point.PointPolicyUpdateRequestDto;
+import shop.s5g.front.dto.point.PointSourceCreateRequestDto;
 import shop.s5g.front.dto.wrappingpaper.WrappingPaperView;
+import shop.s5g.front.exception.AlreadyExistsException;
 import shop.s5g.front.service.coupon.book.CouponBookService;
 import shop.s5g.front.service.coupon.category.CouponCategoryService;
 import shop.s5g.front.service.coupon.coupon.CouponService;
@@ -48,6 +52,7 @@ import shop.s5g.front.service.coupon.policy.CouponPolicyService;
 import shop.s5g.front.service.coupon.template.CouponTemplateService;
 import shop.s5g.front.service.delivery.DeliveryFeeService;
 import shop.s5g.front.service.point.PointPolicyService;
+import shop.s5g.front.service.point.PointSourceService;
 import shop.s5g.front.service.wrappingpaper.WrappingPaperService;
 
 @Slf4j
@@ -64,7 +69,7 @@ public class AdminController {
     private final DeliveryFeeService deliveryFeeService;
     private final WrappingPaperService wrappingPaperService;
     private final PointPolicyService pointPolicyService;
-
+    private final PointSourceService pointSourceService;
     /**
      * 기본 관리자 페이지 출력
      *
@@ -544,9 +549,16 @@ public class AdminController {
     }
 
     @GetMapping("/admin/point/policy/create")
-    public String getPointPolicyCreateForm() {
+    public ModelAndView getPointPolicyCreateForm() {
 
-        return "admin/point-policy-create";
+        List<PointPolicyFormResponseDto> pointPolicyFormData = pointSourceService.getPointPolicyFormData();
+
+        ModelAndView mv = new ModelAndView("admin/point-policy-create");
+
+        mv.addObject("sourceList", pointPolicyFormData);
+
+        return mv;
+
     }
 
     @PostMapping("/admin/point/policy/create")
@@ -569,6 +581,10 @@ public class AdminController {
 
             return ResponseEntity.ok().build();
 
+        } catch (AlreadyExistsException e) {
+
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
@@ -586,10 +602,39 @@ public class AdminController {
         try {
             pointPolicyService.removePointPolicy(pointPolicyRemoveRequestDto);
             return ResponseEntity.ok().build();
-        }catch (Exception e){
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/admin/point/source/create")
+    public String getCreatePointSourceForm() {
+
+        return "admin/point-source-create";
+    }
+
+    @PostMapping("/admin/point/source/create")
+    public ResponseEntity<Void> createPointSource(
+        @RequestBody @Valid PointSourceCreateRequestDto pointSourceCreateRequestDto,
+        BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().build();
         }
 
+        try {
+            pointSourceService.createPointSource(pointSourceCreateRequestDto);
 
+            return ResponseEntity.ok().build();
+
+        }catch (AlreadyExistsException e){
+
+          return ResponseEntity.status(HttpStatus.CONFLICT).build();
+
+        } catch (Exception e) {
+
+            return ResponseEntity.badRequest().build();
+        }
     }
+
 }
