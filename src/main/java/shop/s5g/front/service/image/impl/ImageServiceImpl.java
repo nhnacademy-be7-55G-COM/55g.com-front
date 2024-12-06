@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import shop.s5g.front.adapter.ImageProviderAdapter;
 import shop.s5g.front.dto.image.ImageResponseDto;
+import shop.s5g.front.exception.ApplicationException;
 import shop.s5g.front.service.image.ImageService;
 
 @Slf4j
@@ -27,8 +28,7 @@ public class ImageServiceImpl implements ImageService {
         try {
             return uploadImage(path, file.getBytes());
         }catch (IOException e) {
-            // TODO: 다른 예외로 교체하기.
-            throw new RuntimeException(e);
+            throw new ApplicationException(e);
         }
     }
 

@@ -14,6 +14,7 @@ import shop.s5g.front.dto.delivery.DeliveryCreateRequestDto;
 import shop.s5g.front.dto.delivery.DeliveryFeeResponseDto;
 import shop.s5g.front.dto.order.OrderCreateRequestDto;
 import shop.s5g.front.dto.order.OrderDetailCreateRequestDto;
+import shop.s5g.front.exception.ApplicationException;
 import shop.s5g.front.exception.ResourceNotFoundException;
 import shop.s5g.front.service.customer.CustomerService;
 
@@ -36,7 +37,7 @@ public class GuestPurchaseSheet extends AbstractPurchaseSheet{
     public void pushToModel(ModelAndView mv) {
         if (!isReady()) {
             log.error("Purchase Sheet was not joined! Please check synchronization logic!");
-            throw new IllegalStateException();
+            throw new ApplicationException("Guest Purchase Sheet does not ready");
         }
         mv.addObject("cartList", getCartList());
         mv.addObject("fees", getFee());
@@ -44,11 +45,6 @@ public class GuestPurchaseSheet extends AbstractPurchaseSheet{
         mv.addObject("wrappingPaperList", getWraps().stream().map(wrappingPaperService::convertToView).toList());
         getCartList().forEach(cart -> orderInfo.purchaseMap.put(cart.id(), new PurchaseCell(cart)));
     }
-
-//    @Override
-//    public boolean isReady() {
-//        return super.isReady() && customerReady;
-//    }
 
     @Override
     public OrderCreateRequestDto createOrderRequest(DeliveryCreateRequestDto delivery) {
@@ -60,7 +56,6 @@ public class GuestPurchaseSheet extends AbstractPurchaseSheet{
         List<OrderDetailCreateRequestDto> details = new ArrayList<>(getCartList().size());
         for (PurchaseCell cell: orderInfo.purchaseMap.values()) {
             BookPurchaseView book = cell.book;
-            // TODO: 쿠폰 적용, 한 권만 적용
             long wrapCost = cell.wrappingPaper != null ? cell.wrappingPaper.price() : 0;
             long subTotalPrice = book.totalPrice() * book.quantity() + wrapCost;
             int subAccPrice = 0;

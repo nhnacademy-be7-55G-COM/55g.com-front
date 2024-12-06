@@ -19,6 +19,7 @@ import shop.s5g.front.dto.delivery.DeliveryFeeResponseDto;
 import shop.s5g.front.dto.member.MemberInfoResponseDto;
 import shop.s5g.front.dto.order.OrderCreateRequestDto;
 import shop.s5g.front.dto.order.OrderDetailCreateRequestDto;
+import shop.s5g.front.exception.ApplicationException;
 import shop.s5g.front.exception.ResourceNotFoundException;
 import shop.s5g.front.service.member.MemberService;
 
@@ -58,19 +59,17 @@ public class PurchaseSheet extends AbstractPurchaseSheet {    // 주문서 빈!
         sumAccRate();
     }
 
-    // TODO: 소수점 이슈때문에 나중에 각각 계산을 해야함.
     private void sumAccRate() {     // 적립률 합연산
         memberAccRate = BigDecimal.valueOf(memberInfo.grade().point(), 2);
         setDefaultAccRate(policy.value());
         accRateSum = getDefaultAccRate().add(memberAccRate);
     }
 
-    // TODO: 적절한 예외로 바꾸기
     @Override
     public void pushToModel(ModelAndView mv) {      // 뷰에 표현하기 위한 DTO 주입.
         if (!isReady()) {
             log.error("Purchase Sheet was not joined! Please check synchronization logic!");
-            throw new IllegalStateException();
+            throw new ApplicationException("PurchaseSheet does not ready");
         }
         log.trace("Attending arguments to purchase model...");
         mv.addObject("cartList", getCartList());
@@ -86,7 +85,7 @@ public class PurchaseSheet extends AbstractPurchaseSheet {    // 주문서 빈!
     @Override
     public OrderCreateRequestDto createOrderRequest(DeliveryCreateRequestDto delivery) {
         if (orderInfo == null) {
-            throw new IllegalStateException();
+            throw new ApplicationException("OrderInfo is null, check order process");
         }
         long totalPrice = 0;
         long netPrice = 0;
@@ -143,11 +142,9 @@ public class PurchaseSheet extends AbstractPurchaseSheet {    // 주문서 빈!
     @Override
     public long updateUsingPoint(long point) {
         if (point < 0) {
-            // TODO: 적절한 예외로 바꾸기
             throw new UnsupportedOperationException("포인트는 음수가 될 수 없어요.");
         }
         if (memberInfo.point() < point) {
-            // TODO: 적절한 예외로 바꾸기
             throw new UnsupportedOperationException("포인트는 가지고 있는것보다 클 수 없어요.");
         }
         orderInfo.usingPoint = point;
