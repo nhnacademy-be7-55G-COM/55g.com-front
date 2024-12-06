@@ -2,15 +2,16 @@ package shop.s5g.front.service.cart;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import feign.FeignException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,17 +21,21 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 import shop.s5g.front.adapter.BookAdapter;
 import shop.s5g.front.adapter.CartAdapter;
+import shop.s5g.front.dto.book.BookPurchaseView;
+import shop.s5g.front.dto.book.BookSimpleResponseDto;
 import shop.s5g.front.dto.cart.request.CartBookInfoRequestDto;
 import shop.s5g.front.dto.cart.request.CartBookSelectRequestDto;
 import shop.s5g.front.dto.cart.request.CartLoginRequestDto;
 import shop.s5g.front.dto.cart.request.CartPutRequestDto;
 import shop.s5g.front.dto.cart.request.CartRemoveBookRequestDto;
 import shop.s5g.front.dto.cart.request.CartUpdateQuantityRequestDto;
+import shop.s5g.front.exception.ResourceNotFoundException;
 import shop.s5g.front.exception.cart.CartConvertException;
 import shop.s5g.front.exception.cart.CartDetailPageException;
 import shop.s5g.front.exception.cart.CartPurchaseException;
 import shop.s5g.front.exception.cart.CartPutException;
 import shop.s5g.front.exception.cart.CartRemoveAccountException;
+import shop.s5g.front.service.book.BookService;
 import shop.s5g.front.service.cart.impl.CartServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
@@ -42,8 +47,13 @@ class CartServiceImplTest {
     @Mock
     BookAdapter bookAdapter;
 
+    @Mock
+    BookService bookService;
+
     @InjectMocks
     CartServiceImpl cartService;
+
+
 
     @Test
     void putBookTest() {
@@ -274,6 +284,40 @@ class CartServiceImplTest {
             FeignException.class);
 
         assertThatThrownBy(() -> cartService.changeBookStatusInCart(cartBookSelectRequestDto));
+
+    }
+
+    @Test
+    void convertCartToViewTest() {
+        List<CartBookInfoRequestDto> cartList = new ArrayList<>();
+        cartList.add(new CartBookInfoRequestDto(1l, 1));
+        List<BookSimpleResponseDto> bookList = new ArrayList<>();
+        bookList.add(
+            new BookSimpleResponseDto(1l, "title1", 10000l, BigDecimal.valueOf(0.1), 100, true,
+                "status1"));
+
+        List<BookPurchaseView> bookView = new ArrayList<>(cartList.size());
+        bookView.add(new BookPurchaseView(1l, "title1", 10000l, 1, 1000l, 9000l));
+
+        when(bookService.getSimpleBooksFromCart(cartList)).thenReturn(bookList);
+
+        CompletableFuture<List<BookPurchaseView>> actualResult = cartService.convertCartToView(
+            cartList);
+
+        Assertions.assertEquals(bookView, actualResult.join());
+
+    }
+
+    @Test
+    void convertCartToViewExceptionTest() {
+        List<CartBookInfoRequestDto> cartList = new ArrayList<>();
+        cartList.add(new CartBookInfoRequestDto(1l, 1));
+        List<BookSimpleResponseDto> bookList = new ArrayList<>();
+
+        when(bookService.getSimpleBooksFromCart(cartList)).thenReturn(bookList);
+
+        assertThatThrownBy(() -> cartService.convertCartToView(cartList)).isInstanceOf(
+            ResourceNotFoundException.class);
 
     }
 
