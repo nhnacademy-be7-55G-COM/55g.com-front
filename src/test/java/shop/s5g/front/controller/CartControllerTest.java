@@ -49,10 +49,12 @@ import shop.s5g.front.exception.cart.CartPutException;
 import shop.s5g.front.service.cart.CartService;
 
 @WebMvcTest(value = CartController.class,
-    excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {FilterConfig.class, SecurityConfig.class, WebConfig.class})
+    excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {
+        FilterConfig.class, SecurityConfig.class, WebConfig.class})
 )
 @Import({TestSecurityConfig.class, TestWebConfig.class})
 class CartControllerTest {
+
     @Autowired
     MockMvc mvc;
 
@@ -92,7 +94,8 @@ class CartControllerTest {
 
         mvc.perform(post("/cart/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody))
+                .content(requestBody)
+                .with(csrf()))
             .andExpect(status().isOk())
             .andExpect(content().json(objectMapper.writeValueAsString(expectedResponseBody)));
     }
@@ -107,7 +110,8 @@ class CartControllerTest {
 
         mvc.perform(post("/cart/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody))
+                .content(requestBody)
+                .with(csrf()))
             .andExpect(status().isBadRequest());
     }
 
@@ -122,8 +126,9 @@ class CartControllerTest {
         when(service.convertCartToRedis(cartLoginRequestDto)).thenReturn(expectedResponseBody);
 
         mvc.perform(post("/cart/login")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(requestBody))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody)
+                .with(csrf()))
             .andExpect(status().isBadRequest());
     }
 
@@ -138,7 +143,8 @@ class CartControllerTest {
 
         mvc.perform(post("/cart")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody))
+                .content(requestBody)
+                .with(csrf()))
             .andExpect(status().isOk())
             .andExpect(content().json(objectMapper.writeValueAsString(expectedResponseBody)));
     }
@@ -153,7 +159,8 @@ class CartControllerTest {
 
         mvc.perform(post("/cart")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody))
+                .content(requestBody)
+                .with(csrf()))
             .andExpect(status().isBadRequest());
     }
 
@@ -162,10 +169,10 @@ class CartControllerTest {
         CartPutRequestDto cartPutRequestDto = new CartPutRequestDto(1l, 0);
         String requestBody = objectMapper.writeValueAsString(cartPutRequestDto);
 
-
         mvc.perform(post("/cart")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody))
+                .content(requestBody)
+                .with(csrf()))
             .andExpect(status().isBadRequest());
     }
 
@@ -173,20 +180,21 @@ class CartControllerTest {
         BigDecimal totalPrice,
         long deliveryFee,
         long freeShippingThreshold
-    ) {}
+    ) {
+
+    }
+
     @Test
     void cartDetailPageCustomerTest() throws Exception {
-
 
         Map<String, Object> cartDetailPageInfo = new HashMap<>();
         cartDetailPageInfo.put("books", new ArrayList<>());
         cartDetailPageInfo.put("feeInfo",
             new CartDetailInfoResponseDto(BigDecimal.valueOf(0l), 3000l, 30000l));
 
-
         when(service.getCartDetailPageInfo()).thenReturn(cartDetailPageInfo);
 
-        mvc.perform(get("/cart/detailPage").with(csrf())
+        mvc.perform(get("/cart/detailPage")
                 .cookie(new Cookie("accessJwt", "test")))
             .andExpect(status().isOk())
             .andExpect(view().name("cart/cartDetail"));
@@ -196,10 +204,11 @@ class CartControllerTest {
     void cartDetailPageCustomerExceptionTest() throws Exception {
         when(service.getCartDetailPageInfo()).thenThrow(CartDetailPageException.class);
 
-        mvc.perform(get("/cart/detailPage").with(csrf())
+        mvc.perform(get("/cart/detailPage")
                 .cookie(new Cookie("accessJwt", "test")))
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl("/"));
+
     }
 
     @Test
@@ -211,10 +220,11 @@ class CartControllerTest {
 
         when(service.getCartDetailPageInfoWhenGuest("test")).thenReturn(cartDetailPageInfo);
 
-        mvc.perform(get("/cart/detailPage").with(csrf())
-                .param("cartBookInfoList","test"))
+        mvc.perform(get("/cart/detailPage")
+                .param("cartBookInfoList", "test"))
             .andExpect(status().isOk())
             .andExpect(view().name("cart/cartDetail"));
+
     }
 
     @Test
@@ -223,10 +233,11 @@ class CartControllerTest {
         when(service.getCartDetailPageInfoWhenGuest("test")).thenThrow(
             CartDetailPageException.class);
 
-        mvc.perform(get("/cart/detailPage").with(csrf())
+        mvc.perform(get("/cart/detailPage")
                 .param("cartBookInfoList", "test"))
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl("/"));
+
     }
 
     @Test
@@ -238,7 +249,8 @@ class CartControllerTest {
 
         mvc.perform(post("/cart/updateQuantity")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody))
+                .content(requestBody)
+                .with(csrf()))
             .andExpect(status().isOk());
     }
 
@@ -248,10 +260,10 @@ class CartControllerTest {
             null, 1);
         String requestBody = objectMapper.writeValueAsString(cartUpdateQuantityRequestDto);
 
-
         mvc.perform(post("/cart/updateQuantity")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody))
+                .content(requestBody)
+                .with(csrf()))
             .andExpect(status().isBadRequest());
     }
 
@@ -264,10 +276,10 @@ class CartControllerTest {
         doThrow(CartDetailPageException.class).when(service)
             .updateQuantity(cartUpdateQuantityRequestDto);
 
-
         mvc.perform(post("/cart/updateQuantity")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody))
+                .content(requestBody)
+                .with(csrf()))
             .andExpect(status().isBadRequest());
     }
 
@@ -280,7 +292,8 @@ class CartControllerTest {
 
         mvc.perform(delete("/cart/removeBook")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody))
+                .content(requestBody)
+                .with(csrf()))
             .andExpect(status().isOk());
     }
 
@@ -291,7 +304,8 @@ class CartControllerTest {
 
         mvc.perform(delete("/cart/removeBook")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody))
+                .content(requestBody)
+                .with(csrf()))
             .andExpect(status().isBadRequest());
     }
 
@@ -304,7 +318,8 @@ class CartControllerTest {
 
         mvc.perform(delete("/cart/removeBook")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody))
+                .content(requestBody)
+                .with(csrf()))
             .andExpect(status().isBadRequest());
     }
 
@@ -317,7 +332,8 @@ class CartControllerTest {
 
         mvc.perform(post("/cart/changeBookStatus")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody))
+                .content(requestBody)
+                .with(csrf()))
             .andExpect(status().isOk());
     }
 
@@ -332,7 +348,8 @@ class CartControllerTest {
 
         mvc.perform(post("/cart/changeBookStatus")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody))
+                .content(requestBody)
+                .with(csrf()))
             .andExpect(status().isBadRequest());
 
     }
@@ -344,11 +361,13 @@ class CartControllerTest {
 
         String requestBody = objectMapper.writeValueAsString(cartBookSelectRequestDto);
 
-        doThrow(CartDetailPageException.class).when(service).changeBookStatusInCart(cartBookSelectRequestDto);
+        doThrow(CartDetailPageException.class).when(service)
+            .changeBookStatusInCart(cartBookSelectRequestDto);
 
         mvc.perform(post("/cart/changeBookStatus")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody))
+                .content(requestBody)
+                .with(csrf()))
             .andExpect(status().isBadRequest());
 
     }
@@ -358,7 +377,8 @@ class CartControllerTest {
 
         doNothing().when(service).removePurchasedBooks();
 
-        mvc.perform(post("/cart/removePurchasedBooks"))
+        mvc.perform(post("/cart/removePurchasedBooks")
+                .with(csrf()))
             .andExpect(status().isOk());
     }
 
@@ -367,7 +387,8 @@ class CartControllerTest {
 
         doThrow(CartPurchaseException.class).when(service).removePurchasedBooks();
 
-        mvc.perform(post("/cart/removePurchasedBooks"))
+        mvc.perform(post("/cart/removePurchasedBooks")
+                .with(csrf()))
             .andExpect(status().isBadRequest());
     }
 
