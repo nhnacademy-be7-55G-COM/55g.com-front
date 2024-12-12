@@ -49,8 +49,9 @@ import shop.s5g.front.exception.cart.CartPutException;
 import shop.s5g.front.service.cart.CartService;
 
 @WebMvcTest(value = CartController.class,
-    excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {
-        FilterConfig.class, SecurityConfig.class, WebConfig.class})
+    excludeFilters = @ComponentScan.Filter(
+        type = FilterType.ASSIGNABLE_TYPE,
+        classes = {FilterConfig.class, SecurityConfig.class, WebConfig.class})
 )
 @Import({TestSecurityConfig.class, TestWebConfig.class})
 class CartControllerTest {

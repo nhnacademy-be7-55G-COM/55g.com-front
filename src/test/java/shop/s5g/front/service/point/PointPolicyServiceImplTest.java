@@ -1,7 +1,8 @@
 package shop.s5g.front.service.point;
 
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
-
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -14,12 +15,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.ResponseEntity;
 import shop.s5g.front.adapter.point.PointPolicyAdapter;
 import shop.s5g.front.dto.address.AddressResponseDto;
 import shop.s5g.front.dto.member.MemberGradeResponseDto;
 import shop.s5g.front.dto.member.MemberInfoResponseDto;
 import shop.s5g.front.dto.member.MemberStatusResponseDto;
+import shop.s5g.front.dto.point.PointPolicyCreateRequestDto;
+import shop.s5g.front.dto.point.PointPolicyRemoveRequestDto;
 import shop.s5g.front.dto.point.PointPolicyResponseDto;
+import shop.s5g.front.dto.point.PointPolicyUpdateRequestDto;
 import shop.s5g.front.dto.point.PointPolicyView;
 import shop.s5g.front.service.member.MemberService;
 import shop.s5g.front.service.point.impl.PointPolicyServiceImpl;
@@ -94,6 +99,42 @@ public class PointPolicyServiceImplTest {
         BigDecimal actualResult = service.getPointAccRateForPurchase();
 
         Assertions.assertEquals(expectedResult, actualResult);
+    }
+
+    @Test
+    void updatePolicyValue() {
+        PointPolicyUpdateRequestDto pointPolicyUpdateRequestDto = new PointPolicyUpdateRequestDto(
+            1l, BigDecimal.valueOf(0.1), "name1", "rate");
+
+        when(pointPolicyAdapter.updatePolicy(pointPolicyUpdateRequestDto)).thenReturn(
+            ResponseEntity.ok().build());
+
+        assertThatCode(() -> service.updatePolicyValue(
+            pointPolicyUpdateRequestDto)).doesNotThrowAnyException();
+    }
+
+    @Test
+    void createPointPolicyTest() {
+        PointPolicyCreateRequestDto pointPolicyCreateRequestDto = new PointPolicyCreateRequestDto(
+            "policyName1", "rate", BigDecimal.valueOf(0.1), 1l);
+
+        when(pointPolicyAdapter.createPolicy(pointPolicyCreateRequestDto)).thenReturn(
+            ResponseEntity.ok().build());
+
+        assertThatCode(() -> service.createPointPolicy(
+            pointPolicyCreateRequestDto)).doesNotThrowAnyException();
+    }
+
+    @Test
+    void removePointPolicyTest() {
+        PointPolicyRemoveRequestDto pointPolicyRemoveRequestDto = new PointPolicyRemoveRequestDto(
+            "sourceName1", 1l);
+
+        when(pointPolicyAdapter.removePolicy(pointPolicyRemoveRequestDto)).thenReturn(
+            ResponseEntity.ok().build());
+
+        assertThatCode(() -> service.removePointPolicy(
+            pointPolicyRemoveRequestDto)).doesNotThrowAnyException();
     }
 
 
